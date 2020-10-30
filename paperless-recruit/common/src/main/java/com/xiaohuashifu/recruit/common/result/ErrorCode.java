@@ -102,12 +102,6 @@ public enum ErrorCode {
             "InvalidParameter.NotFound", "The specified resource does not exist."),
 
     /**
-     * 未找到该参数
-     */
-    INVALID_OPERATION_NOT_FOUND(HttpStatus.NOT_FOUND,
-            "InvalidOperation.NotFound", "The specified resource does not exist."),
-
-    /**
      * 参数长度不在规定范围内，String类型
      */
     OPERATION_CONFLICT(HttpStatus.CONFLICT,

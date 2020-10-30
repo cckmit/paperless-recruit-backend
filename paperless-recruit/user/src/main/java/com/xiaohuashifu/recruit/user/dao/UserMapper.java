@@ -10,6 +10,6 @@ import com.xiaohuashifu.recruit.user.pojo.do0.UserDO;
  * @create: 2020/10/30 15:05
  */
 public interface UserMapper {
-    UserDO getUser(Integer id);
+    UserDO getUser(Long id);
 
 }

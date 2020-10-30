@@ -71,6 +71,13 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>1.2.1</version>
             </dependency>
+
+            <!-- dozer对象属性拷贝 -->
+            <dependency>
+                <groupId>com.github.dozermapper</groupId>
+                <artifactId>dozer-spring-boot-starter</artifactId>
+                <version>6.5.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

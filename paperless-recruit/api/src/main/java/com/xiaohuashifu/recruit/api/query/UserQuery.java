@@ -9,6 +9,8 @@ package com.xiaohuashifu.recruit.api.query;
  */
 public class UserQuery {
 
+    private Integer pageNum;
+    private Integer pageSize;
     private Long id;
     private String username;
     private Boolean available;
@@ -16,10 +18,20 @@ public class UserQuery {
     public UserQuery() {
     }
 
-    public UserQuery(Long id, String username, Boolean available) {
-        this.id = id;
-        this.username = username;
-        this.available = available;
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 
     public Long getId() {
@@ -49,7 +61,9 @@ public class UserQuery {
     @Override
     public String toString() {
         return "UserQuery{" +
-                "id=" + id +
+                "pageNum=" + pageNum +
+                ", pageSize=" + pageSize +
+                ", id=" + id +
                 ", username='" + username + '\'' +
                 ", available=" + available +
                 '}';
@@ -57,11 +71,23 @@ public class UserQuery {
 
 
     public static final class Builder {
+        private Integer pageNum;
+        private Integer pageSize;
         private Long id;
         private String username;
         private Boolean available;
 
         public Builder() {
+        }
+
+        public Builder pageNum(Integer pageNum) {
+            this.pageNum = pageNum;
+            return this;
+        }
+
+        public Builder pageSize(Integer pageSize) {
+            this.pageSize = pageSize;
+            return this;
         }
 
         public Builder id(Long id) {
@@ -80,11 +106,13 @@ public class UserQuery {
         }
 
         public Builder but() {
-            return new Builder().id(id).username(username).available(available);
+            return new Builder().pageNum(pageNum).pageSize(pageSize).id(id).username(username).available(available);
         }
 
         public UserQuery build() {
             UserQuery userQuery = new UserQuery();
+            userQuery.setPageNum(pageNum);
+            userQuery.setPageSize(pageSize);
             userQuery.setId(id);
             userQuery.setUsername(username);
             userQuery.setAvailable(available);

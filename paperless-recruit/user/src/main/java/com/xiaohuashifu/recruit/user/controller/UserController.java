@@ -25,6 +25,6 @@ public class UserController {
     @GetMapping(value = "/echo/{string}")
     public String echo(@PathVariable String string) {
         final UserQuery xhsf = new UserQuery.Builder().id(1L).username("xhsf").build();
-        return "Hello Nacos Discovery " + userMapper.getUser(1);
+        return "Hello Nacos Discovery " + userMapper.getUser(1L);
     }
 }

@@ -51,7 +51,7 @@ public interface UserService {
      * @param userDTO 要更新的用户信息，如果不为null则更新
      * @return 更新后的用户
      */
-    default Result<UserDTO> changeUser(UserDTO userDTO) {
+    default Result<UserDTO> updateUser(UserDTO userDTO) {
         throw new UnsupportedOperationException();
     }
 

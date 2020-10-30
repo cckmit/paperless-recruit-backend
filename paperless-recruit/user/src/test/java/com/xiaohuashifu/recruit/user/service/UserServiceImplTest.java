@@ -27,7 +27,7 @@ class UserServiceImplTest extends UserApplicationTests{
 
     @Test
     void getUser() {
-        final Result<UserDTO> user = userService.getUser(-1L);
+        final Result<UserDTO> user = userService.getUser(1L);
         System.out.println(user);
     }
 

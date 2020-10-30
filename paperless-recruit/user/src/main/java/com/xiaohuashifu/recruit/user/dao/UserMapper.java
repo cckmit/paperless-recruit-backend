@@ -12,4 +12,6 @@ import com.xiaohuashifu.recruit.user.pojo.do0.UserDO;
 public interface UserMapper {
     UserDO getUser(Long id);
 
+    UserDO saveUser(UserDO user);
+
 }

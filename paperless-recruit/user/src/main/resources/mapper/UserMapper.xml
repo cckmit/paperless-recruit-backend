@@ -5,38 +5,37 @@
         id, username, password, is_available as available, create_time, update_time
     </sql>
 
-<!--    <insert id="saveUser" parameterType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO"-->
-<!--            useGeneratedKeys="true" keyProperty="id">-->
-<!--        insert into user-->
-<!--        <trim prefix="(" suffix=")" suffixOverrides="," >-->
-<!--            <if test="username != null" >-->
-<!--                username,-->
-<!--            </if>-->
-<!--            <if test="password != null" >-->
-<!--                password,-->
-<!--            </if>-->
-<!--            <if test="nickName != null" >-->
-<!--                nick_name,-->
-<!--            </if>-->
-<!--            <if test="avatarUrl != null" >-->
-<!--                avatar_url-->
-<!--            </if>-->
-<!--        </trim>-->
-<!--        <trim prefix="values (" suffix=")" suffixOverrides="," >-->
-<!--            <if test="username != null" >-->
-<!--                #{username},-->
-<!--            </if>-->
-<!--            <if test="password != null" >-->
-<!--                #{password},-->
-<!--            </if>-->
-<!--            <if test="nickName != null" >-->
-<!--                #{nickName},-->
-<!--            </if>-->
-<!--            <if test="avatarUrl != null" >-->
-<!--                #{avatarUrl}-->
-<!--            </if>-->
-<!--        </trim>-->
-<!--    </insert>-->
+    <insert id="saveUser" parameterType="user" useGeneratedKeys="true" keyProperty="id">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="username != null" >
+                username,
+            </if>
+            <if test="password != null" >
+                password,
+            </if>
+            <if test="nickName != null" >
+                nick_name,
+            </if>
+            <if test="avatarUrl != null" >
+                avatar_url
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="username != null" >
+                #{username},
+            </if>
+            <if test="password != null" >
+                #{password},
+            </if>
+            <if test="nickName != null" >
+                #{nickName},
+            </if>
+            <if test="avatarUrl != null" >
+                #{avatarUrl}
+            </if>
+        </trim>
+    </insert>
 
     <select id="getUser" resultType="user">
         select

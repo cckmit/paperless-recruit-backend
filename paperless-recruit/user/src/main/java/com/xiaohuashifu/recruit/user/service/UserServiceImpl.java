@@ -58,13 +58,19 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    /**
+     * 创建用户
+     *
+     * @param userDTO 用户对象
+     * @return 新创建的用户
+     */
     @Override
     public Result<UserDTO> saveUser(UserDTO userDTO) {
         return null;
     }
 
     @Override
-    public Result<UserDTO> changeUser(UserDTO userDTO) {
+    public Result<UserDTO> updateUser(UserDTO userDTO) {
         return null;
     }
 }

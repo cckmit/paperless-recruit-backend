@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.certification.controller;
 
 import com.xiaohuashifu.recruit.api.service.UserService;
 import com.xiaohuashifu.recruit.common.pojo.dto.UserDTO;
+import com.xiaohuashifu.recruit.common.result.Result;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,7 @@ public class Certification {
     }
 
     @GetMapping("/rpc/user")
-    public UserDTO rpc(){
-        return userService.getUser(1);
+    public Result<UserDTO> rpc(){
+        return userService.getUser(1L);
     }
 }

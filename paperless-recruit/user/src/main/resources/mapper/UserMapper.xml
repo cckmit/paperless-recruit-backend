@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.user.dao.UserMapper">
+    <sql id="user">
+        id, username, password, is_available as available, create_time, update_time
+    </sql>
+
+<!--    <insert id="saveUser" parameterType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO"-->
+<!--            useGeneratedKeys="true" keyProperty="id">-->
+<!--        insert into user-->
+<!--        <trim prefix="(" suffix=")" suffixOverrides="," >-->
+<!--            <if test="username != null" >-->
+<!--                username,-->
+<!--            </if>-->
+<!--            <if test="password != null" >-->
+<!--                password,-->
+<!--            </if>-->
+<!--            <if test="nickName != null" >-->
+<!--                nick_name,-->
+<!--            </if>-->
+<!--            <if test="avatarUrl != null" >-->
+<!--                avatar_url-->
+<!--            </if>-->
+<!--        </trim>-->
+<!--        <trim prefix="values (" suffix=")" suffixOverrides="," >-->
+<!--            <if test="username != null" >-->
+<!--                #{username},-->
+<!--            </if>-->
+<!--            <if test="password != null" >-->
+<!--                #{password},-->
+<!--            </if>-->
+<!--            <if test="nickName != null" >-->
+<!--                #{nickName},-->
+<!--            </if>-->
+<!--            <if test="avatarUrl != null" >-->
+<!--                #{avatarUrl}-->
+<!--            </if>-->
+<!--        </trim>-->
+<!--    </insert>-->
+
+    <select id="getUser" resultType="user">
+        select
+        <include refid="user"/>
+        from user
+        where id = #{id}
+    </select>
+
+<!--    <select id="getUserByUsername" parameterType="string" resultType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->
+<!--        select-->
+<!--        <include refid="Base_Column_List"/>-->
+<!--        from user-->
+<!--        where username = #{username}-->
+<!--    </select>-->
+
+
+<!--    <select id="listUsers" parameterType="com.wudagezhandui.shixun.xianyu.pojo.query.UserQuery"-->
+<!--            resultType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->
+<!--        select-->
+<!--        <include refid="Base_Column_List"/>-->
+<!--        from user-->
+<!--        <where>-->
+<!--            <if test="id != null">-->
+<!--                and id = #{id}-->
+<!--            </if>-->
+<!--            <if test="idList != null">-->
+<!--                and id in (-->
+<!--                    <foreach collection="idList"  item="item" index="index" separator=",">-->
+<!--                        #{item}-->
+<!--                    </foreach>-->
+<!--                )-->
+<!--            </if>-->
+<!--            <if test="username != null">-->
+<!--                and username like "%"#{username}"%"-->
+<!--            </if>-->
+<!--            <if test="nickName != null">-->
+<!--                and nick_name like "%"#{nickName}"%"-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        order by update_time desc-->
+<!--    </select>-->
+
+<!--    <update id="updateUser" parameterType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->
+<!--        update user-->
+<!--        <set>-->
+<!--            <if test="username != null">-->
+<!--                username = #{username},-->
+<!--            </if>-->
+<!--            <if test="password != null">-->
+<!--                password = #{password},-->
+<!--            </if>-->
+<!--            <if test="nickName != null">-->
+<!--                nick_name = #{nickName},-->
+<!--            </if>-->
+<!--            <if test="avatarUrl != null">-->
+<!--                avatar_url = #{avatarUrl},-->
+<!--            </if>-->
+<!--            <if test="aliPayAccount != null">-->
+<!--                ali_pay_account = #{aliPayAccount},-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
+<!--    <select id="countByUsername" parameterType="string" resultType="int">-->
+<!--        select count(*)-->
+<!--        from user-->
+<!--        where username = #{username}-->
+<!--    </select>-->
+
+</mapper>

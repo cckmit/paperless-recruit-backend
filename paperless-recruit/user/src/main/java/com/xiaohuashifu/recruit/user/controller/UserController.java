@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.user.controller;
 
-import com.xiaohuashifu.recruit.api.query.UserQuery;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.dao.UserMapper;
 import org.springframework.validation.annotation.Validated;
@@ -8,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 
 /**
  * 描述：

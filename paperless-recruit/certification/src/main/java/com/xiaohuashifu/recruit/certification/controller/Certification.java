@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,8 +37,8 @@ public class Certification {
         return restTemplate.getForObject(url,String.class);
     }
 
-    @GetMapping("/rpc/user")
-    public Result<UserDTO> rpc(){
-        return userService.getUser(1L);
+    @GetMapping("/rpc/user/{id}")
+    public Result<UserDTO> rpc(@PathVariable Long id){
+        return userService.getUser(id);
     }
 }

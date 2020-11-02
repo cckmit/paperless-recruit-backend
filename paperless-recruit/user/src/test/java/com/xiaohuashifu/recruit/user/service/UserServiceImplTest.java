@@ -5,6 +5,7 @@ import com.xiaohuashifu.recruit.common.pojo.dto.UserDTO;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.UserApplication;
 import com.xiaohuashifu.recruit.user.UserApplicationTests;
+import org.apache.dubbo.config.annotation.Reference;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,12 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class UserServiceImplTest extends UserApplicationTests{
 
-    @Autowired
+    @Reference
     private UserService userService;
 
     @Test
     void getUser() {
-        final Result<UserDTO> user = userService.getUser(1L);
+        final Result<UserDTO> user = userService.getUser(-1L);
         System.out.println(user);
     }
 

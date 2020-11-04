@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 @Alias("user")
 public class UserDO {
-    private Integer id;
+    private Long id;
 
     private String username;
 
@@ -28,7 +28,7 @@ public class UserDO {
     public UserDO() {
     }
 
-    public UserDO(Integer id, String username, String password, Boolean available, LocalDateTime createTime,
+    public UserDO(Long id, String username, String password, Boolean available, LocalDateTime createTime,
                   LocalDateTime updateTime) {
         this.id = id;
         this.username = username;
@@ -38,11 +38,11 @@ public class UserDO {
         this.updateTime = updateTime;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

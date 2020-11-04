@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.user.controller;
 
+import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.dao.UserMapper;
 import org.springframework.validation.annotation.Validated;
@@ -21,13 +22,16 @@ public class UserController {
 
     private final UserMapper userMapper;
 
-    public UserController(UserMapper userMapper) {
+    private final Mapper mapper;
+
+    public UserController(UserMapper userMapper, Mapper mapper) {
         this.userMapper = userMapper;
+        this.mapper = mapper;
     }
 
     @GetMapping(value = "/echo/{string}")
     public Object echo(@PathVariable String string, @Id Long id) {
         System.out.println(id);
-        return "Hello Nacos Discovery " + userMapper.getUser(1L);
+        return userMapper.getUser(1L);
     }
 }

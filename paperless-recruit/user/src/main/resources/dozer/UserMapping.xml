@@ -3,17 +3,12 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping http://dozermapper.github.io/schema/bean-mapping.xsd">
 
-
 <!--    <mapping wildcard="true">-->
-<!--        <class-a>com.huang.dozer.bean.User</class-a>-->
-<!--        <class-b>com.huang.dozer.bean.UserXmlDestinationObject</class-b>-->
+<!--        <class-a>com.xiaohuashifu.recruit.user.pojo.do0.UserDO</class-a>-->
+<!--        <class-b>com.xiaohuashifu.recruit.user.pojo.do0.UserVO</class-b>-->
 <!--        <field>-->
-<!--            <a>name</a>-->
-<!--            <b>username</b>-->
-<!--        </field>-->
-<!--        <field>-->
-<!--            <a>birthday</a>-->
-<!--            <b>dateOfBirth</b>-->
+<!--            <a>username</a>-->
+<!--            <b>name</b>-->
 <!--        </field>-->
 <!--    </mapping>-->
 

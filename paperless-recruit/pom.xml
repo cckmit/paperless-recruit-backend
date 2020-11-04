@@ -6,7 +6,7 @@
 
     <groupId>com.xiaohuashifu.recruit</groupId>
     <artifactId>paperless-recruit</artifactId>
-    <version>${project.version}</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -15,6 +15,8 @@
         <module>user</module>
         <module>certification</module>
     </modules>
+
+
 
     <!--  项目自定义常量  -->
     <properties>
@@ -25,8 +27,8 @@
         <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
         <spring-boot.version>2.2.5.RELEASE</spring-boot.version>
         <spring-cloud-alibaba.version>2.2.1.RELEASE</spring-cloud-alibaba.version>
-        <project.version>1.0-SNAPSHOT</project.version>
     </properties>
+
 
     <!--  项目部署配置  -->
     <distributionManagement>
@@ -108,14 +110,14 @@
 
             <!--      公共api接口      -->
             <dependency>
-                <groupId>com.xiaohuashifu.recruit</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!--      公共对象      -->
             <dependency>
-                <groupId>com.xiaohuashifu.recruit</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>common</artifactId>
                 <version>${project.version}</version>
             </dependency>

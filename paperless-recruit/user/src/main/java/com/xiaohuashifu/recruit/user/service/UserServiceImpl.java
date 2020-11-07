@@ -11,7 +11,6 @@ import com.xiaohuashifu.recruit.user.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.pojo.do0.UserDO;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;

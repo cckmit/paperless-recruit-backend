@@ -19,7 +19,7 @@
       <module name="api" options="" />
       <module name="certification" options="" />
       <module name="common" options="" />
-      <module name="login" options="-parameters" />
+      <module name="login" options="" />
       <module name="user" options="" />
     </option>
   </component>

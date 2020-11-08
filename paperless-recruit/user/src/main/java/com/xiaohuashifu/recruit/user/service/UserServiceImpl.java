@@ -10,8 +10,6 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.pojo.do0.UserDO;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -23,14 +21,13 @@ import java.util.List;
  * @create: 2020/10/30 15:05
  */
 @Service
-@Validated
 public class UserServiceImpl implements UserService {
+
 
     private final UserMapper userMapper;
 
     private final Mapper mapper;
 
-    @Autowired
     public UserServiceImpl(UserMapper userMapper, Mapper mapper) {
         this.userMapper = userMapper;
         this.mapper = mapper;
@@ -58,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 创建用户
+     * 创建用户，需要用户名密码
      *
      * @param userDTO 用户对象
      * @return 新创建的用户

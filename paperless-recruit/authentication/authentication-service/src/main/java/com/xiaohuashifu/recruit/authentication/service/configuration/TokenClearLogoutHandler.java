@@ -1,17 +1,19 @@
 package com.xiaohuashifu.recruit.authentication.service.configuration;
 
 import com.xiaohuashifu.recruit.authentication.service.service.JwtUserService;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+@Component
 public class TokenClearLogoutHandler implements LogoutHandler {
-	
-	private JwtUserService jwtUserService;
+
+	private final JwtUserService jwtUserService;
 	
 	public TokenClearLogoutHandler(JwtUserService jwtUserService) {
 		this.jwtUserService = jwtUserService;

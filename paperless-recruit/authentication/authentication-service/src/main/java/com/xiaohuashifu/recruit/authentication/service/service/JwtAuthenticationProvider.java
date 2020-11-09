@@ -11,15 +11,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
+import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 
+@Component
 public class JwtAuthenticationProvider implements AuthenticationProvider{
 	
-	private JwtUserService userService;
+	private final JwtUserService jwtUserService;
 	
-	public JwtAuthenticationProvider(JwtUserService userService) {
-		this.userService = userService;
+	public JwtAuthenticationProvider(JwtUserService jwtUserService) {
+		this.jwtUserService = jwtUserService;
 	}
 
 	@Override
@@ -28,7 +30,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider{
 		if(jwt.getExpiresAt().before(Calendar.getInstance().getTime()))
 			throw new NonceExpiredException("Token expires");
 		String username = jwt.getSubject();
-		UserDetails user = userService.getUserLoginInfo(username);
+		UserDetails user = jwtUserService.getUserLoginInfo(username);
 		if(user == null || user.getPassword()==null)
 			throw new NonceExpiredException("Token expires");
 		String encryptSalt = user.getPassword();
@@ -41,8 +43,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider{
         } catch (Exception e) {
             throw new BadCredentialsException("JWT token verify fail", e);
         }
-		JwtAuthenticationToken token = new JwtAuthenticationToken(user, jwt, user.getAuthorities());
-		return token;
+		return new JwtAuthenticationToken(user, jwt, user.getAuthorities());
 	}
 
 	@Override

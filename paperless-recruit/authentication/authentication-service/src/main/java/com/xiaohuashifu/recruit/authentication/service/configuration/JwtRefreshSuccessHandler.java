@@ -5,6 +5,7 @@ import com.xiaohuashifu.recruit.authentication.service.service.JwtUserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,12 +15,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-
+@Component
 public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler {
 	
 	private static final int tokenRefreshInterval = 300;  //刷新间隔5分钟
 	
-	private JwtUserService jwtUserService;
+	private final JwtUserService jwtUserService;
 	
 	public JwtRefreshSuccessHandler(JwtUserService jwtUserService) {
 		this.jwtUserService = jwtUserService;

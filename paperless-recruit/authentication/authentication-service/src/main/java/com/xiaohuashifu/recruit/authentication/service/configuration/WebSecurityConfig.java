@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.authentication.service.configuration;
 import com.xiaohuashifu.recruit.authentication.service.filter.OptionsRequestFilter;
 import com.xiaohuashifu.recruit.authentication.service.service.JwtAuthenticationProvider;
 import com.xiaohuashifu.recruit.authentication.service.service.JwtUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,8 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
@@ -59,7 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		    .logout()
 //		        .logoutUrl("/logout")   //默认就是"/logout"
 		        .addLogoutHandler(tokenClearLogoutHandler())
-		        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+		        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+				.and().userDetailsService(userDetailsService);
 	}
 	
 	@Override
@@ -84,17 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		daoProvider.setUserDetailsService(userDetailsService());
 		return daoProvider;
 	}
-
-//	@Override
-//	protected UserDetailsService userDetailsService() {
-//		return new JwtUserService();
-//	}
 	
-//	@Bean("jwtUserService")
-//	protected JwtUserService jwtUserService() {
-//		return new JwtUserService();
-//	}
-
 	@Bean
 	protected JsonLoginSuccessHandler jsonLoginSuccessHandler() {
 		return new JsonLoginSuccessHandler((JwtUserService) userDetailsService);

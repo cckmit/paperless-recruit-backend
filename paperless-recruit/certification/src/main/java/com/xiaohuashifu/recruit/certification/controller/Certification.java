@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.certification.controller;
 
-import com.xiaohuashifu.recruit.userapi.dto.UserDTO;
-import com.xiaohuashifu.recruit.userapi.service.UserService;
+import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
+import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;

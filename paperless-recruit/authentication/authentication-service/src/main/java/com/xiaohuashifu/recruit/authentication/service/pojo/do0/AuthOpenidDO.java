@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.authentication.service.do0;
+package com.xiaohuashifu.recruit.authentication.service.pojo.do0;
 
 import com.xiaohuashifu.recruit.common.constant.AppName;
 import com.xiaohuashifu.recruit.common.constant.ThirdPartyPlatformName;

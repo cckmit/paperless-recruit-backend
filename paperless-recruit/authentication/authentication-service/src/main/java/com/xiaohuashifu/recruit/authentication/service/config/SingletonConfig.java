@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 
@@ -27,5 +29,15 @@ public class SingletonConfig {
         DozerBeanMapperFactoryBean dozerBeanMapperFactoryBean = new DozerBeanMapperFactoryBean();
         dozerBeanMapperFactoryBean.setMappingFiles(resources);
         return dozerBeanMapperFactoryBean;
+    }
+
+    /**
+     * 密码编码器
+     * 默认使用 bcrypt， strength=10
+     * @return PasswordEncoder 密码编码器
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

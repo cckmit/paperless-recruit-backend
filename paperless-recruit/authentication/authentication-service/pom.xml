@@ -10,7 +10,6 @@
     <artifactId>authentication-service</artifactId>
     <name>authentication-service</name>
 
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -122,7 +121,6 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

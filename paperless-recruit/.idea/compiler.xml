@@ -7,23 +7,24 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="authentication-api" />
+        <module name="authentication-service" />
         <module name="user-api" />
         <module name="common" />
         <module name="user-service" />
-        <module name="login" />
-        <module name="certification" />
-        <module name="authentication" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api" target="11" />
+      <module name="certification" target="11" />
+      <module name="login" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api" options="" />
       <module name="authentication" options="" />
-      <module name="authentication-api" options="-parameters" />
+      <module name="authentication-api" options="" />
+      <module name="authentication-service" options="" />
       <module name="certification" options="" />
       <module name="common" options="" />
       <module name="login" options="" />

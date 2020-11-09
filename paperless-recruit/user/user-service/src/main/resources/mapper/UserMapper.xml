@@ -5,7 +5,7 @@
         id, username, password, is_available as available, create_time, update_time
     </sql>
 
-    <insert id="saveUser" useGeneratedKeys="true" keyProperty="id">
+    <insert id="saveUser" keyProperty="id">
         insert into user(username, password)
         values(#{username}, #{password})
     </insert>

@@ -125,6 +125,13 @@
                 <artifactId>user-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <!--      authentication-api接口      -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>authentication-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

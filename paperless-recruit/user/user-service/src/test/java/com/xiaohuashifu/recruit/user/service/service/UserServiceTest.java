@@ -29,7 +29,7 @@ public class UserServiceTest extends UserServiceApplicationTests {
 
     @Test
     public void saveUser() {
-        final Result<UserDTO> saveUserResult = userService.saveUser("xhsf1", "311211");
+        final Result<UserDTO> saveUserResult = userService.saveUser("xhsf4", "311211");
         System.out.println(saveUserResult);
     }
 

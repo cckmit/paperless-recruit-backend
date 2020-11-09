@@ -2,6 +2,8 @@ package com.xiaohuashifu.recruit.common.result;
 
 import org.springframework.http.HttpStatus;
 
+import java.io.Serializable;
+
 /**
  * 描述: 错误码与错误信息的映射
  *
@@ -9,7 +11,7 @@ import org.springframework.http.HttpStatus;
  * @email 827032783@qq.com
  * @create 2019-10-09
  */
-public enum ErrorCode {
+public enum ErrorCode implements Serializable {
 
     /**
      * 非法参数

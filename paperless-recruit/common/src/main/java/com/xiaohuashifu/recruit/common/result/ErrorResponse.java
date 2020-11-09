@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.common.result;
 
+import java.io.Serializable;
+
 /**
  * 描述: 错误响应对象
  *
@@ -7,7 +9,7 @@ package com.xiaohuashifu.recruit.common.result;
  * @email 827032783@qq.com
  * @create 2019-10-09
  */
-public class ErrorResponse {
+public class ErrorResponse implements Serializable {
 
     /**
      * 错误码

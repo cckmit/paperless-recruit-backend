@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/certification/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/certification/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/login/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/login/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/user/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/user/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user/user-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user/user-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user/user-service/src/main/resources" charset="UTF-8" />
   </component>
 </project>

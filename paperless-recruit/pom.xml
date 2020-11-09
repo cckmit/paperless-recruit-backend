@@ -11,12 +11,9 @@
 
     <modules>
         <module>common</module>
-        <module>api</module>
         <module>user</module>
         <module>certification</module>
     </modules>
-
-
 
     <!--  项目自定义常量  -->
     <properties>

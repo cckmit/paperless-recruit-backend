@@ -6,13 +6,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="api" />
+        <module name="user-api" />
+        <module name="user-service" />
         <module name="common" />
         <module name="login" />
-        <module name="user" />
         <module name="certification" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -21,6 +24,8 @@
       <module name="common" options="" />
       <module name="login" options="" />
       <module name="user" options="" />
+      <module name="user-api" options="" />
+      <module name="user-service" options="" />
     </option>
   </component>
 </project>

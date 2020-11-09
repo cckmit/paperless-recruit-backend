@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.certification.controller;
 
+import com.xiaohuashifu.recruit.userapi.dto.UserDTO;
 import com.xiaohuashifu.recruit.userapi.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,5 +38,10 @@ public class Certification {
     @GetMapping("/rpc/user/{id}")
     public Object rpc(@PathVariable Long id){
         return userService.getUser(id);
+    }
+
+    @GetMapping("/rpc/user")
+    public Object rpc(UserDTO userDTO){
+        return userService.saveUser("xhszzz", "321321");
     }
 }

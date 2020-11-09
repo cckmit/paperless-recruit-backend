@@ -16,11 +16,9 @@ public class UserDTO implements Serializable {
     @Id(groups = {Group.class})
     private Long id;
 
-    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The username must be not blank.", groups = {GroupSave.class})
     @Username(groups = {Group.class})
     private String username;
 
-    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The password must be not blank.", groups = {GroupSave.class})
     @Password(groups = {Group.class})
     private String password;
 

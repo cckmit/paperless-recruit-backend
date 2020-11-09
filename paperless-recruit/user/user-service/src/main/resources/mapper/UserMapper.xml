@@ -5,37 +5,11 @@
         id, username, is_available as available, create_time, update_time
     </sql>
 
-    <insert id="saveUser" parameterType="user" useGeneratedKeys="true" keyProperty="id">
-        insert into user
-        <trim prefix="(" suffix=")" suffixOverrides="," >
-            <if test="username != null" >
-                username,
-            </if>
-            <if test="password != null" >
-                password,
-            </if>
-            <if test="nickName != null" >
-                nick_name,
-            </if>
-            <if test="avatarUrl != null" >
-                avatar_url
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides="," >
-            <if test="username != null" >
-                #{username},
-            </if>
-            <if test="password != null" >
-                #{password},
-            </if>
-            <if test="nickName != null" >
-                #{nickName},
-            </if>
-            <if test="avatarUrl != null" >
-                #{avatarUrl}
-            </if>
-        </trim>
+    <insert id="saveUser" useGeneratedKeys="true" keyProperty="id">
+        insert into user(username, password)
+        values(#{username}, #{password})
     </insert>
+
 
     <select id="getUser" resultType="user">
         select
@@ -51,6 +25,30 @@
         where username = #{username}
     </select>
 
+    <select id="countUserByUsername" resultType="int">
+        select
+        count(*)
+        from user
+        where username = #{username}
+    </select>
+
+    <update id="updateUsername">
+        update user
+        set username = #{username}
+        where id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        update user
+        set password = #{password}
+        where id = #{id}
+    </update>
+
+    <update id="updateAvailable">
+        update user
+        set available = #{available}
+        where id = #{id}
+    </update>
 
 
     <!--    <select id="getUserByUsername" parameterType="string" resultType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->

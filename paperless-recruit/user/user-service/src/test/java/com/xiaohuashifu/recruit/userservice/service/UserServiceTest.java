@@ -6,6 +6,7 @@ import com.xiaohuashifu.recruit.userapi.service.UserService;
 import com.xiaohuashifu.recruit.userservice.UserServiceApplicationTests;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -22,7 +23,7 @@ public class UserServiceTest extends UserServiceApplicationTests {
 
     @Test
     public void getUser() {
-        final Result<UserDTO> user = userService.getUser(1L);
+        final Result<UserDTO> user = userService.getUser(-1L);
         System.out.println(user);
     }
 
@@ -32,6 +33,8 @@ public class UserServiceTest extends UserServiceApplicationTests {
 
     @Test
     public void saveUser() {
+        final Result<UserDTO> saveUserResult = userService.saveUser("xhsf1", "311211");
+        System.out.println(saveUserResult);
     }
 
     @Test
@@ -51,5 +54,23 @@ public class UserServiceTest extends UserServiceApplicationTests {
         getUserResult = userService.getUserByUsername("xia");
         assertFalse(getUserResult.isSuccess());
         System.out.println(getUserResult);
+    }
+
+    @Test
+    public void updateUsername() {
+        final Result<UserDTO> updateUsernameResult = userService.updateUsername(-3L, "xhsfnew");
+        assertTrue(updateUsernameResult.isSuccess());
+    }
+
+    @Test
+    public void updatePassword() {
+        final Result<UserDTO> updatePasswordResult = userService.updatePassword(3L, "323333");
+        assertTrue(updatePasswordResult.isSuccess());
+    }
+
+    @Test
+    public void updateAvailableState() {
+        final Result<UserDTO> updateAvailableStateResult = userService.updateAvailableState(3L, false);
+        assertTrue(updateAvailableStateResult.isSuccess());
     }
 }

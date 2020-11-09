@@ -112,17 +112,17 @@
                 <version>0.9.1</version>
             </dependency>
 
-            <!--      公共api接口      -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
             <!--      公共对象      -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!--      user-api接口      -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>user-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

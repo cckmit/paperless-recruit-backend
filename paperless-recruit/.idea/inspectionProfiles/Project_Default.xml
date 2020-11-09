@@ -30,7 +30,7 @@
       <option name="IGNORE_JAVADOC_PERIOD" value="true" />
       <option name="IGNORE_DUPLICATED_THROWS" value="false" />
       <option name="IGNORE_POINT_TO_ITSELF" value="false" />
-      <option name="myAdditionalJavadocTags" value="author:,email:,create:,email,create" />
+      <option name="myAdditionalJavadocTags" value="author:,email:,create:,email,create,update" />
     </inspection_tool>
     <inspection_tool class="SpringJavaAutowiredMembersInspection" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="SpringJavaInjectionPointsAutowiringInspection" enabled="true" level="INFORMATION" enabled_by_default="true" />

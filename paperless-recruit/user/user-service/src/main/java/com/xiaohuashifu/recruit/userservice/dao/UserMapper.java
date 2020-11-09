@@ -10,8 +10,10 @@ import com.xiaohuashifu.recruit.userservice.pojo.do0.UserDO;
  * @create: 2020/10/30 15:05
  */
 public interface UserMapper {
+    UserDO saveUser(UserDO user);
+
     UserDO getUser(Long id);
 
-    UserDO saveUser(UserDO user);
+    UserDO getUserByUsername(String username);
 
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.userservice.dao.UserMapper">
     <sql id="user">
-        id, username, password, is_available as available, create_time, update_time
+        id, username, is_available as available, create_time, update_time
     </sql>
 
     <insert id="saveUser" parameterType="user" useGeneratedKeys="true" keyProperty="id">
@@ -44,7 +44,16 @@
         where id = #{id}
     </select>
 
-<!--    <select id="getUserByUsername" parameterType="string" resultType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->
+    <select id="getUserByUsername" resultType="user">
+        select
+        <include refid="user"/>
+        from user
+        where username = #{username}
+    </select>
+
+
+
+    <!--    <select id="getUserByUsername" parameterType="string" resultType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->
 <!--        select-->
 <!--        <include refid="Base_Column_List"/>-->
 <!--        from user-->

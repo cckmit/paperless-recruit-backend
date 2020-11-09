@@ -117,12 +117,12 @@ public enum ErrorCode implements Serializable {
 
 
     private final HttpStatus httpStatus;
-    private final String error;
+    private final String code;
     private final String message;
 
     ErrorCode(HttpStatus httpStatus, String code, String message) {
         this.httpStatus = httpStatus;
-        this.error = code;
+        this.code = code;
         this.message = message;
     }
 
@@ -130,11 +130,20 @@ public enum ErrorCode implements Serializable {
         return message;
     }
 
-    public String getError() {
-        return error;
+    public String getCode() {
+        return code;
     }
 
     public HttpStatus getHttpStatus() {
         return httpStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "ErrorCode{" +
+                "httpStatus=" + httpStatus +
+                ", code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

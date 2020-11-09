@@ -2,9 +2,11 @@ package com.xiaohuashifu.recruit.userapi.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
+import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 import com.xiaohuashifu.recruit.userapi.dto.UserDTO;
 import com.xiaohuashifu.recruit.userapi.query.UserQuery;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 
@@ -18,6 +20,7 @@ import java.util.List;
 public interface UserService {
     /**
      * 通过id获取用户信息
+     * 这里不会附带密码等敏感信息
      *
      * @param id 用户编号
      * @return 获取到的用户
@@ -27,7 +30,22 @@ public interface UserService {
     }
 
     /**
+     * 通过用户名获取用户对象
+     * 这里不会附带密码等敏感信息
+     *
+     * @param username 用户名
+     * @return 获取到的用户
+     */
+    default Result<UserDTO> getUserByUsername(
+            @Username
+            @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The username must be not blank.")
+                    String username) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * 多参数查询用户信息
+     * 这里不会附带密码等敏感信息
      *
      * @param query 查询参数
      * @return 查询结果用户列表

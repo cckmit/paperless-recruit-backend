@@ -1,15 +1,35 @@
 package com.xiaohuashifu.recruit.userapi.dto;
 
+import com.xiaohuashifu.recruit.common.group.Group;
+import com.xiaohuashifu.recruit.common.group.GroupSave;
+import com.xiaohuashifu.recruit.common.validator.annotation.Id;
+import com.xiaohuashifu.recruit.common.validator.annotation.Password;
+import com.xiaohuashifu.recruit.common.validator.annotation.Username;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class UserDTO implements Serializable {
+
+    @Id(groups = {Group.class})
     private Long id;
+
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The username must be not blank.", groups = {GroupSave.class})
+    @Username(groups = {Group.class})
     private String username;
+
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The password must be not blank.", groups = {GroupSave.class})
+    @Password(groups = {Group.class})
     private String password;
+
     private Boolean available;
+
     private LocalDateTime createTime;
+
     private LocalDateTime updateTime;
+
 
     public UserDTO() {
     }

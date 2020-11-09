@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.userservice.dao.UserMapper">
     <sql id="user">
-        id, username, is_available as available, create_time, update_time
+        id, username, password, is_available as available, create_time, update_time
     </sql>
 
     <insert id="saveUser" useGeneratedKeys="true" keyProperty="id">
@@ -32,11 +32,13 @@
         where username = #{username}
     </select>
 
+
     <update id="updateUsername">
         update user
         set username = #{username}
         where id = #{id}
     </update>
+
 
     <update id="updatePassword">
         update user

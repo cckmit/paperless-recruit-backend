@@ -32,10 +32,8 @@ public class UserServiceImpl implements UserService {
         this.mapper = mapper;
     }
 
-
     /**
      * 通过用户编号获取用户对象
-     * 这里不会附带密码等敏感信息
      *
      * @param id 用户编号
      * @return 获取到的用户
@@ -51,7 +49,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 通过用户名获取用户对象
-     * 这里不会附带密码等敏感信息
      *
      * @param username 用户名
      * @return 获取到的用户

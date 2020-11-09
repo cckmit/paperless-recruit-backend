@@ -24,7 +24,6 @@ import java.util.List;
 public interface UserService {
     /**
      * 通过id获取用户信息
-     * 这里不会附带密码等敏感信息
      *
      * @param id 用户编号
      * @return 获取到的用户
@@ -36,7 +35,6 @@ public interface UserService {
 
     /**
      * 通过用户名获取用户对象
-     * 这里不会附带密码等敏感信息
      *
      * @param username 用户名
      * @return 获取到的用户
@@ -48,7 +46,6 @@ public interface UserService {
 
     /**
      * 多参数查询用户信息
-     * 这里不会附带密码等敏感信息
      *
      * @param query 查询参数
      * @return 查询结果用户列表

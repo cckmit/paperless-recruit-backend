@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 
-@Component
+//@Component
 public class JwtAuthenticationProvider implements AuthenticationProvider{
 	
 	private final JwtUserService jwtUserService;

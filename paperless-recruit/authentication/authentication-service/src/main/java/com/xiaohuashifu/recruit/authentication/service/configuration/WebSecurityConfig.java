@@ -23,7 +23,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 import java.util.Collections;
 
-@EnableWebSecurity
+//@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
 	private final UserDetailsService userDetailsService;

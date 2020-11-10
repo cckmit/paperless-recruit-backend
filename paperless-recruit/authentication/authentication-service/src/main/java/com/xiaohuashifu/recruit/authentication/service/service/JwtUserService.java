@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
-@Service
+//@Service
 public class JwtUserService implements UserDetailsService {
 
 	private final PasswordEncoder passwordEncoder;

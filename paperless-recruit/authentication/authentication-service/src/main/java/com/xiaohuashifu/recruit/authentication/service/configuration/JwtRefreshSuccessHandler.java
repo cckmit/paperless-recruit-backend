@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@Component
+//@Component
 public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler {
 	
 	private static final int tokenRefreshInterval = 300;  //刷新间隔5分钟

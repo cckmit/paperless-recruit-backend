@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
 import com.github.dozermapper.spring.DozerBeanMapperFactoryBean;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,16 @@ public class SingletonConfig {
     }
 
     /**
+     * fastjson的ObjectMapper单例
+     *
+     * @return ObjectMapper
+     */
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    /**
      * 密码编码器
      * 默认使用 bcrypt， strength=10
      * @return PasswordEncoder 密码编码器
@@ -39,5 +50,9 @@ public class SingletonConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("123456"));
     }
 }

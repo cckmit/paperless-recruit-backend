@@ -125,10 +125,6 @@ public class AuthOpenidDO {
         public Builder() {
         }
 
-        public static Builder anAuthOpenidDO() {
-            return new Builder();
-        }
-
         public Builder id(Long id) {
             this.id = id;
             return this;
@@ -162,10 +158,6 @@ public class AuthOpenidDO {
         public Builder updateTime(LocalDateTime updateTime) {
             this.updateTime = updateTime;
             return this;
-        }
-
-        public Builder but() {
-            return anAuthOpenidDO().id(id).userId(userId).appName(appName).thirdPartyPlatformName(thirdPartyPlatformName).openid(openid).createTime(createTime).updateTime(updateTime);
         }
 
         public AuthOpenidDO build() {

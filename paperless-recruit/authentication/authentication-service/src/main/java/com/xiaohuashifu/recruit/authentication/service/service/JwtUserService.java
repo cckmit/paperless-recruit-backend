@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.authentication.service.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

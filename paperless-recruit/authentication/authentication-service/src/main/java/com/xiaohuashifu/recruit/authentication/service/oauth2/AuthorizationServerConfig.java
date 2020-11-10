@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.oauth2;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,7 +9,9 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 /**
  * 描述：认证服务器配置
@@ -33,13 +36,21 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     private final TokenStore tokenStore;
 
+    private final AccessTokenConverter accessTokenConverter;
+
     private final PasswordEncoder passwordEncoder;
 
-    public AuthorizationServerConfig(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, TokenStore tokenStore, PasswordEncoder passwordEncoder) {
+    private final RedisConnectionFactory redisConnectionFactory;
+
+    public AuthorizationServerConfig(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
+                                     TokenStore tokenStore, AccessTokenConverter accessTokenConverter,
+                                     PasswordEncoder passwordEncoder, RedisConnectionFactory redisConnectionFactory) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.tokenStore = tokenStore;
+        this.accessTokenConverter = accessTokenConverter;
         this.passwordEncoder = passwordEncoder;
+        this.redisConnectionFactory = redisConnectionFactory;
     }
 
     /**
@@ -72,6 +83,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         // 配置AuthenticationManager和UserDetailsService
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
-                .tokenStore(tokenStore);
+                .tokenStore(tokenStore)
+                .accessTokenConverter(accessTokenConverter)
+                .tokenStore(new RedisTokenStore(redisConnectionFactory));
     }
 }

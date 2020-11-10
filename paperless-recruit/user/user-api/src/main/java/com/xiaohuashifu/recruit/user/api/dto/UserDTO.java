@@ -108,11 +108,7 @@ public class UserDTO implements Serializable {
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
-        private Builder() {
-        }
-
-        public static Builder anUserDTO() {
-            return new Builder();
+        public Builder() {
         }
 
         public Builder id(Long id) {
@@ -143,10 +139,6 @@ public class UserDTO implements Serializable {
         public Builder updateTime(LocalDateTime updateTime) {
             this.updateTime = updateTime;
             return this;
-        }
-
-        public Builder but() {
-            return anUserDTO().id(id).username(username).password(password).available(available).createTime(createTime).updateTime(updateTime);
         }
 
         public UserDTO build() {

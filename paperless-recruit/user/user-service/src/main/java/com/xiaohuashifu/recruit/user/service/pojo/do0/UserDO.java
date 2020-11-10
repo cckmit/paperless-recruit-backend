@@ -97,4 +97,58 @@ public class UserDO {
                 ", updateTime=" + updateTime +
                 '}';
     }
+
+
+    public static final class Builder {
+        private Long id;
+        private String username;
+        private String password;
+        private Boolean available;
+        private LocalDateTime createTime;
+        private LocalDateTime updateTime;
+
+        public Builder() {
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder available(Boolean available) {
+            this.available = available;
+            return this;
+        }
+
+        public Builder createTime(LocalDateTime createTime) {
+            this.createTime = createTime;
+            return this;
+        }
+
+        public Builder updateTime(LocalDateTime updateTime) {
+            this.updateTime = updateTime;
+            return this;
+        }
+
+        public UserDO build() {
+            UserDO userDO = new UserDO();
+            userDO.setId(id);
+            userDO.setUsername(username);
+            userDO.setPassword(password);
+            userDO.setAvailable(available);
+            userDO.setCreateTime(createTime);
+            userDO.setUpdateTime(updateTime);
+            return userDO;
+        }
+    }
 }

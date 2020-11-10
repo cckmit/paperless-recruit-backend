@@ -86,9 +86,10 @@ public class UserServiceImpl implements UserService {
         }
 
         // 添加到数据库
-        UserDO userDO = new UserDO();
-        userDO.setUsername(username);
-        userDO.setPassword(password);
+        UserDO userDO = new UserDO.Builder()
+                .username(username)
+                .password(password)
+                .build();
         count = userMapper.saveUser(userDO);
         // 添加出错，可能是并发产生的冲突，或者数据库出错
         if (count < 1) {

@@ -107,10 +107,6 @@ public class UserQuery implements Serializable {
             return this;
         }
 
-        public Builder but() {
-            return new Builder().pageNum(pageNum).pageSize(pageSize).id(id).username(username).available(available);
-        }
-
         public UserQuery build() {
             UserQuery userQuery = new UserQuery();
             userQuery.setPageNum(pageNum);

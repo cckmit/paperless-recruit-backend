@@ -22,6 +22,7 @@ public class UserController {
 
     @Value("${jwt.signingKey}")
     private String signingKey;
+
     @GetMapping("index")
     public Object index(Authentication authentication) {
         return authentication;

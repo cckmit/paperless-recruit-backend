@@ -75,7 +75,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .accessTokenValiditySeconds(3600)
                 .refreshTokenValiditySeconds(864000)
                 .scopes("all", "a", "b", "c")
-                .authorizedGrantTypes("password")
+                // 认证模式，refresh_token是一种特殊的认证模式
+                .authorizedGrantTypes("password", "refresh_token")
             .and()
                 .withClient("test2")
                 .secret(passwordEncoder.encode("test2222"))

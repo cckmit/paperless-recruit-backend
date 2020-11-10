@@ -43,7 +43,7 @@ public class TokenStoreConfig {
      * 用于把默认token转换成jwt类型
      * @return JwtAccessTokenConverter
      */
-    @Bean
+    @Bean(name = "jwtAccessTokenConverter")
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
         // 签名密钥

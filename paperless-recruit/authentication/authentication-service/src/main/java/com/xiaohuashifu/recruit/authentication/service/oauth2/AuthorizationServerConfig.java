@@ -9,7 +9,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 描述：认证服务器配置
@@ -80,14 +85,22 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     /**
      * 认证服务器配置
      * @param endpoints .
-     * @throws Exception .
      */
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+        // 把TokenEnhancer构造成TokenEnhancerChain
+        // 因为accessTokenConverter自带TokenEnhancer，因此需要把它带上
+        List<TokenEnhancer> enhancerList = new ArrayList<>();
+        enhancerList.add(new JwtTokenEnhancer());
+        enhancerList.add((TokenEnhancer) accessTokenConverter);
+        TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
+        enhancerChain.setTokenEnhancers(enhancerList);
+
         // 配置AuthenticationManager和UserDetailsService
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
                 .tokenStore(tokenStore)
-                .accessTokenConverter(accessTokenConverter);
+                .accessTokenConverter(accessTokenConverter)
+                .tokenEnhancer(enhancerChain);
     }
 }

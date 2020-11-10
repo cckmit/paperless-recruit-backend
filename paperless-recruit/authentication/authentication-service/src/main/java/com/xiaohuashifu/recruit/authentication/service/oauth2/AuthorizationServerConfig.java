@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 /**
@@ -34,23 +34,23 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     private final UserDetailsService userDetailsService;
 
-    private final TokenStore tokenStore;
+    private final JwtTokenStore jwtTokenStore;
+
+    private final RedisConnectionFactory redisConnectionFactory;
 
     private final AccessTokenConverter accessTokenConverter;
 
     private final PasswordEncoder passwordEncoder;
 
-    private final RedisConnectionFactory redisConnectionFactory;
-
     public AuthorizationServerConfig(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
-                                     TokenStore tokenStore, AccessTokenConverter accessTokenConverter,
-                                     PasswordEncoder passwordEncoder, RedisConnectionFactory redisConnectionFactory) {
+                                     JwtTokenStore jwtTokenStore, RedisConnectionFactory redisConnectionFactory,
+                                     AccessTokenConverter accessTokenConverter, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
-        this.tokenStore = tokenStore;
+        this.jwtTokenStore = jwtTokenStore;
+        this.redisConnectionFactory = redisConnectionFactory;
         this.accessTokenConverter = accessTokenConverter;
         this.passwordEncoder = passwordEncoder;
-        this.redisConnectionFactory = redisConnectionFactory;
     }
 
     /**
@@ -83,8 +83,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         // 配置AuthenticationManager和UserDetailsService
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
-                .tokenStore(tokenStore)
+                .tokenStore(jwtTokenStore)
                 .accessTokenConverter(accessTokenConverter)
+                // 也就是Token保存在Redis服务器里面
+                // 而不是在内存里
                 .tokenStore(new RedisTokenStore(redisConnectionFactory));
     }
 }

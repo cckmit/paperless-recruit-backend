@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 
 /**
- * 描述：
+ * 描述：短信验证认证的配置器
  *
  * @author: xhsf
  * @email: 827032783@qq.com
@@ -24,19 +24,24 @@ public class MessageAuthCodeAuthenticationConfigurer
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final MessageAuthCodeAuthenticationProvider messageAuthCodeAuthenticationProvider;
+    private final AuthenticationManager authenticationManager;
 
-    public MessageAuthCodeAuthenticationConfigurer(AuthenticationFailureHandler authenticationFailureHandler,
-                                                   AuthenticationSuccessHandler authenticationSuccessHandler,
-                                                   MessageAuthCodeAuthenticationProvider messageAuthCodeAuthenticationProvider) {
+    public MessageAuthCodeAuthenticationConfigurer(
+            AuthenticationFailureHandler authenticationFailureHandler,
+            AuthenticationSuccessHandler authenticationSuccessHandler,
+            MessageAuthCodeAuthenticationProvider messageAuthCodeAuthenticationProvider,
+            AuthenticationManager authenticationManager) {
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.messageAuthCodeAuthenticationProvider = messageAuthCodeAuthenticationProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
     public void configure(HttpSecurity http) {
-        MessageAuthCodeAuthenticationFilter messageAuthCodeAuthenticationFilter = new MessageAuthCodeAuthenticationFilter();
-        messageAuthCodeAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
+        MessageAuthCodeAuthenticationFilter messageAuthCodeAuthenticationFilter =
+                new MessageAuthCodeAuthenticationFilter();
+        messageAuthCodeAuthenticationFilter.setAuthenticationManager(authenticationManager);
         messageAuthCodeAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         messageAuthCodeAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
 

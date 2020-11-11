@@ -39,4 +39,9 @@ public class PhoneValidator implements ConstraintValidator<Phone, String> {
         Matcher matcher = p.matcher(s);
         return matcher.matches();
     }
+
+    public static void main(String[] args) {
+        final PhoneValidator phoneValidator = new PhoneValidator();
+        System.out.println(phoneValidator.isValid("15992321303", null));
+    }
 }

@@ -24,6 +24,20 @@
         where username = #{username}
     </select>
 
+    <select id="getUserByPhone" resultType="user">
+        select
+        <include refid="user"/>
+        from user
+        where phone = #{phone}
+    </select>
+
+    <select id="getUserByEmail" resultType="user">
+        select
+        <include refid="user"/>
+        from user
+        where email = #{email}
+    </select>
+
     <select id="countUserByUsername" resultType="int">
         select
         count(*)

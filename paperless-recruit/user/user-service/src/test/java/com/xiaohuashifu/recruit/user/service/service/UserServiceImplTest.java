@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  * @email: 827032783@qq.com
  * @create: 2020/10/30 19:53
  */
-public class UserServiceTest extends UserServiceApplicationTests {
+public class UserServiceImplTest extends UserServiceApplicationTests {
 
     @Reference
     private UserService userService;
@@ -53,6 +53,16 @@ public class UserServiceTest extends UserServiceApplicationTests {
     }
 
     @Test
+    public void getUserByPhone() {
+        System.out.println(userService.getUserByPhone("15992321303"));
+    }
+
+    @Test
+    public void getUserByEmail() {
+        System.out.println(userService.getUserByEmail("827032783@qq.com"));
+    }
+
+    @Test
     public void updateUsername() {
         final Result<UserDTO> updateUsernameResult = userService.updateUsername(-3L, "xhsfnew");
         assertTrue(updateUsernameResult.isSuccess());
@@ -81,6 +91,7 @@ public class UserServiceTest extends UserServiceApplicationTests {
         final Result<UserDTO> updateAvailableStateResult = userService.updateAvailableState(3L, false);
         assertTrue(updateAvailableStateResult.isSuccess());
     }
+
 
 
 }

@@ -47,6 +47,28 @@ public interface UserService {
     }
 
     /**
+     * 通过手机号码获取用户对象
+     *
+     * @param phone 手机号
+     * @return 获取到的用户
+     */
+    default Result<UserDTO> getUserByPhone(
+            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The phone must be not null.") @Phone String phone) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 通过邮箱获取用户对象
+     *
+     * @param email 邮箱
+     * @return 获取到的用户
+     */
+    default Result<UserDTO> getUserByEmail(
+            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The email must be not null.") @Email String email) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * 多参数查询用户信息
      *
      * @param query 查询参数

@@ -17,6 +17,10 @@ public interface UserMapper {
 
     UserDO getUserByUsername(String username);
 
+    UserDO getUserByPhone(String phone);
+
+    UserDO getUserByEmail(String email);
+
     int countUserByUsername(String username);
 
     int countUserByPhone(String phone);

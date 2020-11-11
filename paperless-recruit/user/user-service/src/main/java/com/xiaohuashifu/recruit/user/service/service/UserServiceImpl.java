@@ -62,6 +62,36 @@ public class UserServiceImpl implements UserService {
         return Result.success(mapper.map(user, UserDTO.class));
     }
 
+    /**
+     * 通过手机号码获取用户对象
+     *
+     * @param phone 手机号码
+     * @return 获取到的用户
+     */
+    @Override
+    public Result<UserDTO> getUserByPhone(String phone) {
+        final UserDO user = userMapper.getUserByPhone(phone);
+        if (user == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+        }
+        return Result.success(mapper.map(user, UserDTO.class));
+    }
+
+    /**
+     * 通过邮箱获取用户对象
+     *
+     * @param email 邮箱
+     * @return 获取到的用户
+     */
+    @Override
+    public Result<UserDTO> getUserByEmail(String email) {
+        final UserDO user = userMapper.getUserByEmail(email);
+        if (user == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+        }
+        return Result.success(mapper.map(user, UserDTO.class));
+    }
+
     @Override
     public Result<List<UserDTO>> getUser(UserQuery query) {
         return null;

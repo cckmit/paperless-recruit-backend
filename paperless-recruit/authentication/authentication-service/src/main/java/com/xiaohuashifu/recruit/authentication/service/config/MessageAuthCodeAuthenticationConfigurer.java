@@ -23,24 +23,25 @@ public class MessageAuthCodeAuthenticationConfigurer
         extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
+    private final MessageAuthCodeAuthenticationFilter messageAuthCodeAuthenticationFilter;
     private final MessageAuthCodeAuthenticationProvider messageAuthCodeAuthenticationProvider;
     private final AuthenticationManager authenticationManager;
 
     public MessageAuthCodeAuthenticationConfigurer(
             AuthenticationFailureHandler authenticationFailureHandler,
             AuthenticationSuccessHandler authenticationSuccessHandler,
+            MessageAuthCodeAuthenticationFilter messageAuthCodeAuthenticationFilter,
             MessageAuthCodeAuthenticationProvider messageAuthCodeAuthenticationProvider,
             AuthenticationManager authenticationManager) {
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
+        this.messageAuthCodeAuthenticationFilter = messageAuthCodeAuthenticationFilter;
         this.messageAuthCodeAuthenticationProvider = messageAuthCodeAuthenticationProvider;
         this.authenticationManager = authenticationManager;
     }
 
     @Override
     public void configure(HttpSecurity http) {
-        MessageAuthCodeAuthenticationFilter messageAuthCodeAuthenticationFilter =
-                new MessageAuthCodeAuthenticationFilter();
         messageAuthCodeAuthenticationFilter.setAuthenticationManager(authenticationManager);
         messageAuthCodeAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         messageAuthCodeAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);

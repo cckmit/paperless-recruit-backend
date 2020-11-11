@@ -3,15 +3,16 @@ package com.xiaohuashifu.recruit.authentication.service.filter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.authentication.service.pojo.token.MessageAuthCodeAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.nio.charset.StandardCharsets;
  * @email: 827032783@qq.com
  * @create: 2020/11/11 19:38
  */
+@Component
 public class MessageAuthCodeAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     /**
      * 拦截路径
@@ -49,8 +51,9 @@ public class MessageAuthCodeAuthenticationFilter extends AbstractAuthenticationP
      */
     private static final String MESSAGE_AUTH_CODE_KEY = "authCode";
 
-    public MessageAuthCodeAuthenticationFilter() {
+    public MessageAuthCodeAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(new AntPathRequestMatcher(INTERCEPT_PATH, INTERCEPT_METHOD));
+        setAuthenticationManager(authenticationManager);
     }
 
     @Override

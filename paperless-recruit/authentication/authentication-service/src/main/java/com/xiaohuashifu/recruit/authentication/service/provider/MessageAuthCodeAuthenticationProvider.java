@@ -34,8 +34,8 @@ public class MessageAuthCodeAuthenticationProvider implements AuthenticationProv
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         MessageAuthCodeAuthenticationToken authenticationToken = (MessageAuthCodeAuthenticationToken) authentication;
-        String phone = authenticationToken.getPrincipal();
-        String authCode = authenticationToken.getCredentials();
+        String phone = authenticationToken.getPhone();
+        String authCode = authenticationToken.getAuthCode();
         System.out.println(phone + ":" + authCode);
         Result<Void> checkMessageAuthCodeResult = phoneLoginService.checkMessageAuthCode(phone, authCode);
         // 没有通过校验

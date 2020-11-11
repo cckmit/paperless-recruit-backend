@@ -35,15 +35,6 @@ public class MessageAuthCodeAuthenticationToken extends AbstractAuthenticationTo
     }
 
     @Override
-    public void setAuthenticated(boolean authenticated) throws IllegalArgumentException {
-        if (authenticated) {
-            throw new IllegalArgumentException(
-                    "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
-        }
-        super.setAuthenticated(false);
-    }
-
-    @Override
     public String getCredentials() {
         return authCode;
     }
@@ -53,4 +44,11 @@ public class MessageAuthCodeAuthenticationToken extends AbstractAuthenticationTo
         return phone;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getAuthCode() {
+        return authCode;
+    }
 }

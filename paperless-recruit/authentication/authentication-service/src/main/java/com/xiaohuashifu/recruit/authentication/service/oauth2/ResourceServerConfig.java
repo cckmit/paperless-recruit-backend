@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.oauth2;
 
+import com.xiaohuashifu.recruit.authentication.service.config.MessageAuthCodeAuthenticationConfigurer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -18,12 +19,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private final MyAuthenticationFailureHandler myAuthenticationFailureHandler;
     private final MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
+    private final MessageAuthCodeAuthenticationConfigurer messageAuthCodeAuthenticationConfigurer;
 
 
     public ResourceServerConfig(MyAuthenticationFailureHandler myAuthenticationFailureHandler,
-                                MyAuthenticationSuccessHandler myAuthenticationSuccessHandler) {
+                                MyAuthenticationSuccessHandler myAuthenticationSuccessHandler,
+                                MessageAuthCodeAuthenticationConfigurer messageAuthCodeAuthenticationConfigurer) {
         this.myAuthenticationFailureHandler = myAuthenticationFailureHandler;
         this.myAuthenticationSuccessHandler = myAuthenticationSuccessHandler;
+        this.messageAuthCodeAuthenticationConfigurer = messageAuthCodeAuthenticationConfigurer;
     }
 
     @Override
@@ -34,9 +38,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .failureHandler(myAuthenticationFailureHandler) // 处理登录失败
             .and()
                 .authorizeRequests() // 授权配置
+                .antMatchers("/login/phone/createMessageAuthCodeAndSend").permitAll() // 无需验证
                 .anyRequest() // 所有请求
                 .authenticated() // 都需要认证
             .and()
-                .csrf().disable();
+                .csrf().disable()
+                .apply(messageAuthCodeAuthenticationConfigurer);
+
     }
 }

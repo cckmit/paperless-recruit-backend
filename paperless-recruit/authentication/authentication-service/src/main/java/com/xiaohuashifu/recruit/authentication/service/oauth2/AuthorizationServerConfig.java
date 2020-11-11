@@ -62,6 +62,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         this.passwordEncoder = passwordEncoder;
     }
 
+
     /**
      * 客户端配置
      * @param clients .

@@ -1,7 +1,9 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
+import com.xiaohuashifu.recruit.authentication.api.service.PhoneLoginService;
 import com.xiaohuashifu.recruit.authentication.service.filter.MessageAuthCodeAuthenticationFilter;
 import com.xiaohuashifu.recruit.authentication.service.provider.MessageAuthCodeAuthenticationProvider;
+import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,29 +26,30 @@ public class MessageAuthCodeAuthenticationConfigurer
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final MessageAuthCodeAuthenticationFilter messageAuthCodeAuthenticationFilter;
-    private final MessageAuthCodeAuthenticationProvider messageAuthCodeAuthenticationProvider;
-    private final AuthenticationManager authenticationManager;
+    private final PhoneLoginService phoneLoginService;
+    private final UserService userService;
 
     public MessageAuthCodeAuthenticationConfigurer(
             AuthenticationFailureHandler authenticationFailureHandler,
             AuthenticationSuccessHandler authenticationSuccessHandler,
             MessageAuthCodeAuthenticationFilter messageAuthCodeAuthenticationFilter,
-            MessageAuthCodeAuthenticationProvider messageAuthCodeAuthenticationProvider,
-            AuthenticationManager authenticationManager) {
+            PhoneLoginService phoneLoginService, UserService userService) {
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.messageAuthCodeAuthenticationFilter = messageAuthCodeAuthenticationFilter;
-        this.messageAuthCodeAuthenticationProvider = messageAuthCodeAuthenticationProvider;
-        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.phoneLoginService = phoneLoginService;
     }
 
     @Override
     public void configure(HttpSecurity http) {
-        messageAuthCodeAuthenticationFilter.setAuthenticationManager(authenticationManager);
+        messageAuthCodeAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         messageAuthCodeAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         messageAuthCodeAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-
-        http.authenticationProvider(messageAuthCodeAuthenticationProvider)
+        http.authenticationProvider(new MessageAuthCodeAuthenticationProvider(phoneLoginService, userService))
                 .addFilterAfter(messageAuthCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
+
+
 }

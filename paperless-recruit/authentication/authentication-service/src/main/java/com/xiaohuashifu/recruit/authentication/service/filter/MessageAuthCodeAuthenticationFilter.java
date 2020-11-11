@@ -51,9 +51,8 @@ public class MessageAuthCodeAuthenticationFilter extends AbstractAuthenticationP
      */
     private static final String MESSAGE_AUTH_CODE_KEY = "authCode";
 
-    public MessageAuthCodeAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public MessageAuthCodeAuthenticationFilter() {
         super(new AntPathRequestMatcher(INTERCEPT_PATH, INTERCEPT_METHOD));
-        setAuthenticationManager(authenticationManager);
     }
 
     @Override
@@ -86,4 +85,7 @@ public class MessageAuthCodeAuthenticationFilter extends AbstractAuthenticationP
         return getAuthenticationManager().authenticate(authRequest);
     }
 
+    @Override
+    public void afterPropertiesSet() {
+    }
 }

@@ -9,7 +9,6 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.stereotype.Component;
 
 /**
  * 描述：AuthenticationManager之后正在处理短信验证码登录的类
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Component;
  * @email: 827032783@qq.com
  * @create: 2020/11/11 19:59
  */
-@Component
 public class MessageAuthCodeAuthenticationProvider implements AuthenticationProvider {
 
     private final PhoneLoginService phoneLoginService;

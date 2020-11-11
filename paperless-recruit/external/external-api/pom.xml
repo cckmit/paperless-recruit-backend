@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.xiaohuashifu.recruit</groupId>
-        <artifactId>authentication</artifactId>
+        <artifactId>external</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>authentication-api</artifactId>
-    <name>authentication-api</name>
+    <artifactId>external-api</artifactId>
+    <name>external-api</name>
 
     <dependencies>
         <dependency>

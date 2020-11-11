@@ -23,7 +23,7 @@ public class UserServiceTest extends UserServiceApplicationTests {
 
     @Test
     public void getUser() {
-        final Result<UserDTO> user = userService.getUser(-1L);
+        final Result<UserDTO> user = userService.getUser(1L);
         System.out.println(user);
     }
 

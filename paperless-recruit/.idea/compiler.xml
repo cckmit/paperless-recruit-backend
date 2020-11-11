@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="external-service" />
         <module name="authentication-api" />
         <module name="authentication-service" />
         <module name="user-api" />
         <module name="common" />
+        <module name="external-api" />
         <module name="user-service" />
       </profile>
     </annotationProcessing>
@@ -27,6 +29,9 @@
       <module name="authentication-service" options="" />
       <module name="certification" options="" />
       <module name="common" options="" />
+      <module name="external" options="-parameters" />
+      <module name="external-api" options="" />
+      <module name="external-service" options="" />
       <module name="login" options="" />
       <module name="user" options="" />
       <module name="user-api" options="" />

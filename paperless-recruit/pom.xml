@@ -153,6 +153,13 @@
                 <artifactId>authentication-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <!--      external-api接口      -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>external-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

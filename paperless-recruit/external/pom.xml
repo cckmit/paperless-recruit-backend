@@ -4,17 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.xiaohuashifu.recruit</groupId>
-        <artifactId>authentication</artifactId>
+        <artifactId>paperless-recruit</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>authentication-api</artifactId>
-    <name>authentication-api</name>
+    <packaging>pom</packaging>
+    <artifactId>external</artifactId>
+    <name>external</name>
+    <modules>
+        <module>external-api</module>
+        <module>external-service</module>
+    </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.xiaohuashifu.recruit</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

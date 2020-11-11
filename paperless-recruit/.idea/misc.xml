@@ -12,6 +12,9 @@
         <option value="$PROJECT_DIR$/authentication/pom.xml" />
         <option value="$PROJECT_DIR$/authentication/authentication-api/pom.xml" />
         <option value="$PROJECT_DIR$/authentication/authentication-service/pom.xml" />
+        <option value="$PROJECT_DIR$/external/pom.xml" />
+        <option value="$PROJECT_DIR$/external/external-api/pom.xml" />
+        <option value="$PROJECT_DIR$/external/external-service/pom.xml" />
       </list>
     </option>
   </component>

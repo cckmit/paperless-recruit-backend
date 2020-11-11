@@ -5,6 +5,9 @@
     <file url="file://$PROJECT_DIR$/authentication/authentication-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/authentication/authentication-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/external/external-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/external/external-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/external/external-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user/user-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user/user-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user/user-service/src/main/resources" charset="UTF-8" />

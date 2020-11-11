@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.authentication.service.controller;
 
 import com.xiaohuashifu.recruit.authentication.api.service.PhoneLoginService;
 import org.apache.dubbo.config.annotation.Reference;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,5 +27,10 @@ public class PhoneLoginController {
     public Object createMessageAuthCodeAndSend(@RequestBody Map<String, String> phone) {
         System.out.println(phone);
         return phoneLoginService.createMessageAuthCodeAndSend(phone.get("phone"));
+    }
+
+    @PostMapping("checkMessageAuthCode")
+    public Object checkMessageAuthCode(@RequestBody Map<String, String> map) {
+        return phoneLoginService.checkMessageAuthCode(map.get("phone"), map.get("authCode"));
     }
 }

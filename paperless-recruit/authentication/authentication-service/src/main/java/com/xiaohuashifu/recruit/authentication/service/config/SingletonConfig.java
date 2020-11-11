@@ -68,6 +68,8 @@ public class SingletonConfig {
         redisTemplate.setValueSerializer(stringSerializer);
         redisTemplate.setHashKeySerializer(stringSerializer);
         redisTemplate.setHashValueSerializer(stringSerializer);
+
+        // redis连接工厂
         redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
     }

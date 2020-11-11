@@ -2,14 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.UserMapper">
     <sql id="user">
-        id, username, password, is_available as available, create_time, update_time
+        id, username, password, phone, email, is_available as available, create_time, update_time
     </sql>
 
     <insert id="saveUser" keyProperty="id">
         insert into user(username, password)
         values(#{username}, #{password})
     </insert>
-
 
     <select id="getUser" resultType="user">
         select
@@ -32,6 +31,19 @@
         where username = #{username}
     </select>
 
+    <select id="countUserByPhone" resultType="int">
+        select
+        count(*)
+        from user
+        where phone = #{phone}
+    </select>
+
+    <select id="countUserByEmail" resultType="int">
+        select
+        count(*)
+        from user
+        where email = #{email}
+    </select>
 
     <update id="updateUsername">
         update user
@@ -39,6 +51,17 @@
         where id = #{id}
     </update>
 
+    <update id="updatePhone">
+        update user
+        set phone = #{phone}
+        where id = #{id}
+    </update>
+
+    <update id="updateEmail">
+        update user
+        set email = #{email}
+        where id = #{id}
+    </update>
 
     <update id="updatePassword">
         update user
@@ -51,68 +74,5 @@
         set available = #{available}
         where id = #{id}
     </update>
-
-
-    <!--    <select id="getUserByUsername" parameterType="string" resultType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->
-<!--        select-->
-<!--        <include refid="Base_Column_List"/>-->
-<!--        from user-->
-<!--        where username = #{username}-->
-<!--    </select>-->
-
-
-<!--    <select id="listUsers" parameterType="com.wudagezhandui.shixun.xianyu.pojo.query.UserQuery"-->
-<!--            resultType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->
-<!--        select-->
-<!--        <include refid="Base_Column_List"/>-->
-<!--        from user-->
-<!--        <where>-->
-<!--            <if test="id != null">-->
-<!--                and id = #{id}-->
-<!--            </if>-->
-<!--            <if test="idList != null">-->
-<!--                and id in (-->
-<!--                    <foreach collection="idList"  item="item" index="index" separator=",">-->
-<!--                        #{item}-->
-<!--                    </foreach>-->
-<!--                )-->
-<!--            </if>-->
-<!--            <if test="username != null">-->
-<!--                and username like "%"#{username}"%"-->
-<!--            </if>-->
-<!--            <if test="nickName != null">-->
-<!--                and nick_name like "%"#{nickName}"%"-->
-<!--            </if>-->
-<!--        </where>-->
-<!--        order by update_time desc-->
-<!--    </select>-->
-
-<!--    <update id="updateUser" parameterType="com.wudagezhandui.shixun.xianyu.pojo.do0.UserDO">-->
-<!--        update user-->
-<!--        <set>-->
-<!--            <if test="username != null">-->
-<!--                username = #{username},-->
-<!--            </if>-->
-<!--            <if test="password != null">-->
-<!--                password = #{password},-->
-<!--            </if>-->
-<!--            <if test="nickName != null">-->
-<!--                nick_name = #{nickName},-->
-<!--            </if>-->
-<!--            <if test="avatarUrl != null">-->
-<!--                avatar_url = #{avatarUrl},-->
-<!--            </if>-->
-<!--            <if test="aliPayAccount != null">-->
-<!--                ali_pay_account = #{aliPayAccount},-->
-<!--            </if>-->
-<!--        </set>-->
-<!--        where id = #{id}-->
-<!--    </update>-->
-
-<!--    <select id="countByUsername" parameterType="string" resultType="int">-->
-<!--        select count(*)-->
-<!--        from user-->
-<!--        where username = #{username}-->
-<!--    </select>-->
 
 </mapper>

@@ -3,11 +3,13 @@ package com.xiaohuashifu.recruit.user.api.service;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.common.validator.annotation.Password;
+import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -77,6 +79,32 @@ public interface UserService {
     default Result<UserDTO> updateUsername(
             @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id,
             @NotNull(message = "INVALID_PARAMETER_IS_NULL: The username must be not null.") @Username String newUsername) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 更新手机号码
+     *
+     * @param id 用户编号
+     * @param newPhone 新手机号码
+     * @return 更新后的用户
+     */
+    default Result<UserDTO> updatePhone(
+            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id,
+            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The phone must be not null.") @Phone String newPhone) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 更新邮箱
+     *
+     * @param id 用户编号
+     * @param newEmail 新邮箱
+     * @return 更新后的用户
+     */
+    default Result<UserDTO> updateEmail(
+            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id,
+            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The email must be not null.") @Email String newEmail) {
         throw new UnsupportedOperationException();
     }
 

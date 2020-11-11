@@ -17,6 +17,10 @@ public class UserDO {
 
     private String username;
 
+    private String phone;
+
+    private String email;
+
     private String password;
 
     private Boolean available;
@@ -28,10 +32,12 @@ public class UserDO {
     public UserDO() {
     }
 
-    public UserDO(Long id, String username, String password, Boolean available, LocalDateTime createTime,
-                  LocalDateTime updateTime) {
+    public UserDO(Long id, String username, String phone, String email, String password, Boolean available,
+                  LocalDateTime createTime, LocalDateTime updateTime) {
         this.id = id;
         this.username = username;
+        this.phone = phone;
+        this.email = email;
         this.password = password;
         this.available = available;
         this.createTime = createTime;
@@ -52,6 +58,22 @@ public class UserDO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -91,6 +113,8 @@ public class UserDO {
         return "UserDO{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", available=" + available +
                 ", createTime=" + createTime +
@@ -102,6 +126,8 @@ public class UserDO {
     public static final class Builder {
         private Long id;
         private String username;
+        private String phone;
+        private String email;
         private String password;
         private Boolean available;
         private LocalDateTime createTime;
@@ -117,6 +143,16 @@ public class UserDO {
 
         public Builder username(String username) {
             this.username = username;
+            return this;
+        }
+
+        public Builder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 
@@ -144,6 +180,8 @@ public class UserDO {
             UserDO userDO = new UserDO();
             userDO.setId(id);
             userDO.setUsername(username);
+            userDO.setPhone(phone);
+            userDO.setEmail(email);
             userDO.setPassword(password);
             userDO.setAvailable(available);
             userDO.setCreateTime(createTime);

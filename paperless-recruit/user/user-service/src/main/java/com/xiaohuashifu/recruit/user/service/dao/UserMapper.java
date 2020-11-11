@@ -19,7 +19,15 @@ public interface UserMapper {
 
     int countUserByUsername(String username);
 
+    int countUserByPhone(String phone);
+
+    int countUserByEmail(String email);
+
     int updateUsername(@Param("id") Long id, @Param("username") String username);
+
+    int updatePhone(@Param("id") Long id, @Param("phone") String phone);
+
+    int updateEmail(@Param("id") Long id, @Param("email") String email);
 
     int updatePassword(@Param("id") Long id, @Param("password") String password);
 

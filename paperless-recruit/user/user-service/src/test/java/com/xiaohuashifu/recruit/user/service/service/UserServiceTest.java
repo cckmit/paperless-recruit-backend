@@ -59,6 +59,18 @@ public class UserServiceTest extends UserServiceApplicationTests {
     }
 
     @Test
+    public void updatePhone() {
+        final Result<UserDTO> updatePhoneResult = userService.updatePhone(1L, "159923213");
+        assertTrue(updatePhoneResult.isSuccess());
+    }
+
+    @Test
+    public void updateEmail() {
+        final Result<UserDTO> updateEmailResult = userService.updateEmail(1L, "827032783@qq.com");
+        assertTrue(updateEmailResult.isSuccess());
+    }
+
+    @Test
     public void updatePassword() {
         final Result<UserDTO> updatePasswordResult = userService.updatePassword(3L, "323333");
         assertTrue(updatePasswordResult.isSuccess());
@@ -69,4 +81,6 @@ public class UserServiceTest extends UserServiceApplicationTests {
         final Result<UserDTO> updateAvailableStateResult = userService.updateAvailableState(3L, false);
         assertTrue(updateAvailableStateResult.isSuccess());
     }
+
+
 }

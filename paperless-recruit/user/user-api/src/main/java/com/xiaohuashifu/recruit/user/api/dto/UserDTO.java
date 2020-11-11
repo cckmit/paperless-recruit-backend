@@ -3,8 +3,10 @@ package com.xiaohuashifu.recruit.user.api.dto;
 import com.xiaohuashifu.recruit.common.group.Group;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.common.validator.annotation.Password;
+import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 
+import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -19,21 +21,28 @@ public class UserDTO implements Serializable {
     @Password(groups = {Group.class})
     private String password;
 
+    @Phone(groups = {Group.class})
+    private String phone;
+
+    @Email(groups = {Group.class})
+    private String email;
+
     private Boolean available;
 
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
 
-
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String username, String password, Boolean available, LocalDateTime createTime,
-                   LocalDateTime updateTime) {
+    public UserDTO(Long id, String username, String password, String phone, String email, Boolean available,
+                   LocalDateTime createTime, LocalDateTime updateTime) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.phone = phone;
+        this.email = email;
         this.available = available;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -61,6 +70,22 @@ public class UserDTO implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Boolean getAvailable() {
@@ -93,6 +118,8 @@ public class UserDTO implements Serializable {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
                 ", available=" + available +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
@@ -104,6 +131,8 @@ public class UserDTO implements Serializable {
         private Long id;
         private String username;
         private String password;
+        private String phone;
+        private String email;
         private Boolean available;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -123,6 +152,16 @@ public class UserDTO implements Serializable {
 
         public Builder password(String password) {
             this.password = password;
+            return this;
+        }
+
+        public Builder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 
@@ -146,6 +185,8 @@ public class UserDTO implements Serializable {
             userDTO.setId(id);
             userDTO.setUsername(username);
             userDTO.setPassword(password);
+            userDTO.setPhone(phone);
+            userDTO.setEmail(email);
             userDTO.setAvailable(available);
             userDTO.setCreateTime(createTime);
             userDTO.setUpdateTime(updateTime);

@@ -62,13 +62,10 @@ public class UserServiceImpl implements UserService {
         return Result.success(mapper.map(user, UserDTO.class));
     }
 
-
     @Override
     public Result<List<UserDTO>> getUser(UserQuery query) {
         return null;
     }
-
-
 
     /**
      * 创建用户
@@ -120,6 +117,54 @@ public class UserServiceImpl implements UserService {
         if (count < 1) {
             return Result.fail(ErrorCode.INTERNAL_ERROR,
                     "Update username error, new username=" + newUsername + ".");
+        }
+        return getUser(id);
+    }
+
+    /**
+     * 更新手机
+     *
+     * @param id 用户编号
+     * @param newPhone 新手机号码
+     * @return 更新后的用户
+     */
+    @Override
+    public Result<UserDTO> updatePhone(Long id, String newPhone) {
+        // 判断手机号码是否存在
+        int count = userMapper.countUserByPhone(newPhone);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "New phone exists.");
+        }
+
+        // 更新手机号码
+        count = userMapper.updatePhone(id, newPhone);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INTERNAL_ERROR,
+                    "Update phone error, new phone=" + newPhone + ".");
+        }
+        return getUser(id);
+    }
+
+    /**
+     * 更新邮箱
+     *
+     * @param id 用户编号
+     * @param newEmail 新邮箱
+     * @return 更新后的用户
+     */
+    @Override
+    public Result<UserDTO> updateEmail(Long id, String newEmail) {
+        // 判断邮箱是否存在
+        int count = userMapper.countUserByEmail(newEmail);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "New email exists.");
+        }
+
+        // 更新邮箱
+        count = userMapper.updateEmail(id, newEmail);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INTERNAL_ERROR,
+                    "Update email error, new email=" + newEmail + ".");
         }
         return getUser(id);
     }

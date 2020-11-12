@@ -31,7 +31,7 @@ import java.util.HashMap;
  * @email: 827032783@qq.com
  * @create: 2020/11/10 16:30
  */
-@Component
+//@Component
 public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private static final Logger logger = LoggerFactory.getLogger(MyAuthenticationSuccessHandler.class);
 

@@ -16,7 +16,7 @@ import java.io.IOException;
  * @email: 827032783@qq.com
  * @create: 2020/11/10 18:57
  */
-@Component
+//@Component
 public class MyAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     public MyAuthenticationFailureHandler() {

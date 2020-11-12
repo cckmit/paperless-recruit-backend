@@ -1,7 +1,5 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.xiaohuashifu.recruit.authentication.service.handler.MyAuthenticationFailureHandler;
-import com.xiaohuashifu.recruit.authentication.service.handler.MyAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -17,15 +15,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 @Configuration
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
-
-    private final MyAuthenticationFailureHandler myAuthenticationFailureHandler;
-    private final MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
-
-    public ResourceServerConfig(MyAuthenticationFailureHandler myAuthenticationFailureHandler,
-                                MyAuthenticationSuccessHandler myAuthenticationSuccessHandler) {
-        this.myAuthenticationFailureHandler = myAuthenticationFailureHandler;
-        this.myAuthenticationSuccessHandler = myAuthenticationSuccessHandler;
-    }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {

@@ -17,19 +17,25 @@ public enum ErrorCode implements Serializable {
      * 非法参数
      */
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST,
-            "InvalidParameter", "The {Parameter} is not valid."),
+            "InvalidParameter", "The required parameter is not valid."),
+
+    /**
+     * 参数为空，即字符串，集合等为null或者长度为0
+     */
+    INVALID_PARAMETER_IS_EMPTY(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.IsEmpty", "The required parameter must be not empty."),
 
     /**
      * 参数为null
      */
     INVALID_PARAMETER_IS_NULL(HttpStatus.BAD_REQUEST,
-            "InvalidParameter.IsNull", "The required {Parameter} must be not null."),
+            "InvalidParameter.IsNull", "The required parameter must be not null."),
 
     /**
-     * 参数为空
+     * 字符串参数为NULL或者没有非空白字符
      */
     INVALID_PARAMETER_IS_BLANK(HttpStatus.BAD_REQUEST,
-            "InvalidParameter.IsBlank", "The required {Parameter} must be not blank."),
+            "InvalidParameter.IsBlank", "The required parameter must be not blank."),
 
     /**
      * 参数值超过限定范围，Number类型

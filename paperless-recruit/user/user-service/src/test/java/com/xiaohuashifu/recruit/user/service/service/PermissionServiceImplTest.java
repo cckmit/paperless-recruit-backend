@@ -9,10 +9,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -36,6 +33,11 @@ public class PermissionServiceImplTest extends UserServiceApplicationTests {
                 .map(RoleDTO::getId)
                 .collect(Collectors.toList());
 
-        System.out.println(permissionService.getPermissionListByRoleIdList(roleIdList));
+        System.out.println(permissionService.getPermissionByRoleIdList(roleIdList));
+    }
+
+    @Test
+    public void getPermissionByUserId() {
+        System.out.println(permissionService.getPermissionByUserId(1L));
     }
 }

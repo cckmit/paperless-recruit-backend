@@ -14,4 +14,6 @@ import java.util.List;
  */
 public interface PermissionMapper {
     List<PermissionDO> getPermissionListByRoleIdList(List<Long> roleIdList);
+
+    List<PermissionDO> getPermissionByUserId(Long userId);
 }

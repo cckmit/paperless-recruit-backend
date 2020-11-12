@@ -7,7 +7,6 @@ import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import org.apache.dubbo.config.annotation.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,12 +36,27 @@ public class PermissionServiceImpl implements PermissionService {
      * @return 角色的权限列表
      */
     @Override
-    public Result<List<PermissionDTO>> getPermissionListByRoleIdList(@NotNull(message = "INVALID_PARAMETER_IS_NULL: The roleIdList must be not null.") List<Long> roleIdList) {
+    public Result<List<PermissionDTO>> getPermissionByRoleIdList(List<Long> roleIdList) {
         return Result.success(
                 permissionMapper
                         .getPermissionListByRoleIdList(roleIdList)
                         .stream()
                         .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
                         .collect(Collectors.toList()));
+    }
+
+    /**
+     * 通过用户id获取用户权限列表
+     *
+     * @param userId 用户id
+     * @return 用户的权限列表
+     */
+    @Override
+    public Result<List<PermissionDTO>> getPermissionByUserId(Long userId) {
+        return Result.success(permissionMapper
+                .getPermissionByUserId(userId)
+                .stream()
+                .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
+                .collect(Collectors.toList()));
     }
 }

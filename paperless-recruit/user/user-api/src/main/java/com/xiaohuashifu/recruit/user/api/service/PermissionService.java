@@ -1,12 +1,20 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
+import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
+import org.hibernate.validator.constraints.ScriptAssert;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -26,8 +34,21 @@ public interface PermissionService {
      * @param roleIdList 角色id列表
      * @return 角色的权限列表
      */
-    default Result<List<PermissionDTO>> getPermissionListByRoleIdList(
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The roleIdList must be not null.") List<Long> roleIdList) {
+    default Result<List<PermissionDTO>> getPermissionByRoleIdList(
+            @NotEmpty(message = "INVALID_PARAMETER_IS_EMPTY: The roleIdList must not be empty.")
+                    List<Long> roleIdList) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    /**
+     * 通过用户id获取用户权限列表
+     *
+     * @param userId 用户id
+     * @return 用户的权限列表
+     */
+    default Result<List<PermissionDTO>> getPermissionByUserId(
+            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The userId must not be null.") Long userId) {
         throw new UnsupportedOperationException();
     }
 }

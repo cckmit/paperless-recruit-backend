@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenGranter;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
@@ -66,14 +65,16 @@ public class TokenGranterConfig {
      */
     private RandomValueAuthorizationCodeServices authorizationCodeServices;
 
+    /**
+     * 是否重用RefreshToken
+     */
     private boolean reuseRefreshToken = true;
 
     private AuthorizationServerTokenServices tokenServices;
 
-    private TokenGranter tokenGranter;
-
     public TokenGranterConfig(ClientDetailsService clientDetailsService, UserDetailsService userDetailsService,
-                              AuthenticationManager authenticationManager, TokenStore tokenStore, List<TokenEnhancer> tokenEnhancer) {
+                              AuthenticationManager authenticationManager, TokenStore tokenStore,
+                              List<TokenEnhancer> tokenEnhancer) {
         this.clientDetailsService = clientDetailsService;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
@@ -87,19 +88,8 @@ public class TokenGranterConfig {
      */
     @Bean
     public TokenGranter tokenGranter() {
-        if (tokenGranter == null) {
-            tokenGranter = new TokenGranter() {
-                private CompositeTokenGranter delegate;
-                @Override
-                public OAuth2AccessToken grant(String grantType, TokenRequest tokenRequest) {
-                    if (delegate == null) {
-                        delegate = new CompositeTokenGranter(getAllTokenGranters());
-                    }
-                    return delegate.grant(grantType, tokenRequest);
-                }
-            };
-        }
-        return tokenGranter;
+        return (String grantType, TokenRequest tokenRequest)->
+                new CompositeTokenGranter(getAllTokenGranters()).grant(grantType, tokenRequest);
     }
 
     /**
@@ -113,31 +103,30 @@ public class TokenGranterConfig {
         OAuth2RequestFactory requestFactory = requestFactory();
         // 获取默认的授权模式
         List<TokenGranter> tokenGranters = getDefaultTokenGranters(tokenServices, authorizationCodeServices, requestFactory);
-        if (authenticationManager != null) {
-            // 添加手机号验证码授权模式
-            tokenGranters.add(new SmsGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
-        }
+        // 添加手机号验证码授权模式
+        tokenGranters.add(new SmsGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
         return tokenGranters;
     }
 
     /**
      * 默认的授权模式
      */
-    private List<TokenGranter> getDefaultTokenGranters(AuthorizationServerTokenServices tokenServices
-            , AuthorizationCodeServices authorizationCodeServices, OAuth2RequestFactory requestFactory) {
+    private List<TokenGranter> getDefaultTokenGranters(
+            AuthorizationServerTokenServices tokenServices, AuthorizationCodeServices authorizationCodeServices,
+            OAuth2RequestFactory requestFactory) {
         List<TokenGranter> tokenGranters = new ArrayList<>();
         // 添加授权码模式
-        tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices, authorizationCodeServices, clientDetailsService, requestFactory));
+        tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices, authorizationCodeServices,
+                clientDetailsService, requestFactory));
         // 添加刷新令牌的模式
         tokenGranters.add(new RefreshTokenGranter(tokenServices, clientDetailsService, requestFactory));
         // 添加隐士授权模式
         tokenGranters.add(new ImplicitTokenGranter(tokenServices, clientDetailsService, requestFactory));
         // 添加客户端模式
         tokenGranters.add(new ClientCredentialsTokenGranter(tokenServices, clientDetailsService, requestFactory));
-        if (authenticationManager != null) {
-            // 添加密码模式
-            tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
-        }
+        // 添加密码模式
+        tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager, tokenServices,
+                clientDetailsService, requestFactory));
         return tokenGranters;
     }
 
@@ -145,7 +134,7 @@ public class TokenGranterConfig {
         if (tokenServices != null) {
             return tokenServices;
         }
-        this.tokenServices = createDefaultTokenServices();
+        tokenServices = createDefaultTokenServices();
         return tokenServices;
     }
 
@@ -167,7 +156,7 @@ public class TokenGranterConfig {
         tokenServices.setReuseRefreshToken(reuseRefreshToken);
         tokenServices.setClientDetailsService(clientDetailsService);
         tokenServices.setTokenEnhancer(tokenEnhancer());
-        addUserDetailsService(tokenServices, this.userDetailsService);
+        addUserDetailsService(tokenServices, userDetailsService);
         return tokenServices;
     }
 
@@ -177,19 +166,14 @@ public class TokenGranterConfig {
      * @return TokenEnhancer
      */
     private TokenEnhancer tokenEnhancer() {
-        if (tokenEnhancer != null) {
-            TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-            tokenEnhancerChain.setTokenEnhancers(tokenEnhancer);
-            return tokenEnhancerChain;
-        }
-        return null;
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(tokenEnhancer);
+        return tokenEnhancerChain;
     }
 
     private void addUserDetailsService(DefaultTokenServices tokenServices, UserDetailsService userDetailsService) {
-        if (userDetailsService != null) {
-            PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
-            provider.setPreAuthenticatedUserDetailsService(new UserDetailsByNameServiceWrapper<>(userDetailsService));
-            tokenServices.setAuthenticationManager(new ProviderManager(Collections.singletonList(provider)));
-        }
+        PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
+        provider.setPreAuthenticatedUserDetailsService(new UserDetailsByNameServiceWrapper<>(userDetailsService));
+        tokenServices.setAuthenticationManager(new ProviderManager(Collections.singletonList(provider)));
     }
 }

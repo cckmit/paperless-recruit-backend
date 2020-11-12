@@ -10,6 +10,13 @@ import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 描述：用户
+ *
+ * @author: xhsf
+ * @email: 827032783@qq.com
+ * @create: 2020/11/12 19:42
+ */
 public class UserDTO implements Serializable {
 
     @Id(groups = {Group.class})

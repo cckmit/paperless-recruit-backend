@@ -1,8 +1,10 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,12 +22,16 @@ import java.util.Arrays;
  * @email: 827032783@qq.com
  * @create: 2020/11/10 19:26
  */
+// TODO: 2020/11/12 这个注解好像可以去掉
+@Configuration
 @EnableWebSecurity
+// TODO: 2020/11/12 这里不懂
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final MessageAuthCodeAuthenticationConfigurer messageAuthCodeAuthenticationConfigurer;
+    private final MessageAuthCodeAuthenticationConfig messageAuthCodeAuthenticationConfigurer;
 
-    public WebSecurityConfig(MessageAuthCodeAuthenticationConfigurer messageAuthCodeAuthenticationConfigurer) {
+    public WebSecurityConfig(MessageAuthCodeAuthenticationConfig messageAuthCodeAuthenticationConfigurer) {
         this.messageAuthCodeAuthenticationConfigurer = messageAuthCodeAuthenticationConfigurer;
     }
 
@@ -38,10 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/login/phone/createMessageAuthCodeAndSend").permitAll() // 无需验证
                 .anyRequest()
                 .permitAll()
-
                 .and()
                 .apply(messageAuthCodeAuthenticationConfigurer)
                 .and()
@@ -52,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
-                new Header("Access-control-Allow-Origin","*"),
-                new Header("Access-Control-Expose-Headers","Authorization"))));
+                    new Header("Access-control-Allow-Origin","*"),
+                    new Header("Access-Control-Expose-Headers","Authorization"))));
     }
 }

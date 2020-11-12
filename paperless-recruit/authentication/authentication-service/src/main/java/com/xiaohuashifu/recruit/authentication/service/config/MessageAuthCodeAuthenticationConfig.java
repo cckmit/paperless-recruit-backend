@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * @create: 2020/11/11 20:28
  */
 @Component
-public class MessageAuthCodeAuthenticationConfigurer
+public class MessageAuthCodeAuthenticationConfig
         extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     @Reference
     private PhoneLoginService phoneLoginService;

@@ -36,6 +36,9 @@ import java.util.List;
 @Configuration
 public class TokenGranterConfig {
 
+    /**
+     * 客户端服务
+     */
     private final ClientDetailsService clientDetailsService;
 
     /**
@@ -58,6 +61,9 @@ public class TokenGranterConfig {
      */
     private final List<TokenEnhancer> tokenEnhancer;
 
+    /**
+     * 验证码模式的验证码生成器
+     */
     private RandomValueAuthorizationCodeServices authorizationCodeServices;
 
     private boolean reuseRefreshToken = true;

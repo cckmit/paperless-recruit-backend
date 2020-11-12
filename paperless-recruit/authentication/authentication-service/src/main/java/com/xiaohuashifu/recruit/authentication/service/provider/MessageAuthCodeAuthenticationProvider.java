@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.provider;
 
 import com.xiaohuashifu.recruit.authentication.api.service.PhoneLoginService;
-import com.xiaohuashifu.recruit.authentication.service.pojo.token.MessageAuthCodeAuthenticationToken;
+import com.xiaohuashifu.recruit.authentication.service.token.MessageAuthCodeAuthenticationToken;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,6 +9,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.stereotype.Component;
 
 /**
  * 描述：AuthenticationManager之后正在处理短信验证码登录的类
@@ -32,8 +33,8 @@ public class MessageAuthCodeAuthenticationProvider implements AuthenticationProv
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         MessageAuthCodeAuthenticationToken authenticationToken = (MessageAuthCodeAuthenticationToken) authentication;
-        String phone = authenticationToken.getPhone();
-        String authCode = authenticationToken.getAuthCode();
+        String phone = (String) authenticationToken.getPrincipal();
+        String authCode = (String) authenticationToken.getCredentials();
         System.out.println(phone + ":" + authCode);
         Result<Void> checkMessageAuthCodeResult = phoneLoginService.checkMessageAuthCode(phone, authCode);
         // 没有通过校验
@@ -45,7 +46,7 @@ public class MessageAuthCodeAuthenticationProvider implements AuthenticationProv
 //        UserDTO getUserResult = userService.getUserByPhone(phone).getData();
 
         return new MessageAuthCodeAuthenticationToken(
-                AuthorityUtils.commaSeparatedStringToAuthorityList("admin"), phone, authCode);
+                phone, authCode, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
 
     @Override

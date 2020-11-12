@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.authentication.service.oauth2;
+package com.xiaohuashifu.recruit.authentication.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
  * @create: 2020/11/10 15:38
  */
 @Service
-
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;

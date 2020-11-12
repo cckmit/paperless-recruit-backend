@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.authentication.service.oauth2;
+package com.xiaohuashifu.recruit.authentication.service.handler;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -69,7 +69,6 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         // 构造TokenRequest，其中grantType为custom表示自定义类型
         TokenRequest tokenRequest =
                 new TokenRequest(new HashMap<>(), clientId, clientDetails.getScope(), "custom");
-
         // 升级成OAuth2Request
         final OAuth2Request oAuth2Request = tokenRequest.createOAuth2Request(clientDetails);
 
@@ -86,7 +85,6 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         //    "scope": "all"
         //}
         final OAuth2AccessToken accessToken = authorizationServerTokenServices.createAccessToken(oAuth2Authentication);
-        logger.info(authentication.getName(), authentication.getCredentials());
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(accessToken));
     }

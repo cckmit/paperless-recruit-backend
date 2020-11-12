@@ -1,5 +1,6 @@
-package com.xiaohuashifu.recruit.authentication.service.oauth2;
+package com.xiaohuashifu.recruit.authentication.service.config;
 
+import com.xiaohuashifu.recruit.authentication.service.enhancer.JwtTokenEnhancer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,6 +9,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
@@ -52,14 +54,20 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 授权类型
+     */
+    private final TokenGranter tokenGranter;
+
     public AuthorizationServerConfig(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
                                      TokenStore tokenStore, AccessTokenConverter accessTokenConverter,
-                                     PasswordEncoder passwordEncoder) {
+                                     PasswordEncoder passwordEncoder, TokenGranter tokenGranter) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.tokenStore = tokenStore;
         this.accessTokenConverter = accessTokenConverter;
         this.passwordEncoder = passwordEncoder;
+        this.tokenGranter = tokenGranter;
     }
 
 
@@ -76,8 +84,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .accessTokenValiditySeconds(3600)
                 .refreshTokenValiditySeconds(864000)
                 .scopes("all", "a", "b", "c")
-                // 认证模式，refresh_token是一种特殊的认证模式
-                .authorizedGrantTypes("password", "refresh_token")
             .and()
                 .withClient("test2")
                 .secret(passwordEncoder.encode("test2222"))
@@ -103,6 +109,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .userDetailsService(userDetailsService)
                 .tokenStore(tokenStore)
                 .accessTokenConverter(accessTokenConverter)
-                .tokenEnhancer(enhancerChain);
+                .tokenEnhancer(enhancerChain)
+                .tokenGranter(tokenGranter);
     }
 }

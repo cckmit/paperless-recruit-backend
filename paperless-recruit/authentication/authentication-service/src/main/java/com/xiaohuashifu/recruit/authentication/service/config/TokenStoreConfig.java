@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.authentication.service.oauth2;
+package com.xiaohuashifu.recruit.authentication.service.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

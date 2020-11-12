@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.authentication.service.oauth2;
+package com.xiaohuashifu.recruit.authentication.service.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;

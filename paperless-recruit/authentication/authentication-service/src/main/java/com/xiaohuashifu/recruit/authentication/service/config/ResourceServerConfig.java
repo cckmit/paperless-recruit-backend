@@ -1,6 +1,7 @@
-package com.xiaohuashifu.recruit.authentication.service.oauth2;
+package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.xiaohuashifu.recruit.authentication.service.config.MessageAuthCodeAuthenticationConfigurer;
+import com.xiaohuashifu.recruit.authentication.service.handler.MyAuthenticationFailureHandler;
+import com.xiaohuashifu.recruit.authentication.service.handler.MyAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -19,15 +20,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private final MyAuthenticationFailureHandler myAuthenticationFailureHandler;
     private final MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
-    private final MessageAuthCodeAuthenticationConfigurer messageAuthCodeAuthenticationConfigurer;
-
 
     public ResourceServerConfig(MyAuthenticationFailureHandler myAuthenticationFailureHandler,
-                                MyAuthenticationSuccessHandler myAuthenticationSuccessHandler,
-                                MessageAuthCodeAuthenticationConfigurer messageAuthCodeAuthenticationConfigurer) {
+                                MyAuthenticationSuccessHandler myAuthenticationSuccessHandler) {
         this.myAuthenticationFailureHandler = myAuthenticationFailureHandler;
         this.myAuthenticationSuccessHandler = myAuthenticationSuccessHandler;
-        this.messageAuthCodeAuthenticationConfigurer = messageAuthCodeAuthenticationConfigurer;
     }
 
     @Override
@@ -38,12 +35,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .failureHandler(myAuthenticationFailureHandler) // 处理登录失败
             .and()
                 .authorizeRequests() // 授权配置
-                .antMatchers("/login/phone/createMessageAuthCodeAndSend").permitAll() // 无需验证
                 .anyRequest() // 所有请求
                 .authenticated() // 都需要认证
             .and()
-                .csrf().disable()
-                .apply(messageAuthCodeAuthenticationConfigurer);
-
+                .csrf().disable();
     }
 }

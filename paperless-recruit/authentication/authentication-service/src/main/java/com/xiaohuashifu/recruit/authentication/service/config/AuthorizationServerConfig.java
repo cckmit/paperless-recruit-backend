@@ -1,22 +1,12 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.xiaohuashifu.recruit.authentication.service.enhancer.JwtTokenEnhancer;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.TokenGranter;
-import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 描述：认证服务器配置
@@ -30,26 +20,6 @@ import java.util.List;
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     /**
-     * Spring Security的AuthenticationManager
-     */
-    private final AuthenticationManager authenticationManager;
-
-    /**
-     * 具体实现类为UserDetailsServiceImpl
-     */
-    private final UserDetailsService userDetailsService;
-
-    /**
-     * TokenStore这里使用JwtTokenStore
-     */
-    private final TokenStore tokenStore;
-
-    /**
-     * 因为使用JwtTokenStore，因此需要提供AccessTokenConverter
-     */
-    private final AccessTokenConverter accessTokenConverter;
-
-    /**
      * 密码编码器
      */
     private final PasswordEncoder passwordEncoder;
@@ -59,17 +29,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     private final TokenGranter tokenGranter;
 
-    public AuthorizationServerConfig(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
-                                     TokenStore tokenStore, AccessTokenConverter accessTokenConverter,
-                                     PasswordEncoder passwordEncoder, TokenGranter tokenGranter) {
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
-        this.tokenStore = tokenStore;
-        this.accessTokenConverter = accessTokenConverter;
+    public AuthorizationServerConfig(PasswordEncoder passwordEncoder, TokenGranter tokenGranter) {
         this.passwordEncoder = passwordEncoder;
         this.tokenGranter = tokenGranter;
     }
-
 
     /**
      * 客户端配置
@@ -96,20 +59,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        // 把TokenEnhancer构造成TokenEnhancerChain
-        // 因为accessTokenConverter自带TokenEnhancer，因此需要把它带上
-        List<TokenEnhancer> enhancerList = new ArrayList<>();
-        enhancerList.add(new JwtTokenEnhancer());
-        enhancerList.add((TokenEnhancer) accessTokenConverter);
-        TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
-        enhancerChain.setTokenEnhancers(enhancerList);
-
-        // 配置AuthenticationManager和UserDetailsService
-        endpoints.authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService)
-                .tokenStore(tokenStore)
-                .accessTokenConverter(accessTokenConverter)
-                .tokenEnhancer(enhancerChain)
-                .tokenGranter(tokenGranter);
+        endpoints.tokenGranter(tokenGranter);
     }
 }

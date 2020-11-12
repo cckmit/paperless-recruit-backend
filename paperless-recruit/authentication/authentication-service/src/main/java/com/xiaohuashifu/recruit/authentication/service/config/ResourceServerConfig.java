@@ -35,6 +35,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .failureHandler(myAuthenticationFailureHandler) // 处理登录失败
             .and()
                 .authorizeRequests() // 授权配置
+                .antMatchers("/login/phone/createMessageAuthCodeAndSend").permitAll() // 无需验证
                 .anyRequest() // 所有请求
                 .authenticated() // 都需要认证
             .and()

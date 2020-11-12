@@ -35,7 +35,6 @@ public class MessageAuthCodeAuthenticationProvider implements AuthenticationProv
         MessageAuthCodeAuthenticationToken authenticationToken = (MessageAuthCodeAuthenticationToken) authentication;
         String phone = (String) authenticationToken.getPrincipal();
         String authCode = (String) authenticationToken.getCredentials();
-        System.out.println(phone + ":" + authCode);
         Result<Void> checkMessageAuthCodeResult = phoneLoginService.checkMessageAuthCode(phone, authCode);
         // 没有通过校验
         if (!checkMessageAuthCodeResult.isSuccess()) {

@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
 import com.xiaohuashifu.recruit.authentication.service.granter.SmsGranter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,16 +35,28 @@ import java.util.List;
  */
 @Configuration
 public class TokenGranterConfig {
+
     private final ClientDetailsService clientDetailsService;
 
+    /**
+     * 具体实现类为UserDetailsServiceImpl
+     */
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Spring Security的AuthenticationManager
+     */
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * TokenStore这里使用JwtTokenStore
+     */
     private final TokenStore tokenStore;
 
-    @Autowired(required = false)
-    private List<TokenEnhancer> tokenEnhancer;
+    /**
+     * TokenEnhancer列表，只要添加成Bean就会自动注入
+     */
+    private final List<TokenEnhancer> tokenEnhancer;
 
     private RandomValueAuthorizationCodeServices authorizationCodeServices;
 
@@ -56,15 +67,17 @@ public class TokenGranterConfig {
     private TokenGranter tokenGranter;
 
     public TokenGranterConfig(ClientDetailsService clientDetailsService, UserDetailsService userDetailsService,
-                              AuthenticationManager authenticationManager, TokenStore tokenStore) {
+                              AuthenticationManager authenticationManager, TokenStore tokenStore, List<TokenEnhancer> tokenEnhancer) {
         this.clientDetailsService = clientDetailsService;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.tokenStore = tokenStore;
+        this.tokenEnhancer = tokenEnhancer;
     }
 
     /**
      * 授权模式
+     * @return TokenGranter 这里是一个授权模式代理，里面有所有授权模式
      */
     @Bean
     public TokenGranter tokenGranter() {
@@ -85,6 +98,8 @@ public class TokenGranterConfig {
 
     /**
      * 所有授权模式：默认的5种模式 + 自定义的模式
+     *      可以在这里添加授权模式
+     * @return List<TokenGranter>
      */
     private List<TokenGranter> getAllTokenGranters() {
         AuthorizationServerTokenServices tokenServices = tokenServices();
@@ -93,7 +108,7 @@ public class TokenGranterConfig {
         // 获取默认的授权模式
         List<TokenGranter> tokenGranters = getDefaultTokenGranters(tokenServices, authorizationCodeServices, requestFactory);
         if (authenticationManager != null) {
-            // 添加手机号加密码授权模式
+            // 添加手机号验证码授权模式
             tokenGranters.add(new SmsGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
         }
         return tokenGranters;
@@ -150,6 +165,11 @@ public class TokenGranterConfig {
         return tokenServices;
     }
 
+    /**
+     * TokenEnhancer
+     *
+     * @return TokenEnhancer
+     */
     private TokenEnhancer tokenEnhancer() {
         if (tokenEnhancer != null) {
             TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();

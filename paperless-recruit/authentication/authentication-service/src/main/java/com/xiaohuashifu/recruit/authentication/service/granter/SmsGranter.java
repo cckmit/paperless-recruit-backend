@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 描述：
+ * 描述：处理sms类型的认证请求
  *
  * @author: xhsf
  * @email: 827032783@qq.com

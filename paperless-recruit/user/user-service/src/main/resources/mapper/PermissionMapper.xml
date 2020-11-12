@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.user.service.dao.PermissionMapper">
+    <sql id="permission">
+        id, parent_permission_id, permission_name, authorization_url, description, is_available as available,
+        create_time, update_time
+    </sql>
+
+    <sql id="p_permission">
+        p.id, p.parent_permission_id, p.permission_name, p.authorization_url, p.description, p.is_available as available,
+        p.create_time, p.update_time
+    </sql>
+
+    <select id="getPermissionListByRoleIdList" resultType="permission">
+        select
+        <include refid="p_permission"/>
+        from role_permission as rp left join permission as p on rp.permission_id = p.id
+        where rp.role_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

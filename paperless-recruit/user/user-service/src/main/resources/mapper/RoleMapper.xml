@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.user.service.dao.RoleMapper">
+    <sql id="role">
+        id, parent_role_id, role_name, description, is_available as available, create_time, update_time
+    </sql>
+
+    <sql id="r_role">
+        r.id, r.parent_role_id, r.role_name, r.description, r.is_available as available, r.create_time, r.update_time
+    </sql>
+
+    <select id="getRoleListByUserId" resultType="role">
+        select
+        <include refid="r_role"/>
+        from user_role as ur left join role as r on ur.role_id = r.id
+        where ur.user_id = #{userId}
+    </select>
+
+</mapper>

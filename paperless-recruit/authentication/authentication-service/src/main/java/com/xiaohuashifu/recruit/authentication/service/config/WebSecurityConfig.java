@@ -41,6 +41,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login/phone/createMessageAuthCodeAndSend").permitAll() // 无需验证
                 .anyRequest()
                 .permitAll()
+
+                .and()
+                .apply(messageAuthCodeAuthenticationConfigurer)
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
@@ -49,9 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
-                    new Header("Access-control-Allow-Origin","*"),
-                    new Header("Access-Control-Expose-Headers","Authorization"))))
-                .and()
-                .apply(messageAuthCodeAuthenticationConfigurer);
+                new Header("Access-control-Allow-Origin","*"),
+                new Header("Access-Control-Expose-Headers","Authorization"))));
     }
 }

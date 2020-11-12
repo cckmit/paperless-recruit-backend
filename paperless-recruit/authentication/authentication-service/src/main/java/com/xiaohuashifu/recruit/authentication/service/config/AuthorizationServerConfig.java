@@ -42,7 +42,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
+                //  这里的client类似于微信小程序的appid
+                // 可以用来区分产品，比如面试者端，面试官端
                 .withClient("test")
+                // 这里的secret类似于微信小程序的appsecret
+                // 这个需要发放给对应的client，让他们自己保管
                 .secret(passwordEncoder.encode("test1234"))
                 .accessTokenValiditySeconds(3600)
                 .refreshTokenValiditySeconds(864000)

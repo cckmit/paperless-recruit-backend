@@ -78,6 +78,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     // 添加短信验证码认证配置
                     .apply(smsAuthenticationConfig);
+        // TODO: 2020/11/14 匿名认证过滤器AnonymousAuthenticationFilter，
+        //  给匿名用户填充`AnonymousAuthenticationToken`到`SecurityContextHolder`的`Authentication`
+        // TODO: 2020/11/14  `AbstractSecurityInterceptor`填充URL对应的角色，和决定授权
+        // TODO: 2020/11/14 ExceptionTranslationFilter  捕获处理spring security抛出的异常，异常主要来源于FilterSecurityInterceptor
     }
 
 }

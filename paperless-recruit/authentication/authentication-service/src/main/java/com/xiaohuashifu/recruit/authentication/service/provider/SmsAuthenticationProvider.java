@@ -20,21 +20,21 @@ import org.springframework.security.core.authority.AuthorityUtils;
  */
 public class SmsAuthenticationProvider implements AuthenticationProvider {
 
-    private final SmsLoginService phoneLoginService;
+    private final SmsLoginService smsLoginService;
 
     private final UserService userService;
 
-    public SmsAuthenticationProvider(SmsLoginService phoneLoginService, UserService userService) {
-        this.phoneLoginService = phoneLoginService;
+    public SmsAuthenticationProvider(SmsLoginService smsLoginService, UserService userService) {
+        this.smsLoginService = smsLoginService;
         this.userService = userService;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
-        String phone = (String) authenticationToken.getPrincipal();
-        String authCode = (String) authenticationToken.getCredentials();
-        Result<Void> checkSmsAuthCodeResult = phoneLoginService.checkSmsAuthCode(phone, authCode);
+        SmsAuthenticationToken smsAuthenticationToken = (SmsAuthenticationToken) authentication;
+        String phone = (String) smsAuthenticationToken.getPrincipal();
+        String authCode = (String) smsAuthenticationToken.getCredentials();
+        Result<Void> checkSmsAuthCodeResult = smsLoginService.checkSmsAuthCode(phone, authCode);
         // 没有通过校验
         if (!checkSmsAuthCodeResult.isSuccess()) {
             throw new InternalAuthenticationServiceException("Auth error.");

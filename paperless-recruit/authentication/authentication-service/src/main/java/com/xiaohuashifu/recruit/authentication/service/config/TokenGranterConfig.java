@@ -103,7 +103,7 @@ public class TokenGranterConfig {
         OAuth2RequestFactory requestFactory = requestFactory();
         // 获取默认的授权模式
         List<TokenGranter> tokenGranters = getDefaultTokenGranters(tokenServices, authorizationCodeServices, requestFactory);
-        // 添加手机号验证码授权模式
+        // 添加短信验证码授权模式
         tokenGranters.add(new SmsGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
         return tokenGranters;
     }

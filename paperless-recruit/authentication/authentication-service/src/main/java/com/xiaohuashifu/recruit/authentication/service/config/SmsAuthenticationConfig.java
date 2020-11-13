@@ -20,13 +20,13 @@ import org.springframework.stereotype.Component;
 public class SmsAuthenticationConfig
         extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     @Reference
-    private SmsLoginService phoneLoginService;
+    private SmsLoginService smsLoginService;
     @Reference
     private UserService userService;
 
     @Override
     public void configure(HttpSecurity http) {
-        http.authenticationProvider(new SmsAuthenticationProvider(phoneLoginService, userService));
+        http.authenticationProvider(new SmsAuthenticationProvider(smsLoginService, userService));
     }
 
 }

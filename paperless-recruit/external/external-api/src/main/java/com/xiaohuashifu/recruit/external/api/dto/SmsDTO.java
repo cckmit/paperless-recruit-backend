@@ -9,14 +9,14 @@ import java.io.Serializable;
  * @email: 827032783@qq.com
  * @create: 2020/11/11 15:19
  */
-public class PhoneMessageDTO implements Serializable {
+public class SmsDTO implements Serializable {
     private String phone;
     private String message;
 
-    public PhoneMessageDTO() {
+    public SmsDTO() {
     }
 
-    public PhoneMessageDTO(String phone, String message) {
+    public SmsDTO(String phone, String message) {
         this.phone = phone;
         this.message = message;
     }
@@ -39,7 +39,7 @@ public class PhoneMessageDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "PhoneMessageDTO{" +
+        return "SmsDTO{" +
                 "phone='" + phone + '\'' +
                 ", message='" + message + '\'' +
                 '}';
@@ -63,8 +63,8 @@ public class PhoneMessageDTO implements Serializable {
             return this;
         }
 
-        public PhoneMessageDTO build() {
-            PhoneMessageDTO phoneMessageDTO = new PhoneMessageDTO();
+        public SmsDTO build() {
+            SmsDTO phoneMessageDTO = new SmsDTO();
             phoneMessageDTO.setPhone(phone);
             phoneMessageDTO.setMessage(message);
             return phoneMessageDTO;

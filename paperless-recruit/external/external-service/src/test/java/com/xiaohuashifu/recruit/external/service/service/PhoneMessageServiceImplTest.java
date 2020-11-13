@@ -1,14 +1,11 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.PhoneMessageDTO;
-import com.xiaohuashifu.recruit.external.api.service.PhoneMessageService;
+import com.xiaohuashifu.recruit.external.api.dto.SmsDTO;
+import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.external.service.ExternalServiceApplicationTests;
 import org.apache.dubbo.config.annotation.Reference;
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -20,12 +17,12 @@ import static org.junit.Assert.*;
 public class PhoneMessageServiceImplTest extends ExternalServiceApplicationTests {
 
     @Reference
-    private PhoneMessageService phoneMessageService;
+    private SmsService phoneMessageService;
 
     @Test
     public void sendPhoneMessage() {
-        final Result<Object> sendPhoneMessage = phoneMessageService.sendPhoneMessage(
-                new PhoneMessageDTO("15992321303", "zzzz"));
+        final Result<Object> sendPhoneMessage = phoneMessageService.sendSms(
+                new SmsDTO("15992321303", "zzzz"));
         System.out.println(sendPhoneMessage);
     }
 }

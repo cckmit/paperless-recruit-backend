@@ -5,8 +5,8 @@ import com.xiaohuashifu.recruit.authentication.api.service.SmsLoginService;
 import com.xiaohuashifu.recruit.authentication.service.service.constant.SmsLoginServiceConstant;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.PhoneMessageDTO;
-import com.xiaohuashifu.recruit.external.api.service.PhoneMessageService;
+import com.xiaohuashifu.recruit.external.api.dto.SmsDTO;
+import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -30,7 +30,7 @@ public class SmsLoginServiceImpl implements SmsLoginService {
     private Long smsAuthCodeExpiredTime;
 
     @Reference
-    private PhoneMessageService phoneMessageService;
+    private SmsService smsService;
 
     private final RedisTemplate<Object, Object> redisTemplate;
 
@@ -51,7 +51,7 @@ public class SmsLoginServiceImpl implements SmsLoginService {
         String smsAuthCode = createSmsAuthCode();
         String message = "【招新】您的验证码为：" + smsAuthCode + "。验证码有效时间为"
                 + smsAuthCodeExpiredTime + "秒，请尽快使用。";
-        final Result<Object> sendSmsResult = phoneMessageService.sendPhoneMessage(new PhoneMessageDTO(phone, message));
+        final Result<Object> sendSmsResult = smsService.sendSms(new SmsDTO(phone, message));
         if (!sendSmsResult.isSuccess()) {
             // TODO: 2020/11/11 发送短信失败错误逻辑
             return Result.fail(ErrorCode.INTERNAL_ERROR);

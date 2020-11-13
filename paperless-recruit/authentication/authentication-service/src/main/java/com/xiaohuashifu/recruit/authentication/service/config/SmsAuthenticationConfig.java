@@ -10,15 +10,14 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.stereotype.Component;
 
 /**
- * 描述：短信验证认证的配置器
+ * 描述：短信验证码认证的配置器
  *
  * @author: xhsf
  * @email: 827032783@qq.com
  * @create: 2020/11/11 20:28
  */
 @Component
-public class SmsAuthenticationConfig
-        extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+public class SmsAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     @Reference
     private SmsLoginService smsLoginService;
     @Reference
@@ -26,6 +25,7 @@ public class SmsAuthenticationConfig
 
     @Override
     public void configure(HttpSecurity http) {
+        // 添加provider
         http.authenticationProvider(new SmsAuthenticationProvider(smsLoginService, userService));
     }
 

@@ -25,7 +25,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private final TokenGranter tokenGranter;
 
     /**
-     * 客户端服务
+     * 客户端服务，这里使用的是JdbcClientDetailsService
      */
     private final ClientDetailsService clientDetailsService;
 
@@ -41,6 +41,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        // 使用自定义的客户端服务
         clients.withClientDetails(clientDetailsService);
     }
 
@@ -50,6 +51,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+        // 使用自定义的TokenGranter
+        // 这样会使得认证基本上自定义
+        // 灵活性较高
         endpoints.tokenGranter(tokenGranter);
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @MapperScan
 public class UserServiceApplication {
 
-    // git hub
     public static void main(String[] args) {
         SpringApplication.run(UserServiceApplication.class, args);
     }

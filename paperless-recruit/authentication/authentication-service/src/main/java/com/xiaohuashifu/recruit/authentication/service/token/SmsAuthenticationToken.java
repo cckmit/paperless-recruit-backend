@@ -13,21 +13,21 @@ import java.util.Collection;
  * @email: 827032783@qq.com
  * @create: 2020/11/11 17:47
  */
-public class MessageAuthCodeAuthenticationToken extends AbstractAuthenticationToken {
+public class SmsAuthenticationToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
     private final Object principal;
     private final Object credentials;
 
-    public MessageAuthCodeAuthenticationToken(String phone, String authCode) {
+    public SmsAuthenticationToken(String phone, String authCode) {
         super(null);
         this.principal = phone;
         this.credentials = authCode;
         setAuthenticated(false);
     }
 
-    public MessageAuthCodeAuthenticationToken(String phone, String authCode, Collection<? extends GrantedAuthority> authorities) {
+    public SmsAuthenticationToken(String phone, String authCode, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = phone;
         this.credentials = authCode;

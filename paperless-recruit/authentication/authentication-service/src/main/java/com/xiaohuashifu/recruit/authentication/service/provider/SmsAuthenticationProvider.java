@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.provider;
 
-import com.xiaohuashifu.recruit.authentication.api.service.PhoneLoginService;
-import com.xiaohuashifu.recruit.authentication.service.token.MessageAuthCodeAuthenticationToken;
+import com.xiaohuashifu.recruit.authentication.api.service.SmsLoginService;
+import com.xiaohuashifu.recruit.authentication.service.token.SmsAuthenticationToken;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,47 +9,46 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.stereotype.Component;
 
 /**
  * 描述：AuthenticationManager之后正在处理短信验证码登录的类
- *      接受MessageAuthCodeAuthenticationToken类型的Token并处理
+ *      接受SmsAuthenticationToken类型的Token并处理
  *
  * @author: xhsf
  * @email: 827032783@qq.com
  * @create: 2020/11/11 19:59
  */
-public class MessageAuthCodeAuthenticationProvider implements AuthenticationProvider {
+public class SmsAuthenticationProvider implements AuthenticationProvider {
 
-    private final PhoneLoginService phoneLoginService;
+    private final SmsLoginService phoneLoginService;
 
     private final UserService userService;
 
-    public MessageAuthCodeAuthenticationProvider(PhoneLoginService phoneLoginService, UserService userService) {
+    public SmsAuthenticationProvider(SmsLoginService phoneLoginService, UserService userService) {
         this.phoneLoginService = phoneLoginService;
         this.userService = userService;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        MessageAuthCodeAuthenticationToken authenticationToken = (MessageAuthCodeAuthenticationToken) authentication;
+        SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
         String phone = (String) authenticationToken.getPrincipal();
         String authCode = (String) authenticationToken.getCredentials();
-        Result<Void> checkMessageAuthCodeResult = phoneLoginService.checkMessageAuthCode(phone, authCode);
+        Result<Void> checkSmsAuthCodeResult = phoneLoginService.checkSmsAuthCode(phone, authCode);
         // 没有通过校验
-        if (!checkMessageAuthCodeResult.isSuccess()) {
+        if (!checkSmsAuthCodeResult.isSuccess()) {
             throw new InternalAuthenticationServiceException("Auth error.");
         }
 
 
 //        UserDTO getUserResult = userService.getUserByPhone(phone).getData();
 
-        return new MessageAuthCodeAuthenticationToken(
+        return new SmsAuthenticationToken(
                 phone, authCode, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return MessageAuthCodeAuthenticationToken.class.isAssignableFrom(authentication);
+        return SmsAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

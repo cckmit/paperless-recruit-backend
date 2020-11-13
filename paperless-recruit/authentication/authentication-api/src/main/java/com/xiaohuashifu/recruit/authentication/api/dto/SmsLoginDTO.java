@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 描述：手机号码+短信验证码登录的DTO
+ * 描述：短信验证码登录的DTO
  *
  * @author: xhsf
  * @email: 827032783@qq.com
  * @create: 2020/11/11 15:45
  */
-public class MessageAuthCodeLoginDTO implements Serializable {
+public class SmsLoginDTO implements Serializable {
 
     /**
      * 手机号码
@@ -32,10 +32,10 @@ public class MessageAuthCodeLoginDTO implements Serializable {
      */
     private LocalDateTime expireTime;
 
-    public MessageAuthCodeLoginDTO() {
+    public SmsLoginDTO() {
     }
 
-    public MessageAuthCodeLoginDTO(String phone, String authCode, String message, LocalDateTime expireTime) {
+    public SmsLoginDTO(String phone, String authCode, String message, LocalDateTime expireTime) {
         this.phone = phone;
         this.authCode = authCode;
         this.message = message;
@@ -76,7 +76,7 @@ public class MessageAuthCodeLoginDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "PhoneAuthCodeLoginDTO{" +
+        return "SmsLoginDTO{" +
                 "phone='" + phone + '\'' +
                 ", authCode='" + authCode + '\'' +
                 ", message='" + message + '\'' +
@@ -114,8 +114,8 @@ public class MessageAuthCodeLoginDTO implements Serializable {
             return this;
         }
 
-        public MessageAuthCodeLoginDTO build() {
-            MessageAuthCodeLoginDTO phoneAuthCodeLoginDTO = new MessageAuthCodeLoginDTO();
+        public SmsLoginDTO build() {
+            SmsLoginDTO phoneAuthCodeLoginDTO = new SmsLoginDTO();
             phoneAuthCodeLoginDTO.setPhone(phone);
             phoneAuthCodeLoginDTO.setAuthCode(authCode);
             phoneAuthCodeLoginDTO.setMessage(message);

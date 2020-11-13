@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
 
-import com.xiaohuashifu.recruit.common.validator.MessageAuthCodeValidator;
+import com.xiaohuashifu.recruit.common.validator.SmsAuthCodeValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -15,12 +15,12 @@ import java.lang.annotation.*;
  * @create 2019-10-09
  */
 @Documented
-@Constraint(validatedBy = {MessageAuthCodeValidator.class})
+@Constraint(validatedBy = {SmsAuthCodeValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
         ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(MessageAuthCode.List.class)
-public @interface MessageAuthCode {
+@Repeatable(SmsAuthCode.List.class)
+public @interface SmsAuthCode {
 
     String message() default "INVALID_PARAMETER: The message auth code length is 6 and made up of digits.";
 
@@ -33,7 +33,7 @@ public @interface MessageAuthCode {
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface List {
-        MessageAuthCode[] value();
+        SmsAuthCode[] value();
     }
 
 }

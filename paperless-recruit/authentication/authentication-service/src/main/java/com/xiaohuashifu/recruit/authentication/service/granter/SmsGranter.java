@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.granter;
 
-import com.xiaohuashifu.recruit.authentication.service.token.MessageAuthCodeAuthenticationToken;
+import com.xiaohuashifu.recruit.authentication.service.token.SmsAuthenticationToken;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -37,7 +37,7 @@ public class SmsGranter extends AbstractTokenGranter {
         String authCode = parameters.get("authCode");
         parameters.remove("authCode");
 
-        Authentication userAuth = new MessageAuthCodeAuthenticationToken(phone, authCode);
+        Authentication userAuth = new SmsAuthenticationToken(phone, authCode);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);
         userAuth = authenticationManager.authenticate(userAuth);
         if (userAuth == null || !userAuth.isAuthenticated()) {

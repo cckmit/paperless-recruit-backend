@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.common.validator;
 
 
-import com.xiaohuashifu.recruit.common.validator.annotation.MessageAuthCode;
+import com.xiaohuashifu.recruit.common.validator.annotation.SmsAuthCode;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.ConstraintValidator;
@@ -15,7 +15,7 @@ import javax.validation.ConstraintValidatorContext;
  * @email 827032783@qq.com
  * @create 2019-10-09
  */
-public class MessageAuthCodeValidator implements ConstraintValidator<MessageAuthCode, String> {
+public class SmsAuthCodeValidator implements ConstraintValidator<SmsAuthCode, String> {
 
     @Override
     public boolean isValid(String messageAuthCode, ConstraintValidatorContext constraintValidatorContext) {

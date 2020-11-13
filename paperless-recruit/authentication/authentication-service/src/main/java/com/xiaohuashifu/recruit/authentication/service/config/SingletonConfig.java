@@ -2,15 +2,11 @@ package com.xiaohuashifu.recruit.authentication.service.config;
 
 import com.github.dozermapper.spring.DozerBeanMapperFactoryBean;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
-
-import java.io.IOException;
 
 /**
  * 描述：一些单例的配置
@@ -27,10 +23,8 @@ public class SingletonConfig {
      * @return Mapper
      */
     @Bean
-    public DozerBeanMapperFactoryBean dozerMapper(@Value("classpath:dozer/*.xml") Resource[] resources) throws IOException {
-        DozerBeanMapperFactoryBean dozerBeanMapperFactoryBean = new DozerBeanMapperFactoryBean();
-        dozerBeanMapperFactoryBean.setMappingFiles(resources);
-        return dozerBeanMapperFactoryBean;
+    public DozerBeanMapperFactoryBean dozerMapper() {
+        return new DozerBeanMapperFactoryBean();
     }
 
     /**

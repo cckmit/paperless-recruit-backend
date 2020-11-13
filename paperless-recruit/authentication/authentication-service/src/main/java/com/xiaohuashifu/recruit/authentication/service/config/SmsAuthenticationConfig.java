@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.xiaohuashifu.recruit.authentication.api.service.PhoneLoginService;
-import com.xiaohuashifu.recruit.authentication.service.provider.MessageAuthCodeAuthenticationProvider;
+import com.xiaohuashifu.recruit.authentication.api.service.SmsLoginService;
+import com.xiaohuashifu.recruit.authentication.service.provider.SmsAuthenticationProvider;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -17,16 +17,16 @@ import org.springframework.stereotype.Component;
  * @create: 2020/11/11 20:28
  */
 @Component
-public class MessageAuthCodeAuthenticationConfig
+public class SmsAuthenticationConfig
         extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     @Reference
-    private PhoneLoginService phoneLoginService;
+    private SmsLoginService phoneLoginService;
     @Reference
     private UserService userService;
 
     @Override
     public void configure(HttpSecurity http) {
-        http.authenticationProvider(new MessageAuthCodeAuthenticationProvider(phoneLoginService, userService));
+        http.authenticationProvider(new SmsAuthenticationProvider(phoneLoginService, userService));
     }
 
 }

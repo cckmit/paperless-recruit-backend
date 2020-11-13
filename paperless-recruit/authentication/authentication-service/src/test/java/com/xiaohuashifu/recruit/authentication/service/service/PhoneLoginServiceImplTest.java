@@ -1,11 +1,9 @@
 package com.xiaohuashifu.recruit.authentication.service.service;
 
-import com.xiaohuashifu.recruit.authentication.api.service.PhoneLoginService;
+import com.xiaohuashifu.recruit.authentication.api.service.SmsLoginService;
 import com.xiaohuashifu.recruit.authentication.service.AuthenticationServiceApplicationTests;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -17,11 +15,11 @@ import static org.junit.Assert.*;
 public class PhoneLoginServiceImplTest extends AuthenticationServiceApplicationTests {
 
     @Reference
-    private PhoneLoginService phoneLoginService;
+    private SmsLoginService phoneLoginService;
 
     @Test
     public void createMessageAuthCodeAndSend() {
-        System.out.println(phoneLoginService.createMessageAuthCodeAndSend("15992321303"));
+        System.out.println(phoneLoginService.createSmsAuthCodeAndSend("15992321303"));
     }
 
     @Test

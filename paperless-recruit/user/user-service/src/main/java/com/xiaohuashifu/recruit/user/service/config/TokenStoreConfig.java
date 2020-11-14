@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.xiaohuashifu.recruit.authentication.api.service.JwtSigningKeyService;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -17,11 +18,8 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @Configuration
 public class TokenStoreConfig {
 
-    /**
-     * jwt的签名密钥
-     */
-    @Value("${jwt.signingKey}")
-    private String signingKey;
+    @Reference
+    private JwtSigningKeyService jwtSigningKeyService;
 
     /**
      * 使用JWT的令牌，用于替换默认UUID的令牌，即access_token
@@ -47,7 +45,7 @@ public class TokenStoreConfig {
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
         // 签名密钥
-        jwtAccessTokenConverter.setSigningKey(signingKey);
+        jwtAccessTokenConverter.setSigningKey(jwtSigningKeyService.getSigningKey());
         return jwtAccessTokenConverter;
     }
 

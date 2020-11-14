@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final Result<UserDTO> getUserResult = userService.getUserByUsername(username);
         if (!getUserResult.isSuccess()) {
-            // TODO: 2020/11/10 这里要处理获取用户失败的情况
+           return null;
         }
 
         final UserDTO userDTO = getUserResult.getData();
@@ -53,8 +52,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         final List<SimpleGrantedAuthority> authorityList = permissionDTOList.stream()
                 .map(permissionDTO -> new SimpleGrantedAuthority(permissionDTO.getPermissionName()))
                 .collect(Collectors.toList());
-//        permissionDTOList.stream().map(PermissionGrantedAuthority::new).collect(Collectors.toList())
         return new User(username, userDTO.getPassword(), userDTO.getAvailable(), true,
-                true, true, Collections.singletonList(new SimpleGrantedAuthority("admin")));
+                true, true, authorityList);
     }
 }

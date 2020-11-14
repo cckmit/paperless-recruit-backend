@@ -15,8 +15,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
  */
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true, jsr250Enabled = true)
-// TODO: 2020/11/14 了解一下这个注解含义
-//@EnableGlobalAuthentication
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {

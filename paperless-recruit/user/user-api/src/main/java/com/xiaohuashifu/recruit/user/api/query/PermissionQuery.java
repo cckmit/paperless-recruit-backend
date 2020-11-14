@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class PermissionQuery implements Serializable {
 
-    private Integer pageNum = 1;
-    private Integer pageSize = 10;
+    private Long pageNum = 1L;
+    private Long pageSize = 10L;
     private List<Long> idList;
     private Long id;
     private Long parentPermissionId;
@@ -24,19 +24,19 @@ public class PermissionQuery implements Serializable {
     public PermissionQuery() {
     }
 
-    public Integer getPageNum() {
+    public Long getPageNum() {
         return pageNum;
     }
 
-    public void setPageNum(Integer pageNum) {
+    public void setPageNum(Long pageNum) {
         this.pageNum = pageNum;
     }
 
-    public Integer getPageSize() {
+    public Long getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(Integer pageSize) {
+    public void setPageSize(Long pageSize) {
         this.pageSize = pageSize;
     }
 
@@ -104,8 +104,8 @@ public class PermissionQuery implements Serializable {
 
 
     public static final class Builder {
-        private Integer pageNum = 1;
-        private Integer pageSize = 10;
+        private Long pageNum = 1L;
+        private Long pageSize = 10L;
         private List<Long> idList;
         private Long id;
         private Long parentPermissionId;
@@ -116,12 +116,12 @@ public class PermissionQuery implements Serializable {
         public Builder() {
         }
 
-        public Builder pageNum(Integer pageNum) {
+        public Builder pageNum(Long pageNum) {
             this.pageNum = pageNum;
             return this;
         }
 
-        public Builder pageSize(Integer pageSize) {
+        public Builder pageSize(Long pageSize) {
             this.pageSize = pageSize;
             return this;
         }

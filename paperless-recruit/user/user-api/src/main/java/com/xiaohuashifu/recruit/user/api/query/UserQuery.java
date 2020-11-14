@@ -11,8 +11,8 @@ import java.io.Serializable;
  */
 public class UserQuery implements Serializable {
 
-    private Integer pageNum = 1;
-    private Integer pageSize = 10;
+    private Long pageNum = 1L;
+    private Long pageSize = 10L;
     private Long id;
     private String username;
     private String phone;
@@ -22,19 +22,19 @@ public class UserQuery implements Serializable {
     public UserQuery() {
     }
 
-    public Integer getPageNum() {
+    public Long getPageNum() {
         return pageNum;
     }
 
-    public void setPageNum(Integer pageNum) {
+    public void setPageNum(Long pageNum) {
         this.pageNum = pageNum;
     }
 
-    public Integer getPageSize() {
+    public Long getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(Integer pageSize) {
+    public void setPageSize(Long pageSize) {
         this.pageSize = pageSize;
     }
 
@@ -93,8 +93,8 @@ public class UserQuery implements Serializable {
 
 
     public static final class Builder {
-        private Integer pageNum = 1;
-        private Integer pageSize = 10;
+        private Long pageNum = 1L;
+        private Long pageSize = 10L;
         private Long id;
         private String username;
         private String phone;
@@ -104,12 +104,12 @@ public class UserQuery implements Serializable {
         public Builder() {
         }
 
-        public Builder pageNum(Integer pageNum) {
+        public Builder pageNum(Long pageNum) {
             this.pageNum = pageNum;
             return this;
         }
 
-        public Builder pageSize(Integer pageSize) {
+        public Builder pageSize(Long pageSize) {
             this.pageSize = pageSize;
             return this;
         }

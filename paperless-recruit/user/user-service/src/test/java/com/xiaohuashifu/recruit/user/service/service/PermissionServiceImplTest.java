@@ -44,6 +44,6 @@ public class PermissionServiceImplTest extends UserServiceApplicationTests {
 
     @Test
     public void getPermission() {
-        System.out.println(permissionService.getPermission(new PermissionQuery.Builder().pageSize(10000).build()));
+        System.out.println(permissionService.getPermission(new PermissionQuery.Builder().pageSize(10000L).build()));
     }
 }

@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // 不校验改，否则资源服务器访问时报 403 错误
+        // 不校验，否则资源服务器访问时报 403 错误
         web.ignoring().antMatchers("/oauth/check_token");
     }
 

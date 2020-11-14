@@ -22,7 +22,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('user')")
     public Object getUser(Long id) {
         return userService.getUser(id);
     }

@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
+import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
 
@@ -16,4 +17,6 @@ public interface PermissionMapper {
     List<PermissionDO> getPermissionListByRoleIdList(List<Long> roleIdList);
 
     List<PermissionDO> getPermissionByUserId(Long userId);
+
+    List<PermissionDO> getPermission(PermissionQuery query);
 }

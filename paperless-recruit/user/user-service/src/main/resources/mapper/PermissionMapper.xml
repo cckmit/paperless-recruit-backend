@@ -31,4 +31,34 @@
             left join permission p on rp.permission_id = p.id
         where u.id = #{userId}
     </select>
+    <select id="getPermission" resultType="permission">
+        select
+            <include refid="permission"/>
+        from permission
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="idList != null">
+                and id in (
+                <foreach collection="idList"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="parentPermissionId != null">
+                and parent_permission_id = #{parentPermissionId}
+            </if>
+            <if test="permissionName != null">
+                and permission_name like "%"#{permissionName}"%"
+            </if>
+            <if test="authorizationUrl != null">
+                and authorization_url like "%"#{authorizationUrl}"%"
+            </if>
+            <if test="available != null">
+                and available = #{available}
+            </if>
+        </where>
+    </select>
+
 </mapper>

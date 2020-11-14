@@ -1,20 +1,13 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
-import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
-import org.hibernate.validator.constraints.ScriptAssert;
-import org.hibernate.validator.constraints.URL;
+import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -49,6 +42,16 @@ public interface PermissionService {
      */
     default Result<List<PermissionDTO>> getPermissionByUserId(
             @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The userId must not be null.") Long userId) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 查询权限
+     *
+     * @return 权限列表
+     */
+    default Result<List<PermissionDTO>> getPermission(
+            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The query must not be null.") PermissionQuery query) {
         throw new UnsupportedOperationException();
     }
 }

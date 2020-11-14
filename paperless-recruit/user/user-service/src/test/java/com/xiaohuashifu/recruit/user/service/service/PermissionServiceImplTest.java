@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.service.UserServiceApplicationTests;
@@ -39,5 +40,10 @@ public class PermissionServiceImplTest extends UserServiceApplicationTests {
     @Test
     public void getPermissionByUserId() {
         System.out.println(permissionService.getPermissionByUserId(1L));
+    }
+
+    @Test
+    public void getPermission() {
+        System.out.println(permissionService.getPermission(new PermissionQuery.Builder().pageSize(10000).build()));
     }
 }

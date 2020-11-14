@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
+import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import org.apache.dubbo.config.annotation.Service;
@@ -55,6 +56,20 @@ public class PermissionServiceImpl implements PermissionService {
     public Result<List<PermissionDTO>> getPermissionByUserId(Long userId) {
         return Result.success(permissionMapper
                 .getPermissionByUserId(userId)
+                .stream()
+                .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
+                .collect(Collectors.toList()));
+    }
+
+    /**
+     * 查询权限
+     *
+     * @return 权限列表
+     */
+    @Override
+    public Result<List<PermissionDTO>> getPermission(PermissionQuery query) {
+        return Result.success(permissionMapper
+                .getPermission(query)
                 .stream()
                 .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
                 .collect(Collectors.toList()));

@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.authentication.api.service;
+package com.xiaohuashifu.recruit.user.api.service;
 
 /**
  * 描述：获取RoleHierarchy的setHierarchy方法的参数的字符串的服务

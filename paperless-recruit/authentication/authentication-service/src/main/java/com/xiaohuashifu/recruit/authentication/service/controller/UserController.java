@@ -1,6 +1,8 @@
 package com.xiaohuashifu.recruit.authentication.service.controller;
 
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
+import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,9 @@ public class UserController {
     @Reference
     private UserService userService;
 
+    @Reference
+    private RoleService roleService;
+
     @GetMapping("index")
     public Object index(Authentication authentication) {
         return authentication;
@@ -53,5 +58,14 @@ public class UserController {
     @GetMapping("test2")
     public Object test2() {
         return null;
+    }
+
+    @GetMapping("test3")
+    public Object test3() {
+        return roleService.saveRole(new RoleDTO.Builder()
+                .parentRoleId(-1L)
+                .roleName("role")
+                .description("超级权限")
+                .available(true).build());
     }
 }

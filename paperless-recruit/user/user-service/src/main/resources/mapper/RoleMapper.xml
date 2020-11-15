@@ -8,6 +8,17 @@
     <sql id="r_role">
         r.id, r.parent_role_id, r.role_name, r.description, r.is_available as available, r.create_time, r.update_time
     </sql>
+    <insert id="saveRole" keyProperty="id">
+        insert into role(parent_role_id, role_name, description, is_available)
+        values(#{parentRoleId}, #{roleName}, #{description}, #{available})
+    </insert>
+
+    <select id="getRole" resultType="role">
+        select
+        <include refid="role"/>
+        from role
+        where id = #{id}
+    </select>
 
     <select id="getRoleListByUserId" resultType="role">
         select
@@ -15,5 +26,7 @@
         from user_role as ur left join role as r on ur.role_id = r.id
         where ur.user_id = #{userId}
     </select>
+
+
 
 </mapper>

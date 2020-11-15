@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER;
 import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER;
@@ -62,13 +64,12 @@ public class CustomValidationFilter implements Filter {
             } catch (ConstraintViolationException e) {
                 Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
                 logger.info("校验错误详情：{}", constraintViolations);
-                // 参数校验出错
-                if (constraintViolations.size() > 0) {
-                    // 把参数绑定出错结果封装成Result对象返回
-                    String message = e.getConstraintViolations().iterator().next().getMessage();
-                    return AsyncRpcResult.newDefaultAsyncResult(assembleErrorMessageToErrorResponse(message), invocation);
-                }
-
+                final List<CustomConstraintViolation> collect = constraintViolations.stream()
+                        .map(CustomConstraintViolation::buildCustomConstraintViolation)
+                        .collect(Collectors.toList());
+                return AsyncRpcResult.newDefaultAsyncResult(
+                        com.xiaohuashifu.recruit.common.result.Result.fail(
+                                ErrorCode.INVALID_PARAMETER, collect), invocation);
             } catch (ValidationException e) {
                 return AsyncRpcResult.newDefaultAsyncResult(new ValidationException(e.getMessage()), invocation);
             } catch (Throwable t) {
@@ -76,26 +77,6 @@ public class CustomValidationFilter implements Filter {
             }
         }
         return invoker.invoke(invocation);
-    }
-
-    /**
-     * 把错误信息装配成ErrorResponse
-     * @param errorMessage String
-     * @return ErrorResponse
-     */
-    private com.xiaohuashifu.recruit.common.result.Result<Object> assembleErrorMessageToErrorResponse(String errorMessage) {
-        int idx = errorMessage.indexOf(":");
-        //没有分隔符，表示只有错误码，直接返回
-        if (idx == -1) {
-            ErrorCode errorCode = ErrorCode.valueOf(errorMessage);
-            return com.xiaohuashifu.recruit.common.result.Result.fail(errorCode, errorCode.getMessage());
-        }
-
-        //有分隔符，获取错误信息进行填充
-        String error = errorMessage.substring(0, idx);
-        String message = errorMessage.substring(idx + 1);
-        ErrorCode errorCode = ErrorCode.valueOf(error);
-        return com.xiaohuashifu.recruit.common.result.Result.fail(errorCode, message.trim());
     }
 
 }

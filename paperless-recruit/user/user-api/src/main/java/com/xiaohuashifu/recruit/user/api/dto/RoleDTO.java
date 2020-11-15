@@ -1,8 +1,13 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
 import com.xiaohuashifu.recruit.common.group.Group;
+import com.xiaohuashifu.recruit.common.group.GroupSave;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
+import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -13,17 +18,21 @@ import java.time.LocalDateTime;
  * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
+@Validated
 public class RoleDTO implements Serializable {
-    @Id(groups = {Group.class})
+    @Min(value = 1)
     private Long id;
 
-    @Id(groups = {Group.class})
+    @Min(value = 1)
+    @NotNull(groups = {GroupSave.class})
     private Long parentRoleId;
 
-    // TODO: 2020/11/12 这里可以定义角色名校验注解
+    @Size(min = 1, max = 64)
+    @NotNull(groups = {GroupSave.class})
     private String roleName;
 
-    // TODO: 2020/11/12 这里可以定义校验注解
+    @Size(min = 1, max = 200)
+    @NotNull(groups = {GroupSave.class})
     private String description;
 
     private Boolean available;
@@ -34,6 +43,7 @@ public class RoleDTO implements Serializable {
 
     public RoleDTO() {
     }
+    @Id
 
     public RoleDTO(Long id, Long parentRoleId, String roleName, String description, Boolean available,
                    LocalDateTime createTime, LocalDateTime updateTime) {

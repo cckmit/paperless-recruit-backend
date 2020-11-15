@@ -1,10 +1,12 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
+import com.xiaohuashifu.recruit.common.group.GroupSave;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -26,6 +28,20 @@ public interface RoleService {
      */
     default Result<List<RoleDTO>> getRoleListByUserId(
             @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The userId must be not null.") Long userId) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     *
+     * @param roleDTO
+     * @return
+     */
+    default Result<RoleDTO> saveRole(@Validated(GroupSave.class) RoleDTO roleDTO) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    default Result<RoleDTO> getRole(Long id) {
         throw new UnsupportedOperationException();
     }
 }

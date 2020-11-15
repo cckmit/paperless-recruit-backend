@@ -30,31 +30,10 @@ public class Result<T> implements Serializable {
     /**
      * 错误简短信息
      */
-    private String message;
+    private Object message;
 
     private Result(Boolean success) {
         this.success = success;
-    }
-
-    private Result(Boolean success, T data) {
-        this(success);
-        this.data = data;
-    }
-
-    private Result(Boolean success, ErrorCode errorCode) {
-        this(success);
-        this.errorCode = errorCode;
-    }
-
-    private Result(Boolean success, String message) {
-        this(success);
-        this.message = message;
-    }
-
-    private Result(Boolean success, ErrorCode errorCode, String message) {
-        this(success);
-        this.errorCode = errorCode;
-        this.message = message;
     }
 
     /**
@@ -63,7 +42,7 @@ public class Result<T> implements Serializable {
      * @return Result
      */
     public static <T> Result<T> success() {
-        return new Result<>(true, "OK");
+        return new Result<>(true);
     }
 
     /**
@@ -73,20 +52,10 @@ public class Result<T> implements Serializable {
      * @return Result<T>
      */
     public static <T> Result<T> success(T data) {
-        return new Result<>(true, data);
+        final Result<T> result = new Result<>(true);
+        result.setData(data);
+        return result;
     }
-
-    /**
-     * 成功调用时的构造方法
-     *
-     * @param format 格式化字符串
-     * @param args 参数
-     * @return Result<T>
-     */
-    public static <T> Result<T> success(String format, Object... args) {
-        return new Result<>(true, MessageFormat.format(format, args));
-    }
-
 
     /**
      * 失败调用时的构造方法
@@ -95,8 +64,11 @@ public class Result<T> implements Serializable {
      * @param message 错误简短信息
      * @return Result<T>
      */
-    public static <T> Result<T> fail(ErrorCode errorCode, String message) {
-        return new Result<>(false, errorCode, message);
+    public static <T> Result<T> fail(ErrorCode errorCode, Object message) {
+        final Result<T> result = new Result<>(false);
+        result.setErrorCode(errorCode);
+        result.setMessage(message);
+        return result;
     }
 
     /**
@@ -108,7 +80,10 @@ public class Result<T> implements Serializable {
      * @return Result<T>
      */
     public static <T> Result<T> fail(ErrorCode errorCode, String format, Object... args) {
-        return new Result<>(false, errorCode, MessageFormat.format(format, args));
+        final Result<T> result = new Result<>(false);
+        result.setErrorCode(errorCode);
+        result.setMessage(MessageFormat.format(format, args));
+        return result;
     }
 
     /**
@@ -118,7 +93,9 @@ public class Result<T> implements Serializable {
      * @return Result<T>
      */
     public static <T> Result<T> fail(ErrorCode errorCode) {
-        return new Result<>(false, errorCode);
+        final Result<T> result = new Result<>(false);
+        result.setErrorCode(errorCode);
+        return result;
     }
 
     /**
@@ -128,7 +105,10 @@ public class Result<T> implements Serializable {
      * @return Result<T1, T2>
      */
     public static <T1, T2> Result<T1> fail(Result<T2> result) {
-        return new Result<>(false, result.getErrorCode(), result.getMessage());
+        final Result<T1> result1 = new Result<>(false);
+        result1.setErrorCode(result.getErrorCode());
+        result1.setMessage(result.getMessage());
+        return result1;
     }
 
     public Boolean isSuccess() {
@@ -155,11 +135,11 @@ public class Result<T> implements Serializable {
         this.errorCode = errorCode;
     }
 
-    public String getMessage() {
+    public Object getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(Object message) {
         this.message = message;
     }
 

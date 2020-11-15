@@ -110,4 +110,64 @@ public class RoleDO {
                 '}';
     }
 
+
+    public static final class Builder {
+        private Long id;
+        private Long parentRoleId;
+        private String roleName;
+        private String description;
+        private Boolean available;
+        private LocalDateTime createTime;
+        private LocalDateTime updateTime;
+
+        public Builder() {
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder parentRoleId(Long parentRoleId) {
+            this.parentRoleId = parentRoleId;
+            return this;
+        }
+
+        public Builder roleName(String roleName) {
+            this.roleName = roleName;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder available(Boolean available) {
+            this.available = available;
+            return this;
+        }
+
+        public Builder createTime(LocalDateTime createTime) {
+            this.createTime = createTime;
+            return this;
+        }
+
+        public Builder updateTime(LocalDateTime updateTime) {
+            this.updateTime = updateTime;
+            return this;
+        }
+
+        public RoleDO build() {
+            RoleDO roleDO = new RoleDO();
+            roleDO.setId(id);
+            roleDO.setParentRoleId(parentRoleId);
+            roleDO.setRoleName(roleName);
+            roleDO.setDescription(description);
+            roleDO.setAvailable(available);
+            roleDO.setCreateTime(createTime);
+            roleDO.setUpdateTime(updateTime);
+            return roleDO;
+        }
+    }
 }

@@ -12,5 +12,9 @@ import java.util.List;
  * @create: 2020/11/12 20:44
  */
 public interface RoleMapper {
+
+    RoleDO getRole(Long id);
+
     List<RoleDO> getRoleListByUserId(Long userId);
+    int saveRole(RoleDO roleDO);
 }

@@ -70,7 +70,7 @@ public class UserServiceImplTest extends UserServiceApplicationTests {
 
     @Test
     public void updatePhone() {
-        final Result<UserDTO> updatePhoneResult = userService.updatePhone(1L, "159923213");
+        final Result<UserDTO> updatePhoneResult = userService.updatePhone(1L, "15992321302");
         assertTrue(updatePhoneResult.isSuccess());
     }
 

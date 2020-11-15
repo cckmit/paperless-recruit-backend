@@ -31,7 +31,7 @@ public interface RoleService {
     }
 
     /**
-     * 删除角色
+     * 删除角色，只允许没有子角色的角色删除
      *
      * @param id 角色编号
      * @return Result<Void>
@@ -94,7 +94,7 @@ public interface RoleService {
     }
 
     /**
-     * 禁用角色
+     * 禁用角色（且子角色可用状态也被禁用，递归禁用）
      *
      * @param id 角色编号
      * @return Result<RoleDTO> 禁用后的角色对象
@@ -104,7 +104,7 @@ public interface RoleService {
     }
 
     /**
-     * 解禁角色
+     * 解禁角色（且子角色可用状态也被解禁，递归解禁）
      *
      * @param id 角色编号
      * @return Result<RoleDTO> 解禁后的角色对象
@@ -114,13 +114,13 @@ public interface RoleService {
     }
 
     /**
-     * 设置父角色
+     * 设置父角色，且可用状态更新为与父角色相同（递归更新）
      *
      * @param id 角色编号
      * @param parentRoleId 父角色编号
      * @return Result<RoleDTO> 设置父角色后的角色对象
      */
-    default Result<RoleDTO> enableRole(@NotNull @Id Long id, @NotNull @Id Long parentRoleId) {
+    default Result<RoleDTO> setParentRole(@NotNull @Id Long id, @NotNull @Id Long parentRoleId) {
         throw new UnsupportedOperationException();
     }
 

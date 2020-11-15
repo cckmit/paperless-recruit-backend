@@ -1,22 +1,17 @@
 package com.xiaohuashifu.recruit.authentication.service.controller;
 
-import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotBlank;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -64,7 +59,7 @@ public class UserController {
     public Object test3() {
         return roleService.saveRole(new RoleDTO.Builder()
                 .parentRoleId(-1L)
-                .roleName("role")
+                .roleName(null)
                 .description("超级权限")
                 .available(true).build());
     }

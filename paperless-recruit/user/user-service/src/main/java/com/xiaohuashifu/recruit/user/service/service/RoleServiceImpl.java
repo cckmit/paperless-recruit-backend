@@ -1,18 +1,14 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
-import com.xiaohuashifu.recruit.common.group.GroupSave;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.service.dao.RoleMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +38,7 @@ public class RoleServiceImpl implements RoleService {
      * @return 用户的角色列表
      */
     @Override
-    public Result<List<RoleDTO>> getRoleListByUserId(@Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The userId must be not null.") Long userId) {
+    public Result<List<RoleDTO>> getRoleListByUserId(Long userId) {
         return Result.success(
                 roleMapper
                         .getRoleListByUserId(userId)
@@ -51,6 +47,12 @@ public class RoleServiceImpl implements RoleService {
                         .collect(Collectors.toList()));
     }
 
+    /**
+     * 创建角色
+     *
+     * @param roleDTO 需要parentRoleId，roleName，description和available
+     * @return Result<RoleDTO>
+     */
     @Override
     public Result<RoleDTO> saveRole(RoleDTO roleDTO) {
         final RoleDO roleDO = new RoleDO.Builder()
@@ -66,6 +68,12 @@ public class RoleServiceImpl implements RoleService {
         return getRole(roleDO.getId());
     }
 
+    /**
+     * 获取角色
+     * @param id 角色编号
+     * @return Result<RoleDTO>
+     */
+    @Override
     public Result<RoleDTO> getRole(Long id) {
         final RoleDO role = roleMapper.getRole(id);
         if (role == null) {

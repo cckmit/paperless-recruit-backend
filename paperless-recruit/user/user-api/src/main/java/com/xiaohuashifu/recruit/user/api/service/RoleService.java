@@ -1,12 +1,9 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
-import com.xiaohuashifu.recruit.common.group.GroupSave;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -17,7 +14,6 @@ import java.util.List;
  * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
-@Validated
 public interface RoleService {
     /**
      * 获取用户角色服务
@@ -26,22 +22,29 @@ public interface RoleService {
      * @param userId 用户id
      * @return 用户的角色列表
      */
-    default Result<List<RoleDTO>> getRoleListByUserId(
-            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The userId must be not null.") Long userId) {
+    default Result<List<RoleDTO>> getRoleListByUserId(@Id @NotNull Long userId) {
         throw new UnsupportedOperationException();
     }
+
+
+    @interface SaveRole{}
+    /**
+     * 创建角色
+     *
+     * @param roleDTO 需要parentRoleId，roleName，description和available
+     * @return Result<RoleDTO>
+     */
+    default Result<RoleDTO> saveRole(RoleDTO roleDTO) {
+        throw new UnsupportedOperationException();
+    }
+
 
     /**
-     *
-     * @param roleDTO
-     * @return
+     * 获取角色
+     * @param id 角色编号
+     * @return Result<RoleDTO>
      */
-    default Result<RoleDTO> saveRole(@Validated(GroupSave.class) RoleDTO roleDTO) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    default Result<RoleDTO> getRole(Long id) {
+    default Result<RoleDTO> getRole(@Id Long id) {
         throw new UnsupportedOperationException();
     }
 }

@@ -1,13 +1,10 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
-import com.xiaohuashifu.recruit.common.group.Group;
-import com.xiaohuashifu.recruit.common.group.GroupSave;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
-import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
-import org.springframework.validation.annotation.Validated;
+import com.xiaohuashifu.recruit.user.api.service.RoleService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -18,23 +15,23 @@ import java.time.LocalDateTime;
  * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
-@Validated
 public class RoleDTO implements Serializable {
-    @Min(value = 1)
+    @Id
     private Long id;
 
-    @Min(value = 1)
-    @NotNull(groups = {GroupSave.class})
+    @Id
+    @NotNull(groups = RoleService.SaveRole.class)
     private Long parentRoleId;
 
     @Size(min = 1, max = 64)
-    @NotNull(groups = {GroupSave.class})
+    @NotNull(groups = RoleService.SaveRole.class)
     private String roleName;
 
     @Size(min = 1, max = 200)
-    @NotNull(groups = {GroupSave.class})
+    @NotNull(groups = RoleService.SaveRole.class)
     private String description;
 
+    @NotNull(groups = RoleService.SaveRole.class)
     private Boolean available;
 
     private LocalDateTime createTime;
@@ -43,7 +40,6 @@ public class RoleDTO implements Serializable {
 
     public RoleDTO() {
     }
-    @Id
 
     public RoleDTO(Long id, Long parentRoleId, String roleName, String description, Boolean available,
                    LocalDateTime createTime, LocalDateTime updateTime) {

@@ -22,7 +22,7 @@ import java.lang.annotation.*;
 @Repeatable(Id.List.class)
 public @interface Id {
 
-    String message() default "INVALID_PARAMETER_VALUE_BELOW: The parameter of id cannot be negative.";
+    String message() default "The parameter of id cannot be negative.";
 
     Class<?>[] groups() default {};
 

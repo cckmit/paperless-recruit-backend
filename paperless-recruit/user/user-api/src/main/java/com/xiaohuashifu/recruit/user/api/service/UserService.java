@@ -7,7 +7,6 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -22,7 +21,6 @@ import java.util.List;
  * @email: 827032783@qq.com
  * @create: 2020/10/29 23:48
  */
-@Validated
 public interface UserService {
     /**
      * 通过id获取用户信息
@@ -30,8 +28,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUser(
-            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id) {
+    default Result<UserDTO> getUser(@NotNull @Id Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -41,8 +38,7 @@ public interface UserService {
      * @param username 用户名
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUserByUsername(
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The username must be not null.") @Username String username) {
+    default Result<UserDTO> getUserByUsername(@NotBlank @Username String username) {
         throw new UnsupportedOperationException();
     }
 
@@ -52,8 +48,7 @@ public interface UserService {
      * @param phone 手机号
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUserByPhone(
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The phone must be not null.") @Phone String phone) {
+    default Result<UserDTO> getUserByPhone(@NotBlank @Phone String phone) {
         throw new UnsupportedOperationException();
     }
 
@@ -63,8 +58,7 @@ public interface UserService {
      * @param email 邮箱
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUserByEmail(
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The email must be not null.") @Email String email) {
+    default Result<UserDTO> getUserByEmail(@NotBlank @Email String email) {
         throw new UnsupportedOperationException();
     }
 
@@ -85,9 +79,7 @@ public interface UserService {
      * @param password 密码
      * @return 新创建的用户
      */
-    default Result<UserDTO> saveUser(
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The username must be not null.") @Username String username,
-            @NotBlank(message = "INVALID_PARAMETER_IS_NULL: The password must be not null.") @Password String password) {
+    default Result<UserDTO> saveUser(@NotBlank @Username String username, @NotNull @Password String password) {
          throw new UnsupportedOperationException();
     }
 
@@ -98,9 +90,7 @@ public interface UserService {
      * @param newUsername 新用户名
      * @return 更新后的用户
      */
-    default Result<UserDTO> updateUsername(
-            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id,
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The username must be not null.") @Username String newUsername) {
+    default Result<UserDTO> updateUsername(@NotNull @Id Long id, @NotBlank @Username String newUsername) {
         throw new UnsupportedOperationException();
     }
 
@@ -111,9 +101,7 @@ public interface UserService {
      * @param newPhone 新手机号码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePhone(
-            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id,
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The phone must be not null.") @Phone String newPhone) {
+    default Result<UserDTO> updatePhone(@NotNull @Id Long id, @NotBlank @Phone String newPhone) {
         throw new UnsupportedOperationException();
     }
 
@@ -124,9 +112,7 @@ public interface UserService {
      * @param newEmail 新邮箱
      * @return 更新后的用户
      */
-    default Result<UserDTO> updateEmail(
-            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id,
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The email must be not null.") @Email String newEmail) {
+    default Result<UserDTO> updateEmail(@NotNull @Id Long id, @NotBlank @Email String newEmail) {
         throw new UnsupportedOperationException();
     }
 
@@ -137,9 +123,7 @@ public interface UserService {
      * @param newPassword 新密码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePassword(
-            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id,
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The password must be not null.") @Password String newPassword) {
+    default Result<UserDTO> updatePassword(@NotNull @Id Long id, @NotNull @Password String newPassword) {
         throw new UnsupportedOperationException();
     }
 
@@ -150,9 +134,7 @@ public interface UserService {
      * @param available 是否有效，true表示有效，false表示无效
      * @return 更新后的用户
      */
-    default Result<UserDTO> updateAvailableState(
-            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not null.") Long id,
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The available must be not null.") Boolean available) {
+    default Result<UserDTO> updateAvailableState(@NotNull @Id Long id, @NotNull Boolean available) {
         throw new UnsupportedOperationException();
     }
 

@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> getUserByUsername(String username) {
-        final UserDO user = userMapper.getUserByUsername(username);
+        final UserDO user = userMapper.getUserByUsername(username.trim());
         if (user == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> getUserByPhone(String phone) {
-        final UserDO user = userMapper.getUserByPhone(phone);
+        final UserDO user = userMapper.getUserByPhone(phone.trim());
         if (user == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> getUserByEmail(String email) {
-        final UserDO user = userMapper.getUserByEmail(email);
+        final UserDO user = userMapper.getUserByEmail(email.trim());
         if (user == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
@@ -107,21 +107,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> saveUser(String username, String password) {
         // 判断用户名是否存在
-        int count = userMapper.countUserByUsername(username);
+        int count = userMapper.countUserByUsername(username.trim());
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "Username exists.");
         }
 
         // 添加到数据库
         UserDO userDO = new UserDO.Builder()
-                .username(username)
+                .username(username.trim())
                 .password(password)
                 .build();
         count = userMapper.saveUser(userDO);
         // 添加出错，可能是并发产生的冲突，或者数据库出错
         if (count < 1) {
             return Result.fail(ErrorCode.INTERNAL_ERROR,
-                    "Save user error, username=" + username + ".");
+                    "Save user error, username=" + username.trim() + ".");
         }
 
         return getUser(userDO.getId());
@@ -137,16 +137,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> updateUsername(Long id, String newUsername) {
         // 判断用户名是否存在
-        int count = userMapper.countUserByUsername(newUsername);
+        int count = userMapper.countUserByUsername(newUsername.trim());
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New username exists.");
         }
 
         // 更新用户名
-        count = userMapper.updateUsername(id, newUsername);
+        count = userMapper.updateUsername(id, newUsername.trim());
         if (count < 1) {
             return Result.fail(ErrorCode.INTERNAL_ERROR,
-                    "Update username error, new username=" + newUsername + ".");
+                    "Update username error, new username=" + newUsername.trim() + ".");
         }
         return getUser(id);
     }
@@ -161,16 +161,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> updatePhone(Long id, String newPhone) {
         // 判断手机号码是否存在
-        int count = userMapper.countUserByPhone(newPhone);
+        int count = userMapper.countUserByPhone(newPhone.trim());
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New phone exists.");
         }
 
         // 更新手机号码
-        count = userMapper.updatePhone(id, newPhone);
+        count = userMapper.updatePhone(id, newPhone.trim());
         if (count < 1) {
             return Result.fail(ErrorCode.INTERNAL_ERROR,
-                    "Update phone error, new phone=" + newPhone + ".");
+                    "Update phone error, new phone=" + newPhone.trim() + ".");
         }
         return getUser(id);
     }
@@ -185,16 +185,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> updateEmail(Long id, String newEmail) {
         // 判断邮箱是否存在
-        int count = userMapper.countUserByEmail(newEmail);
+        int count = userMapper.countUserByEmail(newEmail.trim());
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New email exists.");
         }
 
         // 更新邮箱
-        count = userMapper.updateEmail(id, newEmail);
+        count = userMapper.updateEmail(id, newEmail.trim());
         if (count < 1) {
             return Result.fail(ErrorCode.INTERNAL_ERROR,
-                    "Update email error, new email=" + newEmail + ".");
+                    "Update email error, new email=" + newEmail.trim() + ".");
         }
         return getUser(id);
     }

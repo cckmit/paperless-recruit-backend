@@ -22,7 +22,7 @@ import java.lang.annotation.*;
 @Repeatable(SmsAuthCode.List.class)
 public @interface SmsAuthCode {
 
-    String message() default "INVALID_PARAMETER: The message auth code length is 6 and made up of digits.";
+    String message() default "The message auth code length is 6 and made up of digits.";
 
     Class<?>[] groups() default {};
 

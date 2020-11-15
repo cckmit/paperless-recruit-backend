@@ -1,12 +1,11 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
-import com.xiaohuashifu.recruit.common.group.Group;
-import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.common.validator.annotation.Password;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -19,19 +18,19 @@ import java.time.LocalDateTime;
  */
 public class UserDTO implements Serializable {
 
-    @Id(groups = {Group.class})
+    @Positive
     private Long id;
 
-    @Username(groups = {Group.class})
+    @Username
     private String username;
 
-    @Password(groups = {Group.class})
+    @Password
     private String password;
 
-    @Phone(groups = {Group.class})
+    @Phone
     private String phone;
 
-    @Email(groups = {Group.class})
+    @Email
     private String email;
 
     private Boolean available;

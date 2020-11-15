@@ -1,9 +1,7 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
-import com.xiaohuashifu.recruit.common.group.Group;
-import com.xiaohuashifu.recruit.common.validator.annotation.Id;
-import com.xiaohuashifu.recruit.common.validator.annotation.Url;
-
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -15,19 +13,19 @@ import java.time.LocalDateTime;
  * @create: 2020/11/12 19:42
  */
 public class PermissionDTO implements Serializable {
-    @Id(groups = {Group.class})
+    @Positive
     private Long id;
 
-    @Id(groups = {Group.class})
+    @Positive
     private Long parentPermissionId;
 
-    // TODO: 2020/11/12 这里可以定义角色名校验注解
+    @Size(min = 1, max = 64)
     private String permissionName;
 
-    @Url(groups = {Group.class})
+    @Size(min = 1, max = 255)
     private String authorizationUrl;
 
-    // TODO: 2020/11/12 这里可以定义校验注解
+    @Size(min = 1, max = 200)
     private String description;
 
     private Boolean available;

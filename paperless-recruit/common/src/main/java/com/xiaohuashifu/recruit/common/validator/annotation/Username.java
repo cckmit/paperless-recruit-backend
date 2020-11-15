@@ -21,7 +21,7 @@ import java.lang.annotation.*;
 @Repeatable(Username.List.class)
 public @interface Username {
 
-    String message() default "INVALID_PARAMETER_SIZE: The size of username must be between 4 to 32.";
+    String message() default "The size of username must be between 4 to 32.";
 
     Class<?>[] groups() default {};
 

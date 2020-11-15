@@ -4,7 +4,6 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -17,7 +16,6 @@ import java.util.List;
  * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
-@Validated
 public interface PermissionService {
 
     /**
@@ -27,9 +25,7 @@ public interface PermissionService {
      * @param roleIdList 角色id列表
      * @return 角色的权限列表
      */
-    default Result<List<PermissionDTO>> getPermissionByRoleIdList(
-            @NotEmpty(message = "INVALID_PARAMETER_IS_EMPTY: The roleIdList must not be empty.")
-                    List<Long> roleIdList) {
+    default Result<List<PermissionDTO>> getPermissionByRoleIdList(@NotEmpty List<Long> roleIdList) {
         throw new UnsupportedOperationException();
     }
 
@@ -40,8 +36,7 @@ public interface PermissionService {
      * @param userId 用户id
      * @return 用户的权限列表
      */
-    default Result<List<PermissionDTO>> getPermissionByUserId(
-            @Id @NotNull(message = "INVALID_PARAMETER_IS_NULL: The userId must not be null.") Long userId) {
+    default Result<List<PermissionDTO>> getPermissionByUserId(@NotNull @Id Long userId) {
         throw new UnsupportedOperationException();
     }
 
@@ -50,8 +45,7 @@ public interface PermissionService {
      *
      * @return 权限列表
      */
-    default Result<List<PermissionDTO>> getPermission(
-            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The query must not be null.") PermissionQuery query) {
+    default Result<List<PermissionDTO>> getPermission(@NotNull PermissionQuery query) {
         throw new UnsupportedOperationException();
     }
 }

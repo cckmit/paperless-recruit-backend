@@ -1,9 +1,10 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
-import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,19 +17,19 @@ import java.time.LocalDateTime;
  * @create: 2020/11/12 19:42
  */
 public class RoleDTO implements Serializable {
-    @Id
+    @Positive
     private Long id;
 
-    @Id
+    @Positive
     @NotNull(groups = RoleService.SaveRole.class)
     private Long parentRoleId;
 
     @Size(min = 1, max = 64)
-    @NotNull(groups = RoleService.SaveRole.class)
+    @NotBlank(groups = RoleService.SaveRole.class)
     private String roleName;
 
     @Size(min = 1, max = 200)
-    @NotNull(groups = RoleService.SaveRole.class)
+    @NotBlank(groups = RoleService.SaveRole.class)
     private String description;
 
     @NotNull(groups = RoleService.SaveRole.class)

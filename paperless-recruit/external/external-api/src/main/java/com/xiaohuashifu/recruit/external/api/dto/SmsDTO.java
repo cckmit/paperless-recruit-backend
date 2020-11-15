@@ -1,5 +1,10 @@
 package com.xiaohuashifu.recruit.external.api.dto;
 
+import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
+import com.xiaohuashifu.recruit.common.validator.annotation.Sms;
+import com.xiaohuashifu.recruit.external.api.service.SmsService;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -10,7 +15,12 @@ import java.io.Serializable;
  * @create: 2020/11/11 15:19
  */
 public class SmsDTO implements Serializable {
+    @NotBlank(groups = SmsService.SendSms.class)
+    @Phone
     private String phone;
+
+    @NotBlank(groups = SmsService.SendSms.class)
+    @Sms
     private String message;
 
     public SmsDTO() {
@@ -70,4 +80,5 @@ public class SmsDTO implements Serializable {
             return phoneMessageDTO;
         }
     }
+
 }

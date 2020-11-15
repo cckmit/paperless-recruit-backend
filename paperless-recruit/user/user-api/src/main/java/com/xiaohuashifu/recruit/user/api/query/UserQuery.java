@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.user.api.query;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
 /**
@@ -11,7 +13,11 @@ import java.io.Serializable;
  */
 public class UserQuery implements Serializable {
 
+    @NotNull
+    @Positive
     private Long pageNum = 1L;
+    @NotNull
+    @Positive
     private Long pageSize = 10L;
     private Long id;
     private String username;

@@ -31,23 +31,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * 获取用户角色服务
-     * 该服务会根据用户id查询用户的角色，会返回该用户所有角色
-     *
-     * @param userId 用户id
-     * @return 用户的角色列表
-     */
-    @Override
-    public Result<List<RoleDTO>> getRoleListByUserId(Long userId) {
-        return Result.success(
-                roleMapper
-                        .getRoleListByUserId(userId)
-                        .stream()
-                        .map((roleDO -> mapper.map(roleDO, RoleDTO.class)))
-                        .collect(Collectors.toList()));
-    }
-
-    /**
      * 创建角色
      *
      * @param roleDTO 需要parentRoleId，roleName，description和available
@@ -66,6 +49,23 @@ public class RoleServiceImpl implements RoleService {
             return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert role false.");
         }
         return getRole(roleDO.getId());
+    }
+
+    /**
+     * 获取用户角色服务
+     * 该服务会根据用户id查询用户的角色，会返回该用户所有角色
+     *
+     * @param userId 用户id
+     * @return 用户的角色列表
+     */
+    @Override
+    public Result<List<RoleDTO>> getRoleListByUserId(Long userId) {
+        return Result.success(
+                roleMapper
+                        .getRoleListByUserId(userId)
+                        .stream()
+                        .map((roleDO -> mapper.map(roleDO, RoleDTO.class)))
+                        .collect(Collectors.toList()));
     }
 
     /**

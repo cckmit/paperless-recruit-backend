@@ -57,10 +57,11 @@ public class UserController {
 
     @GetMapping("test3")
     public Object test3() {
-        return roleService.saveRole(new RoleDTO.Builder()
-                .parentRoleId(-1L)
-                .roleName(null)
-                .description("超级权限")
-                .available(true).build());
+//        new RoleDTO.Builder()
+//                .parentRoleId(-1L)
+//                .roleName(null)
+//                .description("超级权限")
+//                .available(true).build()
+        return roleService.saveRole(null);
     }
 }

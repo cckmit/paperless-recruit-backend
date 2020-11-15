@@ -68,7 +68,7 @@ public interface UserService {
      * @param query 查询参数
      * @return 查询结果用户列表
      */
-    default Result<List<UserDTO>> getUser(UserQuery query) {
+    default Result<List<UserDTO>> getUser(@NotNull UserQuery query) {
         throw new UnsupportedOperationException();
     }
 

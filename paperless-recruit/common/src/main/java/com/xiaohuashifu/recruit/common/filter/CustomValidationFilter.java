@@ -61,9 +61,12 @@ public class CustomValidationFilter implements Filter {
                 }
             } catch (RpcException e) {
                 throw e;
-            } catch (ConstraintViolationException e) {
+            }
+            // 添加catch ConstraintViolationException用于实现自定义的参数校验异常处理逻辑
+            catch (ConstraintViolationException e) {
                 Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
                 logger.info("校验错误详情：{}", constraintViolations);
+                // 把Set<ConstraintViolation<?>>转换成List<CustomConstraintViolation>
                 final List<CustomConstraintViolation> collect = constraintViolations.stream()
                         .map(CustomConstraintViolation::buildCustomConstraintViolation)
                         .collect(Collectors.toList());

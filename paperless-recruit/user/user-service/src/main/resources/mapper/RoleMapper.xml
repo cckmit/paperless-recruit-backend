@@ -61,13 +61,13 @@
         where ur.user_id = #{userId}
     </select>
 
-    <select id="getRoleIdListByParentRoleId" resultType="long">
+    <select id="getIdListByParentRoleId" resultType="long">
         select id
         from role
         where parent_role_id = #{parentRoleId}
     </select>
 
-    <select id="getRoleIdListByParentRoleIdAndAvailable" resultType="long">
+    <select id="getIdListByParentRoleIdAndAvailable" resultType="long">
         select id
         from role
         where parent_role_id = #{parentRoleId}

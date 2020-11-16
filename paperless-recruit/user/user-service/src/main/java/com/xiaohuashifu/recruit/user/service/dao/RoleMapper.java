@@ -34,7 +34,7 @@ public interface RoleMapper {
      * @param parentRoleId 父角色编号
      * @return 子角色编号列表
      */
-    List<Long> getRoleIdListByParentRoleId(Long parentRoleId);
+    List<Long> getIdListByParentRoleId(Long parentRoleId);
 
     /**
      * 通过父角色编号和角色状态获取角色编号列表
@@ -44,8 +44,8 @@ public interface RoleMapper {
      * @param available 角色状态
      * @return 子角色编号列表
      */
-    List<Long> getRoleIdListByParentRoleIdAndAvailable(@Param("parentRoleId") Long parentRoleId,
-                                                       @Param("available") Boolean available);
+    List<Long> getIdListByParentRoleIdAndAvailable(@Param("parentRoleId") Long parentRoleId,
+                                                   @Param("available") Boolean available);
 
     /**
      * 通过角色编号获取父角色编号

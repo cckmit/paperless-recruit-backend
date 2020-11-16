@@ -316,7 +316,7 @@ public class RoleServiceImpl implements RoleService {
      */
     private int recursiveDisableRole(Long id) {
         roleMapper.updateAvailable(id, false);
-        List<Long> roleIdList = roleMapper.getRoleIdListByParentRoleIdAndAvailable(id, true);
+        List<Long> roleIdList = roleMapper.getIdListByParentRoleIdAndAvailable(id, true);
         int count = 1;
         for (Long roleId : roleIdList) {
             count += recursiveDisableRole(roleId);
@@ -332,7 +332,7 @@ public class RoleServiceImpl implements RoleService {
      */
     private int recursiveEnableRole(Long id) {
         int count = roleMapper.updateAvailableIfUnavailable(id);
-        List<Long> roleIdList = roleMapper.getRoleIdListByParentRoleId(id);
+        List<Long> roleIdList = roleMapper.getIdListByParentRoleId(id);
         for (Long roleId : roleIdList) {
             count += recursiveEnableRole(roleId);
         }

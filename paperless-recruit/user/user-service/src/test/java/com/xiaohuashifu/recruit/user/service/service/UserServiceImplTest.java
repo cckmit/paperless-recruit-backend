@@ -4,8 +4,9 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
-import com.xiaohuashifu.recruit.user.service.UserServiceApplicationTests;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ReferenceConfig;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -17,11 +18,21 @@ import static org.junit.Assert.*;
  * @email: 827032783@qq.com
  * @create: 2020/10/30 19:53
  */
-public class UserServiceImplTest extends UserServiceApplicationTests {
+public class UserServiceImplTest {
 
-    @Reference
     private UserService userService;
 
+    @Before
+    public void before() {
+        ApplicationConfig application = new ApplicationConfig();
+        application.setName("userServiceTest");
+        ReferenceConfig<UserService> reference = new ReferenceConfig<>();
+        reference.setUrl("dubbo://172.16.28.169:20881/com.xiaohuashifu.recruit.user.api.service.UserService");
+        reference.setApplication(application);
+        reference.setInterface(UserService.class);
+        userService = reference.get();
+    }
+    
     @Test
     public void getUser() {
 //        final Result<UserDTO> user = userService.getUser(1L);
@@ -33,10 +44,6 @@ public class UserServiceImplTest extends UserServiceApplicationTests {
     public void saveUser() {
         final Result<UserDTO> saveUserResult = userService.saveUser("xhsf4", "311211");
         System.out.println(saveUserResult);
-    }
-
-    @Test
-    public void changeUser() {
     }
 
     @Test

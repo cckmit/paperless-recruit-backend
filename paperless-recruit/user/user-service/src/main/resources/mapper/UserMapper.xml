@@ -11,10 +11,38 @@
     </insert>
 
     <select id="getUser" resultType="user">
-        select
-        <include refid="user"/>
+        select <include refid="user"/>
         from user
         where id = #{id}
+    </select>
+
+    <select id="getUserByQuery" resultType="user">
+        select <include refid="user"/>
+        from user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="idList != null">
+                and id in (
+                <foreach collection="idList"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="username != null">
+                and username like "%"#{username}"%"
+            </if>
+            <if test="phone != null">
+                and phone like "%"#{phone}"%"
+            </if>
+            <if test="email != null">
+                and email like "%"#{email}"%"
+            </if>
+            <if test="available != null">
+                and is_available = #{available}
+            </if>
+        </where>
     </select>
 
     <select id="getUserByUsername" resultType="user">

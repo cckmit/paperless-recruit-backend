@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.common.validator.annotation.Password;
@@ -11,7 +12,6 @@ import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 
 /**
@@ -68,7 +68,7 @@ public interface UserService {
      * @param query 查询参数
      * @return 查询结果用户列表
      */
-    default Result<List<UserDTO>> getUser(@NotNull UserQuery query) {
+    default Result<PageInfo<UserDTO>> getUser(@NotNull UserQuery query) {
         throw new UnsupportedOperationException();
     }
 

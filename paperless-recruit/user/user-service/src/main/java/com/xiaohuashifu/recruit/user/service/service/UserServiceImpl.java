@@ -1,8 +1,10 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -11,6 +13,7 @@ import com.xiaohuashifu.recruit.user.service.pojo.do0.UserDO;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -92,9 +95,21 @@ public class UserServiceImpl implements UserService {
         return Result.success(mapper.map(user, UserDTO.class));
     }
 
+    /**
+     * 多参数查询用户信息
+     *
+     * @param query 查询参数
+     * @return 查询结果用户列表
+     */
     @Override
-    public Result<List<UserDTO>> getUser(UserQuery query) {
-        return null;
+    public Result<PageInfo<UserDTO>> getUser(UserQuery query) {
+        List<UserDO> userDOList = userMapper.getUserByQuery(query);
+        List<UserDTO> userDTOList = userDOList
+                .stream()
+                .map(userDO -> mapper.map(userDO, UserDTO.class))
+                .collect(Collectors.toList());
+        PageInfo<UserDTO> pageInfo = new PageInfo<>(userDTOList);
+        return Result.success(pageInfo);
     }
 
     /**

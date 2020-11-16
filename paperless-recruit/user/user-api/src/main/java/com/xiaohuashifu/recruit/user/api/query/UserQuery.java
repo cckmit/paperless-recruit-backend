@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.user.api.query;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 描述：
@@ -20,6 +21,7 @@ public class UserQuery implements Serializable {
     @Positive
     private Long pageSize = 10L;
     private Long id;
+    private List<Long> idList;
     private String username;
     private String phone;
     private String email;
@@ -50,6 +52,14 @@ public class UserQuery implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<Long> getIdList() {
+        return idList;
+    }
+
+    public void setIdList(List<Long> idList) {
+        this.idList = idList;
     }
 
     public String getUsername() {
@@ -90,6 +100,7 @@ public class UserQuery implements Serializable {
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", id=" + id +
+                ", idList=" + idList +
                 ", username='" + username + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
@@ -97,11 +108,11 @@ public class UserQuery implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private Long pageNum = 1L;
         private Long pageSize = 10L;
         private Long id;
+        private List<Long> idList;
         private String username;
         private String phone;
         private String email;
@@ -122,6 +133,11 @@ public class UserQuery implements Serializable {
 
         public Builder id(Long id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder idList(List<Long> idList) {
+            this.idList = idList;
             return this;
         }
 
@@ -150,6 +166,7 @@ public class UserQuery implements Serializable {
             userQuery.setPageNum(pageNum);
             userQuery.setPageSize(pageSize);
             userQuery.setId(id);
+            userQuery.setIdList(idList);
             userQuery.setUsername(username);
             userQuery.setPhone(phone);
             userQuery.setEmail(email);

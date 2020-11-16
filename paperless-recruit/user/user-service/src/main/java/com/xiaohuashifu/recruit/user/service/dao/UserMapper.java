@@ -1,7 +1,10 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
+import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.UserDO;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 描述：数据库映射层
@@ -14,6 +17,8 @@ public interface UserMapper {
     int saveUser(UserDO user);
 
     UserDO getUser(Long id);
+
+    List<UserDO> getUserByQuery(UserQuery query);
 
     UserDO getUserByUsername(String username);
 

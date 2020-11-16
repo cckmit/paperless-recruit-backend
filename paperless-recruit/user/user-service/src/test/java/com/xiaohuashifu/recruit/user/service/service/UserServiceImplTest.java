@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
+import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.UserServiceApplicationTests;
 import org.apache.dubbo.config.annotation.Reference;
@@ -23,8 +24,9 @@ public class UserServiceImplTest extends UserServiceApplicationTests {
 
     @Test
     public void getUser() {
-        final Result<UserDTO> user = userService.getUser(1L);
-        System.out.println(user);
+//        final Result<UserDTO> user = userService.getUser(1L);
+//        System.out.println(user);
+        System.out.println(userService.getUser(new UserQuery.Builder().phone("159923").build()));
     }
 
     @Test
@@ -91,7 +93,5 @@ public class UserServiceImplTest extends UserServiceApplicationTests {
         final Result<UserDTO> updateAvailableStateResult = userService.updateAvailableState(3L, false);
         assertTrue(updateAvailableStateResult.isSuccess());
     }
-
-
 
 }

@@ -32,7 +32,7 @@ public class UserServiceImplTest {
         reference.setInterface(UserService.class);
         userService = reference.get();
     }
-    
+
     @Test
     public void getUser() {
 //        final Result<UserDTO> user = userService.getUser(1L);

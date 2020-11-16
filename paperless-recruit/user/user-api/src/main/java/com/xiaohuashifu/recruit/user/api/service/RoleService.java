@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
@@ -57,7 +58,7 @@ public interface RoleService {
      * @param query 查询参数
      * @return 角色列表
      */
-    default Result<List<RoleDTO>> getRole(@NotNull RoleQuery query) {
+    default Result<PageInfo<List<RoleDTO>>> getRole(@NotNull RoleQuery query) {
         throw new UnsupportedOperationException();
     }
 

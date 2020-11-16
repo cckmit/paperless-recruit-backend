@@ -84,8 +84,6 @@ public interface UserService {
         throw new UnsupportedOperationException();
     }
 
-
-
     /**
      * 更新用户名
      *

@@ -64,4 +64,9 @@ public class UserController {
 //                .available(true).build()
         return roleService.saveRole(null);
     }
+
+    @GetMapping("test4")
+    public Object test4(Long id, String email) {
+        return userService.updateEmail(id, email);
+    }
 }

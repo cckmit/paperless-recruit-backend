@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.controller;
 
+import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +27,12 @@ public class UserController {
     @PreAuthorize("hasAuthority('get_application_form')")
     public Object getUser(Long id) {
         return userService.getUser(id);
+    }
+
+    @GetMapping("/email")
+    public Object updateEmail(String email) {
+        final Result<UserDTO> updateEmailResult = userService.updateEmail(1L, email);
+        return updateEmailResult;
     }
 
 }

@@ -66,6 +66,13 @@
         where email = #{email}
     </select>
 
+    <select id="count" resultType="int">
+        select
+        count(*)
+        from user
+        where id = #{id}
+    </select>
+
     <select id="countUserByUsername" resultType="int">
         select
         count(*)

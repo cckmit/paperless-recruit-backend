@@ -155,18 +155,23 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> updateUsername(Long id, String newUsername) {
+        // 判断用户是否存在
+        int count = userMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+        }
+
+        // 去掉用户名两边的空白符
+        newUsername = newUsername.trim();
+
         // 判断用户名是否存在
-        int count = userMapper.countUserByUsername(newUsername.trim());
+        count = userMapper.countUserByUsername(newUsername);
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New username exists.");
         }
 
         // 更新用户名
-        count = userMapper.updateUsername(id, newUsername.trim());
-        if (count < 1) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR,
-                    "Update username error, new username=" + newUsername.trim() + ".");
-        }
+        userMapper.updateUsername(id, newUsername);
         return getUser(id);
     }
 
@@ -177,20 +182,23 @@ public class UserServiceImpl implements UserService {
      * @param newPhone 新手机号码
      * @return 更新后的用户
      */
+    // TODO: 2020/11/16 这里应该让用户根据新手机号码拿到验证码，然后再把验证码和新手机号码一起发送过来进行修改
     @Override
     public Result<UserDTO> updatePhone(Long id, String newPhone) {
+        // 判断用户是否存在
+        int count = userMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+        }
+
         // 判断手机号码是否存在
-        int count = userMapper.countUserByPhone(newPhone.trim());
+        count = userMapper.countUserByPhone(newPhone);
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New phone exists.");
         }
 
         // 更新手机号码
-        count = userMapper.updatePhone(id, newPhone.trim());
-        if (count < 1) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR,
-                    "Update phone error, new phone=" + newPhone.trim() + ".");
-        }
+        userMapper.updatePhone(id, newPhone);
         return getUser(id);
     }
 
@@ -201,20 +209,26 @@ public class UserServiceImpl implements UserService {
      * @param newEmail 新邮箱
      * @return 更新后的用户
      */
+    // TODO: 2020/11/16 这里应该把验证码发送到用户的新邮件，让用户拿着验证码和新邮件一起过来修改
     @Override
     public Result<UserDTO> updateEmail(Long id, String newEmail) {
+        // 判断用户是否存在
+        int count = userMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+        }
+
+        // 去掉邮箱两边的空白符
+        newEmail = newEmail.trim();
+
         // 判断邮箱是否存在
-        int count = userMapper.countUserByEmail(newEmail.trim());
+        count = userMapper.countUserByEmail(newEmail);
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New email exists.");
         }
 
         // 更新邮箱
-        count = userMapper.updateEmail(id, newEmail.trim());
-        if (count < 1) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR,
-                    "Update email error, new email=" + newEmail.trim() + ".");
-        }
+        userMapper.updateEmail(id, newEmail);
         return getUser(id);
     }
 
@@ -228,8 +242,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> updatePassword(Long id, String newPassword) {
         // 判断用户是否存在
-        UserDO userDO = userMapper.getUser(id);
-        if (userDO == null) {
+        int count = userMapper.count(id);
+        if (count < 1) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
         }
 

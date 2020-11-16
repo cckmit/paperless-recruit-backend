@@ -26,6 +26,8 @@ public interface UserMapper {
 
     UserDO getUserByEmail(String email);
 
+    int count(Long id);
+
     int countUserByUsername(String username);
 
     int countUserByPhone(String phone);
@@ -41,4 +43,6 @@ public interface UserMapper {
     int updatePassword(@Param("id") Long id, @Param("password") String password);
 
     int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
+
+
 }

@@ -18,5 +18,5 @@ public interface PermissionMapper {
 
     List<PermissionDO> getPermissionByUserId(Long userId);
 
-    List<PermissionDO> getPermission(PermissionQuery query);
+    List<PermissionDO> getPermissionByQuery(PermissionQuery query);
 }

@@ -85,7 +85,7 @@
 
     <update id="updateAvailable">
         update user
-        set available = #{available}
+        set is_available = #{available}
         where id = #{id}
     </update>
 

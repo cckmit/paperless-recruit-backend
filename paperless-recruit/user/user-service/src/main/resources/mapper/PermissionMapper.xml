@@ -31,7 +31,8 @@
             left join permission p on rp.permission_id = p.id
         where u.id = #{userId}
     </select>
-    <select id="getPermission" resultType="permission">
+
+    <select id="getPermissionByQuery" resultType="permission">
         select
             <include refid="permission"/>
         from permission
@@ -56,7 +57,7 @@
                 and authorization_url like "%"#{authorizationUrl}"%"
             </if>
             <if test="available != null">
-                and available = #{available}
+                and is_available = #{available}
             </if>
         </where>
     </select>

@@ -1,14 +1,15 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 描述：角色服务RPC接口
@@ -32,11 +33,21 @@ public interface RoleService {
 
     /**
      * 删除角色，只允许没有子角色的角色删除
+     * 同时会删除该角色所关联的所有权限（Permission）
      *
      * @param id 角色编号
      * @return Result<Void>
      */
-    default Result<Void> deleteRole(@NotNull @Id Long id) {
+    default Result<Void> deleteRole(@NotNull @Positive Long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 获取角色
+     * @param id 角色编号
+     * @return Result<RoleDTO>
+     */
+    default Result<RoleDTO> getRole(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -57,27 +68,19 @@ public interface RoleService {
      * @param userId 用户id
      * @return 用户的角色列表
      */
-    default Result<List<RoleDTO>> getRoleListByUserId(@NotNull @Id Long userId) {
+    default Result<List<RoleDTO>> getRoleListByUserId(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 获取角色
-     * @param id 角色编号
-     * @return Result<RoleDTO>
-     */
-    default Result<RoleDTO> getRole(@NotNull @Id Long id) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * 更新角色名
+     * 更新角色名，新角色名必须不存在
      *
      * @param id 角色编号
-     * @param roleName 角色名
+     * @param newRoleName 新角色名
      * @return Result<RoleDTO> 更新后的角色对象
      */
-    default Result<RoleDTO> updateRoleName(@NotNull @Id Long id, @NotBlank @Size(min = 1, max = 64) String roleName) {
+    default Result<RoleDTO> updateRoleName(@NotNull @Positive Long id,
+                                           @NotBlank @Size(min = 1, max = 64) String newRoleName) {
         throw new UnsupportedOperationException();
     }
 
@@ -85,11 +88,11 @@ public interface RoleService {
      * 更新角色描述
      *
      * @param id 角色编号
-     * @param description 角色描述
+     * @param newDescription 新角色描述
      * @return Result<RoleDTO> 更新后的角色对象
      */
-    default Result<RoleDTO> updateDescription(@NotNull @Id Long id,
-                                              @NotBlank @Size(min = 1, max = 200) String description) {
+    default Result<RoleDTO> updateDescription(@NotNull @Positive Long id,
+                                              @NotBlank @Size(min = 1, max = 200) String newDescription) {
         throw new UnsupportedOperationException();
     }
 
@@ -97,9 +100,9 @@ public interface RoleService {
      * 禁用角色（且子角色可用状态也被禁用，递归禁用）
      *
      * @param id 角色编号
-     * @return Result<RoleDTO> 禁用后的角色对象
+     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
      */
-    default Result<RoleDTO> disableRole(@NotNull @Id Long id) {
+    default Result<Map<String, Object>> disableRole(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -107,20 +110,21 @@ public interface RoleService {
      * 解禁角色（且子角色可用状态也被解禁，递归解禁）
      *
      * @param id 角色编号
-     * @return Result<RoleDTO> 解禁后的角色对象
+     * @return Result<Map<String, Object>> 解禁的数量和解禁后的角色对象，分别对应的key为totalEnableCount和newRole
      */
-    default Result<RoleDTO> enableRole(@NotNull @Id Long id) {
+    default Result<Map<String, Object>> enableRole(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * 设置父角色，且可用状态更新为与父角色相同（递归更新）
+     * 设置parentRoleId为0表示取消父角色设置
      *
      * @param id 角色编号
      * @param parentRoleId 父角色编号
      * @return Result<RoleDTO> 设置父角色后的角色对象
      */
-    default Result<RoleDTO> setParentRole(@NotNull @Id Long id, @NotNull @Id Long parentRoleId) {
+    default Result<RoleDTO> setParentRole(@NotNull @Positive Long id, @NotNull @Positive Long parentRoleId) {
         throw new UnsupportedOperationException();
     }
 

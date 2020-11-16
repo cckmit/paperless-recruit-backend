@@ -28,14 +28,39 @@ public class RoleServiceImplTest extends UserServiceApplicationTests {
     @Test
     public void saveRole() {
         final RoleDTO roleDTO = new RoleDTO.Builder()
-                .parentRoleId(0L)
-                .roleName("root")
-                .description("超级用户")
+                .parentRoleId(8L)
+                .roleName("   test5   ")
+                .description("  测试用户5  \n")
                 .available(true).build();
         System.out.println(roleService.saveRole(roleDTO));
     }
 
     @Test
     public void getRole() {
+        System.out.println(roleService.deleteRole(7L));
+    }
+
+    @Test
+    public void deleteRole() {
+    }
+
+    @Test
+    public void updateRoleName() {
+        System.out.println(roleService.updateRoleName(8L, " test2 "));
+    }
+
+    @Test
+    public void updateDescription() {
+        System.out.println(roleService.updateDescription(8L, " 测试角色2 "));
+    }
+
+    @Test
+    public void disableRole() {
+        System.out.println(roleService.disableRole(6L));
+    }
+
+    @Test
+    public void enableRole() {
+        System.out.println(roleService.enableRole(5L));
     }
 }

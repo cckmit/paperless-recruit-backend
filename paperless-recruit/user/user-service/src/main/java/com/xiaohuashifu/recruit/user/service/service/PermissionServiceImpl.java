@@ -69,7 +69,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Result<List<PermissionDTO>> getPermission(PermissionQuery query) {
         return Result.success(permissionMapper
-                .getPermission(query)
+                .getPermissionByQuery(query)
                 .stream()
                 .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
                 .collect(Collectors.toList()));

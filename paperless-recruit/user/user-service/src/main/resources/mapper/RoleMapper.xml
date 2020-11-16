@@ -137,6 +137,12 @@
         where id = #{id}
     </update>
 
+    <update id="updateParentRoleId">
+        update role
+        set parent_role_id = #{parentRoleId}
+        where id = #{id}
+    </update>
+
     <update id="updateDescription">
         update role
         set description = #{description}

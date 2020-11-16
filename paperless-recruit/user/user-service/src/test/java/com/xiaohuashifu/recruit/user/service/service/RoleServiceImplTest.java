@@ -63,4 +63,9 @@ public class RoleServiceImplTest extends UserServiceApplicationTests {
     public void enableRole() {
         System.out.println(roleService.enableRole(5L));
     }
+
+    @Test
+    public void setParentRole() {
+        System.out.println(roleService.setParentRole(8L, 9L));
+    }
 }

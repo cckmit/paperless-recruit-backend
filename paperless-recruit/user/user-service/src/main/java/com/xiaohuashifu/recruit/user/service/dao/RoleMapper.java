@@ -83,6 +83,8 @@ public interface RoleMapper {
 
     int updateRoleName(@Param("id") Long id, @Param("roleName") String roleName);
 
+    int updateParentRoleId(@Param("id") Long id, @Param("parentRoleId") Long parentRoleId);
+
     int updateDescription(@Param("id") Long id, @Param("description") String description);
 
     int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
@@ -94,5 +96,6 @@ public interface RoleMapper {
      * @return 成功更新数量
      */
     int updateAvailableIfUnavailable(Long id);
+
 
 }

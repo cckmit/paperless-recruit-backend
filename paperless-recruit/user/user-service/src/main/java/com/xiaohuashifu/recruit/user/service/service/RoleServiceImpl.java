@@ -261,6 +261,54 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
+     * 设置父角色
+     * 设置parentRoleId为0表示取消父角色设置
+     * 如果父亲角色状态为禁用，而该角色的状态为可用，则递归更新该角色状态为禁用
+     *
+     * @param id 角色编号
+     * @param parentRoleId 父角色编号
+     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
+     */
+    @Override
+    public Result<Map<String, Object>> setParentRole(Long id, Long parentRoleId) {
+        // 判断该角色存不存在
+        RoleDO roleDO = roleMapper.getRole(id);
+        if (roleDO == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+        }
+
+        // 如果原来的父角色编号和要设置的父角色编号相同，则直接返回
+        if (roleDO.getParentRoleId().equals(parentRoleId)) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent role has not changed.");
+        }
+
+        RoleDO parentRoleDO = null;
+        // 若父角色编号不为0，则判断要设置的父亲角色是否存在
+        if (parentRoleId != 0) {
+            parentRoleDO = roleMapper.getRole(parentRoleId);
+            if (parentRoleDO == null) {
+                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This parent role not exists.");
+            }
+        }
+
+        // 设置父角色
+        roleMapper.updateParentRoleId(id, parentRoleId);
+
+        // 如果要设置的父角色编号为0（取消父角色）
+        // 或者要设置的父亲角色的状态为可用
+        // 或者要设置的父亲角色的状态为禁用且当前角色的状态也为禁用，则直接返回
+        if (parentRoleId.equals(0L) || parentRoleDO.getAvailable() || !roleDO.getAvailable()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("totalDisableCount", 0);
+            map.put("newRole", getRole(id));
+            return Result.success(map);
+        }
+
+        // 如果父亲角色状态为禁用，而该角色的状态为可用，则递归更新该角色状态为禁用
+        return disableRole(id);
+    }
+
+    /**
      * 递归的禁用角色
      *
      * @param id 角色编号

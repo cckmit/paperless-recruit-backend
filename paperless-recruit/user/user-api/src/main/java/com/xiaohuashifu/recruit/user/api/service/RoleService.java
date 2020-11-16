@@ -117,14 +117,17 @@ public interface RoleService {
     }
 
     /**
-     * 设置父角色，且可用状态更新为与父角色相同（递归更新）
+     * 设置父角色
      * 设置parentRoleId为0表示取消父角色设置
+     * 如果父亲角色状态为禁用，而该角色的状态为可用，则递归更新该角色状态为禁用
      *
      * @param id 角色编号
      * @param parentRoleId 父角色编号
-     * @return Result<RoleDTO> 设置父角色后的角色对象
+     * @return Result<Map<String, Object>> 禁用的数量和设置父角色后的角色对象，分别对应的key为totalDisableCount和newRole
+     *         这里的禁用是因为如果父角色为禁用，则该角色必须也递归的禁用
      */
-    default Result<RoleDTO> setParentRole(@NotNull @Positive Long id, @NotNull @Positive Long parentRoleId) {
+    default Result<Map<String, Object>> setParentRole(@NotNull @Positive Long id,
+                                                      @NotNull @Positive Long parentRoleId) {
         throw new UnsupportedOperationException();
     }
 

@@ -22,6 +22,18 @@ import javax.validation.constraints.Positive;
  * @create: 2020/10/29 23:48
  */
 public interface UserService {
+
+    /**
+     * 创建用户
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return 新创建的用户
+     */
+    default Result<UserDTO> saveUser(@NotBlank @Username String username, @NotNull @Password String password) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * 通过id获取用户信息
      *
@@ -72,16 +84,7 @@ public interface UserService {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * 创建用户
-     *
-     * @param username 用户名
-     * @param password 密码
-     * @return 新创建的用户
-     */
-    default Result<UserDTO> saveUser(@NotBlank @Username String username, @NotNull @Password String password) {
-         throw new UnsupportedOperationException();
-    }
+
 
     /**
      * 更新用户名
@@ -128,13 +131,22 @@ public interface UserService {
     }
 
     /**
-     * 更新用户available状态
+     * 禁用用户
      *
      * @param id 用户编号
-     * @param available 是否有效，true表示有效，false表示无效
-     * @return 更新后的用户
+     * @return 禁用后的用户
      */
-    default Result<UserDTO> updateAvailableState(@NotNull @Positive Long id, @NotNull Boolean available) {
+    default Result<UserDTO> disableUser(@NotNull @Positive Long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 解禁用户
+     *
+     * @param id 用户编号
+     * @return 解禁后的用户
+     */
+    default Result<UserDTO> enableUser(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 

@@ -6,6 +6,7 @@ import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
+import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
@@ -54,8 +55,8 @@ public class PermissionServiceImpl implements PermissionService {
      */
     @Override
     public Result<List<PermissionDTO>> getPermissionByUserId(Long userId) {
-        return Result.success(permissionMapper
-                .getPermissionByUserId(userId)
+        List<PermissionDO> permissionDOList = permissionMapper.getPermissionByUserId(userId);
+        return Result.success(permissionDOList
                 .stream()
                 .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
                 .collect(Collectors.toList()));

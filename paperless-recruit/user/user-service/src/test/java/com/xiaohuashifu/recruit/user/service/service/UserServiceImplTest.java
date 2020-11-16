@@ -84,14 +84,17 @@ public class UserServiceImplTest extends UserServiceApplicationTests {
 
     @Test
     public void updatePassword() {
-        final Result<UserDTO> updatePasswordResult = userService.updatePassword(3L, "323333");
+        final Result<UserDTO> updatePasswordResult = userService.updatePassword(7L, "123456");
         assertTrue(updatePasswordResult.isSuccess());
     }
 
     @Test
-    public void updateAvailableState() {
-        final Result<UserDTO> updateAvailableStateResult = userService.updateAvailableState(3L, false);
-        assertTrue(updateAvailableStateResult.isSuccess());
+    public void disableUser() {
+        System.out.println(userService.disableUser(7L));
     }
 
+    @Test
+    public void enableUser() {
+        System.out.println(userService.enableUser(7L));
+    }
 }

@@ -104,33 +104,6 @@
         where id = #{id} and is_available = #{available}
     </select>
 
-    <select id="countByQuery" resultType="int">
-        select count(*)
-        from role
-        <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
-            <if test="idList != null">
-                and id in (
-                <foreach collection="idList"  item="item" index="index" separator=",">
-                    #{item}
-                </foreach>
-                )
-            </if>
-            <if test="parentRoleId != null">
-                and parent_role_id = #{parentRoleId}
-            </if>
-            <if test="roleName != null">
-                and role_name like "%"#{roleName}"%"
-            </if>
-            <if test="available != null">
-                and is_available = #{available}
-            </if>
-        </where>
-    </select>
-
-
     <update id="updateRoleName">
         update role
         set role_name = #{roleName}

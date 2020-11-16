@@ -74,13 +74,6 @@ public interface RoleMapper {
 
     int countByIdAndAvailable(@Param("id") Long id, @Param("available") Boolean available);
 
-    /**
-     * 统计满足查询参数query的role数量
-     * @param query 查询参数
-     * @return 数量
-     */
-    int countByQuery(RoleQuery query);
-
     int updateRoleName(@Param("id") Long id, @Param("roleName") String roleName);
 
     int updateParentRoleId(@Param("id") Long id, @Param("parentRoleId") Long parentRoleId);

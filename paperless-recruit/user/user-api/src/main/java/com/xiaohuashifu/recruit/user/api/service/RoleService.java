@@ -58,7 +58,7 @@ public interface RoleService {
      * @param query 查询参数
      * @return 角色列表
      */
-    default Result<PageInfo<List<RoleDTO>>> getRole(@NotNull RoleQuery query) {
+    default Result<PageInfo<RoleDTO>> getRole(@NotNull RoleQuery query) {
         throw new UnsupportedOperationException();
     }
 

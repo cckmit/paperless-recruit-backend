@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.service.UserServiceApplicationTests;
 import org.apache.dubbo.config.annotation.Reference;
@@ -37,11 +38,12 @@ public class RoleServiceImplTest extends UserServiceApplicationTests {
 
     @Test
     public void getRole() {
-        System.out.println(roleService.deleteRole(7L));
+        System.out.println(roleService.getRole(new RoleQuery()));
     }
 
     @Test
     public void deleteRole() {
+        System.out.println(roleService.deleteRole(7L));
     }
 
     @Test

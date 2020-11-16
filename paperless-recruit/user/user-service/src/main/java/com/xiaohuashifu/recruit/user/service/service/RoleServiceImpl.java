@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
@@ -120,7 +121,6 @@ public class RoleServiceImpl implements RoleService {
         return Result.success(mapper.map(role, RoleDTO.class));
     }
 
-    // TODO: 2020/11/16 也许需要带分页的查询结果
     /**
      * 获取角色
      *
@@ -128,12 +128,14 @@ public class RoleServiceImpl implements RoleService {
      * @return 角色列表
      */
     @Override
-    public Result<List<RoleDTO>> getRole(RoleQuery query) {
+    public Result<PageInfo<RoleDTO>> getRole(RoleQuery query) {
         List<RoleDO> roleDOList = roleMapper.getRoleByQuery(query);
-        return Result.success(roleDOList
+        List<RoleDTO> roleDTOList = roleDOList
                 .stream()
                 .map(roleDO -> mapper.map(roleDO, RoleDTO.class))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+        PageInfo<RoleDTO> pageInfo = new PageInfo<>(roleDTOList);
+        return Result.success(pageInfo);
     }
 
     /**

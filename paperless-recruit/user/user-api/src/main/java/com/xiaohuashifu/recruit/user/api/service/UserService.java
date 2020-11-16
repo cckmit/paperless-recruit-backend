@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.user.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.common.validator.annotation.Password;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.Username;
@@ -12,6 +11,7 @@ import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 
 /**
@@ -28,7 +28,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUser(@NotNull @Id Long id) {
+    default Result<UserDTO> getUser(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -90,7 +90,7 @@ public interface UserService {
      * @param newUsername 新用户名
      * @return 更新后的用户
      */
-    default Result<UserDTO> updateUsername(@NotNull @Id Long id, @NotBlank @Username String newUsername) {
+    default Result<UserDTO> updateUsername(@NotNull @Positive Long id, @NotBlank @Username String newUsername) {
         throw new UnsupportedOperationException();
     }
 
@@ -101,7 +101,7 @@ public interface UserService {
      * @param newPhone 新手机号码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePhone(@NotNull @Id Long id, @NotBlank @Phone String newPhone) {
+    default Result<UserDTO> updatePhone(@NotNull @Positive Long id, @NotBlank @Phone String newPhone) {
         throw new UnsupportedOperationException();
     }
 
@@ -112,7 +112,7 @@ public interface UserService {
      * @param newEmail 新邮箱
      * @return 更新后的用户
      */
-    default Result<UserDTO> updateEmail(@NotNull @Id Long id, @NotBlank @Email String newEmail) {
+    default Result<UserDTO> updateEmail(@NotNull @Positive Long id, @NotBlank @Email String newEmail) {
         throw new UnsupportedOperationException();
     }
 
@@ -123,7 +123,7 @@ public interface UserService {
      * @param newPassword 新密码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePassword(@NotNull @Id Long id, @NotNull @Password String newPassword) {
+    default Result<UserDTO> updatePassword(@NotNull @Positive Long id, @NotNull @Password String newPassword) {
         throw new UnsupportedOperationException();
     }
 
@@ -134,7 +134,7 @@ public interface UserService {
      * @param available 是否有效，true表示有效，false表示无效
      * @return 更新后的用户
      */
-    default Result<UserDTO> updateAvailableState(@NotNull @Id Long id, @NotNull Boolean available) {
+    default Result<UserDTO> updateAvailableState(@NotNull @Positive Long id, @NotNull Boolean available) {
         throw new UnsupportedOperationException();
     }
 

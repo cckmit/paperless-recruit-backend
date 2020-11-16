@@ -1,12 +1,12 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.common.validator.annotation.Id;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 /**
@@ -36,7 +36,7 @@ public interface PermissionService {
      * @param userId 用户id
      * @return 用户的权限列表
      */
-    default Result<List<PermissionDTO>> getPermissionByUserId(@NotNull @Id Long userId) {
+    default Result<List<PermissionDTO>> getPermissionByUserId(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 

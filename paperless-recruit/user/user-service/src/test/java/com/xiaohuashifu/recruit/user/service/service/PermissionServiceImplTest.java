@@ -112,4 +112,9 @@ public class PermissionServiceImplTest {
     public void updateDescription() {
         System.out.println(permissionService.updateDescription(13L, "  测试3  "));
     }
+
+    @Test
+    public void disablePermission() {
+        System.out.println(permissionService.disablePermission(11L));
+    }
 }

@@ -30,6 +30,9 @@ public interface PermissionMapper {
 
     List<PermissionDO> getAllPermission();
 
+    List<Long> getIdListByParentPermissionIdAndAvailable(@Param("parentPermissionId") Long parentPermissionId,
+                                                         @Param("available") Boolean available);
+
     int count(Long id);
 
     int countByPermissionName(String permissionName);
@@ -43,4 +46,8 @@ public interface PermissionMapper {
     int updateAuthorizationUrl(@Param("id") Long id, @Param("authorizationUrl") String authorizationUrl);
 
     int updateDescription(@Param("id") Long id, @Param("description") String description);
+
+    int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
+
+
 }

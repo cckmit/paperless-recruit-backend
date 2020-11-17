@@ -17,7 +17,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -267,5 +269,47 @@ public class PermissionServiceImpl implements PermissionService {
         return getPermission(id);
     }
 
+    /**
+     * 禁用权限（且子权限可用状态也被禁用，递归禁用）
+     *
+     * @param id 权限编号
+     * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，分别对应的key为totalDisableCount和newPermission
+     */
+    @Override
+    public Result<Map<String, Object>> disablePermission(Long id) {
+        // 判断该权限存不存在
+        int count = permissionMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+        }
+
+        // 判断该权限是否已经被禁用
+        count = permissionMapper.countByIdAndAvailable(id, false);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission have bean disable.");
+        }
+
+        // 递归的禁用权限
+        int totalDisableCount = recursiveDisablePermission(id);
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalDisableCount", totalDisableCount);
+        map.put("newPermission", getPermission(id));
+        return Result.success(map);
+    }
+
+    /**
+     * 递归的禁用权限
+     *
+     * @param id 权限编号
+     * @return 总共禁用的权限数量
+     */
+    private int recursiveDisablePermission(Long id) {
+        int count = permissionMapper.updateAvailable(id, false);
+        List<Long> permissionIdList = permissionMapper.getIdListByParentPermissionIdAndAvailable(id, true);
+        for (Long permissionId : permissionIdList) {
+            count += recursiveDisablePermission(permissionId);
+        }
+        return count;
+    }
 
 }

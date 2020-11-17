@@ -92,6 +92,14 @@
         from permission
     </select>
 
+
+    <select id="getIdListByParentPermissionIdAndAvailable" resultType="long">
+        select id
+        from permission
+        where parent_permission_id = #{parentPermissionId}
+        and is_available = #{available}
+    </select>
+
     <select id="count" resultType="int">
         select count(*)
         from permission
@@ -132,6 +140,12 @@
     <update id="updateDescription">
         update permission
         set description = #{description}
+        where id = #{id}
+    </update>
+
+    <update id="updateAvailable">
+        update permission
+        set is_available = #{available}
         where id = #{id}
     </update>
 

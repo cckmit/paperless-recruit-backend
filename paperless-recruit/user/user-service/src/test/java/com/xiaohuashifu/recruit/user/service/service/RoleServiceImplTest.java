@@ -51,6 +51,11 @@ public class RoleServiceImplTest {
     }
 
     @Test
+    public void saveRolePermission() {
+        System.out.println(roleService.saveRolePermission(11L, 9L));
+    }
+
+    @Test
     public void getRole() {
         System.out.println(roleService.getRole(new RoleQuery()));
     }
@@ -63,6 +68,11 @@ public class RoleServiceImplTest {
     @Test
     public void deleteUserRole() {
         System.out.println(roleService.deleteUserRole(7L, 10L));
+    }
+
+    @Test
+    public void deleteRolePermission() {
+        System.out.println(roleService.deleteRolePermission(11L, 9L));
     }
 
     @Test

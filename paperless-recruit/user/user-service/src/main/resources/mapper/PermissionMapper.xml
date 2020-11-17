@@ -64,4 +64,11 @@
         </where>
     </select>
 
+    <select id="count" resultType="int">
+        select count(*)
+        from permission
+        where id = #{id}
+    </select>
+
+
 </mapper>

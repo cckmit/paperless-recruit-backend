@@ -19,6 +19,11 @@
         values(#{userId}, #{roleId})
     </insert>
 
+    <insert id="saveRolePermission">
+        insert into role_permission(role_id, permission_id)
+        values(#{roleId}, #{permissionId})
+    </insert>
+
     <delete id="deleteRole">
         delete from role
         where id = #{id}
@@ -28,6 +33,14 @@
         delete from role_permission
         where role_id = #{roleId}
     </delete>
+
+    <delete id="deleteRolePermissionByRoleIdAndPermissionId">
+        delete from role_permission
+        where role_id = #{roleId}
+        and permission_id = #{permissionId}
+    </delete>
+
+
 
     <delete id="deleteUserRoleByRoleId">
         delete from user_role
@@ -125,6 +138,12 @@
         select count(*)
         from user_role
         where user_id = #{userId} and role_id = #{roleId}
+    </select>
+
+    <select id="countRolePermissionByRoleIdAndPermissionId" resultType="int">
+        select count(*)
+        from role_permission
+        where role_id = #{roleId} and permission_id = #{permissionId}
     </select>
 
     <update id="updateRoleName">

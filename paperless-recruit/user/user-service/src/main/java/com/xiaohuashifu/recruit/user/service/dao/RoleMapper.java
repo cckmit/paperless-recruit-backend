@@ -19,9 +19,14 @@ public interface RoleMapper {
 
     int saveUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
+    int saveRolePermission(@Param("roleId") Long roleId, @Param("permissionId") Long permissionId);
+
     int deleteRole(Long id);
 
     int deleteRolePermissionByRoleId(Long roleId);
+
+    int deleteRolePermissionByRoleIdAndPermissionId(@Param("roleId") Long roleId,
+                                                    @Param("permissionId") Long permissionId);
 
     int deleteUserRoleByRoleId(Long roleId);
 
@@ -81,6 +86,9 @@ public interface RoleMapper {
     int countByIdAndAvailable(@Param("id") Long id, @Param("available") Boolean available);
 
     int countUserRoleByUserIdAndRoleId(@Param("userId") Long userId, @Param("roleId") Long roleId);
+
+    int countRolePermissionByRoleIdAndPermissionId(@Param("roleId") Long roleId,
+                                                   @Param("permissionId") Long permissionId);
 
     int updateRoleName(@Param("id") Long id, @Param("roleName") String roleName);
 

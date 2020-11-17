@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.user.service.dao;
 
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
 
 import java.util.List;
 
@@ -19,4 +18,6 @@ public interface PermissionMapper {
     List<PermissionDO> getPermissionByUserId(Long userId);
 
     List<PermissionDO> getPermissionByQuery(PermissionQuery query);
+
+    int count(Long id);
 }

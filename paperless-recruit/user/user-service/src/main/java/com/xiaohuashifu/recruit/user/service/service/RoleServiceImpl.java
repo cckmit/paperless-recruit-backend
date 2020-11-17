@@ -7,6 +7,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
+import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import com.xiaohuashifu.recruit.user.service.dao.RoleMapper;
 import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
@@ -29,11 +30,14 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
     private final UserMapper userMapper;
+    private final PermissionMapper permissionMapper;
     private final Mapper mapper;
 
-    public RoleServiceImpl(RoleMapper roleMapper, UserMapper userMapper, Mapper mapper) {
+    public RoleServiceImpl(RoleMapper roleMapper, UserMapper userMapper,
+                           PermissionMapper permissionMapper, Mapper mapper) {
         this.roleMapper = roleMapper;
         this.userMapper = userMapper;
+        this.permissionMapper = permissionMapper;
         this.mapper = mapper;
     }
 
@@ -105,11 +109,43 @@ public class RoleServiceImpl implements RoleService {
         // 判断该用户角色存不存在
         count = roleMapper.countUserRoleByUserIdAndRoleId(userId, roleId);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This user already has this role.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user already has this role.");
         }
 
         // 绑定用户与角色
         roleMapper.saveUserRole(userId, roleId);
+        return Result.success();
+    }
+
+    /**
+     * 创建角色权限，也就是给角色绑定权限
+     *
+     * @param roleId 角色编号
+     * @param permissionId 权限编号
+     * @return Result<Void>
+     */
+    @Override
+    public Result<Void> saveRolePermission(Long roleId, Long permissionId) {
+        // 判断该角色存不存在
+        int count = roleMapper.count(roleId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+        }
+
+        // 判断该权限存不存在
+        count = permissionMapper.count(permissionId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+        }
+
+        // 判断该角色权限存不存在
+        count = roleMapper.countRolePermissionByRoleIdAndPermissionId(roleId, permissionId);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role already has this permission.");
+        }
+
+        // 绑定角色权限
+        roleMapper.saveRolePermission(roleId, permissionId);
         return Result.success();
     }
 
@@ -169,11 +205,43 @@ public class RoleServiceImpl implements RoleService {
         // 判断该用户角色存不存在
         count = roleMapper.countUserRoleByUserIdAndRoleId(userId, roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not have this role.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not have this role.");
         }
 
         // 删除用户角色
         roleMapper.deleteUserRoleByUserIdAndRoleId(userId, roleId);
+        return Result.success();
+    }
+
+    /**
+     * 删除角色绑定的权限
+     *
+     * @param roleId 角色编号
+     * @param permissionId 权限编号
+     * @return Result<Void>
+     */
+    @Override
+    public Result<Void> deleteRolePermission(Long roleId, Long permissionId) {
+        // 判断该角色存不存在
+        int count = roleMapper.count(roleId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+        }
+
+        // 判断该权限存不存在
+        count = permissionMapper.count(permissionId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+        }
+
+        // 判断该角色权限存不存在
+        count = roleMapper.countRolePermissionByRoleIdAndPermissionId(roleId, permissionId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not have this permission.");
+        }
+
+        // 删除角色权限
+        roleMapper.deleteRolePermissionByRoleIdAndPermissionId(roleId, permissionId);
         return Result.success();
     }
 

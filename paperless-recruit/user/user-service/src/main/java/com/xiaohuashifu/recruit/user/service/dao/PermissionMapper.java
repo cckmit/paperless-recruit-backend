@@ -38,5 +38,5 @@ public interface PermissionMapper {
 
     int countByParentPermissionId(Long parentPermissionId);
 
-
+    int updatePermissionName(@Param("id") Long id, @Param("permissionName") String permissionName);
 }

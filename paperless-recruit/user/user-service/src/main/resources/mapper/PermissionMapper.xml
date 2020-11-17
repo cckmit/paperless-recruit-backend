@@ -117,5 +117,12 @@
         where parent_permission_id = #{parentPermissionId}
     </select>
 
+    <update id="updatePermissionName">
+        update permission
+        set permission_name = #{permissionName}
+        where id = #{id}
+    </update>
+
+
 
 </mapper>

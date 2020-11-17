@@ -306,14 +306,14 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Result<RoleDTO> updateRoleName(Long id, String newRoleName) {
-        // 去除角色名两边空白符
-        newRoleName = newRoleName.trim();
-
         // 判断该角色存不存在，该角色必须存在
         int count = roleMapper.count(id);
         if (count < 1) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
         }
+
+        // 去除角色名两边空白符
+        newRoleName = newRoleName.trim();
 
         // 判断新角色名存不存在，新角色名必须不存在
         count = roleMapper.countByRoleName(newRoleName);

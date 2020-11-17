@@ -98,4 +98,8 @@ public class PermissionServiceImplTest {
     }
 
 
+    @Test
+    public void updatePermissionName() {
+        System.out.println(permissionService.updatePermissionName(13L, "   test3  "));
+    }
 }

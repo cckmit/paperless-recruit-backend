@@ -13,8 +13,10 @@ import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
 import org.apache.dubbo.config.annotation.Service;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -194,5 +196,33 @@ public class PermissionServiceImpl implements PermissionService {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * 更新权限名，新权限名必须不存在
+     *
+     * @param id 权限编号
+     * @param newPermissionName 新权限名
+     * @return Result<PermissionDTO> 更新后的权限对象
+     */
+    @Override
+    public Result<PermissionDTO> updatePermissionName(Long id, String newPermissionName) {
+        // 判断该权限存不存在，该权限必须存在
+        int count = permissionMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+        }
+
+        // 去除权限名两边空白符
+        newPermissionName = newPermissionName.trim();
+
+        // 判断新权限名存不存在，新权限名必须不存在
+        count = permissionMapper.countByPermissionName(newPermissionName);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission name have been exists.");
+        }
+
+        // 更新权限名
+        permissionMapper.updatePermissionName(id, newPermissionName);
+        return getPermission(id);
+    }
 
 }

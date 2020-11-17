@@ -22,7 +22,7 @@ public class RoleServiceImplTest {
     @Before
     public void before() {
         ApplicationConfig application = new ApplicationConfig();
-        application.setName("userServiceTest");
+        application.setName("roleServiceTest");
         ReferenceConfig<RoleService> reference = new ReferenceConfig<>();
         reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.RoleService");
         reference.setApplication(application);

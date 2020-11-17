@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.user.service.dao;
 
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ import java.util.List;
  * @create: 2020/11/12 20:44
  */
 public interface PermissionMapper {
+    int savePermission(PermissionDO permissionDO);
+
     PermissionDO getPermission(Long id);
 
     List<PermissionDO> getPermissionListByRoleIdList(List<Long> roleIdList);
@@ -25,5 +28,8 @@ public interface PermissionMapper {
 
     int count(Long id);
 
+    int countByPermissionName(String permissionName);
+
+    int countByIdAndAvailable(@Param("id") Long id, @Param("available") Boolean available);
 
 }

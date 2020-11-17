@@ -11,6 +11,12 @@
         p.create_time, p.update_time
     </sql>
 
+    <insert id="savePermission" keyProperty="id">
+        insert into permission(parent_permission_id, permission_name, authorization_url, description, is_available)
+        values(#{parentPermissionId}, #{permissionName}, #{authorizationUrl}, #{description}, #{available})
+    </insert>
+
+
     <select id="getPermission" resultType="permission">
         select <include refid="permission"/>
         from permission
@@ -80,6 +86,19 @@
         select count(*)
         from permission
         where id = #{id}
+    </select>
+
+    <select id="countByPermissionName" resultType="int">
+        select count(*)
+        from permission
+        where permission_name = #{permissionName}
+    </select>
+
+    <select id="countByIdAndAvailable" resultType="int">
+        select count(*)
+        from permission
+        where id = #{id}
+        and is_available = #{available}
     </select>
 
 

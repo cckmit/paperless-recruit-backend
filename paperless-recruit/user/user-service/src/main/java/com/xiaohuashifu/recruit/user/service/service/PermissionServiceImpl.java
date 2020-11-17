@@ -34,49 +34,57 @@ public class PermissionServiceImpl implements PermissionService {
         this.mapper = mapper;
     }
 
-//    /**
-//     * 创建权限
-//     *
-//     * @param permissionDTO parentPermissionId，permissionName，authorizationUrl，description和available
-//     * @return Result<PermissionDTO>
-//     */
-//    @Override
-//    public Result<PermissionDTO> savePermission(PermissionDTO permissionDTO) {
-//        // 如果父角色编号不为0，则父角色必须存在
-//        if (permissionDTO) {
-//            RoleDO parentRoleDO = roleMapper.getRole(roleDTO.getParentRoleId());
-//            if (parentRoleDO == null) {
-//                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This parent role not exists.");
-//            }
-//        }
-//
-//        // 去掉角色名两边的空白符
-//        roleDTO.setRoleName(roleDTO.getRoleName().trim());
-//
-//        // 判断角色名存不存在，角色名必须不存在
-//        int count = roleMapper.countByRoleName(roleDTO.getRoleName());
-//        if (count > 0) {
-//            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role name have been exists.");
-//        }
-//
-//        // 如果父角色被禁用了，则该角色也应该被禁用
-//        if (!parentRoleDO.getAvailable()) {
-//            roleDTO.setAvailable(false);
-//        }
-//
-//        // 去掉角色描述两边的空白符
-//        roleDTO.setDescription(roleDTO.getDescription().trim());
-//
-//        // 保存角色
-//        RoleDO roleDO = new RoleDO.Builder()
-//                .parentRoleId(roleDTO.getParentRoleId())
-//                .roleName(roleDTO.getRoleName())
-//                .description(roleDTO.getDescription())
-//                .available(roleDTO.getAvailable())
-//                .build();
-//        roleMapper.saveRole(roleDO);
-//        return getRole(roleDO.getId());
-//    }
+    /**
+     * 创建权限
+     * 权限名必须不存在
+     * 如果父权限被禁用了，则该权限也会被禁用
+     *
+     * @param permissionDTO parentPermissionId，permissionName，authorizationUrl，description和available
+     * @return Result<PermissionDTO>
+     */
+    @Override
+    public Result<PermissionDTO> savePermission(PermissionDTO permissionDTO) {
+        // 如果父权限编号不为0，则父权限必须存在
+        if (!permissionDTO.getParentPermissionId().equals(0L)) {
+            int count = permissionMapper.count(permissionDTO.getParentPermissionId());
+            if (count < 1) {
+                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND,
+                        "This parent permission not exists.");
+            }
+        }
+
+        // 去掉权限名两边的空白符
+        permissionDTO.setPermissionName(permissionDTO.getPermissionName().trim());
+
+        // 判断权限名存不存在，权限名必须不存在
+        int count = permissionMapper.countByPermissionName(permissionDTO.getPermissionName());
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission name have been exists.");
+        }
+
+        // 如果父权限编号不为0，且被禁用了，则该权限也应该被禁用
+        if (!permissionDTO.getParentPermissionId().equals(0L)) {
+            count = permissionMapper.countByIdAndAvailable(permissionDTO.getParentPermissionId(), false);
+            if (count > 0) {
+                permissionDTO.setAvailable(false);
+            }
+        }
+
+        // 去掉权限描述和授权路径两边的空白符
+        permissionDTO.setDescription(permissionDTO.getDescription().trim());
+        permissionDTO.setAuthorizationUrl(permissionDTO.getAuthorizationUrl().trim());
+
+        // 保存权限
+        PermissionDO permissionDO = new PermissionDO.Builder()
+                .parentPermissionId(permissionDTO.getParentPermissionId())
+                .permissionName(permissionDTO.getPermissionName())
+                .authorizationUrl(permissionDTO.getAuthorizationUrl())
+                .description(permissionDTO.getDescription())
+                .available(permissionDTO.getAvailable())
+                .build();
+        permissionMapper.savePermission(permissionDO);
+        return getPermission(permissionDO.getId());
+    }
 
     /**
      * 获取权限

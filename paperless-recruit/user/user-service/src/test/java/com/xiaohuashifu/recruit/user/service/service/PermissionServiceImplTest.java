@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
@@ -9,6 +10,7 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +45,16 @@ public class PermissionServiceImplTest {
         reference1.setApplication(application1);
         reference1.setInterface(PermissionService.class);
         permissionService = reference1.get();
+    }
+
+    @Test
+    public void savePermission() {
+        System.out.println(permissionService.savePermission(new PermissionDTO.Builder()
+                .parentPermissionId(12L)
+        .permissionName("  test3  ")
+        .authorizationUrl("  /tests/test3  ")
+        .description("  测试3  ")
+        .available(true).build()));
     }
 
     @Test

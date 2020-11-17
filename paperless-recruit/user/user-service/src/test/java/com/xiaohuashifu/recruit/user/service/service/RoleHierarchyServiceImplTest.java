@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.user.api.service.RoleHierarchyService;
-import com.xiaohuashifu.recruit.user.service.UserServiceApplicationTests;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
@@ -14,7 +13,7 @@ import org.junit.Test;
  * @email: 827032783@qq.com
  * @create: 2020/11/15 00:06
  */
-public class RoleHierarchyServiceImplTest extends UserServiceApplicationTests {
+public class RoleHierarchyServiceImplTest {
 
     private RoleHierarchyService roleHierarchyService;
 

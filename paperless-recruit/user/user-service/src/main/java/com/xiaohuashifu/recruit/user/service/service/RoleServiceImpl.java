@@ -8,6 +8,7 @@ import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.service.dao.RoleMapper;
+import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
 import org.apache.dubbo.config.annotation.Service;
 
@@ -27,10 +28,12 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
+    private final UserMapper userMapper;
     private final Mapper mapper;
 
-    public RoleServiceImpl(RoleMapper roleMapper, Mapper mapper) {
+    public RoleServiceImpl(RoleMapper roleMapper, UserMapper userMapper, Mapper mapper) {
         this.roleMapper = roleMapper;
+        this.userMapper = userMapper;
         this.mapper = mapper;
     }
 
@@ -79,6 +82,38 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
+     * 创建用户角色，也就是给用户绑定角色
+     *
+     * @param userId 用户编号
+     * @param roleId 角色编号
+     * @return Result<Void>
+     */
+    @Override
+    public Result<Void> saveUserRole(Long userId, Long roleId) {
+        // 判断该用户存不存在
+        int count = userMapper.count(userId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This user not exists.");
+        }
+
+        // 判断该角色存不存在
+        count = roleMapper.count(roleId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+        }
+
+        // 判断该用户角色存不存在
+        count = roleMapper.countUserRoleByUserIdAndRoleId(userId, roleId);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This user already has this role.");
+        }
+
+        // 绑定用户与角色
+        roleMapper.saveUserRole(userId, roleId);
+        return Result.success();
+    }
+
+    /**
      * 删除角色，只允许没有子角色的角色删除
      * 同时会删除该角色所关联的所有权限（Permission）
      *
@@ -99,11 +134,46 @@ public class RoleServiceImpl implements RoleService {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "This role exists children role.");
         }
 
-        // 删除该角色所关联的权限（Permission）
+        // 删除该角色所关联的权限（Permission）的关联关系
         roleMapper.deleteRolePermissionByRoleId(id);
+
+        // 删除该角色关联的用户的关联关系
+        roleMapper.deleteUserRoleByRoleId(id);
 
         // 删除该角色
         roleMapper.deleteRole(id);
+        return Result.success();
+    }
+
+    /**
+     * 删除用户绑定的角色
+     *
+     * @param userId 用户编号
+     * @param roleId 角色编号
+     * @return Result<Void>
+     */
+    @Override
+    public Result<Void> deleteUserRole(Long userId, Long roleId) {
+        // 判断该用户存不存在
+        int count = userMapper.count(userId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This user not exists.");
+        }
+
+        // 判断该角色存不存在
+        count = roleMapper.count(roleId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+        }
+
+        // 判断该用户角色存不存在
+        count = roleMapper.countUserRoleByUserIdAndRoleId(userId, roleId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not have this role.");
+        }
+
+        // 删除用户角色
+        roleMapper.deleteUserRoleByUserIdAndRoleId(userId, roleId);
         return Result.success();
     }
 

@@ -33,13 +33,36 @@ public interface RoleService {
     }
 
     /**
+     * 创建用户角色，也就是给用户绑定角色
+     *
+     * @param userId 用户编号
+     * @param roleId 角色编号
+     * @return Result<Void>
+     */
+    default Result<Void> saveUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * 删除角色，只允许没有子角色的角色删除
-     * 同时会删除该角色所关联的所有权限（Permission）
+     * 同时会删除此角色拥有的所有权限（Permission）的关联关系
+     * 和拥有此角色的用户之间的关联关系
      *
      * @param id 角色编号
      * @return Result<Void>
      */
     default Result<Void> deleteRole(@NotNull @Positive Long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 删除用户绑定的角色
+     *
+     * @param userId 用户编号
+     * @param roleId 角色编号
+     * @return Result<Void>
+     */
+    default Result<Void> deleteUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId) {
         throw new UnsupportedOperationException();
     }
 

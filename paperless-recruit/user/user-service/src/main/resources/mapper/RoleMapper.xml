@@ -8,9 +8,15 @@
     <sql id="r_role">
         r.id, r.parent_role_id, r.role_name, r.description, r.is_available as available, r.create_time, r.update_time
     </sql>
+
     <insert id="saveRole" keyProperty="id">
         insert into role(parent_role_id, role_name, description, is_available)
         values(#{parentRoleId}, #{roleName}, #{description}, #{available})
+    </insert>
+
+    <insert id="saveUserRole">
+        insert into user_role(user_id, role_id)
+        values(#{userId}, #{roleId})
     </insert>
 
     <delete id="deleteRole">
@@ -21,6 +27,17 @@
     <delete id="deleteRolePermissionByRoleId">
         delete from role_permission
         where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteUserRoleByRoleId">
+        delete from user_role
+        where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteUserRoleByUserIdAndRoleId">
+        delete from user_role
+        where user_id = #{userId}
+        and role_id = #{roleId}
     </delete>
 
     <select id="getRole" resultType="role">
@@ -102,6 +119,12 @@
         select count(*)
         from role
         where id = #{id} and is_available = #{available}
+    </select>
+
+    <select id="countUserRoleByUserIdAndRoleId" resultType="int">
+        select count(*)
+        from user_role
+        where user_id = #{userId} and role_id = #{roleId}
     </select>
 
     <update id="updateRoleName">

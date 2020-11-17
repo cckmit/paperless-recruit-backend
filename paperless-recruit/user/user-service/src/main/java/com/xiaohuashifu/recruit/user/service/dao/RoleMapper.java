@@ -17,9 +17,15 @@ public interface RoleMapper {
 
     int saveRole(RoleDO roleDO);
 
+    int saveUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
+
     int deleteRole(Long id);
 
     int deleteRolePermissionByRoleId(Long roleId);
+
+    int deleteUserRoleByRoleId(Long roleId);
+
+    int deleteUserRoleByUserIdAndRoleId(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
     RoleDO getRole(Long id);
 
@@ -74,6 +80,8 @@ public interface RoleMapper {
 
     int countByIdAndAvailable(@Param("id") Long id, @Param("available") Boolean available);
 
+    int countUserRoleByUserIdAndRoleId(@Param("userId") Long userId, @Param("roleId") Long roleId);
+
     int updateRoleName(@Param("id") Long id, @Param("roleName") String roleName);
 
     int updateParentRoleId(@Param("id") Long id, @Param("parentRoleId") Long parentRoleId);
@@ -89,6 +97,5 @@ public interface RoleMapper {
      * @return 成功更新数量
      */
     int updateAvailableIfUnavailable(Long id);
-
 
 }

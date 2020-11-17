@@ -1,5 +1,9 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
+import com.xiaohuashifu.recruit.user.api.service.PermissionService;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -17,17 +21,22 @@ public class PermissionDTO implements Serializable {
     private Long id;
 
     @Positive
+    @NotNull(groups = PermissionService.SavePermission.class)
     private Long parentPermissionId;
 
     @Size(min = 1, max = 64)
+    @NotBlank(groups = PermissionService.SavePermission.class)
     private String permissionName;
 
     @Size(min = 1, max = 255)
+    @NotBlank(groups = PermissionService.SavePermission.class)
     private String authorizationUrl;
 
     @Size(min = 1, max = 200)
+    @NotBlank(groups = PermissionService.SavePermission.class)
     private String description;
 
+    @NotNull(groups = PermissionService.SavePermission.class)
     private Boolean available;
 
     private LocalDateTime createTime;

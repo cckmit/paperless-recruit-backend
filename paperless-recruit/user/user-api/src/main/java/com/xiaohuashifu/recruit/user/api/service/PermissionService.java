@@ -3,9 +3,7 @@ package com.xiaohuashifu.recruit.user.api.service;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
-import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 
 import javax.validation.constraints.*;
 import java.util.List;
@@ -20,36 +18,6 @@ import java.util.Map;
  */
 public interface PermissionService {
 
-    /**
-     * 获取角色权限服务
-     * 该服务会根据角色id列表查询角色的权限列表，会返回所有角色的权限列表
-     *
-     * @param roleIdList 角色id列表
-     * @return 角色的权限列表
-     */
-    default Result<List<PermissionDTO>> getPermissionByRoleIdList(@NotEmpty List<Long> roleIdList) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    /**
-     * 通过用户id获取用户权限列表
-     *
-     * @param userId 用户id
-     * @return 用户的权限列表
-     */
-    default Result<List<PermissionDTO>> getPermissionByUserId(@NotNull @Positive Long userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * 查询权限
-     *
-     * @return 权限列表
-     */
-    default Result<List<PermissionDTO>> getPermission(@NotNull PermissionQuery query) {
-        throw new UnsupportedOperationException();
-    }
 
     @interface SavePermission{}
     /**
@@ -63,125 +31,138 @@ public interface PermissionService {
     }
 
     /**
-     * 创建用户角色，也就是给用户绑定角色
+     * 删除权限，只允许没有子权限的权限删除
+     * 同时会删除与此权限关联的所有角色（Role）的关联关系
      *
-     * @param userId 用户编号
-     * @param roleId 角色编号
+     * @param id 权限编号
      * @return Result<Void>
      */
-    default Result<Void> saveUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId) {
+    default Result<Void> deletePermission(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 删除角色，只允许没有子角色的角色删除
-     * 同时会删除此角色拥有的所有权限（Permission）的关联关系
-     * 和拥有此角色的用户之间的关联关系
-     *
-     * @param id 角色编号
-     * @return Result<Void>
-     */
-    default Result<Void> deleteRole(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * 删除用户绑定的角色
-     *
-     * @param userId 用户编号
-     * @param roleId 角色编号
-     * @return Result<Void>
-     */
-    default Result<Void> deleteUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * 获取角色
-     * @param id 角色编号
+     * 获取权限
+     * @param id 权限编号
      * @return Result<RoleDTO>
      */
-    default Result<RoleDTO> getRole(@NotNull @Positive Long id) {
+    default Result<PermissionDTO> getPermission(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 获取角色
+     * 获取权限
      *
      * @param query 查询参数
-     * @return 角色列表
+     * @return 权限列表
      */
-    default Result<PageInfo<RoleDTO>> getRole(@NotNull RoleQuery query) {
+    default Result<PageInfo<PermissionDTO>> getPermission(@NotNull PermissionQuery query) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 获取用户角色服务
-     * 该服务会根据用户id查询用户的角色，会返回该用户所有角色
+     * 获取所有权限
+     *
+     * @return 权限列表
+     */
+    default Result<List<PermissionDTO>> getAllPermission() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 获取角色权限服务
+     * 该服务会根据角色id列表查询角色的权限列表，会返回所有角色的权限列表
+     *
+     * @param roleIdList 角色id列表
+     * @return 角色的权限列表
+     */
+    default Result<List<PermissionDTO>> getPermissionByRoleIdList(@NotEmpty List<Long> roleIdList) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 通过用户id获取用户权限列表
      *
      * @param userId 用户id
-     * @return 用户的角色列表
+     * @return 用户的权限列表
      */
-    default Result<List<RoleDTO>> getRoleListByUserId(@NotNull @Positive Long userId) {
+    default Result<List<PermissionDTO>> getPermissionByUserId(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 更新角色名，新角色名必须不存在
+     * 更新权限名，新权限名必须不存在
      *
-     * @param id 角色编号
-     * @param newRoleName 新角色名
-     * @return Result<RoleDTO> 更新后的角色对象
+     * @param id 权限编号
+     * @param newPermissionName 新权限名
+     * @return Result<PermissionDTO> 更新后的权限对象
      */
-    default Result<RoleDTO> updateRoleName(@NotNull @Positive Long id,
-                                           @NotBlank @Size(min = 1, max = 64) String newRoleName) {
+    default Result<PermissionDTO> updatePermissionName(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(min = 1, max = 64) String newPermissionName) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 更新角色描述
+     * 更新授权路径
      *
-     * @param id 角色编号
-     * @param newDescription 新角色描述
-     * @return Result<RoleDTO> 更新后的角色对象
+     * @param id 权限编号
+     * @param newAuthorizationUrl 新授权路径
+     * @return Result<PermissionDTO> 更新后的权限对象
      */
-    default Result<RoleDTO> updateDescription(@NotNull @Positive Long id,
-                                              @NotBlank @Size(min = 1, max = 200) String newDescription) {
+    default Result<PermissionDTO> updateAuthorizationUrl(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(min = 1, max = 255) String newAuthorizationUrl) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 禁用角色（且子角色可用状态也被禁用，递归禁用）
+     * 更新权限描述
      *
-     * @param id 角色编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
+     * @param id 权限编号
+     * @param newDescription 新权限描述
+     * @return Result<PermissionDTO> 更新后的权限对象
      */
-    default Result<Map<String, Object>> disableRole(@NotNull @Positive Long id) {
+    default Result<PermissionDTO> updateDescription(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(min = 1, max = 200) String newDescription) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 解禁角色（且子角色可用状态也被解禁，递归解禁）
+     * 禁用权限（且子权限可用状态也被禁用，递归禁用）
      *
-     * @param id 角色编号
-     * @return Result<Map<String, Object>> 解禁的数量和解禁后的角色对象，分别对应的key为totalEnableCount和newRole
+     * @param id 权限编号
+     * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，分别对应的key为totalDisableCount和newPermission
      */
-    default Result<Map<String, Object>> enableRole(@NotNull @Positive Long id) {
+    default Result<Map<String, Object>> disablePermission(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 设置父角色
-     * 设置parentRoleId为0表示取消父角色设置
-     * 如果父亲角色状态为禁用，而该角色的状态为可用，则递归更新该角色状态为禁用
+     * 解禁权限（且子权限可用状态也被解禁，递归解禁）
      *
-     * @param id 角色编号
-     * @param parentRoleId 父角色编号
-     * @return Result<Map<String, Object>> 禁用的数量和设置父角色后的角色对象，分别对应的key为totalDisableCount和newRole
-     *         这里的禁用是因为如果父角色为禁用，则该角色必须也递归的禁用
+     * @param id 权限编号
+     * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象，分别对应的key为totalEnableCount和newPermission
      */
-    default Result<Map<String, Object>> setParentRole(@NotNull @Positive Long id,
-                                                      @NotNull @Positive Long parentRoleId) {
+    default Result<Map<String, Object>> enablePermission(@NotNull @Positive Long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 设置父权限
+     * 设置parentPermissionId为0表示取消父权限设置
+     * 如果父权限状态为禁用，而该权限的状态为可用，则递归更新该权限状态为禁用
+     *
+     * @param id 权限编号
+     * @param parentPermissionId 父权限编号
+     * @return Result<Map<String, Object>>
+     *          禁用的数量和设置父权限后的权限对象，分别对应的key为totalDisableCount和newPermission
+     *          这里的禁用是因为如果父权限为禁用，则该权限必须也递归的禁用
+     */
+    default Result<Map<String, Object>> setParentPermission(
+            @NotNull @Positive Long id,
+            @NotNull @Positive Long parentPermissionId) {
         throw new UnsupportedOperationException();
     }
 }

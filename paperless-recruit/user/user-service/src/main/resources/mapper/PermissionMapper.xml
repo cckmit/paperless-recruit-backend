@@ -64,6 +64,12 @@
         </where>
     </select>
 
+    <select id="getAllPermission" resultType="permission">
+        select <include refid="permission"/>
+        from permission
+    </select>
+
+
     <select id="count" resultType="int">
         select count(*)
         from permission

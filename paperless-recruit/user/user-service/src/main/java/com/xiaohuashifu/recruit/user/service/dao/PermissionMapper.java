@@ -19,5 +19,7 @@ public interface PermissionMapper {
 
     List<PermissionDO> getPermissionByQuery(PermissionQuery query);
 
+    List<PermissionDO> getAllPermission();
+
     int count(Long id);
 }

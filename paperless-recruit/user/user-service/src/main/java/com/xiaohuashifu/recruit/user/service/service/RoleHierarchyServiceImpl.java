@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.RoleHierarchyService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -42,10 +41,9 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
      */
     @Override
     public String createRoleHierarchy() {
-        final Result<List<PermissionDTO>> getPermissionResult = permissionService.getPermission(
-                new PermissionQuery.Builder().pageSize(Long.MAX_VALUE).build());
-        final List<PermissionDTO> permissionDTOList = getPermissionResult.getData();
-        final Map<Long, String> permissionDTOMap = permissionDTOList.stream()
+        Result<List<PermissionDTO>> getAllPermissionResult = permissionService.getAllPermission();
+        List<PermissionDTO> permissionDTOList = getAllPermissionResult.getData();
+        Map<Long, String> permissionDTOMap = permissionDTOList.stream()
                 .collect(Collectors.toMap(PermissionDTO::getId, PermissionDTO::getPermissionName));
         StringBuilder roleHierarchy = new StringBuilder();
         for (PermissionDTO permissionDTO : permissionDTOList) {

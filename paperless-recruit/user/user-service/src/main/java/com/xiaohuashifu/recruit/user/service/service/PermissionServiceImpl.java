@@ -3,7 +3,6 @@ package com.xiaohuashifu.recruit.user.service.service;
 import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
@@ -28,6 +27,20 @@ public class PermissionServiceImpl implements PermissionService {
     public PermissionServiceImpl(PermissionMapper permissionMapper, Mapper mapper) {
         this.permissionMapper = permissionMapper;
         this.mapper = mapper;
+    }
+
+    /**
+     * 获取所有权限
+     *
+     * @return 权限列表
+     */
+    @Override
+    public Result<List<PermissionDTO>> getAllPermission() {
+        return Result.success(permissionMapper
+                .getAllPermission()
+                .stream()
+                .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -62,17 +75,5 @@ public class PermissionServiceImpl implements PermissionService {
                 .collect(Collectors.toList()));
     }
 
-    /**
-     * 查询权限
-     *
-     * @return 权限列表
-     */
-    @Override
-    public Result<List<PermissionDTO>> getPermission(PermissionQuery query) {
-        return Result.success(permissionMapper
-                .getPermissionByQuery(query)
-                .stream()
-                .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
-                .collect(Collectors.toList()));
-    }
+
 }

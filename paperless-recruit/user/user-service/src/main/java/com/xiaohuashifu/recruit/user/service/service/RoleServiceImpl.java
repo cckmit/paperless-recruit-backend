@@ -391,16 +391,19 @@ public class RoleServiceImpl implements RoleService {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
         }
 
-        // 不能解禁已经有效的用户
+        // 不能解禁已经有效的角色
         if (roleDO.getAvailable()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role is available.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role is available.");
         }
 
+        // 如果该角色的父角色编号不为0
         // 判断该角色的父角色是否已经被禁用，如果父角色已经被禁用，则无法解禁该角色
-        int count = roleMapper.countByIdAndAvailable(roleDO.getParentRoleId(), false);
-        if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER,
-                    "Can't enable this role, because the parent role is disable.");
+        if (!roleDO.getParentRoleId().equals(0L)) {
+            int count = roleMapper.countByIdAndAvailable(roleDO.getParentRoleId(), false);
+            if (count > 0) {
+                return Result.fail(ErrorCode.INVALID_PARAMETER,
+                        "Can't enable this role, because the parent role is disable.");
+            }
         }
 
         // 递归的解禁角色

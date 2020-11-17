@@ -30,6 +30,8 @@ public interface PermissionMapper {
 
     List<PermissionDO> getAllPermission();
 
+    List<Long> getIdListByParentPermissionId(Long parentPermissionId);
+
     List<Long> getIdListByParentPermissionIdAndAvailable(@Param("parentPermissionId") Long parentPermissionId,
                                                          @Param("available") Boolean available);
 
@@ -49,5 +51,6 @@ public interface PermissionMapper {
 
     int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
 
+    int updateAvailableIfUnavailable(Long id);
 
 }

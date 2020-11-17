@@ -92,6 +92,12 @@
         from permission
     </select>
 
+    <select id="getIdListByParentPermissionId" resultType="long">
+        select id
+        from permission
+        where parent_permission_id = #{parentPermissionId}
+    </select>
+
 
     <select id="getIdListByParentPermissionIdAndAvailable" resultType="long">
         select id
@@ -147,6 +153,13 @@
         update permission
         set is_available = #{available}
         where id = #{id}
+    </update>
+
+    <update id="updateAvailableIfUnavailable">
+        update permission
+        set is_available = true
+        where id = #{id}
+        and is_available = false
     </update>
 
 </mapper>

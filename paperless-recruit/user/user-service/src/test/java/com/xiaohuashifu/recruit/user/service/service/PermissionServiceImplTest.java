@@ -10,7 +10,6 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,5 +115,10 @@ public class PermissionServiceImplTest {
     @Test
     public void disablePermission() {
         System.out.println(permissionService.disablePermission(11L));
+    }
+
+    @Test
+    public void enablePermission() {
+        System.out.println(permissionService.enablePermission(11L));
     }
 }

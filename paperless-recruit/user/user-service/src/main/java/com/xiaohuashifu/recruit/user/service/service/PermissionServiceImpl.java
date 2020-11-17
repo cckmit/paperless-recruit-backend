@@ -5,18 +5,12 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
 import org.apache.dubbo.config.annotation.Service;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -298,6 +292,44 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     /**
+     * 解禁权限（且子权限可用状态也被解禁，递归解禁）
+     *
+     * @param id 权限编号
+     * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象，分别对应的key为totalEnableCount和newPermission
+     */
+    @Override
+    public Result<Map<String, Object>> enablePermission(Long id) {
+        // 判断该权限存不存在
+        PermissionDO permissionDO = permissionMapper.getPermission(id);
+        if (permissionDO == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+        }
+
+        // 不能解禁已经有效的权限
+        if (permissionDO.getAvailable()) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission is available.");
+        }
+
+        // 如果该权限的父权限编号不为0
+        // 判断该权限的父权限是否已经被禁用，如果父权限已经被禁用，则无法解禁该权限
+        if (!permissionDO.getParentPermissionId().equals(0L)) {
+            int count = permissionMapper.countByIdAndAvailable(permissionDO.getParentPermissionId(), false);
+            if (count > 0) {
+                return Result.fail(ErrorCode.INVALID_PARAMETER,
+                        "Can't enable this permission, because the parent permission is disable.");
+            }
+        }
+
+        // 递归的解禁权限
+        int totalEnableCount = recursiveEnablePermission(id);
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalEnableCount", totalEnableCount);
+        map.put("newPermission", getPermission(id));
+        return Result.success(map);
+    }
+
+
+    /**
      * 递归的禁用权限
      *
      * @param id 权限编号
@@ -308,6 +340,21 @@ public class PermissionServiceImpl implements PermissionService {
         List<Long> permissionIdList = permissionMapper.getIdListByParentPermissionIdAndAvailable(id, true);
         for (Long permissionId : permissionIdList) {
             count += recursiveDisablePermission(permissionId);
+        }
+        return count;
+    }
+
+    /**
+     * 递归的解禁权限
+     *
+     * @param id 权限编号
+     * @return 总共解禁的权限数量
+     */
+    private int recursiveEnablePermission(Long id) {
+        int count = permissionMapper.updateAvailableIfUnavailable(id);
+        List<Long> permissionIdList = permissionMapper.getIdListByParentPermissionId(id);
+        for (Long permissionId : permissionIdList) {
+            count += recursiveEnablePermission(permissionId);
         }
         return count;
     }

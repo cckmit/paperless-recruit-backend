@@ -41,4 +41,6 @@ public interface PermissionMapper {
     int updatePermissionName(@Param("id") Long id, @Param("permissionName") String permissionName);
 
     int updateAuthorizationUrl(@Param("id") Long id, @Param("authorizationUrl") String authorizationUrl);
+
+    int updateDescription(@Param("id") Long id, @Param("description") String description);
 }

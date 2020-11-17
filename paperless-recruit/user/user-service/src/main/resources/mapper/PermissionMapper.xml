@@ -129,5 +129,10 @@
         where id = #{id}
     </update>
 
+    <update id="updateDescription">
+        update permission
+        set description = #{description}
+        where id = #{id}
+    </update>
 
 </mapper>

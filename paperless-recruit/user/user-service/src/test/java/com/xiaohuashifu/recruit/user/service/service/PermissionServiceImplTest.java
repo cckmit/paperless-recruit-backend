@@ -107,4 +107,9 @@ public class PermissionServiceImplTest {
     public void updateAuthorizationUrl() {
         System.out.println(permissionService.updateAuthorizationUrl(13L, "  /tests/test3  \n"));
     }
+
+    @Test
+    public void updateDescription() {
+        System.out.println(permissionService.updateDescription(13L, "  测试3  "));
+    }
 }

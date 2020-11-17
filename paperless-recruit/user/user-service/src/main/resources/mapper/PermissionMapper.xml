@@ -31,7 +31,7 @@
             left join permission p on rp.permission_id = p.id
         where u.id = #{userId}
 --         这个条件是因为如果这个用户没有任何权限，不应该返回
-        and p.id &lt;&gt; null
+        and p.id is not null
     </select>
 
     <select id="getPermissionByQuery" resultType="permission">

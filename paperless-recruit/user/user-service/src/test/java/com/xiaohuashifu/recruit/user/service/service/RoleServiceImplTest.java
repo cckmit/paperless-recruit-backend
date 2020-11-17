@@ -3,11 +3,10 @@ package com.xiaohuashifu.recruit.user.service.service;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
-import com.xiaohuashifu.recruit.user.service.UserServiceApplicationTests;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ReferenceConfig;
+import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -16,10 +15,20 @@ import static org.junit.Assert.*;
  * @email: 827032783@qq.com
  * @create: 2020/11/12 21:10
  */
-public class RoleServiceImplTest extends UserServiceApplicationTests {
+public class RoleServiceImplTest {
 
-    @Reference
     private RoleService roleService;
+
+    @Before
+    public void before() {
+        ApplicationConfig application = new ApplicationConfig();
+        application.setName("userServiceTest");
+        ReferenceConfig<RoleService> reference = new ReferenceConfig<>();
+        reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.RoleService");
+        reference.setApplication(application);
+        reference.setInterface(RoleService.class);
+        roleService = reference.get();
+    }
 
     @Test
     public void getRoleListByUserId() {

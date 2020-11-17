@@ -5,8 +5,9 @@ import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
-import com.xiaohuashifu.recruit.user.service.UserServiceApplicationTests;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ReferenceConfig;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -19,13 +20,30 @@ import java.util.stream.Collectors;
  * @email: 827032783@qq.com
  * @create: 2020/11/12 21:20
  */
-public class PermissionServiceImplTest extends UserServiceApplicationTests {
+public class PermissionServiceImplTest {
 
-    @Reference
     private PermissionService permissionService;
 
-    @Reference
     private RoleService roleService;
+
+    @Before
+    public void before() {
+        ApplicationConfig application = new ApplicationConfig();
+        application.setName("roleServiceTest");
+        ReferenceConfig<RoleService> reference = new ReferenceConfig<>();
+        reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.RoleService");
+        reference.setApplication(application);
+        reference.setInterface(RoleService.class);
+        roleService = reference.get();
+
+        ApplicationConfig application1 = new ApplicationConfig();
+        application1.setName("permissionServiceTest");
+        ReferenceConfig<PermissionService> reference1 = new ReferenceConfig<>();
+        reference1.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.PermissionService");
+        reference1.setApplication(application1);
+        reference1.setInterface(PermissionService.class);
+        permissionService = reference1.get();
+    }
 
     @Test
     public void getPermissionListByRoleIdList() {
@@ -39,7 +57,7 @@ public class PermissionServiceImplTest extends UserServiceApplicationTests {
 
     @Test
     public void getPermissionByUserId() {
-        System.out.println(permissionService.getPermissionByUserId(1L));
+        System.out.println(permissionService.getPermissionByUserId(6L));
     }
 
     @Test

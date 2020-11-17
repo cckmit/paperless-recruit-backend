@@ -27,7 +27,7 @@ public class UserServiceImplTest {
         ApplicationConfig application = new ApplicationConfig();
         application.setName("userServiceTest");
         ReferenceConfig<UserService> reference = new ReferenceConfig<>();
-        reference.setUrl("dubbo://172.16.28.169:20881/com.xiaohuashifu.recruit.user.api.service.UserService");
+        reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.UserService");
         reference.setApplication(application);
         reference.setInterface(UserService.class);
         userService = reference.get();

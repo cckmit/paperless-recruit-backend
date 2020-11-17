@@ -1,12 +1,16 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
+import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
+import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
 import org.apache.dubbo.config.annotation.Service;
 
 import javax.validation.constraints.NotNull;
@@ -125,6 +129,23 @@ public class PermissionServiceImpl implements PermissionService {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(permissionDO, PermissionDTO.class));
+    }
+
+    /**
+     * 获取权限
+     *
+     * @param query 查询参数
+     * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表
+     */
+    @Override
+    public Result<PageInfo<PermissionDTO>> getPermission(PermissionQuery query) {
+        List<PermissionDO> permissionDOList = permissionMapper.getPermissionByQuery(query);
+        List<PermissionDTO> permissionDTOList = permissionDOList
+                .stream()
+                .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
+                .collect(Collectors.toList());
+        PageInfo<PermissionDTO> pageInfo = new PageInfo<>(permissionDTOList);
+        return Result.success(pageInfo);
     }
 
     /**

@@ -70,6 +70,14 @@ public class PermissionServiceImplTest {
     }
 
     @Test
+    public void testGetPermission() {
+        System.out.println(permissionService.getPermission(
+                new PermissionQuery.Builder()
+                        .permissionName("test")
+                        .build()));
+    }
+
+    @Test
     public void getAllPermission() {
         System.out.println(permissionService.getAllPermission());
     }

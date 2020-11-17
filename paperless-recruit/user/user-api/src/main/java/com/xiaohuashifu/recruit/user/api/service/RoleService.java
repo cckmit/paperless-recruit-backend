@@ -103,7 +103,7 @@ public interface RoleService {
      * 获取角色
      *
      * @param query 查询参数
-     * @return 角色列表
+     * @return Result<PageInfo<RoleDTO>> 带分页信息的角色列表
      */
     default Result<PageInfo<RoleDTO>> getRole(@NotNull RoleQuery query) {
         throw new UnsupportedOperationException();

@@ -55,7 +55,7 @@ public interface PermissionService {
      * 获取权限
      *
      * @param query 查询参数
-     * @return 权限列表
+     * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表
      */
     default Result<PageInfo<PermissionDTO>> getPermission(@NotNull PermissionQuery query) {
         throw new UnsupportedOperationException();

@@ -269,7 +269,7 @@ public class RoleServiceImpl implements RoleService {
      * 获取角色
      *
      * @param query 查询参数
-     * @return 角色列表
+     * @return Result<PageInfo<RoleDTO>> 带分页信息的角色列表
      */
     @Override
     public Result<PageInfo<RoleDTO>> getRole(RoleQuery query) {

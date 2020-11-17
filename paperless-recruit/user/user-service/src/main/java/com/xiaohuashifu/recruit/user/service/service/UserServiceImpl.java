@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
      * 多参数查询用户信息
      *
      * @param query 查询参数
-     * @return 查询结果用户列表
+     * @return Result<PageInfo<UserDTO>> 带分页信息的查询结果用户列表
      */
     @Override
     public Result<PageInfo<UserDTO>> getUser(UserQuery query) {

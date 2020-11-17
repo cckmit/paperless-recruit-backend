@@ -162,4 +162,10 @@
         and is_available = false
     </update>
 
+    <update id="updateParentPermissionId">
+        update permission
+        set parent_permission_id = #{parentPermissionId}
+        where id = #{id}
+    </update>
+
 </mapper>

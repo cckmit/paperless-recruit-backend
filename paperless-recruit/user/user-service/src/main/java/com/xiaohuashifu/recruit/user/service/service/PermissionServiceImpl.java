@@ -328,6 +328,57 @@ public class PermissionServiceImpl implements PermissionService {
         return Result.success(map);
     }
 
+    /**
+     * 设置父权限
+     * 设置parentPermissionId为0表示取消父权限设置
+     * 如果父权限状态为禁用，而该权限的状态为可用，则递归更新该权限状态为禁用
+     *
+     * @param id 权限编号
+     * @param parentPermissionId 父权限编号
+     * @return Result<Map<String, Object>>
+     *          禁用的数量和设置父权限后的权限对象，分别对应的key为totalDisableCount和newPermission
+     *          这里的禁用是因为如果父权限为禁用，则该权限必须也递归的禁用
+     */
+    @Override
+    public Result<Map<String, Object>> setParentPermission(Long id, Long parentPermissionId) {
+        // 判断该权限存不存在
+        PermissionDO permissionDO = permissionMapper.getPermission(id);
+        if (permissionDO == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+        }
+
+        // 如果原来的父权限编号和要设置的父权限编号相同，则直接返回
+        if (permissionDO.getParentPermissionId().equals(parentPermissionId)) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent permission has not changed.");
+        }
+
+        // 若父权限编号不为0，则判断要设置的父权限是否存在
+        if (parentPermissionId != 0) {
+            int count = permissionMapper.count(parentPermissionId);
+            if (count < 1) {
+                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND,
+                        "This parent permission not exists.");
+            }
+        }
+
+        // 设置父权限
+        permissionMapper.updateParentPermissionId(id, parentPermissionId);
+
+        // 如果要设置的父权限编号为0（取消父权限）
+        // 或者要设置的父权限的状态为可用
+        // 或者要设置的父权限的状态为禁用且当前权限的状态也为禁用，则直接返回
+        if (parentPermissionId.equals(0L)
+                || permissionMapper.countByIdAndAvailable(parentPermissionId, true) == 1
+                || !permissionDO.getAvailable()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("totalDisableCount", 0);
+            map.put("newPermission", getPermission(id));
+            return Result.success(map);
+        }
+
+        // 如果父权限状态为禁用，而该权限的状态为可用，则递归更新该权限状态为禁用
+        return disablePermission(id);
+    }
 
     /**
      * 递归的禁用权限

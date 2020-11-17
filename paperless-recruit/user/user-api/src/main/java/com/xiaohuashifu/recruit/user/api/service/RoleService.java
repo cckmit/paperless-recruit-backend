@@ -5,10 +5,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 
@@ -175,7 +172,7 @@ public interface RoleService {
      *         这里的禁用是因为如果父角色为禁用，则该角色必须也递归的禁用
      */
     default Result<Map<String, Object>> setParentRole(@NotNull @Positive Long id,
-                                                      @NotNull @Positive Long parentRoleId) {
+                                                      @NotNull @PositiveOrZero Long parentRoleId) {
         throw new UnsupportedOperationException();
     }
 

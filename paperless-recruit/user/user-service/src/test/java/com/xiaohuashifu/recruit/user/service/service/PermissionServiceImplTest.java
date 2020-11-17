@@ -119,6 +119,11 @@ public class PermissionServiceImplTest {
 
     @Test
     public void enablePermission() {
-        System.out.println(permissionService.enablePermission(11L));
+        System.out.println(permissionService.enablePermission(13L));
+    }
+
+    @Test
+    public void setParentPermission() {
+        System.out.println(permissionService.setParentPermission(13L, 11L));
     }
 }

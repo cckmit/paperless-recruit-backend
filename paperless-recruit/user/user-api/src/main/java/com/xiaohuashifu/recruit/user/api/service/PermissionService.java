@@ -163,7 +163,7 @@ public interface PermissionService {
      */
     default Result<Map<String, Object>> setParentPermission(
             @NotNull @Positive Long id,
-            @NotNull @Positive Long parentPermissionId) {
+            @NotNull @PositiveOrZero Long parentPermissionId) {
         throw new UnsupportedOperationException();
     }
 }

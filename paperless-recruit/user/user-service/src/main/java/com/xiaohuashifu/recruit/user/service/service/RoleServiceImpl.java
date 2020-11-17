@@ -436,8 +436,8 @@ public class RoleServiceImpl implements RoleService {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent role has not changed.");
         }
 
-        // 若父角色编号不为0，则判断要设置的父亲角色是否存在
-        if (parentRoleId != 0) {
+        // 若父角色编号不为0，则判断要设置的父角色是否存在
+        if (!parentRoleId.equals(0L)) {
             int count = roleMapper.count(parentRoleId);
             if (count < 1) {
                 return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This parent role not exists.");
@@ -448,8 +448,8 @@ public class RoleServiceImpl implements RoleService {
         roleMapper.updateParentRoleId(id, parentRoleId);
 
         // 如果要设置的父角色编号为0（取消父角色）
-        // 或者要设置的父亲角色的状态为可用
-        // 或者要设置的父亲角色的状态为禁用且当前角色的状态也为禁用，则直接返回
+        // 或者要设置的父角色的状态为可用
+        // 或者要设置的父角色的状态为禁用且当前角色的状态也为禁用，则直接返回
         if (parentRoleId.equals(0L) || roleMapper.countByIdAndAvailable(parentRoleId, true) == 1
                 || !roleDO.getAvailable()) {
             Map<String, Object> map = new HashMap<>();
@@ -458,7 +458,7 @@ public class RoleServiceImpl implements RoleService {
             return Result.success(map);
         }
 
-        // 如果父亲角色状态为禁用，而该角色的状态为可用，则递归更新该角色状态为禁用
+        // 如果父角色状态为禁用，而该角色的状态为可用，则递归更新该角色状态为禁用
         return disableRole(id);
     }
 

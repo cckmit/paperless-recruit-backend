@@ -53,4 +53,5 @@ public interface PermissionMapper {
 
     int updateAvailableIfUnavailable(Long id);
 
+    int updateParentPermissionId(@Param("id") Long id, @Param("parentPermissionId") Long parentPermissionId);
 }

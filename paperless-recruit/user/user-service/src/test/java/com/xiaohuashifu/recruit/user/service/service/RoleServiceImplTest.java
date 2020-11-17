@@ -38,9 +38,9 @@ public class RoleServiceImplTest {
     @Test
     public void saveRole() {
         final RoleDTO roleDTO = new RoleDTO.Builder()
-                .parentRoleId(8L)
-                .roleName("   test5   ")
-                .description("  测试用户5  \n")
+                .parentRoleId(12L)
+                .roleName("   test7   ")
+                .description("  测试用户7  \n")
                 .available(true).build();
         System.out.println(roleService.saveRole(roleDTO));
     }
@@ -92,12 +92,12 @@ public class RoleServiceImplTest {
 
     @Test
     public void enableRole() {
-        System.out.println(roleService.enableRole(5L));
+        System.out.println(roleService.enableRole(12L));
     }
 
     @Test
     public void setParentRole() {
-        System.out.println(roleService.setParentRole(8L, 9L));
+        System.out.println(roleService.setParentRole(13L, 12L));
     }
 
 }

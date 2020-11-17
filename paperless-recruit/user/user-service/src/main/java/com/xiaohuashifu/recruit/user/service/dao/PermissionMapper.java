@@ -13,6 +13,8 @@ import java.util.List;
  * @create: 2020/11/12 20:44
  */
 public interface PermissionMapper {
+    PermissionDO getPermission(Long id);
+
     List<PermissionDO> getPermissionListByRoleIdList(List<Long> roleIdList);
 
     List<PermissionDO> getPermissionByUserId(Long userId);
@@ -22,4 +24,6 @@ public interface PermissionMapper {
     List<PermissionDO> getAllPermission();
 
     int count(Long id);
+
+
 }

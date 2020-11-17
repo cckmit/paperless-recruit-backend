@@ -46,6 +46,17 @@ public class PermissionServiceImplTest {
     }
 
     @Test
+    public void getPermission() {
+        System.out.println(permissionService.getPermission(1L));
+    }
+
+
+    @Test
+    public void getAllPermission() {
+        System.out.println(permissionService.getAllPermission());
+    }
+
+    @Test
     public void getPermissionListByRoleIdList() {
         final Result<List<RoleDTO>> getRoleResult = roleService.getRoleListByUserId(1L);
         final List<Long> roleIdList = getRoleResult.getData().stream()
@@ -60,8 +71,4 @@ public class PermissionServiceImplTest {
         System.out.println(permissionService.getPermissionByUserId(6L));
     }
 
-    @Test
-    public void getPermission() {
-        System.out.println(permissionService.getPermission(new PermissionQuery.Builder().pageSize(10000L).build()));
-    }
 }

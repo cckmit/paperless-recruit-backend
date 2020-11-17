@@ -11,6 +11,13 @@
         p.create_time, p.update_time
     </sql>
 
+    <select id="getPermission" resultType="permission">
+        select <include refid="permission"/>
+        from permission
+        where id = #{id}
+    </select>
+
+
     <select id="getPermissionListByRoleIdList" resultType="permission">
         select
         <include refid="p_permission"/>
@@ -68,7 +75,6 @@
         select <include refid="permission"/>
         from permission
     </select>
-
 
     <select id="count" resultType="int">
         select count(*)

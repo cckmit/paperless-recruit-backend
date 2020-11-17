@@ -18,7 +18,6 @@ import java.util.Map;
  */
 public interface PermissionService {
 
-
     @interface SavePermission{}
     /**
      * 创建权限
@@ -44,7 +43,7 @@ public interface PermissionService {
     /**
      * 获取权限
      * @param id 权限编号
-     * @return Result<RoleDTO>
+     * @return Result<PermissionDTO>
      */
     default Result<PermissionDTO> getPermission(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();

@@ -51,10 +51,12 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Result<RoleDTO> saveRole(RoleDTO roleDTO) {
-        // 判断父角色存不存在，父角色必须存在
-        RoleDO parentRoleDO = roleMapper.getRole(roleDTO.getParentRoleId());
-        if (parentRoleDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This parent role not exists.");
+        // 如果父角色编号不为0，则父角色必须存在
+        if (!roleDTO.getParentRoleId().equals(0L)) {
+            int count = roleMapper.count(roleDTO.getParentRoleId());
+            if (count < 1) {
+                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This parent role not exists.");
+            }
         }
 
         // 去掉角色名两边的空白符
@@ -66,9 +68,12 @@ public class RoleServiceImpl implements RoleService {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "This role name have been exists.");
         }
 
-        // 如果父角色被禁用了，则该角色也应该被禁用
-        if (!parentRoleDO.getAvailable()) {
-            roleDTO.setAvailable(false);
+        // 如果父角色编号不为0，且被禁用了，则该角色也应该被禁用
+        if (!roleDTO.getParentRoleId().equals(0L)) {
+            count = roleMapper.countByIdAndAvailable(roleDTO.getParentRoleId(), false);
+            if (count > 0) {
+                roleDTO.setAvailable(false);
+            }
         }
 
         // 去掉角色描述两边的空白符
@@ -252,7 +257,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Result<RoleDTO> getRole(Long id) {
-        final RoleDO role = roleMapper.getRole(id);
+        RoleDO role = roleMapper.getRole(id);
         if (role == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
@@ -385,6 +390,11 @@ public class RoleServiceImpl implements RoleService {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
         }
 
+        // 不能解禁已经有效的用户
+        if (roleDO.getAvailable()) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role is available.");
+        }
+
         // 判断该角色的父角色是否已经被禁用，如果父角色已经被禁用，则无法解禁该角色
         int count = roleMapper.countByIdAndAvailable(roleDO.getParentRoleId(), false);
         if (count > 0) {
@@ -422,11 +432,10 @@ public class RoleServiceImpl implements RoleService {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent role has not changed.");
         }
 
-        RoleDO parentRoleDO = null;
         // 若父角色编号不为0，则判断要设置的父亲角色是否存在
         if (parentRoleId != 0) {
-            parentRoleDO = roleMapper.getRole(parentRoleId);
-            if (parentRoleDO == null) {
+            int count = roleMapper.count(parentRoleId);
+            if (count < 1) {
                 return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This parent role not exists.");
             }
         }
@@ -437,7 +446,8 @@ public class RoleServiceImpl implements RoleService {
         // 如果要设置的父角色编号为0（取消父角色）
         // 或者要设置的父亲角色的状态为可用
         // 或者要设置的父亲角色的状态为禁用且当前角色的状态也为禁用，则直接返回
-        if (parentRoleId.equals(0L) || parentRoleDO.getAvailable() || !roleDO.getAvailable()) {
+        if (parentRoleId.equals(0L) || roleMapper.countByIdAndAvailable(parentRoleId, true) == 1
+                || !roleDO.getAvailable()) {
             Map<String, Object> map = new HashMap<>();
             map.put("totalDisableCount", 0);
             map.put("newRole", getRole(id));
@@ -455,9 +465,8 @@ public class RoleServiceImpl implements RoleService {
      * @return 总共禁用的角色数量
      */
     private int recursiveDisableRole(Long id) {
-        roleMapper.updateAvailable(id, false);
+        int count = roleMapper.updateAvailable(id, false);
         List<Long> roleIdList = roleMapper.getIdListByParentRoleIdAndAvailable(id, true);
-        int count = 1;
         for (Long roleId : roleIdList) {
             count += recursiveDisableRole(roleId);
         }

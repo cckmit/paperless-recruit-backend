@@ -2,10 +2,7 @@ package com.xiaohuashifu.recruit.user.api.dto;
 
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -20,7 +17,7 @@ public class PermissionDTO implements Serializable {
     @Positive
     private Long id;
 
-    @Positive
+    @PositiveOrZero
     @NotNull(groups = PermissionService.SavePermission.class)
     private Long parentPermissionId;
 

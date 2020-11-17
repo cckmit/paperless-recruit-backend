@@ -4,11 +4,9 @@ import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
 import org.apache.dubbo.config.annotation.Service;
 
 import javax.validation.constraints.NotNull;
@@ -84,6 +82,35 @@ public class PermissionServiceImpl implements PermissionService {
                 .build();
         permissionMapper.savePermission(permissionDO);
         return getPermission(permissionDO.getId());
+    }
+
+    /**
+     * 删除权限，只允许没有子权限的权限删除
+     * 同时会删除与此权限关联的所有角色（Role）的关联关系
+     *
+     * @param id 权限编号
+     * @return Result<Void>
+     */
+    @Override
+    public Result<Void> deletePermission(Long id) {
+        // 判断该权限存不存在
+        int count = permissionMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+        }
+
+        // 判断该权限是否还拥有子权限，必须没有子权限才可以删除
+        count = permissionMapper.countByParentPermissionId(id);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission exists children permission.");
+        }
+
+        // 删除该权限所关联的角色（Role）的关联关系
+        permissionMapper.deleteRolePermissionByPermissionId(id);
+
+        // 删除该权限
+        permissionMapper.deletePermission(id);
+        return Result.success();
     }
 
     /**

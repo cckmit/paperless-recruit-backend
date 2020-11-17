@@ -21,6 +21,8 @@ public interface PermissionService {
     @interface SavePermission{}
     /**
      * 创建权限
+     * 权限名必须不存在
+     * 如果父权限被禁用了，则该权限也会被禁用
      *
      * @param permissionDTO parentPermissionId，permissionName，authorizationUrl，description和available
      * @return Result<PermissionDTO>

@@ -16,6 +16,10 @@ import java.util.List;
 public interface PermissionMapper {
     int savePermission(PermissionDO permissionDO);
 
+    int deletePermission(Long id);
+
+    int deleteRolePermissionByPermissionId(Long permissionId);
+
     PermissionDO getPermission(Long id);
 
     List<PermissionDO> getPermissionListByRoleIdList(List<Long> roleIdList);
@@ -31,5 +35,8 @@ public interface PermissionMapper {
     int countByPermissionName(String permissionName);
 
     int countByIdAndAvailable(@Param("id") Long id, @Param("available") Boolean available);
+
+    int countByParentPermissionId(Long parentPermissionId);
+
 
 }

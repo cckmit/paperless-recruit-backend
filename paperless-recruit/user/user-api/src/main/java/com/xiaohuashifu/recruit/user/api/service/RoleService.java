@@ -24,6 +24,8 @@ public interface RoleService {
     @interface SaveRole{}
     /**
      * 创建角色
+     * 角色名必须不存在
+     * 如果父角色被禁用了，则该角色也会被禁用
      *
      * @param roleDTO 需要parentRoleId，roleName，description和available
      * @return Result<RoleDTO>

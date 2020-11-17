@@ -36,6 +36,7 @@ public class PermissionServiceImplTest {
         reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.RoleService");
         reference.setApplication(application);
         reference.setInterface(RoleService.class);
+        reference.setTimeout(100000000);
         roleService = reference.get();
 
         ApplicationConfig application1 = new ApplicationConfig();
@@ -44,13 +45,14 @@ public class PermissionServiceImplTest {
         reference1.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.PermissionService");
         reference1.setApplication(application1);
         reference1.setInterface(PermissionService.class);
+        reference1.setTimeout(100000000);
         permissionService = reference1.get();
     }
 
     @Test
     public void savePermission() {
         System.out.println(permissionService.savePermission(new PermissionDTO.Builder()
-                .parentPermissionId(12L)
+                .parentPermissionId(-1L)
         .permissionName("  test3  ")
         .authorizationUrl("  /tests/test3  ")
         .description("  测试3  ")
@@ -58,10 +60,14 @@ public class PermissionServiceImplTest {
     }
 
     @Test
+    public void deletePermission() {
+        System.out.println(permissionService.deletePermission(14L));
+    }
+
+    @Test
     public void getPermission() {
         System.out.println(permissionService.getPermission(1L));
     }
-
 
     @Test
     public void getAllPermission() {
@@ -82,5 +88,6 @@ public class PermissionServiceImplTest {
     public void getPermissionByUserId() {
         System.out.println(permissionService.getPermissionByUserId(6L));
     }
+
 
 }

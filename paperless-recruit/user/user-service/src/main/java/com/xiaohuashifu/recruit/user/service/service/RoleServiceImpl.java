@@ -156,7 +156,8 @@ public class RoleServiceImpl implements RoleService {
 
     /**
      * 删除角色，只允许没有子角色的角色删除
-     * 同时会删除该角色所关联的所有权限（Permission）
+     * 同时会删除此角色拥有的所有权限（Permission）的关联关系
+     * 和拥有此角色的用户之间的关联关系
      *
      * @param id 角色编号
      * @return Result<Void>

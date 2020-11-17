@@ -16,6 +16,16 @@
         values(#{parentPermissionId}, #{permissionName}, #{authorizationUrl}, #{description}, #{available})
     </insert>
 
+    <delete id="deletePermission">
+        delete from permission
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteRolePermissionByPermissionId">
+        delete from role_permission
+        where permission_id = #{permissionId}
+    </delete>
+
 
     <select id="getPermission" resultType="permission">
         select <include refid="permission"/>
@@ -99,6 +109,12 @@
         from permission
         where id = #{id}
         and is_available = #{available}
+    </select>
+
+    <select id="countByParentPermissionId" resultType="int">
+        select count(*)
+        from permission
+        where parent_permission_id = #{parentPermissionId}
     </select>
 
 

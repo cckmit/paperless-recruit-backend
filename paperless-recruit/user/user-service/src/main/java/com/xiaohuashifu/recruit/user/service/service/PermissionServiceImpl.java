@@ -225,4 +225,26 @@ public class PermissionServiceImpl implements PermissionService {
         return getPermission(id);
     }
 
+    /**
+     * 更新授权路径
+     *
+     * @param id 权限编号
+     * @param newAuthorizationUrl 新授权路径
+     * @return Result<PermissionDTO> 更新后的权限对象
+     */
+    @Override
+    public Result<PermissionDTO> updateAuthorizationUrl(Long id, String newAuthorizationUrl) {
+        // 判断该权限存不存在，该权限必须存在
+        int count = permissionMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+        }
+
+        // 去除授权路径两边空白符
+        // 更新授权路径
+        permissionMapper.updateAuthorizationUrl(id, newAuthorizationUrl.trim());
+        return getPermission(id);
+    }
+
+
 }

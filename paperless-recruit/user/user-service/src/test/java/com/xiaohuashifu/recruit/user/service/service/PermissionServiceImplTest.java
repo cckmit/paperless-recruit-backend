@@ -102,4 +102,9 @@ public class PermissionServiceImplTest {
     public void updatePermissionName() {
         System.out.println(permissionService.updatePermissionName(13L, "   test3  "));
     }
+
+    @Test
+    public void updateAuthorizationUrl() {
+        System.out.println(permissionService.updateAuthorizationUrl(13L, "  /tests/test3  \n"));
+    }
 }

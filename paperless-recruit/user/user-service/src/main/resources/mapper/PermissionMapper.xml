@@ -123,6 +123,11 @@
         where id = #{id}
     </update>
 
+    <update id="updateAuthorizationUrl">
+        update permission
+        set authorization_url = #{authorizationUrl}
+        where id = #{id}
+    </update>
 
 
 </mapper>

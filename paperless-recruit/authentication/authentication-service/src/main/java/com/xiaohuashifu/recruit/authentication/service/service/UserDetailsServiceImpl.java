@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -14,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -41,10 +41,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserDTO userDTO = getUserResult.getData();
 
         // 获取权限列表
-        Result<List<PermissionDTO>> getPermissionResult = permissionService.getPermissionByUserId(userDTO.getId());
-        List<PermissionDTO> permissionDTOList = getPermissionResult.getData();
-        List<SimpleGrantedAuthority> authorityList = permissionDTOList.stream()
-                .map(permissionDTO -> new SimpleGrantedAuthority(permissionDTO.getPermissionName()))
+        Set<String> authoritySet = permissionService.getAuthorityByUserId(userDTO.getId()).getData();
+        List<SimpleGrantedAuthority> authorityList = authoritySet.stream()
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
         // 返回

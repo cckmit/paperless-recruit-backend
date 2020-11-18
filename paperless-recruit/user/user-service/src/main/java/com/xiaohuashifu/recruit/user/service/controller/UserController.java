@@ -24,7 +24,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('get_application_form')")
+    @PreAuthorize("hasAuthority('test3')")
     public Object getUser(Long id) {
         return userService.getUser(id);
     }

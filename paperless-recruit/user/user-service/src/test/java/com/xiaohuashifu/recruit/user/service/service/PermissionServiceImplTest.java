@@ -93,9 +93,14 @@ public class PermissionServiceImplTest {
 
     @Test
     public void getPermissionByUserId() {
-        System.out.println(permissionService.getPermissionByUserId(6L));
+        System.out.println(permissionService.getPermissionByUserId(7L));
     }
 
+
+    @Test
+    public void getAuthorityByUserId() {
+        System.out.println(permissionService.getAuthorityByUserId(4L));
+    }
 
     @Test
     public void updatePermissionName() {
@@ -126,4 +131,5 @@ public class PermissionServiceImplTest {
     public void setParentPermission() {
         System.out.println(permissionService.setParentPermission(13L, 11L));
     }
+
 }

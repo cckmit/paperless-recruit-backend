@@ -8,12 +8,14 @@ import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
+import com.xiaohuashifu.recruit.user.service.dao.RoleMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -27,10 +29,12 @@ import java.util.stream.Collectors;
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionMapper permissionMapper;
+    private final RoleMapper roleMapper;
     private final Mapper mapper;
 
-    public PermissionServiceImpl(PermissionMapper permissionMapper, Mapper mapper) {
+    public PermissionServiceImpl(PermissionMapper permissionMapper, RoleMapper roleMapper, Mapper mapper) {
         this.permissionMapper = permissionMapper;
+        this.roleMapper = roleMapper;
         this.mapper = mapper;
     }
 
@@ -190,6 +194,26 @@ public class PermissionServiceImpl implements PermissionService {
                 .stream()
                 .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
                 .collect(Collectors.toList()));
+    }
+
+    /**
+     * 通过用户id获取用户权限（Authority）列表
+     * 该权限代表的是权限字符串，而不是Permission对象
+     * 主要用于Spring Security框架鉴权使用
+     * 包含角色和权限
+     * 角色的转换格式为：ROLE_{role_name}
+     * 权限的转换格式为：{permission_name}
+     *
+     * @param userId 用户id
+     * @return 用户的权限（Authority）列表
+     */
+    @Override
+    public Result<Set<String>> getAuthorityByUserId(Long userId) {
+        // 下面将直接复用这个Set，不再构造一次浪费资源
+        Set<String> permissionNameSet = permissionMapper.getPermissionNameByUserId(userId);
+        List<String> roleNameList = roleMapper.getRoleNameByUserId(userId);
+        roleNameList.forEach(roleName -> permissionNameSet.add(SPRING_SECURITY_ROLE_PREFIX + roleName));
+        return Result.success(permissionNameSet);
     }
 
     /**

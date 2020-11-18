@@ -5,6 +5,7 @@ import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：
@@ -29,6 +30,8 @@ public interface PermissionMapper {
     List<PermissionDO> getPermissionByQuery(PermissionQuery query);
 
     List<PermissionDO> getAllPermission();
+
+    Set<String> getPermissionNameByUserId(Long userId);
 
     List<Long> getIdListByParentPermissionId(Long parentPermissionId);
 

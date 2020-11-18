@@ -8,6 +8,7 @@ import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 描述：权限服务RPC接口
@@ -17,6 +18,11 @@ import java.util.Map;
  * @create: 2020/11/12 19:42
  */
 public interface PermissionService {
+
+    /**
+     * 在Spring Security中角色的前缀
+     */
+    String SPRING_SECURITY_ROLE_PREFIX = "ROLE_";
 
     @interface SavePermission{}
     /**
@@ -88,6 +94,21 @@ public interface PermissionService {
      * @return 用户的权限列表
      */
     default Result<List<PermissionDTO>> getPermissionByUserId(@NotNull @Positive Long userId) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 通过用户id获取用户权限（Authority）列表
+     * 该权限代表的是权限字符串，而不是Permission对象
+     * 主要用于Spring Security框架鉴权使用
+     * 包含角色和权限
+     * 角色的转换格式为：ROLE_{role_name}
+     * 权限的转换格式为：{permission_name}
+     *
+     * @param userId 用户id
+     * @return 用户的权限（Authority）列表
+     */
+    default Result<Set<String>> getAuthorityByUserId(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 

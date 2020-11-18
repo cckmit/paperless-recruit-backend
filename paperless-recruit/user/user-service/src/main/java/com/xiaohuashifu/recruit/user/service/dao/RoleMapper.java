@@ -58,6 +58,8 @@ public interface RoleMapper {
     List<Long> getIdListByParentRoleIdAndAvailable(@Param("parentRoleId") Long parentRoleId,
                                                    @Param("available") Boolean available);
 
+    List<String> getRoleNameByUserId(Long userId);
+
     /**
      * 通过角色编号获取父角色编号
      * @param id 角色编号

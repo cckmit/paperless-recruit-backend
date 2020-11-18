@@ -3,7 +3,6 @@ package com.xiaohuashifu.recruit.authentication.service.provider;
 import com.xiaohuashifu.recruit.authentication.api.service.SmsLoginService;
 import com.xiaohuashifu.recruit.authentication.service.token.SmsAuthenticationToken;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -15,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -53,13 +53,13 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
             throw new InternalAuthenticationServiceException("Auth error.");
         }
 
+        // 获取用户对象
         UserDTO userDTO = userService.getUserByPhone(phone).getData();
 
         // 获取权限列表
-        Result<List<PermissionDTO>> getPermissionResult = permissionService.getPermissionByUserId(userDTO.getId());
-        List<PermissionDTO> permissionDTOList = getPermissionResult.getData();
-        List<SimpleGrantedAuthority> authorityList = permissionDTOList.stream()
-                .map(permissionDTO -> new SimpleGrantedAuthority(permissionDTO.getPermissionName()))
+        Set<String> authoritySet = permissionService.getAuthorityByUserId(userDTO.getId()).getData();
+        List<SimpleGrantedAuthority> authorityList = authoritySet.stream()
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
         // 封装成用户名的Token

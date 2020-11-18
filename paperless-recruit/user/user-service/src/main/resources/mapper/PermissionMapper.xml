@@ -37,7 +37,7 @@
     <select id="getPermissionListByRoleIdList" resultType="permission">
         select
         <include refid="p_permission"/>
-        from role_permission rp left join permission p on rp.permission_id = p.id
+        from role_permission rp inner join permission p on rp.permission_id = p.id
         where rp.role_id in
         <foreach collection="list" item="item" open="(" separator="," close=")">
             #{item}
@@ -48,13 +48,13 @@
         select
             <include refid="p_permission"/>
         from user u
-            left join user_role ur on u.id = ur.user_id
-            left join role r on ur.role_id = r.id
-            left join role_permission rp on r.id = rp.role_id
-            left join permission p on rp.permission_id = p.id
+            inner join user_role ur on u.id = ur.user_id
+            inner join role r on ur.role_id = r.id
+            inner join role_permission rp on r.id = rp.role_id
+            inner join permission p on rp.permission_id = p.id
         where u.id = #{userId}
 --         这个条件是因为如果这个用户没有任何权限，不应该返回
-        and p.id is not null
+--         and p.id is not null
     </select>
 
     <select id="getPermissionByQuery" resultType="permission">
@@ -90,6 +90,16 @@
     <select id="getAllPermission" resultType="permission">
         select <include refid="permission"/>
         from permission
+    </select>
+
+    <select id="getPermissionNameByUserId" resultType="string">
+        select p.permission_name
+        from user u
+        inner join user_role ur on u.id = ur.user_id
+        inner join role r on ur.role_id = r.id
+        inner join role_permission rp on r.id = rp.role_id
+        inner join permission p on rp.permission_id = p.id
+        where u.id = #{userId}
     </select>
 
     <select id="getIdListByParentPermissionId" resultType="long">

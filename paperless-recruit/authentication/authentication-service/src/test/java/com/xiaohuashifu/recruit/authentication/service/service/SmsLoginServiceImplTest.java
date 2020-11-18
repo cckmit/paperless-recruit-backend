@@ -30,7 +30,7 @@ public class SmsLoginServiceImplTest {
 
     @Test
     public void createMessageAuthCodeAndSend() {
-        System.out.println(smsLoginService.createSmsAuthCodeAndSend("15992321303"));
+        System.out.println(smsLoginService.createAndSendSmsAuthCode("15992321303"));
     }
 
     @Test

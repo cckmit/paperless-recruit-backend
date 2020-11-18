@@ -25,7 +25,7 @@ public class SmsLoginController {
 
     @PostMapping("createSmsAuthCodeAndSend")
     public Object createSmsAuthCodeAndSend(@RequestBody Map<String, String> phone) {
-        return smsLoginService.createSmsAuthCodeAndSend(phone.get("phone"));
+        return smsLoginService.createAndSendSmsAuthCode(phone.get("phone"));
     }
 
     @PostMapping("checkSmsAuthCode")

@@ -1,28 +1,28 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
 
-import com.xiaohuashifu.recruit.common.validator.SmsAuthCodeValidator;
+import com.xiaohuashifu.recruit.common.validator.AuthCodeValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 描述: 短信验证码校验
+ * 描述: 通用验证码校验
  *
  * @author xhsf
  * @email 827032783@qq.com
  * @create 2019-10-09
  */
 @Documented
-@Constraint(validatedBy = {SmsAuthCodeValidator.class})
+@Constraint(validatedBy = {AuthCodeValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
         ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(SmsAuthCode.List.class)
-public @interface SmsAuthCode {
+@Repeatable(AuthCode.List.class)
+public @interface AuthCode {
 
-    String message() default "The message auth code length is 6 and made up of digits.";
+    String message() default "The auth code length is 6 and made up of digits.";
 
     Class<?>[] groups() default {};
 
@@ -33,7 +33,7 @@ public @interface SmsAuthCode {
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface List {
-        SmsAuthCode[] value();
+        AuthCode[] value();
     }
 
 }

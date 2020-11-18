@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Password;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
+import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
@@ -117,6 +118,20 @@ public interface UserService {
         throw new UnsupportedOperationException();
     }
 
+    // TODO: 2020/11/19 实现，这里还需要一个private方法用于验证authCode
+    /**
+     * 更新手机号码
+     *
+     * @param id 用户编号
+     * @param newPhone 新手机号码
+     * @param authCode 短信验证码
+     * @return 更新后的用户
+     */
+    default Result<UserDTO> updatePhone(@NotNull @Positive Long id, @NotBlank @Phone String newPhone,
+                                        @NotBlank @AuthCode String authCode) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * 更新邮箱
      *
@@ -128,6 +143,20 @@ public interface UserService {
         throw new UnsupportedOperationException();
     }
 
+    // TODO: 2020/11/19 实现，这里还需要一个private方法用于验证authCode
+    /**
+     * 更新邮箱
+     *
+     * @param id 用户编号
+     * @param newEmail 新邮箱
+     * @param authCode 邮箱认证码
+     * @return 更新后的用户
+     */
+    default Result<UserDTO> updateEmail(@NotNull @Positive Long id, @NotBlank @Email String newEmail,
+                                        @NotBlank @AuthCode String authCode) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * 更新密码
      *
@@ -136,6 +165,36 @@ public interface UserService {
      * @return 更新后的用户
      */
     default Result<UserDTO> updatePassword(@NotNull @Positive Long id, @NotNull @Password String newPassword) {
+        throw new UnsupportedOperationException();
+    }
+
+    // TODO: 2020/11/19 实现，这里还需要一个private方法用于验证authCode
+    /**
+     * 更新密码，通过邮箱验证码
+     *
+     * @param id 用户编号
+     * @param newPassword 新密码
+     * @param authCode 邮箱验证码
+     * @return 更新后的用户
+     */
+    default Result<UserDTO> updatePasswordByEmailAuthCode(@NotNull @Positive Long id,
+                                                          @NotNull @Password String newPassword,
+                                                          @NotBlank @AuthCode String authCode) {
+        throw new UnsupportedOperationException();
+    }
+
+    // TODO: 2020/11/19 实现，这里还需要一个private方法用于验证authCode
+    /**
+     * 更新密码，通过短信验证码
+     *
+     * @param id 用户编号
+     * @param newPassword 新密码
+     * @param authCode 短信验证码
+     * @return 更新后的用户
+     */
+    default Result<UserDTO> updatePasswordBySmsAuthCode(@NotNull @Positive Long id,
+                                                          @NotNull @Password String newPassword,
+                                                          @NotBlank @AuthCode String authCode) {
         throw new UnsupportedOperationException();
     }
 
@@ -158,5 +217,50 @@ public interface UserService {
     default Result<UserDTO> enableUser(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
+
+    // TODO: 2020/11/19
+    /**
+     * 发送邮箱验证码以更新邮箱
+     *
+     * @param email 邮箱
+     * @return String 验证码
+     */
+    default Result<String> createAndSendEmailAuthCodeForUpdateEmail(@NotBlank @Email String email) {
+        throw new UnsupportedOperationException();
+    }
+
+    // TODO: 2020/11/19
+    /**
+     * 发送短信验证码以更新手机号码
+     *
+     * @param phone 手机号码
+     * @return String 验证码
+     */
+    default Result<String> createAndSendSmsAuthCodeForUpdatePhone(@NotBlank @Phone String phone) {
+        throw new UnsupportedOperationException();
+    }
+
+    // TODO: 2020/11/19
+    /**
+     * 发送邮箱验证码以更新密码
+     *
+     * @param email 邮箱
+     * @return String 验证码
+     */
+    default Result<String> createAndSendEmailAuthCodeForUpdatePassword(@NotBlank @Email String email) {
+        throw new UnsupportedOperationException();
+    }
+
+    // TODO: 2020/11/19
+    /**
+     * 发送短信验证码以更新密码
+     *
+     * @param phone 手机号码
+     * @return String 验证码
+     */
+    default Result<String> createAndSendSmsAuthCodeForUpdatePassword(@NotBlank @Phone String phone) {
+        throw new UnsupportedOperationException();
+    }
+
 
 }

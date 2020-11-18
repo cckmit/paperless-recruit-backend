@@ -46,7 +46,7 @@ public class SmsLoginServiceImpl implements SmsLoginService {
      * @return SmsLoginDTO 该对象表示这次发送验证码的信息
      */
     @Override
-    public Result<SmsLoginDTO> createSmsAuthCodeAndSend(String phone) {
+    public Result<SmsLoginDTO> createAndSendSmsAuthCode(String phone) {
         // 发送短信到进行登录的用户手机
         String smsAuthCode = createSmsAuthCode();
         String message = "【招新】您的验证码为：" + smsAuthCode + "。验证码有效时间为"

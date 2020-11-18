@@ -3,8 +3,7 @@ package com.xiaohuashifu.recruit.authentication.api.service;
 import com.xiaohuashifu.recruit.authentication.api.dto.SmsLoginDTO;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
-import com.xiaohuashifu.recruit.common.validator.annotation.SmsAuthCode;
-import org.springframework.validation.annotation.Validated;
+import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 
 import javax.validation.constraints.NotBlank;
 
@@ -24,7 +23,7 @@ public interface SmsLoginService {
      * @param phone 要发送验证码的手机号码
      * @return SmsLoginDTO 该对象表示这次发送验证码的信息
      */
-    Result<SmsLoginDTO> createSmsAuthCodeAndSend(@NotBlank @Phone String phone);
+    Result<SmsLoginDTO> createAndSendSmsAuthCode(@NotBlank @Phone String phone);
 
     /**
      * 手机号码+短信验证码登录的检验验证码是否有效的服务
@@ -34,6 +33,6 @@ public interface SmsLoginService {
      * @param authCode 短信验证码
      * @return Result<Void> 返回结果若Result.isSuccess()为true表示验证成功，否则验证失败
      */
-    Result<Void> checkSmsAuthCode(@NotBlank @Phone String phone, @NotBlank @SmsAuthCode String authCode);
+    Result<Void> checkSmsAuthCode(@NotBlank @Phone String phone, @NotBlank @AuthCode String authCode);
 
 }

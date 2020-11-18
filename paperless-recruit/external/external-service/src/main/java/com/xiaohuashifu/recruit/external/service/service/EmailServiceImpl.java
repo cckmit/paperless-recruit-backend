@@ -37,6 +37,7 @@ public class EmailServiceImpl implements EmailService {
         this.templateEngine = templateEngine;
     }
 
+    // TODO: 2020/11/18 目前不支持附件功能
     /**
      * 发送简单邮件
      *
@@ -71,6 +72,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
 
+    // TODO: 2020/11/18 目前不支持附件功能
     /**
      * 发送模板邮件，使用的是velocity模板
      *

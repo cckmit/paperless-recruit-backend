@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.authentication.service.config;
 
 import com.xiaohuashifu.recruit.authentication.api.service.SmsLoginService;
 import com.xiaohuashifu.recruit.authentication.service.provider.SmsAuthenticationProvider;
+import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -22,11 +23,13 @@ public class SmsAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSe
     private SmsLoginService smsLoginService;
     @Reference
     private UserService userService;
+    @Reference
+    private PermissionService permissionService;
 
     @Override
     public void configure(HttpSecurity http) {
         // 添加provider
-        http.authenticationProvider(new SmsAuthenticationProvider(smsLoginService, userService));
+        http.authenticationProvider(new SmsAuthenticationProvider(smsLoginService, userService, permissionService));
     }
 
 }

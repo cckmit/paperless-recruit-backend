@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Map;
 
 /**
- * 描述：
+ * 描述：发送邮件的服务
  *
  * @author: xhsf
  * @email: 827032783@qq.com

@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.dubbo.config.annotation.Service;
 
 /**
- * 描述：
+ * 描述：发送短信服务
  *
  * @author: xhsf
  * @email: 827032783@qq.com

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div>
+        <h2>华农招新：<span th:text="${subject}"></span></h2>
+        你的验证码是：
+        <h1><span th:text="${authCode}"></span></h1>
+        <h3>该验证码的有效时间是<span th:text="${validTime}"></span>分钟，请尽快使用。</h3>
+    </div>
+</body>
+</html>

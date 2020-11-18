@@ -29,6 +29,7 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
         this.userService = userService;
     }
 
+    // TODO: 2020/11/18 继续完善 权限，用户信息
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         SmsAuthenticationToken smsAuthenticationToken = (SmsAuthenticationToken) authentication;

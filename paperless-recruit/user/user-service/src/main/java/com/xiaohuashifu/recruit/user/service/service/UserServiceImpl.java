@@ -92,7 +92,23 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> getUserByUsername(String username) {
-        final UserDO user = userMapper.getUserByUsername(username.trim());
+        UserDO user = userMapper.getUserByUsername(username.trim());
+        if (user == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+        }
+        return Result.success(mapper.map(user, UserDTO.class));
+    }
+
+    /**
+     * 通过用户名或者手机或者邮箱获取用户对象
+     * 该接口用于通过[用户名|手机号码|邮箱]+密码进行登录的服务
+     *
+     * @param usernameOrPhoneOrEmail 用户名或者手机或者邮箱
+     * @return 获取到的用户
+     */
+    @Override
+    public Result<UserDTO> getUserByUsernameOrPhoneOrEmail(String usernameOrPhoneOrEmail) {
+        UserDO user = userMapper.getUserByUsernameOrPhoneOrEmail(usernameOrPhoneOrEmail.trim());
         if (user == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }

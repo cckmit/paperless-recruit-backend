@@ -55,6 +55,17 @@ public interface UserService {
     }
 
     /**
+     * 通过用户名或者手机或者邮箱获取用户对象
+     * 该接口用于通过[用户名|手机号码|邮箱]+密码进行登录的服务
+     *
+     * @param usernameOrPhoneOrEmail 用户名或者手机或者邮箱
+     * @return 获取到的用户
+     */
+    default Result<UserDTO> getUserByUsernameOrPhoneOrEmail(@NotBlank String usernameOrPhoneOrEmail) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * 通过手机号码获取用户对象
      *
      * @param phone 手机号

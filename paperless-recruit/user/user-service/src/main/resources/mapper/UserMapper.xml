@@ -52,6 +52,15 @@
         where username = #{username}
     </select>
 
+    <select id="getUserByUsernameOrPhoneOrEmail" resultType="user">
+        select
+        <include refid="user"/>
+        from user
+        where username = #{usernameOrPhoneOrEmail}
+        or phone = #{usernameOrPhoneOrEmail}
+        or email = #{usernameOrPhoneOrEmail}
+    </select>
+
     <select id="getUserByPhone" resultType="user">
         select
         <include refid="user"/>

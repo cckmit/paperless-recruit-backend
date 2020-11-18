@@ -61,6 +61,12 @@ public class UserServiceImplTest {
         System.out.println(getUserResult);
     }
 
+
+    @Test
+    public void getUserByUsernameOrPhoneOrEmail() {
+        System.out.println(userService.getUserByUsernameOrPhoneOrEmail("8270323783@qq.com"));
+    }
+
     @Test
     public void getUserByPhone() {
         System.out.println(userService.getUserByPhone("15992321303"));
@@ -105,4 +111,5 @@ public class UserServiceImplTest {
     public void enableUser() {
         System.out.println(userService.enableUser(7L));
     }
+
 }

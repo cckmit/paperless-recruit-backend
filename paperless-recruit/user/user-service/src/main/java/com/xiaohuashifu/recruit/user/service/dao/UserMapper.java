@@ -22,6 +22,8 @@ public interface UserMapper {
 
     UserDO getUserByUsername(String username);
 
+    UserDO getUserByUsernameOrPhoneOrEmail(String usernameOrPhoneOrEmail);
+
     UserDO getUserByPhone(String phone);
 
     UserDO getUserByEmail(String email);

@@ -12,7 +12,7 @@ package com.xiaohuashifu.recruit.user.api.service;
 public interface RoleHierarchyService {
     /**
      * 这个服务会返回当前权限的层级结构，用于构建RoleHierarchy
-     * 例如：    "all > user\n" +
+     * 例如：    "root > user\n" +
      *           "user > get_user\n" +
      *           "user > update_user\n" +
      *           "user > create_user"

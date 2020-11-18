@@ -27,13 +27,8 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
     private PermissionService permissionService;
 
     /**
-     * 根级权限名
-     */
-    private static final String ROOT_PERMISSION_NAME = "root";
-
-    /**
      * 这个服务会返回当前权限的层级结构，用于构建RoleHierarchy
-     * 例如：    "all > user\n" +
+     * 例如：    "root > user\n" +
      *           "user > get_user\n" +
      *           "user > update_user\n" +
      *           "user > create_user"
@@ -47,7 +42,7 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
                 .collect(Collectors.toMap(PermissionDTO::getId, PermissionDTO::getPermissionName));
         StringBuilder roleHierarchy = new StringBuilder();
         for (PermissionDTO permissionDTO : permissionDTOList) {
-            if (permissionDTO.getPermissionName().equals(ROOT_PERMISSION_NAME)) {
+            if (permissionDTO.getParentPermissionId().equals(0L)) {
                 continue;
             }
             String parentPermissionName = permissionDTOMap.get(permissionDTO.getParentPermissionId());

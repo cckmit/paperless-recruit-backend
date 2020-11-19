@@ -80,7 +80,7 @@ public class UserServiceImplTest {
 
     @Test
     public void updateUsername() {
-        final Result<UserDTO> updateUsernameResult = userService.updateUsername(-3L, "xhsfnew");
+        Result<UserDTO> updateUsernameResult = userService.updateUsername(-3L, "xhsfnew");
         assertTrue(updateUsernameResult.isSuccess());
     }
 
@@ -93,15 +93,31 @@ public class UserServiceImplTest {
 
     @Test
     public void updateEmail() {
-        final Result<UserDTO> updateEmailResult = userService.updateEmail(1L, "827032783@qq.com", "495483");
+        Result<UserDTO> updateEmailResult = userService.updateEmail(1L, "827032783@qq.com", "495483");
         System.out.println(updateEmailResult);
 //        assertTrue(updateEmailResult.isSuccess());
     }
 
     @Test
     public void updatePassword() {
-        final Result<UserDTO> updatePasswordResult = userService.updatePassword(7L, "123456");
+        Result<UserDTO> updatePasswordResult = userService.updatePassword(7L, "123456");
         assertTrue(updatePasswordResult.isSuccess());
+    }
+
+
+    @Test
+    public void updatePasswordByEmailAuthCode() {
+        Result<UserDTO> updatePasswordResult = userService.updatePasswordByEmailAuthCode(
+                "827032783@qq.com", "123456", "672394");
+        System.out.println(updatePasswordResult.isSuccess());
+    }
+
+
+    @Test
+    public void updatePasswordBySmsAuthCode() {
+        Result<UserDTO> updatePasswordResult = userService.updatePasswordBySmsAuthCode(
+                "15992321303", "123456", "223231");
+        System.out.println(updatePasswordResult.isSuccess());
     }
 
     @Test

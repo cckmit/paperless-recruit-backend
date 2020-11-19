@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
@@ -18,7 +17,6 @@ import com.xiaohuashifu.recruit.user.service.pojo.do0.UserDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> saveUser(String username, String password) {
         // 判断用户名是否存在
-        int count = userMapper.countUserByUsername(username.trim());
+        int count = userMapper.countByUsername(username.trim());
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "Username exists.");
         }
@@ -193,7 +191,7 @@ public class UserServiceImpl implements UserService {
         newUsername = newUsername.trim();
 
         // 判断用户名是否存在
-        count = userMapper.countUserByUsername(newUsername);
+        count = userMapper.countByUsername(newUsername);
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New username exists.");
         }
@@ -220,14 +218,18 @@ public class UserServiceImpl implements UserService {
         }
 
         // 判断手机号码是否存在
-        count = userMapper.countUserByPhone(newPhone);
+        count = userMapper.countByPhone(newPhone);
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New phone exists.");
         }
 
         // 判断验证码是否正确
         Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
-                .phone(newPhone).subject(UPDATE_PHONE_SUBJECT).authCode(authCode).delete(true).build());
+                .phone(newPhone)
+                .subject(UPDATE_PHONE_SUBJECT)
+                .authCode(authCode)
+                .delete(true)
+                .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
             return Result.fail(checkSmsAuthCodeResult);
         }
@@ -257,14 +259,18 @@ public class UserServiceImpl implements UserService {
         newEmail = newEmail.trim();
 
         // 判断邮箱是否存在
-        count = userMapper.countUserByEmail(newEmail);
+        count = userMapper.countByEmail(newEmail);
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New email exists.");
         }
 
         // 判断验证码是否正确
         Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
-                .email(newEmail).subject(UPDATE_EMAIL_SUBJECT).authCode(authCode).delete(true).build());
+                .email(newEmail)
+                .subject(UPDATE_EMAIL_SUBJECT)
+                .authCode(authCode)
+                .delete(true)
+                .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
             return Result.fail(checkEmailAuthCodeResult);
         }
@@ -293,6 +299,71 @@ public class UserServiceImpl implements UserService {
         userMapper.updatePassword(id, passwordService.encodePassword(newPassword));
         return getUser(id);
     }
+
+    /**
+     * 更新密码，通过邮箱验证码
+     *
+     * @param email 邮箱
+     * @param newPassword 新密码
+     * @param authCode 邮箱验证码
+     * @return 更新后的用户
+     */
+    @Override
+    public Result<UserDTO> updatePasswordByEmailAuthCode(String email, String newPassword, String authCode) {
+        // 判断用户是否存在
+        int count = userMapper.countByEmail(email);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+        }
+
+        // 判断验证码是否正确
+        Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
+                .email(email)
+                .subject(UPDATE_PASSWORD_BY_EMAIL_AUTH_CODE_SUBJECT)
+                .authCode(authCode)
+                .delete(true)
+                .build());
+        if (!checkEmailAuthCodeResult.isSuccess()) {
+            return Result.fail(checkEmailAuthCodeResult);
+        }
+
+        // 更新密码
+        userMapper.updatePasswordByEmail(email, passwordService.encodePassword(newPassword));
+        return getUserByEmail(email);
+    }
+
+    /**
+     * 更新密码，通过短信验证码
+     *
+     * @param phone 手机号码
+     * @param newPassword 新密码
+     * @param authCode 短信验证码
+     * @return 更新后的用户
+     */
+    @Override
+    public Result<UserDTO> updatePasswordBySmsAuthCode(String phone, String newPassword, String authCode) {
+        // 判断用户是否存在
+        int count = userMapper.countByPhone(phone);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+        }
+
+        // 判断验证码是否正确
+        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
+                .phone(phone)
+                .subject(UPDATE_PASSWORD_BY_SMS_AUTH_CODE_SUBJECT)
+                .authCode(authCode)
+                .delete(true)
+                .build());
+        if (!checkSmsAuthCodeResult.isSuccess()) {
+            return Result.fail(checkSmsAuthCodeResult);
+        }
+
+        // 更新密码
+        userMapper.updatePasswordByPhone(phone, passwordService.encodePassword(newPassword));
+        return getUserByPhone(phone);
+    }
+
 
     /**
      * 禁用用户

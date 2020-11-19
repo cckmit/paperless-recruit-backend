@@ -82,21 +82,21 @@
         where id = #{id}
     </select>
 
-    <select id="countUserByUsername" resultType="int">
+    <select id="countByUsername" resultType="int">
         select
         count(*)
         from user
         where username = #{username}
     </select>
 
-    <select id="countUserByPhone" resultType="int">
+    <select id="countByPhone" resultType="int">
         select
         count(*)
         from user
         where phone = #{phone}
     </select>
 
-    <select id="countUserByEmail" resultType="int">
+    <select id="countByEmail" resultType="int">
         select
         count(*)
         from user
@@ -125,6 +125,18 @@
         update user
         set password = #{password}
         where id = #{id}
+    </update>
+
+    <update id="updatePasswordByEmail">
+        update user
+        set password = #{password}
+        where email = #{email}
+    </update>
+
+    <update id="updatePasswordByPhone">
+        update user
+        set password = #{password}
+        where phone = #{phone}
     </update>
 
     <update id="updateAvailable">

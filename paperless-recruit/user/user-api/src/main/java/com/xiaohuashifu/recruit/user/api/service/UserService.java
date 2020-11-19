@@ -154,31 +154,40 @@ public interface UserService {
         throw new UnsupportedOperationException();
     }
 
-    // TODO: 2020/11/19 实现
+
+    /**
+     * 邮箱验证码更新密码的主题，用于调用邮箱验证码服务
+     */
+    String UPDATE_PASSWORD_BY_EMAIL_AUTH_CODE_SUBJECT = "user:update-password:email-auth-code";
+
     /**
      * 更新密码，通过邮箱验证码
      *
-     * @param id 用户编号
+     * @param email 邮箱
      * @param newPassword 新密码
      * @param authCode 邮箱验证码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePasswordByEmailAuthCode(@NotNull @Positive Long id,
+    default Result<UserDTO> updatePasswordByEmailAuthCode(@NotBlank @Email String email,
                                                           @NotNull @Password String newPassword,
                                                           @NotBlank @AuthCode String authCode) {
         throw new UnsupportedOperationException();
     }
 
-    // TODO: 2020/11/19 实现
+    /**
+     * 短信验证码更新密码的主题，用于调用短信验证码服务
+     */
+    String UPDATE_PASSWORD_BY_SMS_AUTH_CODE_SUBJECT = "user:update-password:sms-auth-code";
+
     /**
      * 更新密码，通过短信验证码
      *
-     * @param id 用户编号
+     * @param phone 手机号码
      * @param newPassword 新密码
      * @param authCode 短信验证码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePasswordBySmsAuthCode(@NotNull @Positive Long id,
+    default Result<UserDTO> updatePasswordBySmsAuthCode(@NotBlank @Phone String phone,
                                                           @NotNull @Password String newPassword,
                                                           @NotBlank @AuthCode String authCode) {
         throw new UnsupportedOperationException();

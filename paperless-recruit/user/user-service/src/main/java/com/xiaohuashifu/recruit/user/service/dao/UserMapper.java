@@ -30,11 +30,11 @@ public interface UserMapper {
 
     int count(Long id);
 
-    int countUserByUsername(String username);
+    int countByUsername(String username);
 
-    int countUserByPhone(String phone);
+    int countByPhone(String phone);
 
-    int countUserByEmail(String email);
+    int countByEmail(String email);
 
     int updateUsername(@Param("id") Long id, @Param("username") String username);
 
@@ -44,7 +44,10 @@ public interface UserMapper {
 
     int updatePassword(@Param("id") Long id, @Param("password") String password);
 
-    int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
+    int updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
 
+    int updatePasswordByPhone(@Param("phone") String phone, @Param("password") String password);
+
+    int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
 
 }

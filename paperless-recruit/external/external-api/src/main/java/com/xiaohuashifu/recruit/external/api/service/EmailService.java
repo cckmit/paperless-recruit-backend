@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.EmailDTO;
 import org.springframework.core.io.FileSystemResource;
 
@@ -17,6 +18,14 @@ import java.util.Map;
  * @create: 2020/11/18 16:18
  */
 public interface EmailService {
+
+    /**
+     * 邮箱验证码的Redis key前缀
+     * 推荐格式为EMAIL_AUTH_CODE_REDIS_PREFIX:{subject}:{email}
+     */
+    String EMAIL_AUTH_CODE_REDIS_PREFIX = "email:auth-code";
+
+
     @interface SendSimpleEmail{}
     /**
      * 发送简单邮件
@@ -43,6 +52,30 @@ public interface EmailService {
     default Result<Void> sendTemplateEmail(@NotNull EmailDTO emailDTO, @NotBlank String templateName,
                                              @NotEmpty Map<String, Object> model,
                                            Map<String, FileSystemResource> attachmentMap) {
+        throw new UnsupportedOperationException();
+    }
+
+    @interface CreateAndSendEmailAuthCode{}
+    /**
+     * 发送邮箱验证码服务
+     * 该服务会把邮箱验证码进行缓存
+     *
+     * @param emailAuthCodeDTO 邮箱验证码对象
+     * @return Result<Void> 返回结果若Result.isSuccess()为true表示发送成功，否则发送失败
+     */
+    default Result<Void> createAndSendEmailAuthCode(@NotNull EmailAuthCodeDTO emailAuthCodeDTO) {
+        throw new UnsupportedOperationException();
+    }
+
+    @interface CheckEmailAuthCode{}
+    /**
+     * 邮箱验证码检验验证码是否有效的服务
+     * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次（EmailAuthCodeDTO.delete == true即可）
+     *
+     * @param emailAuthCodeDTO 邮箱验证码对象
+     * @return Result<Void> 返回结果若Result.isSuccess()为true表示验证成功，否则验证失败
+     */
+    default Result<Void> checkEmailAuthCode(@NotNull EmailAuthCodeDTO emailAuthCodeDTO) {
         throw new UnsupportedOperationException();
     }
 }

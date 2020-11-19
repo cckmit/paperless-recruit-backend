@@ -2,11 +2,14 @@ package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
+import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.EmailDTO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
@@ -14,7 +17,10 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 描述：发送邮件的服务
@@ -29,12 +35,16 @@ public class EmailServiceImpl implements EmailService {
 
     private final TemplateEngine templateEngine;
 
+    private final RedisTemplate<Object, Object> redisTemplate;
+
     @Value("${spring.mail.username}")
     private String from;
 
-    public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine) {
+    public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine,
+                            RedisTemplate<Object, Object> redisTemplate) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+        this.redisTemplate = redisTemplate;
     }
 
     // TODO: 2020/11/18 目前不支持附件功能
@@ -113,4 +123,71 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(mimeMessage);
         return Result.success();
     }
+
+
+    /**
+     * 发送邮箱验证码服务
+     * 该服务会把邮箱验证码进行缓存
+     *
+     * @param emailAuthCodeDTO 邮箱验证码对象
+     * @return Result<Void> 返回结果若Result.isSuccess()为true表示发送成功，否则发送失败
+     */
+    @Override
+    public Result<Void> createAndSendEmailAuthCode(EmailAuthCodeDTO emailAuthCodeDTO) {
+        // 发送邮件到邮箱
+        String authCode = AuthCodeUtils.randomAuthCode();
+        Map<String, Object> model = new HashMap<>();
+        model.put("authCode", authCode);
+        model.put("title", emailAuthCodeDTO.getTitle());
+        model.put("expiredTime", emailAuthCodeDTO.getExpiredTime());
+        EmailDTO emailD = new EmailDTO.Builder()
+                .to(emailAuthCodeDTO.getEmail())
+                .subject("华农招新：" + emailAuthCodeDTO.getTitle() + "验证码")
+                .build();
+        Result<Void> sendEmailAuthCodeResult = sendTemplateEmail(
+                emailD, "RecruitAuthCode", model, null);
+        if (!sendEmailAuthCodeResult.isSuccess()) {
+            return sendEmailAuthCodeResult;
+        }
+
+        // 添加邮箱验证码到缓存
+        String redisKey = EMAIL_AUTH_CODE_REDIS_PREFIX
+                + ":" + emailAuthCodeDTO.getSubject() + ":" + emailAuthCodeDTO.getEmail();
+        redisTemplate.opsForValue().set(redisKey, authCode, emailAuthCodeDTO.getExpiredTime(), TimeUnit.MINUTES);
+
+        return Result.success();
+    }
+
+    /**
+     * 邮箱验证码检验验证码是否有效的服务
+     * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次（EmailAuthCodeDTO.delete == true即可）
+     *
+     * @param emailAuthCodeDTO 邮箱验证码对象
+     * @return Result<Void> 返回结果若Result.isSuccess()为true表示验证成功，否则验证失败
+     */
+    @Override
+    public Result<Void> checkEmailAuthCode(@NotNull EmailAuthCodeDTO emailAuthCodeDTO) {
+        // 从缓存取出验证码
+        String redisKey = EMAIL_AUTH_CODE_REDIS_PREFIX
+                + ":" + emailAuthCodeDTO.getSubject() + ":" + emailAuthCodeDTO.getEmail();
+        String authCode = (String) redisTemplate.opsForValue().get(redisKey);
+
+        // 验证码不存在
+        if (authCode == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code not exists.");
+        }
+
+        // 验证码不正确
+        if (!authCode.equals(emailAuthCodeDTO.getAuthCode())) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code error.");
+        }
+
+        // 验证通过，如果需要删除验证码，则删除
+        if (emailAuthCodeDTO.getDelete()) {
+            redisTemplate.delete(redisKey);
+        }
+
+        return Result.success();
+    }
+
 }

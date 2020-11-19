@@ -8,10 +8,10 @@ import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SmsDTO;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,9 +59,9 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public Result<Void> createAndSendSmsAuthCode(SmsAuthCodeDTO smsAuthCodeDTO) {
-        // 发送短信到进行登录的用户手机
-        String smsAuthCode = createSmsAuthCode();
-        Result<Void> sendSmsAuthCodeResult = sendSmsAuthCode(smsAuthCodeDTO.getPhone(), smsAuthCode);
+        // 发送短信验证码到手机
+        String authCode = AuthCodeUtils.randomAuthCode();
+        Result<Void> sendSmsAuthCodeResult = sendSmsAuthCode(smsAuthCodeDTO.getPhone(), authCode);
         if (!sendSmsAuthCodeResult.isSuccess()) {
             return sendSmsAuthCodeResult;
         }
@@ -69,7 +69,7 @@ public class SmsServiceImpl implements SmsService {
         // 添加短信验证码到缓存
         String redisKey = SMS_AUTH_CODE_REDIS_PREFIX
                 + ":" + smsAuthCodeDTO.getSubject() + ":" + smsAuthCodeDTO.getPhone();
-        redisTemplate.opsForValue().set(redisKey, smsAuthCode, smsAuthCodeDTO.getExpiredTime(), TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(redisKey, authCode, smsAuthCodeDTO.getExpiredTime(), TimeUnit.MINUTES);
 
         return Result.success();
     }
@@ -86,15 +86,15 @@ public class SmsServiceImpl implements SmsService {
         // 从缓存取出验证码
         String redisKey = SMS_AUTH_CODE_REDIS_PREFIX
                 + ":" + smsAuthCodeDTO.getSubject() + ":" + smsAuthCodeDTO.getPhone();
-        String smsAuthCode = (String) redisTemplate.opsForValue().get(redisKey);
+        String authCode = (String) redisTemplate.opsForValue().get(redisKey);
 
         // 验证码不存在
-        if (smsAuthCode == null) {
+        if (authCode == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code not exists.");
         }
 
         // 验证码不正确
-        if (!smsAuthCode.equals(smsAuthCodeDTO.getAuthCode())) {
+        if (!authCode.equals(smsAuthCodeDTO.getAuthCode())) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code error.");
         }
 
@@ -106,7 +106,6 @@ public class SmsServiceImpl implements SmsService {
         return Result.success();
     }
 
-
     /**
      * 发送短信验证码的具体逻辑
      *
@@ -115,7 +114,8 @@ public class SmsServiceImpl implements SmsService {
      * @return 发送结果
      */
     private Result<Void> sendSmsAuthCode(String phone, String authCode) {
-        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+        DefaultProfile profile = DefaultProfile.getProfile(
+                "cn-hangzhou", accessKeyId, accessKeySecret);
         IAcsClient client = new DefaultAcsClient(profile);
 
         CommonRequest request = new CommonRequest();
@@ -135,14 +135,6 @@ public class SmsServiceImpl implements SmsService {
             logger.warn("Send sms auth code fail");
             return Result.fail(ErrorCode.INTERNAL_ERROR, "Send sms auth code fail.");
         }
-    }
-
-    /**
-     * 随机创建短信验证码，格式为6位数字
-     * @return 短信验证码
-     */
-    private String createSmsAuthCode() {
-        return RandomStringUtils.randomNumeric(6);
     }
 
 }

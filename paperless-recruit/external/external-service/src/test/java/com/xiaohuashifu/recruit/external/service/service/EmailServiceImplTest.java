@@ -1,6 +1,8 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
+import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.EmailDTO;
+import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -63,5 +65,18 @@ public class EmailServiceImplTest {
                         .subject("邮箱测试").build(),
                 "RecruitAuthCode",
                 model, attachmentMap));
+    }
+
+    @Test
+    public void createAndSendEmailAuthCode() {
+        System.out.println(emailService.createAndSendEmailAuthCode(
+                new EmailAuthCodeDTO.Builder()
+                        .email("859703569@qq.com").subject("email-update").title("邮箱绑定").expiredTime(5L).build()));
+    }
+
+    @Test
+    public void checkEmailAuthCode() {
+        System.out.println(emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
+                .email("827032783@qq.com").subject("email-update").authCode("401034").delete(true).build()));
     }
 }

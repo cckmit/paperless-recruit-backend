@@ -1,25 +1,25 @@
 package com.xiaohuashifu.recruit.external.api.dto;
 
 import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
-import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
-import com.xiaohuashifu.recruit.external.api.service.SmsService;
+import com.xiaohuashifu.recruit.external.api.service.EmailService;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
 /**
- * 描述：短信验证码，用于发送短信验证码时带的信息
+ * 描述：邮箱验证码，用于发送邮箱验证码时带的信息
  *
  * @author: xhsf
  * @email: 827032783@qq.com
  * @create: 2020/11/19 13:42
  */
-public class SmsAuthCodeDTO implements Serializable {
+public class EmailAuthCodeDTO implements Serializable {
     @NotBlank
-    @Phone
-    private String phone;
+    @Email
+    private String email;
 
     /**
      * 主题必须是该业务唯一的，不可以产生冲突，否则不准确
@@ -30,39 +30,47 @@ public class SmsAuthCodeDTO implements Serializable {
     private String subject;
 
     /**
+     * 标题，用于发送邮件验证码时标识该邮件验证码的目的
+     * 推荐长度不超过10个汉字
+     * 如“找回密码”，“邮箱绑定”等
+     */
+    @NotBlank(groups = EmailService.CreateAndSendEmailAuthCode.class)
+    private String title;
+
+    /**
      * 缓存键的过期时间，单位分钟
      * 推荐5或10分钟
-     * 在调用SmsService.createAndSendSmsAuthCode()时需要带上
+     * 在调用EmailService.createAndSendEmailAuthCode()时需要带上
      */
-    @NotNull(groups = SmsService.CreateAndSendSmsAuthCode.class)
+    @NotNull(groups = EmailService.CreateAndSendEmailAuthCode.class)
     @Positive
     private Long expiredTime;
 
     /**
-     * 短信验证码
-     * 在调用SmsService.checkSmsAuthCode()时需要带上
+     * 邮箱验证码
+     * 在调用EmailService.checkEmailAuthCode()时需要带上
      */
-    @NotBlank(groups = SmsService.CheckSmsAuthCode.class)
+    @NotBlank(groups = EmailService.CheckEmailAuthCode.class)
     @AuthCode
     private String authCode;
 
     /**
      * 检查成功后是否删除该键
-     * 在调用SmsService.checkSmsAuthCode()时需要带上
+     * 在调用EmailService.checkEmailAuthCode()时需要带上
      */
-    @NotNull(groups = SmsService.CheckSmsAuthCode.class)
+    @NotNull(groups = EmailService.CheckEmailAuthCode.class)
     private Boolean delete;
 
 
-    public SmsAuthCodeDTO() {
+    public EmailAuthCodeDTO() {
     }
 
-    public String getPhone() {
-        return phone;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getSubject() {
@@ -71,6 +79,14 @@ public class SmsAuthCodeDTO implements Serializable {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Long getExpiredTime() {
@@ -99,9 +115,10 @@ public class SmsAuthCodeDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "SmsAuthCodeDTO{" +
-                "phone='" + phone + '\'' +
+        return "EmailAuthCodeDTO{" +
+                "email='" + email + '\'' +
                 ", subject='" + subject + '\'' +
+                ", title='" + title + '\'' +
                 ", expiredTime=" + expiredTime +
                 ", authCode='" + authCode + '\'' +
                 ", delete=" + delete +
@@ -110,8 +127,9 @@ public class SmsAuthCodeDTO implements Serializable {
 
 
     public static final class Builder {
-        private String phone;
+        private String email;
         private String subject;
+        private String title;
         private Long expiredTime;
         private String authCode;
         private Boolean delete;
@@ -119,13 +137,18 @@ public class SmsAuthCodeDTO implements Serializable {
         public Builder() {
         }
 
-        public Builder phone(String phone) {
-            this.phone = phone;
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 
         public Builder subject(String subject) {
             this.subject = subject;
+            return this;
+        }
+
+        public Builder title(String title) {
+            this.title = title;
             return this;
         }
 
@@ -144,14 +167,15 @@ public class SmsAuthCodeDTO implements Serializable {
             return this;
         }
 
-        public SmsAuthCodeDTO build() {
-            SmsAuthCodeDTO smsAuthCodeDTO = new SmsAuthCodeDTO();
-            smsAuthCodeDTO.setPhone(phone);
-            smsAuthCodeDTO.setSubject(subject);
-            smsAuthCodeDTO.setExpiredTime(expiredTime);
-            smsAuthCodeDTO.setAuthCode(authCode);
-            smsAuthCodeDTO.setDelete(delete);
-            return smsAuthCodeDTO;
+        public EmailAuthCodeDTO build() {
+            EmailAuthCodeDTO emailAuthCodeDTO = new EmailAuthCodeDTO();
+            emailAuthCodeDTO.setEmail(email);
+            emailAuthCodeDTO.setSubject(subject);
+            emailAuthCodeDTO.setTitle(title);
+            emailAuthCodeDTO.setExpiredTime(expiredTime);
+            emailAuthCodeDTO.setAuthCode(authCode);
+            emailAuthCodeDTO.setDelete(delete);
+            return emailAuthCodeDTO;
         }
     }
 }

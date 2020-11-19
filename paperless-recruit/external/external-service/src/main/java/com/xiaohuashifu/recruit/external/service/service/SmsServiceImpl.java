@@ -1,9 +1,24 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
+import com.aliyuncs.CommonRequest;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.profile.DefaultProfile;
+import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SmsDTO;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 描述：发送短信服务
@@ -14,8 +29,120 @@ import org.apache.dubbo.config.annotation.Service;
  */
 @Service
 public class SmsServiceImpl implements SmsService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SmsServiceImpl.class);
+
+    private final RedisTemplate<Object, Object> redisTemplate;
+
+    @Value("${aliyun.access-key-id}")
+    private String accessKeyId;
+
+    @Value("${aliyun.access-key-secret}")
+    private String accessKeySecret;
+
+    public SmsServiceImpl(RedisTemplate<Object, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    // TODO: 2020/11/19 通用短信接口未实现
     @Override
     public Result<Object> sendSms(SmsDTO smsDTO) {
         return Result.success("Send sms success.");
     }
+
+    /**
+     * 发送短信验证码服务
+     * 该服务会把短信验证码进行缓存
+     *
+     * @param smsAuthCodeDTO 短信验证码对象
+     * @return Result<Void> 返回结果若Result.isSuccess()为true表示发送成功，否则发送失败
+     */
+    @Override
+    public Result<Void> createAndSendSmsAuthCode(SmsAuthCodeDTO smsAuthCodeDTO) {
+        // 发送短信到进行登录的用户手机
+        String smsAuthCode = createSmsAuthCode();
+        Result<Void> sendSmsAuthCodeResult = sendSmsAuthCode(smsAuthCodeDTO.getPhone(), smsAuthCode);
+        if (!sendSmsAuthCodeResult.isSuccess()) {
+            return sendSmsAuthCodeResult;
+        }
+
+        // 添加短信验证码到缓存
+        String redisKey = SMS_AUTH_CODE_REDIS_PREFIX
+                + ":" + smsAuthCodeDTO.getSubject() + ":" + smsAuthCodeDTO.getPhone();
+        redisTemplate.opsForValue().set(redisKey, smsAuthCode, smsAuthCodeDTO.getExpiredTime(), TimeUnit.SECONDS);
+
+        return Result.success();
+    }
+
+    /**
+     * 短信验证码检验验证码是否有效的服务
+     * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次（SmsAuthCodeDTO.delete == true即可）
+     *
+     * @param smsAuthCodeDTO 短信验证码对象
+     * @return Result<Void> 返回结果若Result.isSuccess()为true表示验证成功，否则验证失败
+     */
+    @Override
+    public Result<Void> checkSmsAuthCode(SmsAuthCodeDTO smsAuthCodeDTO) {
+        // 从缓存取出验证码
+        String redisKey = SMS_AUTH_CODE_REDIS_PREFIX
+                + ":" + smsAuthCodeDTO.getSubject() + ":" + smsAuthCodeDTO.getPhone();
+        String smsAuthCode = (String) redisTemplate.opsForValue().get(redisKey);
+
+        // 验证码不存在
+        if (smsAuthCode == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code not exists.");
+        }
+
+        // 验证码不正确
+        if (!smsAuthCode.equals(smsAuthCodeDTO.getAuthCode())) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code error.");
+        }
+
+        // 验证通过，如果需要删除验证码，则删除
+        if (smsAuthCodeDTO.getDelete()) {
+            redisTemplate.delete(redisKey);
+        }
+
+        return Result.success();
+    }
+
+
+    /**
+     * 发送短信验证码的具体逻辑
+     *
+     * @param phone 手机号码
+     * @param authCode 验证码
+     * @return 发送结果
+     */
+    private Result<Void> sendSmsAuthCode(String phone, String authCode) {
+        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+        IAcsClient client = new DefaultAcsClient(profile);
+
+        CommonRequest request = new CommonRequest();
+        request.setSysMethod(MethodType.POST);
+        request.setSysDomain("dysmsapi.aliyuncs.com");
+        request.setSysVersion("2017-05-25");
+        request.setSysAction("SendSms");
+        request.putQueryParameter("RegionId", "cn-hangzhou");
+        request.putQueryParameter("PhoneNumbers", phone);
+        request.putQueryParameter("SignName", "招新小程序");
+        request.putQueryParameter("TemplateCode", "SMS_205464852");
+        request.putQueryParameter("TemplateParam", "{\"code\":\"" + authCode + "\"}");
+        try {
+            client.getCommonResponse(request);
+            return Result.success();
+        } catch (ClientException e) {
+            logger.warn("Send sms auth code fail");
+            return Result.fail(ErrorCode.INTERNAL_ERROR, "Send sms auth code fail.");
+        }
+    }
+
+    /**
+     * 随机创建短信验证码，格式为6位数字
+     * @return 短信验证码
+     */
+    private String createSmsAuthCode() {
+        return RandomStringUtils.randomNumeric(6);
+    }
+
 }

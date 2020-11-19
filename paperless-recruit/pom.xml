@@ -160,6 +160,13 @@
                 <artifactId>external-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <!-- 阿里云库 -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>4.5.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

@@ -88,6 +88,12 @@
             <artifactId>authentication-api</artifactId>
         </dependency>
 
+        <!--    external-api接口    -->
+        <dependency>
+            <groupId>com.xiaohuashifu.recruit</groupId>
+            <artifactId>external-api</artifactId>
+        </dependency>
+
         <!--   公共对象     -->
         <dependency>
             <groupId>com.xiaohuashifu.recruit</groupId>

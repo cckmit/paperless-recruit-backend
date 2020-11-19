@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/email")
     public Object updateEmail(String email) {
-        final Result<UserDTO> updateEmailResult = userService.updateEmail(1L, email);
+        final Result<UserDTO> updateEmailResult = userService.updateEmail(1L, email,"12233");
         return updateEmailResult;
     }
 

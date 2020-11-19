@@ -5,6 +5,11 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
+import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.service.EmailService;
+import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -13,6 +18,7 @@ import com.xiaohuashifu.recruit.user.service.pojo.do0.UserDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +35,12 @@ public class UserServiceImpl implements UserService {
 
     @Reference
     private PasswordService passwordService;
+
+    @Reference
+    private EmailService emailService;
+
+    @Reference
+    private SmsService smsService;
 
     private final UserMapper userMapper;
 
@@ -192,15 +204,15 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 更新手机
+     * 更新手机号码
      *
      * @param id 用户编号
      * @param newPhone 新手机号码
+     * @param authCode 短信验证码
      * @return 更新后的用户
      */
-    // TODO: 2020/11/16 这里应该让用户根据新手机号码拿到验证码，然后再把验证码和新手机号码一起发送过来进行修改
     @Override
-    public Result<UserDTO> updatePhone(Long id, String newPhone) {
+    public Result<UserDTO> updatePhone(Long id, String newPhone, String authCode) {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
@@ -213,6 +225,13 @@ public class UserServiceImpl implements UserService {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New phone exists.");
         }
 
+        // 判断验证码是否正确
+        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
+                .phone(newPhone).subject(UPDATE_PHONE_SUBJECT).authCode(authCode).delete(true).build());
+        if (!checkSmsAuthCodeResult.isSuccess()) {
+            return Result.fail(checkSmsAuthCodeResult);
+        }
+
         // 更新手机号码
         userMapper.updatePhone(id, newPhone);
         return getUser(id);
@@ -223,11 +242,11 @@ public class UserServiceImpl implements UserService {
      *
      * @param id 用户编号
      * @param newEmail 新邮箱
+     * @param authCode 邮箱认证码
      * @return 更新后的用户
      */
-    // TODO: 2020/11/16 这里应该把验证码发送到用户的新邮件，让用户拿着验证码和新邮件一起过来修改
     @Override
-    public Result<UserDTO> updateEmail(Long id, String newEmail) {
+    public Result<UserDTO> updateEmail(Long id, String newEmail, String authCode) {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
@@ -241,6 +260,13 @@ public class UserServiceImpl implements UserService {
         count = userMapper.countUserByEmail(newEmail);
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "New email exists.");
+        }
+
+        // 判断验证码是否正确
+        Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
+                .email(newEmail).subject(UPDATE_EMAIL_SUBJECT).authCode(authCode).delete(true).build());
+        if (!checkEmailAuthCodeResult.isSuccess()) {
+            return Result.fail(checkEmailAuthCodeResult);
         }
 
         // 更新邮箱

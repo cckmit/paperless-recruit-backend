@@ -30,6 +30,7 @@ public class UserServiceImplTest {
         reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.UserService");
         reference.setApplication(application);
         reference.setInterface(UserService.class);
+        reference.setTimeout(10000000);
         userService = reference.get();
     }
 
@@ -85,13 +86,14 @@ public class UserServiceImplTest {
 
     @Test
     public void updatePhone() {
-        final Result<UserDTO> updatePhoneResult = userService.updatePhone(1L, "15992321302");
-        assertTrue(updatePhoneResult.isSuccess());
+        Result<UserDTO> updatePhoneResult =
+                userService.updatePhone(1L, "15992321303", "214481");
+        System.out.println(updatePhoneResult);
     }
 
     @Test
     public void updateEmail() {
-        final Result<UserDTO> updateEmailResult = userService.updateEmail(1L, "   827032783");
+        final Result<UserDTO> updateEmailResult = userService.updateEmail(1L, "827032783@qq.com", "495483");
         System.out.println(updateEmailResult);
 //        assertTrue(updateEmailResult.isSuccess());
     }

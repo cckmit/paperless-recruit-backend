@@ -1,6 +1,8 @@
 package com.xiaohuashifu.recruit.external.service.controller;
 
+import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @create: 2020/11/19 17:04
  */
 @RestController
-@RequestMapping("/sms")
-public class SmsController {
+@RequestMapping("/email")
+public class EmailController {
     @Reference
-    private SmsService smsService;
+    private EmailService emailService;
 
-    @PostMapping("/createAndSendSmsAuthCode")
-    public Object createAndSendSmsAuthCode(@RequestBody SmsAuthCodeDTO smsAuthCodeDTO) {
-        return smsService.createAndSendSmsAuthCode(smsAuthCodeDTO);
+    @PostMapping("/createAndSendEmailAuthCode")
+    public Object createAndSendEmailAuthCode(@RequestBody EmailAuthCodeDTO emailAuthCodeDTO) {
+        return emailService.createAndSendEmailAuthCode(emailAuthCodeDTO);
     }
 }

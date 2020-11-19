@@ -108,17 +108,10 @@ public interface UserService {
     }
 
     /**
-     * 更新手机号码
-     *
-     * @param id 用户编号
-     * @param newPhone 新手机号码
-     * @return 更新后的用户
+     * 更新手机号码的主题，用于调用短信验证码服务
      */
-    default Result<UserDTO> updatePhone(@NotNull @Positive Long id, @NotBlank @Phone String newPhone) {
-        throw new UnsupportedOperationException();
-    }
+    String UPDATE_PHONE_SUBJECT = "user:update-phone";
 
-    // TODO: 2020/11/19 实现，这里还需要一个private方法用于验证authCode
     /**
      * 更新手机号码
      *
@@ -133,17 +126,10 @@ public interface UserService {
     }
 
     /**
-     * 更新邮箱
-     *
-     * @param id 用户编号
-     * @param newEmail 新邮箱
-     * @return 更新后的用户
+     * 更新邮件的主题，用于调用邮箱验证码服务
      */
-    default Result<UserDTO> updateEmail(@NotNull @Positive Long id, @NotBlank @Email String newEmail) {
-        throw new UnsupportedOperationException();
-    }
+    String UPDATE_EMAIL_SUBJECT = "user:update-email";
 
-    // TODO: 2020/11/19 实现，这里还需要一个private方法用于验证authCode
     /**
      * 更新邮箱
      *
@@ -168,7 +154,7 @@ public interface UserService {
         throw new UnsupportedOperationException();
     }
 
-    // TODO: 2020/11/19 实现，这里还需要一个private方法用于验证authCode
+    // TODO: 2020/11/19 实现
     /**
      * 更新密码，通过邮箱验证码
      *
@@ -183,7 +169,7 @@ public interface UserService {
         throw new UnsupportedOperationException();
     }
 
-    // TODO: 2020/11/19 实现，这里还需要一个private方法用于验证authCode
+    // TODO: 2020/11/19 实现
     /**
      * 更新密码，通过短信验证码
      *
@@ -217,50 +203,5 @@ public interface UserService {
     default Result<UserDTO> enableUser(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
-
-    // TODO: 2020/11/19
-    /**
-     * 发送邮箱验证码以更新邮箱
-     *
-     * @param email 邮箱
-     * @return String 验证码
-     */
-    default Result<String> createAndSendEmailAuthCodeForUpdateEmail(@NotBlank @Email String email) {
-        throw new UnsupportedOperationException();
-    }
-
-    // TODO: 2020/11/19
-    /**
-     * 发送短信验证码以更新手机号码
-     *
-     * @param phone 手机号码
-     * @return String 验证码
-     */
-    default Result<String> createAndSendSmsAuthCodeForUpdatePhone(@NotBlank @Phone String phone) {
-        throw new UnsupportedOperationException();
-    }
-
-    // TODO: 2020/11/19
-    /**
-     * 发送邮箱验证码以更新密码
-     *
-     * @param email 邮箱
-     * @return String 验证码
-     */
-    default Result<String> createAndSendEmailAuthCodeForUpdatePassword(@NotBlank @Email String email) {
-        throw new UnsupportedOperationException();
-    }
-
-    // TODO: 2020/11/19
-    /**
-     * 发送短信验证码以更新密码
-     *
-     * @param phone 手机号码
-     * @return String 验证码
-     */
-    default Result<String> createAndSendSmsAuthCodeForUpdatePassword(@NotBlank @Phone String phone) {
-        throw new UnsupportedOperationException();
-    }
-
 
 }

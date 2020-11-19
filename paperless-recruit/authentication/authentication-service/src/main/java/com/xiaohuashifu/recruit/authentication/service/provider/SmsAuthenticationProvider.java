@@ -1,8 +1,9 @@
 package com.xiaohuashifu.recruit.authentication.service.provider;
 
-import com.xiaohuashifu.recruit.authentication.api.service.SmsLoginService;
 import com.xiaohuashifu.recruit.authentication.service.token.SmsAuthenticationToken;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -27,15 +28,20 @@ import java.util.stream.Collectors;
  */
 public class SmsAuthenticationProvider implements AuthenticationProvider {
 
-    private final SmsLoginService smsLoginService;
+    /**
+     * 短信验证码登录的主题，用于调用发送和检验短信验证码服务
+     */
+    public static final String SUBJECT = "authentication:sms-login";
+
+    private final SmsService smsService;
 
     private final UserService userService;
 
     private final PermissionService permissionService;
 
-    public SmsAuthenticationProvider(SmsLoginService smsLoginService, UserService userService,
+    public SmsAuthenticationProvider(SmsService smsService, UserService userService,
                                      PermissionService permissionService) {
-        this.smsLoginService = smsLoginService;
+        this.smsService = smsService;
         this.userService = userService;
         this.permissionService = permissionService;
     }
@@ -47,7 +53,13 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
         String authCode = (String) smsAuthenticationToken.getCredentials();
 
         // 验证短信验证码
-        Result<Void> checkSmsAuthCodeResult = smsLoginService.checkSmsAuthCode(phone, authCode);
+        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(
+                new SmsAuthCodeDTO.Builder()
+                        .phone(phone)
+                        .subject(SUBJECT)
+                        .authCode(authCode)
+                        .delete(true)
+                        .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
             throw new InternalAuthenticationServiceException("Auth error.");
         }

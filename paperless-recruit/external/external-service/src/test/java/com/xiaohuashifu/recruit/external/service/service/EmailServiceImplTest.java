@@ -2,9 +2,7 @@ package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.EmailDTO;
-import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
-import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
@@ -14,8 +12,6 @@ import org.springframework.core.io.FileSystemResource;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：

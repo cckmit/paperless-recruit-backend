@@ -8,7 +8,7 @@ import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -61,7 +61,7 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
                         .delete(true)
                         .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
-            throw new InternalAuthenticationServiceException("Auth error.");
+            throw new BadCredentialsException("Auth error.");
         }
 
         // 获取用户对象

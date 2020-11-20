@@ -22,6 +22,7 @@ public interface AuthOpenidService {
      * 用于微信小程序用户绑定AuthOpenid
      * 会通过code获取openid
      * 保存时会对openid进行加密
+     * 只支持App.SCAU_RECRUIT_INTERVIEWEE_MP和App.SCAU_RECRUIT_INTERVIEWER_MP两种类型的绑定
      *
      * @param userId 用户编号
      * @param app 具体的微信小程序
@@ -43,8 +44,8 @@ public interface AuthOpenidService {
      * @param code 微信小程序wx.login()接口的返回结果
      * @return AuthOpenidDTO
      */
-    default Result<AuthOpenidDTO> checkAuthOpenid(@NotNull App app,
-                                                  @NotBlank @Size(min = 32, max = 32) String code) {
+    default Result<AuthOpenidDTO> checkAuthOpenidForWechatMp(@NotNull App app,
+                                                             @NotBlank @Size(min = 32, max = 32) String code) {
         throw new UnsupportedOperationException();
     }
 

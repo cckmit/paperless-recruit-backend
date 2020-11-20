@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     private final Mapper mapper;
 
-    @Value("${service.user.default.role.id}")
+    @Value("${service.user.default-role-id}")
     private Long defaultUserRoleId;
 
     public UserServiceImpl(UserMapper userMapper, Mapper mapper) {

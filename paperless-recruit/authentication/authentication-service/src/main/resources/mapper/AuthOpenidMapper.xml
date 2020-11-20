@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.authentication.service.dao.AuthOpenidMapper">
+    <sql id="auth_openid">
+        id, user_id, app_name, openid, create_time, update_time
+    </sql>
+    <insert id="saveAuthOpenid" keyProperty="id">
+        insert into auth_openid(user_id, app_name, openid)
+        values(#{userId}, #{appName}, #{openid})
+    </insert>
+
+    <select id="getAuthOpenid" resultType="authOpenid">
+        select <include refid="auth_openid"/>
+        from auth_openid
+        where id = #{id}
+    </select>
+
+    <select id="countByUserIdAndAppName" resultType="int">
+        select count(*)
+        from auth_openid
+        where user_id = #{userId}
+        and app_name = #{appName}
+    </select>
+
+
+
+</mapper>

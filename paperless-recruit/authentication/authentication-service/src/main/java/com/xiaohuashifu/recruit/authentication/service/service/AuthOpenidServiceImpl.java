@@ -1,13 +1,22 @@
 package com.xiaohuashifu.recruit.authentication.service.service;
 
+import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.authentication.api.dto.AuthOpenidDTO;
 import com.xiaohuashifu.recruit.authentication.api.service.AuthOpenidService;
+import com.xiaohuashifu.recruit.authentication.service.dao.AuthOpenidMapper;
+import com.xiaohuashifu.recruit.authentication.service.pojo.do0.AuthOpenidDO;
 import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.util.DesUtils;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
+import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -23,16 +32,49 @@ import javax.validation.constraints.Size;
 @Service
 public class AuthOpenidServiceImpl implements AuthOpenidService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthOpenidService.class);
+
     @Reference
     private WechatMpService wechatMpService;
 
     @Reference
     private UserService userService;
 
+    @Reference
+    private RoleService roleService;
+
+    private final AuthOpenidMapper authOpenidMapper;
+
+    private final Mapper mapper;
+
+    /**
+     * 华农招新面试者端微信小程序绑定后默认添加的角色
+     */
+    @Value("${service.auth-openid.scau-recruit-interviewee-mp.default-role-id}")
+    private Long scauRecruitIntervieweeMpDefaultRoleId;
+
+    /**
+     * 华农招新面试官端微信小程序绑定后默认添加的角色
+     */
+    @Value("${service.auth-openid.scau-recruit-interviewer-mp.default-role-id}")
+    private Long scauRecruitInterviewerMpDefaultRoleId;
+
+    /**
+     * openid加密时使用的密钥
+     */
+    @Value("${service.auth-openid.secret}")
+    private String secretKey;
+
+    public AuthOpenidServiceImpl(AuthOpenidMapper authOpenidMapper, Mapper mapper) {
+        this.authOpenidMapper = authOpenidMapper;
+        this.mapper = mapper;
+    }
+
     /**
      * 用于微信小程序用户绑定AuthOpenid
      * 会通过code获取openid
      * 保存时会对openid进行加密
+     * 只支持App.SCAU_RECRUIT_INTERVIEWEE_MP和App.SCAU_RECRUIT_INTERVIEWER_MP两种类型的绑定
      *
      * @param userId 用户编号
      * @param app 具体的微信小程序
@@ -41,24 +83,57 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
      */
     @Override
     public Result<AuthOpenidDTO> bindAuthOpenidForWechatMp(Long userId, App app, String code) {
+        // 如果App类型不是微信小程序，则不给绑定
+        if (app != App.SCAU_RECRUIT_INTERVIEWEE_MP && app != App.SCAU_RECRUIT_INTERVIEWER_MP) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Unsupported app.");
+        }
+
         // 检查用户是否存在
+        Result<Void> userExistsResult = userService.userExists(userId);
+        if (!userExistsResult.isSuccess()) {
+            return Result.fail(userExistsResult);
+        }
 
         // 检查用户是否已经绑定在这个app上
+        int count = authOpenidMapper.countByUserIdAndAppName(userId, app);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Has been bind.");
+        }
 
         // 获取openid
         Result<String> getOpenidResult = wechatMpService.getOpenid(code, app);
         if (!getOpenidResult.isSuccess()) {
             return Result.fail(getOpenidResult);
         }
+        String openid = getOpenidResult.getData();
 
         // 加密openid
+        try {
+            openid = DesUtils.encryption(openid, secretKey);
+        } catch (Exception e) {
+            logger.warn("Encode openid error.", e);
+            return Result.fail(ErrorCode.INTERNAL_ERROR);
+        }
 
         // 添加到数据库
+        AuthOpenidDO authOpenidDO = new AuthOpenidDO
+                .Builder()
+                .userId(userId)
+                .appName(app)
+                .openid(openid)
+                .build();
+        authOpenidMapper.saveAuthOpenid(authOpenidDO);
 
         // 给用户添加微信小程序基本权限
-
-        return null;
+        if (app == App.SCAU_RECRUIT_INTERVIEWEE_MP) {
+            roleService.saveUserRole(userId, scauRecruitIntervieweeMpDefaultRoleId);
+        }
+        if (app == App.SCAU_RECRUIT_INTERVIEWER_MP) {
+            roleService.saveUserRole(userId, scauRecruitIntervieweeMpDefaultRoleId);
+        }
+        return getAuthOpenid(authOpenidDO.getId());
     }
+
 
     /**
      * 用于微信小程序用户检查AuthOpenid
@@ -71,8 +146,39 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
      * @return AuthOpenidDTO
      */
     @Override
-    public Result<AuthOpenidDTO> checkAuthOpenid(@NotNull App app,
-                                                  @NotBlank @Size(min = 32, max = 32) String code) {
-        throw new UnsupportedOperationException();
+    public Result<AuthOpenidDTO> checkAuthOpenidForWechatMp(App app, String code) {
+        // 获取openid
+        Result<String> getOpenidResult = wechatMpService.getOpenid(code, app);
+        if (!getOpenidResult.isSuccess()) {
+            return Result.fail(getOpenidResult);
+        }
+        String openid = getOpenidResult.getData();
+
+        // 加密openid
+        try {
+            openid = DesUtils.encryption(openid, secretKey);
+        } catch (Exception e) {
+            logger.warn("Encode openid error.", e);
+            return Result.fail(ErrorCode.INTERNAL_ERROR);
+        }
+
+        // 检查是否存在数据库，结合app_name+openid（加密后）
+
+        return getAuthOpenid(1L);
+    }
+
+    /**
+     * 获取AuthOpenidDTO
+     * @param id AuthOpenid编号
+     * @return AuthOpenidDTO
+     */
+    private Result<AuthOpenidDTO> getAuthOpenid(Long id) {
+        AuthOpenidDO authOpenidDO = authOpenidMapper.getAuthOpenid(id);
+        if (authOpenidDO == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+        }
+        AuthOpenidDTO authOpenidDTO = mapper.map(authOpenidDO, AuthOpenidDTO.class);
+        authOpenidDTO.setApp(authOpenidDO.getAppName());
+        return Result.success(authOpenidDTO);
     }
 }

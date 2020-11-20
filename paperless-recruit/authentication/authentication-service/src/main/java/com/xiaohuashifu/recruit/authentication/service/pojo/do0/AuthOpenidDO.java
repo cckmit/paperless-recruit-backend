@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.pojo.do0;
 
 import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.common.constant.Platform;
 import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
@@ -21,27 +20,11 @@ public class AuthOpenidDO {
 
     private App appName;
 
-    private Platform thirdPartyPlatformName;
-
     private String openid;
 
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
-
-    public AuthOpenidDO() {
-    }
-
-    public AuthOpenidDO(Long id, Long userId, App appName, Platform thirdPartyPlatformName,
-                        String openid, LocalDateTime createTime, LocalDateTime updateTime) {
-        this.id = id;
-        this.userId = userId;
-        this.appName = appName;
-        this.thirdPartyPlatformName = thirdPartyPlatformName;
-        this.openid = openid;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
 
     public Long getId() {
         return id;
@@ -65,14 +48,6 @@ public class AuthOpenidDO {
 
     public void setAppName(App appName) {
         this.appName = appName;
-    }
-
-    public Platform getThirdPartyPlatformName() {
-        return thirdPartyPlatformName;
-    }
-
-    public void setThirdPartyPlatformName(Platform thirdPartyPlatformName) {
-        this.thirdPartyPlatformName = thirdPartyPlatformName;
     }
 
     public String getOpenid() {
@@ -105,7 +80,6 @@ public class AuthOpenidDO {
                 "id=" + id +
                 ", userId=" + userId +
                 ", appName=" + appName +
-                ", thirdPartyPlatformName=" + thirdPartyPlatformName +
                 ", openid='" + openid + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
@@ -117,7 +91,6 @@ public class AuthOpenidDO {
         private Long id;
         private Long userId;
         private App appName;
-        private Platform thirdPartyPlatformName;
         private String openid;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -137,11 +110,6 @@ public class AuthOpenidDO {
 
         public Builder appName(App appName) {
             this.appName = appName;
-            return this;
-        }
-
-        public Builder thirdPartyPlatformName(Platform thirdPartyPlatformName) {
-            this.thirdPartyPlatformName = thirdPartyPlatformName;
             return this;
         }
 
@@ -165,7 +133,6 @@ public class AuthOpenidDO {
             authOpenidDO.setId(id);
             authOpenidDO.setUserId(userId);
             authOpenidDO.setAppName(appName);
-            authOpenidDO.setThirdPartyPlatformName(thirdPartyPlatformName);
             authOpenidDO.setOpenid(openid);
             authOpenidDO.setCreateTime(createTime);
             authOpenidDO.setUpdateTime(updateTime);

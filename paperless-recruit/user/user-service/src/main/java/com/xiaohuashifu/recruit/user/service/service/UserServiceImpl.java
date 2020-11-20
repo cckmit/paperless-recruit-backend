@@ -475,4 +475,19 @@ public class UserServiceImpl implements UserService {
         userMapper.updateAvailable(id, true);
         return getUser(id);
     }
+
+    /**
+     * 判断用户是否存在
+     *
+     * @param id 用户编号
+     * @return 是否存在
+     */
+    @Override
+    public Result<Void> userExists(Long id) {
+        int count = userMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+        }
+        return Result.success();
+    }
 }

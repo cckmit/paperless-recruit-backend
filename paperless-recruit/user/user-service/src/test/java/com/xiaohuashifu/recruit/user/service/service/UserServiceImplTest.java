@@ -135,4 +135,8 @@ public class UserServiceImplTest {
         System.out.println(userService.enableUser(7L));
     }
 
+    @Test
+    public void userExists() {
+        System.out.println(userService.userExists(16L));
+    }
 }

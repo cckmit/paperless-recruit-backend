@@ -231,4 +231,14 @@ public interface UserService {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 判断用户是否存在
+     *
+     * @param id 用户编号
+     * @return 是否存在
+     */
+    default Result<Void> userExists(@NotNull @Positive Long id) {
+        throw new UnsupportedOperationException();
+    }
+
 }

@@ -21,15 +21,10 @@ public class AuthOpenidDTO implements Serializable {
     private Long id;
 
     @Positive
-    @NotNull(groups = AuthOpenidService.BindAuthOpenid.class)
     private Long userId;
 
-    @NotNull(groups = {AuthOpenidService.BindAuthOpenid.class,
-            AuthOpenidService.CheckAuthOpenid.class})
     private App app;
 
-    @NotBlank(groups = {AuthOpenidService.BindAuthOpenid.class,
-            AuthOpenidService.CheckAuthOpenid.class})
     @Size(min = 28, max = 28)
     private String openid;
 

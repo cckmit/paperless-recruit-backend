@@ -27,6 +27,7 @@ public class RoleServiceImplTest {
         reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.RoleService");
         reference.setApplication(application);
         reference.setInterface(RoleService.class);
+        reference.setTimeout(100000000);
         roleService = reference.get();
     }
 
@@ -97,7 +98,7 @@ public class RoleServiceImplTest {
 
     @Test
     public void setParentRole() {
-        System.out.println(roleService.setParentRole(13L, 12L));
+        System.out.println(roleService.setParentRole(1L, 5L));
     }
 
 }

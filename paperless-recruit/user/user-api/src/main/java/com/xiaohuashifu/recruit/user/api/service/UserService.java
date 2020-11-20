@@ -25,13 +25,31 @@ import javax.validation.constraints.Positive;
 public interface UserService {
 
     /**
-     * 创建用户
+     * 创建用户，对外不使用该方式进行注册
      *
      * @param username 用户名
      * @param password 密码
      * @return 新创建的用户
      */
-    default Result<UserDTO> saveUser(@NotBlank @Username String username, @NotNull @Password String password) {
+    default Result<UserDTO> signUpUser(@NotBlank @Username String username, @NotNull @Password String password) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 验证码注册的主题，用于调用短信验证码服务
+     */
+    String SIGN_UP_SUBJECT = "user:sign_up";
+
+    /**
+     * 通过短信验证码注册账号
+     * 该方式会随机生成用户名和密码
+     *
+     * @param phone 手机号码
+     * @param authCode 短信验证码
+     * @return 新创建的用户
+     */
+    default Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone,
+                                                  @NotBlank @AuthCode String authCode) {
         throw new UnsupportedOperationException();
     }
 

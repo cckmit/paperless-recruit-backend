@@ -6,8 +6,20 @@
     </sql>
 
     <insert id="saveUser" keyProperty="id">
-        insert into user(username, password)
-        values(#{username}, #{password})
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            username, password,
+            <if test="phone != null" >
+                phone,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            #{username}, #{password},
+            <if test="phone != null" >
+                #{phone},
+            </if>
+        </trim>
     </insert>
 
     <select id="getUser" resultType="user">

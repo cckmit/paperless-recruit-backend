@@ -25,6 +25,7 @@ public class RoleHierarchyServiceImplTest {
         reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.RoleHierarchyService");
         reference.setApplication(application);
         reference.setInterface(RoleHierarchyService.class);
+        reference.setTimeout(10000000);
         roleHierarchyService = reference.get();
     }
 

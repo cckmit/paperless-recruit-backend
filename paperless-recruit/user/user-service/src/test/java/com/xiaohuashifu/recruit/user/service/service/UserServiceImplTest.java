@@ -42,9 +42,14 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void saveUser() {
-        final Result<UserDTO> saveUserResult = userService.saveUser("xhsf4", "311211");
+    public void signUpUser() {
+        final Result<UserDTO> saveUserResult = userService.signUpUser("xhsf4", "311211");
         System.out.println(saveUserResult);
+    }
+
+    @Test
+    public void signUpBySmsAuthCode() {
+        System.out.println(userService.signUpBySmsAuthCode("15992321303", "797607"));
     }
 
     @Test

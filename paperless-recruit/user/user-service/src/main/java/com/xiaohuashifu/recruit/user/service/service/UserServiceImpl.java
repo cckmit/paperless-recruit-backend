@@ -5,17 +5,21 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.util.UsernameUtils;
 import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
+import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.UserDO;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,9 +44,15 @@ public class UserServiceImpl implements UserService {
     @Reference
     private SmsService smsService;
 
+    @Reference
+    private RoleService roleService;
+
     private final UserMapper userMapper;
 
     private final Mapper mapper;
+
+    @Value("${service.user.default.role.id}")
+    private Long defaultUserRoleId;
 
     public UserServiceImpl(UserMapper userMapper, Mapper mapper) {
         this.userMapper = userMapper;
@@ -50,14 +60,14 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 创建用户
+     * 注册用户
      *
      * @param username 用户名
      * @param password 密码
-     * @return 新创建的用户
+     * @return 新注册的用户
      */
     @Override
-    public Result<UserDTO> saveUser(String username, String password) {
+    public Result<UserDTO> signUpUser(String username, String password) {
         // 判断用户名是否存在
         int count = userMapper.countByUsername(username.trim());
         if (count > 0) {
@@ -67,14 +77,67 @@ public class UserServiceImpl implements UserService {
         // 添加到数据库
         UserDO userDO = new UserDO.Builder()
                 .username(username.trim())
-                .password(password)
+                .password(passwordService.encodePassword(password))
                 .build();
-        count = userMapper.saveUser(userDO);
-        // 添加出错，可能是并发产生的冲突，或者数据库出错
-        if (count < 1) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR,
-                    "Save user error, username=" + username.trim() + ".");
+        userMapper.saveUser(userDO);
+
+        // 为新账号赋予最基本的权限
+        roleService.saveUserRole(userDO.getId(), defaultUserRoleId);
+
+        return getUser(userDO.getId());
+    }
+
+    /**
+     * 通过短信验证码注册账号
+     * 该方式会随机生成用户名和密码
+     *
+     * @param phone 手机号码
+     * @param authCode 短信验证码
+     * @return 新注册的用户
+     */
+    @Override
+    public Result<UserDTO> signUpBySmsAuthCode(String phone, String authCode) {
+        // 判断手机号码是否存在
+        int count = userMapper.countByPhone(phone);
+        if (count > 0) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Phone exists.");
         }
+
+        // 随机生成用户名，这里会尝试生成3次
+        String username = null;
+        for (int i = 0; i < 3; i++) {
+            String randomUsername = UsernameUtils.randomUsername();
+            count = userMapper.countByUsername(randomUsername);
+            if (count == 0) {
+                username = randomUsername;
+                break;
+            }
+        }
+        if (username == null) {
+            return Result.fail(ErrorCode.INTERNAL_ERROR, "Internal error, please repeat.");
+        }
+
+        // 判断验证码是否正确
+        Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
+                .phone(phone)
+                .subject(SIGN_UP_SUBJECT)
+                .authCode(authCode)
+                .delete(true)
+                .build());
+        if (!checkEmailAuthCodeResult.isSuccess()) {
+            return Result.fail(checkEmailAuthCodeResult);
+        }
+
+        // 添加到数据库
+        UserDO userDO = new UserDO.Builder()
+                .username(username)
+                .password(passwordService.encodePassword(RandomStringUtils.randomNumeric(20)))
+                .phone(phone)
+                .build();
+        userMapper.saveUser(userDO);
+
+        // 为新账号赋予最基本的权限
+        roleService.saveUserRole(userDO.getId(), defaultUserRoleId);
 
         return getUser(userDO.getId());
     }

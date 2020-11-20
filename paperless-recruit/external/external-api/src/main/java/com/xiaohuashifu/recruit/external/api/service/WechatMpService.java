@@ -24,8 +24,12 @@ public interface WechatMpService {
      * @param wechatMp 具体的微信小程序
      * @return openid
      */
-    Result<String> getOpenid(@NotBlank @Size(max = 32, min = 32) String code, @NotNull WechatMp wechatMp);
+    default Result<String> getOpenid(@NotBlank @Size(max = 32, min = 32) String code, @NotNull WechatMp wechatMp) {
+        throw new UnsupportedOperationException();
+    }
 
-    Result<Void> sendTemplateMessage(MessageTemplateDTO messageTemplate);
+    default Result<Void> sendTemplateMessage(MessageTemplateDTO messageTemplate) {
+        throw new UnsupportedOperationException();
+    }
 
 }

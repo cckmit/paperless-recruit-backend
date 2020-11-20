@@ -7,7 +7,7 @@ package com.xiaohuashifu.recruit.common.constant;
  * @email: 827032783@qq.com
  * @create: 2020/11/9 20:08
  */
-public enum ThirdPartyPlatformName {
+public enum Platform {
     /**
      * 微信小程序平台
      */

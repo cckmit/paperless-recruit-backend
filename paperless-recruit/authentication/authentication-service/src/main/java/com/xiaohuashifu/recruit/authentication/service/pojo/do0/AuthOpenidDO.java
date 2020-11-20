@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.pojo.do0;
 
-import com.xiaohuashifu.recruit.common.constant.AppName;
-import com.xiaohuashifu.recruit.common.constant.ThirdPartyPlatformName;
+import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.Platform;
 import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
@@ -19,9 +19,9 @@ public class AuthOpenidDO {
 
     private Long userId;
 
-    private AppName appName;
+    private App appName;
 
-    private ThirdPartyPlatformName thirdPartyPlatformName;
+    private Platform thirdPartyPlatformName;
 
     private String openid;
 
@@ -32,7 +32,7 @@ public class AuthOpenidDO {
     public AuthOpenidDO() {
     }
 
-    public AuthOpenidDO(Long id, Long userId, AppName appName, ThirdPartyPlatformName thirdPartyPlatformName,
+    public AuthOpenidDO(Long id, Long userId, App appName, Platform thirdPartyPlatformName,
                         String openid, LocalDateTime createTime, LocalDateTime updateTime) {
         this.id = id;
         this.userId = userId;
@@ -59,19 +59,19 @@ public class AuthOpenidDO {
         this.userId = userId;
     }
 
-    public AppName getAppName() {
+    public App getAppName() {
         return appName;
     }
 
-    public void setAppName(AppName appName) {
+    public void setAppName(App appName) {
         this.appName = appName;
     }
 
-    public ThirdPartyPlatformName getThirdPartyPlatformName() {
+    public Platform getThirdPartyPlatformName() {
         return thirdPartyPlatformName;
     }
 
-    public void setThirdPartyPlatformName(ThirdPartyPlatformName thirdPartyPlatformName) {
+    public void setThirdPartyPlatformName(Platform thirdPartyPlatformName) {
         this.thirdPartyPlatformName = thirdPartyPlatformName;
     }
 
@@ -116,8 +116,8 @@ public class AuthOpenidDO {
     public static final class Builder {
         private Long id;
         private Long userId;
-        private AppName appName;
-        private ThirdPartyPlatformName thirdPartyPlatformName;
+        private App appName;
+        private Platform thirdPartyPlatformName;
         private String openid;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -135,12 +135,12 @@ public class AuthOpenidDO {
             return this;
         }
 
-        public Builder appName(AppName appName) {
+        public Builder appName(App appName) {
             this.appName = appName;
             return this;
         }
 
-        public Builder thirdPartyPlatformName(ThirdPartyPlatformName thirdPartyPlatformName) {
+        public Builder thirdPartyPlatformName(Platform thirdPartyPlatformName) {
             this.thirdPartyPlatformName = thirdPartyPlatformName;
             return this;
         }

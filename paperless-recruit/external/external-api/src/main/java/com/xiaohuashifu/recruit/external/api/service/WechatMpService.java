@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.external.api.service;
 
+import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.MessageTemplateDTO;
-import com.xiaohuashifu.recruit.external.api.service.constant.WechatMp;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,7 +24,7 @@ public interface WechatMpService {
      * @param wechatMp 具体的微信小程序
      * @return openid
      */
-    default Result<String> getOpenid(@NotBlank @Size(max = 32, min = 32) String code, @NotNull WechatMp wechatMp) {
+    default Result<String> getOpenid(@NotBlank @Size(max = 32, min = 32) String code, @NotNull App wechatMp) {
         throw new UnsupportedOperationException();
     }
 

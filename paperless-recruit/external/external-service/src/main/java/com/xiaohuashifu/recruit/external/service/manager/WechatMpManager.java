@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.manager;
 
-import com.xiaohuashifu.recruit.external.api.service.constant.WechatMp;
+import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 
 /**
@@ -17,5 +17,5 @@ public interface WechatMpManager {
      * @param wechatMp 小程序类别
      * @return Code2SessionDTO
      */
-    Code2SessionDTO getCode2Session(String code, WechatMp wechatMp);
+    Code2SessionDTO getCode2Session(String code, App wechatMp);
 }

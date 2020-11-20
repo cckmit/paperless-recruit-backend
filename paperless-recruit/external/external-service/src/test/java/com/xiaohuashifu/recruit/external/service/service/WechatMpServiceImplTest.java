@@ -1,14 +1,11 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
+import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
-import com.xiaohuashifu.recruit.external.api.service.constant.WechatMp;
-import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -35,7 +32,7 @@ public class WechatMpServiceImplTest {
 
     @Test
     public void getOpenid() {
-        System.out.println(wechatMpService.getOpenid("003dNtll2YVNZ54nFqnl2OasQW2dNtlt", WechatMp.SCAU_RECRUIT_INTERVIEWEE_MP));
+        System.out.println(wechatMpService.getOpenid("043WLGll2yCLZ541iKkl2lC1RC3WLGlC", App.SCAU_RECRUIT_INTERVIEWEE_MP));
     }
 
     @Test

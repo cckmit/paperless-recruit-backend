@@ -1,8 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.manager.impl;
 
-import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.MessageTemplateDTO;
-import com.xiaohuashifu.recruit.external.api.service.constant.WechatMp;
+import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WechatMpDetails;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
@@ -13,8 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * 描述：
@@ -71,7 +67,7 @@ public class WechatMpManagerImpl implements WechatMpManager {
      * @return Code2SessionDTO
      */
     @Override
-    public Code2SessionDTO getCode2Session(String code, WechatMp wechatMp) {
+    public Code2SessionDTO getCode2Session(String code, App wechatMp) {
         String url = MessageFormat.format("{0}?appid={1}&secret={2}&js_code={3}&grant_type=authorization_code",
                 code2SessionUrl, wechatMpDetails.getAppId(wechatMp), wechatMpDetails.getSecret(wechatMp), code);
         ResponseEntity<Code2SessionDTO> responseEntity = restTemplate.getForEntity(url, Code2SessionDTO.class);

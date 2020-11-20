@@ -1,10 +1,10 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
+import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.MessageTemplateDTO;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
-import com.xiaohuashifu.recruit.external.api.service.constant.WechatMp;
 import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 import org.apache.dubbo.config.annotation.Service;
@@ -33,7 +33,7 @@ public class WechatMpServiceImpl implements WechatMpService {
      * @return openid
      */
     @Override
-    public Result<String> getOpenid(String code, WechatMp wechatMp) {
+    public Result<String> getOpenid(String code, App wechatMp) {
         Code2SessionDTO code2SessionDTO = wechatMpManager.getCode2Session(code, wechatMp);
         if (code2SessionDTO.getOpenid() == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER);

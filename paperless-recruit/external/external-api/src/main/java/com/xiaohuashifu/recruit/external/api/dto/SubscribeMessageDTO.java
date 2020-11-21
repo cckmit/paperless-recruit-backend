@@ -1,16 +1,20 @@
 package com.xiaohuashifu.recruit.external.api.dto;
 
+import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 描述: 封装微信小程序消息模板的各种数据
+ * 描述: 封装微信小程序订阅消息的各种数据
  *
  * @author xhsf
  * @email 827032783@qq.com
- * @create 2019-08-31 18:58
+ * @create 2020-11-21 18:58
  */
-public class MessageTemplateDTO implements Serializable {
+public class SubscribeMessageDTO implements Serializable {
 
     /**
      * 接收者（用户）的 openid
@@ -28,32 +32,19 @@ public class MessageTemplateDTO implements Serializable {
     private String page;
 
     /**
-     * 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
-     */
-    private String form_id;
-
-    /**
      * 模板内容，不填则下发空模板。
      */
     private Map<String, MessageTemplateDataDTO> data;
 
     /**
-     *模板需要放大的关键词，不填则默认无放大
+     * 	跳转小程序类型：developer为开发版；trial为体验版；formal为正式版；默认为正式版
      */
-    private String emphasis_keyword;
+    private String miniprogram_state;
 
-    public MessageTemplateDTO() {
-    }
-
-    public MessageTemplateDTO(String touser, String template_id, String page, String form_id,
-                              Map<String, MessageTemplateDataDTO> data, String emphasis_keyword) {
-        this.touser = touser;
-        this.template_id = template_id;
-        this.page = page;
-        this.form_id = form_id;
-        this.data = data;
-        this.emphasis_keyword = emphasis_keyword;
-    }
+    /**
+     * 进入小程序查看”的语言类型，支持zh_CN(简体中文)、en_US(英文)、zh_HK(繁体中文)、zh_TW(繁体中文)，默认为zh_CN
+     */
+    private String lang;
 
     public String getTouser() {
         return touser;
@@ -79,14 +70,6 @@ public class MessageTemplateDTO implements Serializable {
         this.page = page;
     }
 
-    public String getForm_id() {
-        return form_id;
-    }
-
-    public void setForm_id(String form_id) {
-        this.form_id = form_id;
-    }
-
     public Map<String, MessageTemplateDataDTO> getData() {
         return data;
     }
@@ -95,23 +78,31 @@ public class MessageTemplateDTO implements Serializable {
         this.data = data;
     }
 
-    public String getEmphasis_keyword() {
-        return emphasis_keyword;
+    public String getMiniprogram_state() {
+        return miniprogram_state;
     }
 
-    public void setEmphasis_keyword(String emphasis_keyword) {
-        this.emphasis_keyword = emphasis_keyword;
+    public void setMiniprogram_state(String miniprogram_state) {
+        this.miniprogram_state = miniprogram_state;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     @Override
     public String toString() {
-        return "MessageTemplateDTO{" +
+        return "SubscribeMessageDTO{" +
                 "touser='" + touser + '\'' +
                 ", template_id='" + template_id + '\'' +
                 ", page='" + page + '\'' +
-                ", form_id='" + form_id + '\'' +
                 ", data=" + data +
-                ", emphasis_keyword='" + emphasis_keyword + '\'' +
+                ", miniprogram_state='" + miniprogram_state + '\'' +
+                ", lang='" + lang + '\'' +
                 '}';
     }
 
@@ -120,9 +111,9 @@ public class MessageTemplateDTO implements Serializable {
         private String touser;
         private String template_id;
         private String page;
-        private String form_id;
         private Map<String, MessageTemplateDataDTO> data;
-        private String emphasis_keyword;
+        private String miniprogram_state;
+        private String lang;
 
         public Builder() {
         }
@@ -142,29 +133,29 @@ public class MessageTemplateDTO implements Serializable {
             return this;
         }
 
-        public Builder form_id(String form_id) {
-            this.form_id = form_id;
-            return this;
-        }
-
         public Builder data(Map<String, MessageTemplateDataDTO> data) {
             this.data = data;
             return this;
         }
 
-        public Builder emphasis_keyword(String emphasis_keyword) {
-            this.emphasis_keyword = emphasis_keyword;
+        public Builder miniprogram_state(String miniprogram_state) {
+            this.miniprogram_state = miniprogram_state;
             return this;
         }
 
-        public MessageTemplateDTO build() {
-            MessageTemplateDTO messageTemplateDTO = new MessageTemplateDTO();
+        public Builder lang(String lang) {
+            this.lang = lang;
+            return this;
+        }
+
+        public SubscribeMessageDTO build() {
+            SubscribeMessageDTO messageTemplateDTO = new SubscribeMessageDTO();
             messageTemplateDTO.setTouser(touser);
             messageTemplateDTO.setTemplate_id(template_id);
             messageTemplateDTO.setPage(page);
-            messageTemplateDTO.setForm_id(form_id);
             messageTemplateDTO.setData(data);
-            messageTemplateDTO.setEmphasis_keyword(emphasis_keyword);
+            messageTemplateDTO.setMiniprogram_state(miniprogram_state);
+            messageTemplateDTO.setLang(lang);
             return messageTemplateDTO;
         }
     }

@@ -4,7 +4,7 @@ import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.constant.Platform;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.MessageTemplateDTO;
+import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
 import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.text.MessageFormat;
 import java.util.Optional;
 
@@ -65,14 +67,16 @@ public class WechatMpServiceImpl implements WechatMpService {
     }
 
     /**
-     * 发送模板消息
+     * 发送订阅消息
      *
      * @param app 微信小程序类型
-     * @param messageTemplate 消息模板
+     * @param userId 用于获取openid
+     * @param subscribeMessageDTO 订阅消息
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendTemplateMessage(App app, MessageTemplateDTO messageTemplate) {
+    public Result<Void> sendSubscribeMessage(@NotNull App app, @NotNull @Positive Long userId,
+                                            @NotNull SubscribeMessageDTO subscribeMessageDTO) {
         // 平台必须是微信小程序
         if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
             return Result.fail(ErrorCode.INVALID_PARAMETER);
@@ -84,12 +88,17 @@ public class WechatMpServiceImpl implements WechatMpService {
             return Result.fail(ErrorCode.INVALID_PARAMETER);
         }
 
+        // 获取openId
+
         // 发送消息
         String url = MessageFormat.format( "{0}?access_token={1}", templateMessageUrl, accessToken.get());
         ResponseEntity<WeChatMpResponseDTO> responseEntity =
-                restTemplate.postForEntity(url, messageTemplate, WeChatMpResponseDTO.class);
-        if (responseEntity.getBody() == null || !responseEntity.getBody().getErrcode().equals(0)) {
+                restTemplate.postForEntity(url, subscribeMessageDTO, WeChatMpResponseDTO.class);
+        if (responseEntity.getBody() == null) {
             return Result.fail(ErrorCode.INTERNAL_ERROR);
+        }
+        if (!responseEntity.getBody().getErrcode().equals(0)) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, responseEntity.getBody().getErrmsg());
         }
         return Result.success();
     }

@@ -9,13 +9,13 @@ import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
 import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpResponseDTO;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.text.MessageFormat;
 import java.util.Optional;
 
@@ -29,6 +29,9 @@ import java.util.Optional;
 @Service
 public class WechatMpServiceImpl implements WechatMpService {
 
+    @Reference
+    private AuthOpenidService authOpenidService;
+
     private final WechatMpManager wechatMpManager;
 
     private final RestTemplate restTemplate;
@@ -36,8 +39,8 @@ public class WechatMpServiceImpl implements WechatMpService {
     /**
      * 发送模板消息的url
      */
-    @Value("${wechat.mp.template-message-url}")
-    private String templateMessageUrl;
+    @Value("${wechat.mp.subscribe-message-url}")
+    private String subscribeMessageUrl;
 
     public WechatMpServiceImpl(WechatMpManager wechatMpManager, RestTemplate restTemplate) {
         this.wechatMpManager = wechatMpManager;
@@ -75,12 +78,18 @@ public class WechatMpServiceImpl implements WechatMpService {
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendSubscribeMessage(@NotNull App app, @NotNull @Positive Long userId,
-                                            @NotNull SubscribeMessageDTO subscribeMessageDTO) {
+    public Result<Void> sendSubscribeMessage(App app, Long userId, SubscribeMessageDTO subscribeMessageDTO) {
         // 平台必须是微信小程序
         if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
             return Result.fail(ErrorCode.INVALID_PARAMETER);
         }
+
+        // 获取openId
+        Result<String> getOpenidResult = authOpenidService.getOpenid(app, userId);
+        if (!getOpenidResult.isSuccess()) {
+            return Result.fail(getOpenidResult);
+        }
+        subscribeMessageDTO.setTouser(getOpenidResult.getData());
 
         // 获取access-token
         Optional<String> accessToken = wechatMpManager.getAccessToken(app);
@@ -88,10 +97,8 @@ public class WechatMpServiceImpl implements WechatMpService {
             return Result.fail(ErrorCode.INVALID_PARAMETER);
         }
 
-        // 获取openId
-
         // 发送消息
-        String url = MessageFormat.format( "{0}?access_token={1}", templateMessageUrl, accessToken.get());
+        String url = MessageFormat.format(subscribeMessageUrl, accessToken.get());
         ResponseEntity<WeChatMpResponseDTO> responseEntity =
                 restTemplate.postForEntity(url, subscribeMessageDTO, WeChatMpResponseDTO.class);
         if (responseEntity.getBody() == null) {

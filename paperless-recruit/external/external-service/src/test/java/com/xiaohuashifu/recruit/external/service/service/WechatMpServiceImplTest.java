@@ -1,11 +1,16 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.external.api.dto.SubscribeTemplateDataDTO;
+import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 描述：
@@ -36,6 +41,17 @@ public class WechatMpServiceImplTest {
     }
 
     @Test
-    public void sendTemplateMessage() {
+    public void sendSubscribeMessage() {
+        SubscribeMessageDTO subscribeMessageDTO = new SubscribeMessageDTO();
+        subscribeMessageDTO.setTemplate_id("PwgUsyL54zBnWyB1bHDuOP6Oc8EAG5GvQplx8E2kU-s");
+        Map<String, SubscribeTemplateDataDTO> map = new HashMap<>();
+        map.put("thing1", new SubscribeTemplateDataDTO("吴嘉贤"));
+        map.put("thing2", new SubscribeTemplateDataDTO("华农科联"));
+        map.put("thing3", new SubscribeTemplateDataDTO("自科部"));
+        map.put("phrase4", new SubscribeTemplateDataDTO("一轮面试"));
+        map.put("phrase5", new SubscribeTemplateDataDTO("通过"));
+        subscribeMessageDTO.setData(map);
+        System.out.println(wechatMpService.sendSubscribeMessage(
+                App.SCAU_RECRUIT_INTERVIEWEE_MP, 1L, subscribeMessageDTO));
     }
 }

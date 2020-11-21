@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.external.api.dto;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -24,6 +24,7 @@ public class SubscribeMessageDTO implements Serializable {
     /**
      * 所需下发的模板消息的id
      */
+    @NotBlank(groups = WechatMpService.SendSubscribeMessage.class)
     private String template_id;
 
     /**
@@ -32,9 +33,10 @@ public class SubscribeMessageDTO implements Serializable {
     private String page;
 
     /**
-     * 模板内容，不填则下发空模板。
+     * 模板内容，格式形如 { "key1": { "value": any }, "key2": { "value": any } }
      */
-    private Map<String, MessageTemplateDataDTO> data;
+    @NotEmpty(groups = WechatMpService.SendSubscribeMessage.class)
+    private Map<String, SubscribeTemplateDataDTO> data;
 
     /**
      * 	跳转小程序类型：developer为开发版；trial为体验版；formal为正式版；默认为正式版
@@ -70,11 +72,11 @@ public class SubscribeMessageDTO implements Serializable {
         this.page = page;
     }
 
-    public Map<String, MessageTemplateDataDTO> getData() {
+    public Map<String, SubscribeTemplateDataDTO> getData() {
         return data;
     }
 
-    public void setData(Map<String, MessageTemplateDataDTO> data) {
+    public void setData(Map<String, SubscribeTemplateDataDTO> data) {
         this.data = data;
     }
 
@@ -111,7 +113,7 @@ public class SubscribeMessageDTO implements Serializable {
         private String touser;
         private String template_id;
         private String page;
-        private Map<String, MessageTemplateDataDTO> data;
+        private Map<String, SubscribeTemplateDataDTO> data;
         private String miniprogram_state;
         private String lang;
 
@@ -133,7 +135,7 @@ public class SubscribeMessageDTO implements Serializable {
             return this;
         }
 
-        public Builder data(Map<String, MessageTemplateDataDTO> data) {
+        public Builder data(Map<String, SubscribeTemplateDataDTO> data) {
             this.data = data;
             return this;
         }

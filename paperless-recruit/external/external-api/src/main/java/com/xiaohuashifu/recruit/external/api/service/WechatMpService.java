@@ -21,10 +21,10 @@ public interface WechatMpService {
      * 通过code获得openid
      *
      * @param code code
-     * @param wechatMp 具体的微信小程序
+     * @param app 具体的微信小程序
      * @return openid
      */
-    default Result<String> getOpenid(@NotBlank @Size(max = 32, min = 32) String code, @NotNull App wechatMp) {
+    default Result<String> getOpenid(@NotBlank @Size(max = 32, min = 32) String code, @NotNull App app) {
         throw new UnsupportedOperationException();
     }
 

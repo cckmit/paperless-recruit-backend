@@ -1,9 +1,14 @@
 package com.xiaohuashifu.recruit.external.service.manager.impl;
 
 import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.Platform;
 import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WechatMpDetails;
+import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WechatMpManagerConstant;
+import com.xiaohuashifu.recruit.external.service.pojo.dto.AccessTokenDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 描述：
@@ -21,6 +28,8 @@ import java.text.MessageFormat;
  */
 @Component
 public class WechatMpManagerImpl implements WechatMpManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(WechatMpManagerImpl.class);
 
     /**
      * 请求code2Session的url
@@ -62,73 +71,78 @@ public class WechatMpManagerImpl implements WechatMpManager {
 
     /**
      * 通过code获取封装过的Code2SessionDTO
+     *
      * @param code String
-     * @param wechatMp 小程序类别
+     * @param app 微信小程序类别
      * @return Code2SessionDTO
      */
     @Override
-    public Code2SessionDTO getCode2Session(String code, App wechatMp) {
+    public Optional<Code2SessionDTO> getCode2Session(String code, App app) {
+        // 平台必须是微信小程序
+        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
+            return Optional.empty();
+        }
+
+        // 获取Code2SessionDTO
         String url = MessageFormat.format("{0}?appid={1}&secret={2}&js_code={3}&grant_type=authorization_code",
-                code2SessionUrl, wechatMpDetails.getAppId(wechatMp), wechatMpDetails.getSecret(wechatMp), code);
+                code2SessionUrl, wechatMpDetails.getAppId(app), wechatMpDetails.getSecret(app), code);
         ResponseEntity<Code2SessionDTO> responseEntity = restTemplate.getForEntity(url, Code2SessionDTO.class);
-        return responseEntity.getBody();
+        return Optional.ofNullable(responseEntity.getBody());
     }
 
     /**
-     * 团队管理小程序access-token的redis key名
+     * 获取access-token
+     *
+     * @param app 具体的微信小程序类型
+     * @return access-token
      */
-    private static final String REDIS_KEY = "tm:wechat:mp:access:token";
+    @Override
+    public Optional<String> getAccessToken(App app) {
+        // 平台必须是微信小程序
+        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
+            return Optional.empty();
+        }
 
-//    /**
-//     * 获取access-token
-//     *
-//     * @return AccessTokenDTO
-//     */
-//    @Override
-//    public Optional<String> getAccessToken() {
-//        String accessToken = redisTemplate.opsForValue().get(REDIS_KEY);
-//        if (accessToken == null) {
-//            logger.warn("Get access token fail.");
-//            return Optional.empty();
-//        }
-//        return Optional.of(accessToken);
-//    }
-//
-//    /**
-//     * 获取新的access-token
-//     * 并添加到redis
-//     * 并设置过期时间
-//     *
-//     * @return AccessTokenDTO
-//     */
-//    @Override
-//    public Optional<AccessTokenDTO> getNewAccessToken() {
-//        // 获取access-token
-//        String url = MessageFormat.format("{0}?grant_type={1}&appid={2}&secret={3}",
-//                WeChatMpConsts.ACCESS_TOKEN_URL, WeChatGrantTypeEnum.CLIENT_CREDENTIAL.getValue(),
-//                WeChatMp.TM.getAppId(), WeChatMp.TM.getSecret());
-//        ResponseEntity<AccessTokenDTO> entity = restTemplate.getForEntity(url, AccessTokenDTO.class);
-//        if (Objects.requireNonNull(entity.getBody()).getAccess_token() == null) {
-//            logger.warn("Get access token fail.");
-//            return Optional.empty();
-//        }
-//
-//        // 添加到redis
-//        String status = cacheService.set(REDIS_KEY, entity.getBody().getAccess_token());
-//        if (!status.equals(RedisStatus.OK.name())) {
-//            logger.warn("Set access token fail.");
-//            return Optional.empty();
-//        }
-//
-//        // 设置access-token在redis的过期时间
-//        Long expire = cacheService.expire(REDIS_KEY, entity.getBody().getExpires_in());
-//        if (expire == 0) {
-//            logger.warn("Set redis expire fail. {}", entity.getBody().getAccess_token());
-//        }
-//
-//        return Optional.of(entity.getBody());
-//    }
-//
+        // 获取access-token
+        String redisKey = WechatMpManagerConstant.REDIS_KEY + ":" + app.name();
+        return Optional.ofNullable((String) redisTemplate.opsForValue().get(redisKey));
+    }
+
+    /**
+     * 获取新的access-token
+     * 并添加到redis
+     * 并设置过期时间
+     *
+     * @param app 具体的微信小程序类型
+     * @return 刷新是否成功
+     */
+    @Override
+    public boolean refreshAccessToken(App app) {
+        // 平台必须是微信小程序
+        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
+            return false;
+        }
+
+        // 获取access-token
+        String url = MessageFormat.format("{0}?grant_type=client_credential&appid={1}&secret={2}",
+                accessTokenUrl, wechatMpDetails.getAppId(app), wechatMpDetails.getSecret(app));
+        ResponseEntity<AccessTokenDTO> entity = restTemplate.getForEntity(url, AccessTokenDTO.class);
+        System.out.println(entity);
+        if (entity.getBody() == null || entity.getBody().getAccess_token() == null) {
+            logger.warn("Get access token fail.");
+            return false;
+        }
+
+        // 添加到redis
+        String redisKey = WechatMpManagerConstant.REDIS_KEY + ":" + app.name();
+        redisTemplate.opsForValue().set(redisKey, entity.getBody().getAccess_token());
+
+        // 设置access-token在redis的过期时间
+        redisTemplate.expire(redisKey, entity.getBody().getExpires_in(), TimeUnit.SECONDS);
+
+        return true;
+    }
+
 //    @Override
 //    public Result<Void> sendTemplateMessage(MessageTemplateDTO messageTemplate) {
 //        Optional<String> accessToken = getAccessToken();

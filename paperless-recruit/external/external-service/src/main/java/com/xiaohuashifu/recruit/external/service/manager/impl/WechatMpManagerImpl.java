@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 描述：
+ * 描述：微信小程序相关服务封装
  *
  * @author: xhsf
  * @email: 827032783@qq.com
@@ -42,12 +42,6 @@ public class WechatMpManagerImpl implements WechatMpManager {
      */
     @Value("${wechat.mp.access-token-url}")
     private String accessTokenUrl;
-
-    /**
-     * 发送模板消息的url
-     */
-    @Value("${wechat.mp.template-message-url}")
-    private String templateMessageUrl;
 
     /**
      * 获取DailyVisitTrend的url
@@ -139,21 +133,7 @@ public class WechatMpManagerImpl implements WechatMpManager {
 
         // 设置access-token在redis的过期时间
         redisTemplate.expire(redisKey, entity.getBody().getExpires_in(), TimeUnit.SECONDS);
-
         return true;
     }
 
-//    @Override
-//    public Result<Void> sendTemplateMessage(MessageTemplateDTO messageTemplate) {
-//        Optional<String> accessToken = getAccessToken();
-//        if (!accessToken.isPresent()) {
-//            return false;
-//        }
-//
-//        String url = MessageFormat.format(WeChatMpConsts.TEMPLATE_MESSAGE_URL + "?access_token={0}",
-//                accessToken.get());
-//        ResponseEntity<WeChatMpResponseDTO> responseEntity = restTemplate.postForEntity(url, messageTemplate, WeChatMpResponseDTO.class);
-//        System.out.println(responseEntity.getBody());
-//        return Objects.requireNonNull(responseEntity.getBody()).getErrcode().equals(0);
-//    }
 }

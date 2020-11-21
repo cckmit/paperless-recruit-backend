@@ -33,4 +33,5 @@ public class WechatMpManagerImplTest extends ExternalServiceApplicationTests {
     public void refreshAccessToken() {
         System.out.println(wechatMpManager.refreshAccessToken(App.SCAU_RECRUIT_INTERVIEWEE_MP));
     }
+
 }

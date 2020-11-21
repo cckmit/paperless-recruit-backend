@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.external.api.dto;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Map;
  * @email 827032783@qq.com
  * @create 2019-08-31 18:58
  */
-public class MessageTemplateDTO {
+public class MessageTemplateDTO implements Serializable {
 
     /**
      * 接收者（用户）的 openid
@@ -112,5 +113,59 @@ public class MessageTemplateDTO {
                 ", data=" + data +
                 ", emphasis_keyword='" + emphasis_keyword + '\'' +
                 '}';
+    }
+
+
+    public static final class Builder {
+        private String touser;
+        private String template_id;
+        private String page;
+        private String form_id;
+        private Map<String, MessageTemplateDataDTO> data;
+        private String emphasis_keyword;
+
+        public Builder() {
+        }
+
+        public Builder touser(String touser) {
+            this.touser = touser;
+            return this;
+        }
+
+        public Builder template_id(String template_id) {
+            this.template_id = template_id;
+            return this;
+        }
+
+        public Builder page(String page) {
+            this.page = page;
+            return this;
+        }
+
+        public Builder form_id(String form_id) {
+            this.form_id = form_id;
+            return this;
+        }
+
+        public Builder data(Map<String, MessageTemplateDataDTO> data) {
+            this.data = data;
+            return this;
+        }
+
+        public Builder emphasis_keyword(String emphasis_keyword) {
+            this.emphasis_keyword = emphasis_keyword;
+            return this;
+        }
+
+        public MessageTemplateDTO build() {
+            MessageTemplateDTO messageTemplateDTO = new MessageTemplateDTO();
+            messageTemplateDTO.setTouser(touser);
+            messageTemplateDTO.setTemplate_id(template_id);
+            messageTemplateDTO.setPage(page);
+            messageTemplateDTO.setForm_id(form_id);
+            messageTemplateDTO.setData(data);
+            messageTemplateDTO.setEmphasis_keyword(emphasis_keyword);
+            return messageTemplateDTO;
+        }
     }
 }

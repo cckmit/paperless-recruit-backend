@@ -28,7 +28,14 @@ public interface WechatMpService {
         throw new UnsupportedOperationException();
     }
 
-    default Result<Void> sendTemplateMessage(MessageTemplateDTO messageTemplate) {
+    /**
+     * 发送模板消息
+     *
+     * @param app 微信小程序类型
+     * @param messageTemplate 消息模板
+     * @return 发送结果
+     */
+    default Result<Void> sendTemplateMessage(App app, MessageTemplateDTO messageTemplate) {
         throw new UnsupportedOperationException();
     }
 

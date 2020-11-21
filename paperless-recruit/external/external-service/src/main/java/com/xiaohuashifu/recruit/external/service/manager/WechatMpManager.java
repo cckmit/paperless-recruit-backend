@@ -38,4 +38,5 @@ public interface WechatMpManager {
      * @return 刷新是否成功
      */
     boolean refreshAccessToken(App app);
+
 }

@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
+import com.xiaohuashifu.recruit.authentication.service.granter.OpenidGranter;
 import com.xiaohuashifu.recruit.authentication.service.granter.SmsGranter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -102,9 +103,12 @@ public class TokenGranterConfig {
         AuthorizationCodeServices authorizationCodeServices = authorizationCodeServices();
         OAuth2RequestFactory requestFactory = requestFactory();
         // 获取默认的授权模式
-        List<TokenGranter> tokenGranters = getDefaultTokenGranters(tokenServices, authorizationCodeServices, requestFactory);
+        List<TokenGranter> tokenGranters =
+                getDefaultTokenGranters(tokenServices, authorizationCodeServices, requestFactory);
         // 添加短信验证码授权模式
         tokenGranters.add(new SmsGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
+        // 添加Openid授权模式
+        tokenGranters.add(new OpenidGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
         return tokenGranters;
     }
 

@@ -20,13 +20,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class AuthenticationExceptionHandler {
     @ExceptionHandler(InvalidGrantException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse processingExceptionHandler(InvalidGrantException e) {
+    public ErrorResponse invalidGrantExceptionExceptionHandler(InvalidGrantException e) {
         return new ErrorResponse(ErrorCode.INVALID_PARAMETER.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse processingExceptionHandler(BadCredentialsException e) {
+    public ErrorResponse badCredentialsExceptionExceptionHandler(BadCredentialsException e) {
+        return new ErrorResponse(ErrorCode.INVALID_PARAMETER.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse processingExceptionHandler(RuntimeException e) {
+        e.printStackTrace();
         return new ErrorResponse(ErrorCode.INVALID_PARAMETER.getCode(), e.getMessage());
     }
 }

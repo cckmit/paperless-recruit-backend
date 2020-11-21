@@ -26,8 +26,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SmsAuthenticationConfig smsAuthenticationConfig;
 
-    public WebSecurityConfig(SmsAuthenticationConfig smsAuthenticationConfig) {
+    private final OpenidAuthenticationConfig openidAuthenticationConfig;
+
+    public WebSecurityConfig(SmsAuthenticationConfig smsAuthenticationConfig,
+                             OpenidAuthenticationConfig openidAuthenticationConfig) {
         this.smsAuthenticationConfig = smsAuthenticationConfig;
+        this.openidAuthenticationConfig = openidAuthenticationConfig;
     }
 
     /**
@@ -43,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         // 不校验，否则资源服务器访问时报 403 错误
         web.ignoring().antMatchers("/oauth/check_token");
     }
@@ -77,7 +81,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     // 添加短信验证码认证配置
-                    .apply(smsAuthenticationConfig);
+                    .apply(smsAuthenticationConfig)
+                .and()
+                    // 添加openid认证配置
+                    .apply(openidAuthenticationConfig);
         // TODO: 2020/11/14 匿名认证过滤器AnonymousAuthenticationFilter，
         //  给匿名用户填充`AnonymousAuthenticationToken`到`SecurityContextHolder`的`Authentication`
         // TODO: 2020/11/14  `AbstractSecurityInterceptor`填充URL对应的角色，和决定授权

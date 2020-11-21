@@ -1,8 +1,8 @@
-package com.xiaohuashifu.recruit.authentication.api.service;
+package com.xiaohuashifu.recruit.user.api.service;
 
-import com.xiaohuashifu.recruit.authentication.api.dto.AuthOpenidDTO;
 import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

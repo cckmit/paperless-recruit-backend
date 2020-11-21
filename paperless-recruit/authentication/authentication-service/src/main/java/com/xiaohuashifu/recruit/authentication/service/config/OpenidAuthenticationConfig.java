@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.xiaohuashifu.recruit.authentication.api.service.AuthOpenidService;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.authentication.service.provider.OpenidAuthenticationProvider;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;

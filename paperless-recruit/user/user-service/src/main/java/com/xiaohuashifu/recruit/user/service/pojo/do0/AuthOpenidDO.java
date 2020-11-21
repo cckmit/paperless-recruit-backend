@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.authentication.service.pojo.do0;
+package com.xiaohuashifu.recruit.user.service.pojo.do0;
 
 import com.xiaohuashifu.recruit.common.constant.App;
 import org.apache.ibatis.type.Alias;

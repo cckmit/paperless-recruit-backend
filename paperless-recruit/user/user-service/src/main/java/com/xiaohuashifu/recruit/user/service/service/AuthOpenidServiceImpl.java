@@ -1,10 +1,8 @@
-package com.xiaohuashifu.recruit.authentication.service.service;
+package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
-import com.xiaohuashifu.recruit.authentication.api.dto.AuthOpenidDTO;
-import com.xiaohuashifu.recruit.authentication.api.service.AuthOpenidService;
-import com.xiaohuashifu.recruit.authentication.service.dao.AuthOpenidMapper;
-import com.xiaohuashifu.recruit.authentication.service.pojo.do0.AuthOpenidDO;
+import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
@@ -12,6 +10,8 @@ import com.xiaohuashifu.recruit.common.util.DesUtils;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
+import com.xiaohuashifu.recruit.user.service.dao.AuthOpenidMapper;
+import com.xiaohuashifu.recruit.user.service.pojo.do0.AuthOpenidDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;

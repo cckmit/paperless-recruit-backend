@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.provider;
 
-import com.xiaohuashifu.recruit.authentication.api.dto.AuthOpenidDTO;
-import com.xiaohuashifu.recruit.authentication.api.service.AuthOpenidService;
+import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.authentication.service.token.OpenidAuthenticationToken;
 import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.result.Result;

@@ -1,7 +1,7 @@
-package com.xiaohuashifu.recruit.authentication.service.dao;
+package com.xiaohuashifu.recruit.user.service.dao;
 
-import com.xiaohuashifu.recruit.authentication.service.pojo.do0.AuthOpenidDO;
 import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.user.service.pojo.do0.AuthOpenidDO;
 import org.apache.ibatis.annotations.Param;
 
 /**

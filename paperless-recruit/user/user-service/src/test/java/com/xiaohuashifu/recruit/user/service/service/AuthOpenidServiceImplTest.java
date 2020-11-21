@@ -1,14 +1,11 @@
-package com.xiaohuashifu.recruit.authentication.service.service;
+package com.xiaohuashifu.recruit.user.service.service;
 
-import com.xiaohuashifu.recruit.authentication.api.service.AuthOpenidService;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -25,7 +22,7 @@ public class AuthOpenidServiceImplTest {
         ApplicationConfig application = new ApplicationConfig();
         application.setName("smsServiceTest");
         ReferenceConfig<AuthOpenidService> reference = new ReferenceConfig<>();
-        reference.setUrl("dubbo://127.0.0.1:20882/com.xiaohuashifu.recruit.authentication.api.service.AuthOpenidService");
+        reference.setUrl("dubbo://127.0.0.1:20881/com.xiaohuashifu.recruit.user.api.service.AuthOpenidService");
         reference.setApplication(application);
         reference.setInterface(AuthOpenidService.class);
         reference.setTimeout(10000000);
@@ -41,6 +38,6 @@ public class AuthOpenidServiceImplTest {
     @Test
     public void checkAuthOpenidForWechatMp() {
         System.out.println(authOpenidService.checkAuthOpenidForWechatMp(App.SCAU_RECRUIT_INTERVIEWEE_MP,
-                "09356J0w3e17mV28JM0w3Yw1yj356J05"));
+                "023rkpFa11Wd1A08GnIa1eR5ze2rkpFJ"));
     }
 }

@@ -16,7 +16,11 @@ public interface AuthOpenidMapper {
 
     AuthOpenidDO getAuthOpenid(Long id);
 
+    Long getIdByAppNameAndOpenid(@Param("appName") App appName, @Param("openid") String openid);
+
     int countByUserIdAndAppName(@Param("userId") Long userId, @Param("appName") App appName);
+
+    int countByAppNameAndOpenid(@Param("appName") App appName, @Param("openid") String openid);
 
 
 }

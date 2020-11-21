@@ -18,10 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 /**
  * 描述：AuthOpenid相关服务，用于接入第三方平台的身份认证
  *
@@ -163,8 +159,12 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
         }
 
         // 检查是否存在数据库，结合app_name+openid（加密后）
+        Long id = authOpenidMapper.getIdByAppNameAndOpenid(app, openid);
+        if (id == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Not exists.");
+        }
 
-        return getAuthOpenid(1L);
+        return getAuthOpenid(id);
     }
 
     /**

@@ -14,6 +14,13 @@
         from auth_openid
         where id = #{id}
     </select>
+    
+    <select id="getOpenidByAppNameAndUserId" resultType="string">
+        select openid
+        from auth_openid
+        where app_name = #{appName}
+        and user_id = #{userId}
+    </select>
 
     <select id="getIdByAppNameAndOpenid" resultType="long">
         select id

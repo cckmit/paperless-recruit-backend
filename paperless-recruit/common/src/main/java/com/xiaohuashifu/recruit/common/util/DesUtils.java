@@ -25,7 +25,7 @@ public class DesUtils {
      * @return 加密后数据
      * @throws Exception .
      */
-    public static String encryption(String data, String secretKey) throws Exception {
+    public static String encrypt(String data, String secretKey) throws Exception {
         Cipher cipher = Cipher.getInstance("DES");
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKeyFactory(secretKey));
         return new String(Base64.encodeBase64(cipher.doFinal(data.getBytes())));

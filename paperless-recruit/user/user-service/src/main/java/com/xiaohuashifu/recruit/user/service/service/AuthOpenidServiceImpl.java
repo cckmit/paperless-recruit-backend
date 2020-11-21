@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
+import com.xiaohuashifu.recruit.common.constant.Platform;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.common.constant.App;
@@ -80,7 +81,7 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
     @Override
     public Result<AuthOpenidDTO> bindAuthOpenidForWechatMp(Long userId, App app, String code) {
         // 如果App类型不是微信小程序，则不给绑定
-        if (app != App.SCAU_RECRUIT_INTERVIEWEE_MP && app != App.SCAU_RECRUIT_INTERVIEWER_MP) {
+        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "Unsupported app.");
         }
 
@@ -105,7 +106,7 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
 
         // 加密openid
         try {
-            openid = DesUtils.encryption(openid, secretKey);
+            openid = DesUtils.encrypt(openid, secretKey);
         } catch (Exception e) {
             logger.warn("Encode openid error.", e);
             return Result.fail(ErrorCode.INTERNAL_ERROR);
@@ -120,12 +121,13 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
                 .build();
         authOpenidMapper.saveAuthOpenid(authOpenidDO);
 
+        // TODO: 2020/11/21 这里如果数量大于2，可以改造成通过APP类型判断roleId
         // 给用户添加微信小程序基本权限
         if (app == App.SCAU_RECRUIT_INTERVIEWEE_MP) {
             roleService.saveUserRole(userId, scauRecruitIntervieweeMpDefaultRoleId);
         }
         if (app == App.SCAU_RECRUIT_INTERVIEWER_MP) {
-            roleService.saveUserRole(userId, scauRecruitIntervieweeMpDefaultRoleId);
+            roleService.saveUserRole(userId, scauRecruitInterviewerMpDefaultRoleId);
         }
         return getAuthOpenid(authOpenidDO.getId());
     }
@@ -143,6 +145,11 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
      */
     @Override
     public Result<AuthOpenidDTO> checkAuthOpenidForWechatMp(App app, String code) {
+        // 如果App类型不是微信小程序，则不需要继续下去
+        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Unsupported app.");
+        }
+
         // 获取openid
         Result<String> getOpenidResult = wechatMpService.getOpenid(code, app);
         if (!getOpenidResult.isSuccess()) {
@@ -152,7 +159,7 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
 
         // 加密openid
         try {
-            openid = DesUtils.encryption(openid, secretKey);
+            openid = DesUtils.encrypt(openid, secretKey);
         } catch (Exception e) {
             logger.warn("Encode openid error.", e);
             return Result.fail(ErrorCode.INTERNAL_ERROR);
@@ -165,6 +172,31 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
         }
 
         return getAuthOpenid(id);
+    }
+
+    /**
+     * 获取openid
+     *
+     * @param userId 用户编号
+     * @param app 具体的微信小程序
+     * @return openid
+     */
+    @Override
+    public Result<String> getOpenid(App app, Long userId) {
+        // 获取openid
+        String openid = authOpenidMapper.getOpenidByAppNameAndUserId(app, userId);
+        if (openid == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+        }
+
+        // 解码openid
+        try {
+            openid = DesUtils.decrypt(openid, secretKey);
+        } catch (Exception e) {
+            logger.warn("Decode openid error.", e);
+            return Result.fail(ErrorCode.INTERNAL_ERROR);
+        }
+        return Result.success(openid);
     }
 
     /**

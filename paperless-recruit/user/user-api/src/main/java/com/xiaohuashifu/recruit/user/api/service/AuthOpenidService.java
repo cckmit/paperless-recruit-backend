@@ -49,4 +49,15 @@ public interface AuthOpenidService {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 获取openid
+     *
+     * @param userId 用户编号
+     * @param app 具体的微信小程序
+     * @return openid
+     */
+    default Result<String> getOpenid(@NotNull App app, @NotNull @Positive Long userId) {
+        throw new UnsupportedOperationException();
+    }
+
 }

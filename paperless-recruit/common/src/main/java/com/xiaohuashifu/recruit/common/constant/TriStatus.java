@@ -13,6 +13,7 @@ public enum TriStatus {
      */
     AVAILABLE,
     /**
+     * 弃用
      */
     DEPRECATED,
     /**

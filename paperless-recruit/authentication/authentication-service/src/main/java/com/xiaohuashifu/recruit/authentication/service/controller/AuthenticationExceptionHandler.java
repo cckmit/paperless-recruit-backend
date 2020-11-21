@@ -33,7 +33,6 @@ public class AuthenticationExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse processingExceptionHandler(RuntimeException e) {
-        e.printStackTrace();
         return new ErrorResponse(ErrorCode.INVALID_PARAMETER.getCode(), e.getMessage());
     }
 }

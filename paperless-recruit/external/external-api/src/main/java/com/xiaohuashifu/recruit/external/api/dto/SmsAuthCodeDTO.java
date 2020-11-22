@@ -4,6 +4,7 @@ import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -36,6 +37,7 @@ public class SmsAuthCodeDTO implements Serializable {
      */
     @NotNull(groups = SmsService.CreateAndSendSmsAuthCode.class)
     @Positive
+    @Max(10)
     private Integer expiredTime;
 
     /**

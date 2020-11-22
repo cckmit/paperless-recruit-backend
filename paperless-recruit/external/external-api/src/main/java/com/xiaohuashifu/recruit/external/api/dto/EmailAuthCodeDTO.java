@@ -3,10 +3,7 @@ package com.xiaohuashifu.recruit.external.api.dto;
 import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 /**
@@ -44,6 +41,7 @@ public class EmailAuthCodeDTO implements Serializable {
      */
     @NotNull(groups = EmailService.CreateAndSendEmailAuthCode.class)
     @Positive
+    @Max(10)
     private Integer expiredTime;
 
     /**

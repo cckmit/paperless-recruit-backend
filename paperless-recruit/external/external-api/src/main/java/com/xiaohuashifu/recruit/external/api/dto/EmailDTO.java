@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
- * 描述：
+ * 描述：基本邮件传输对象
  *
  * @author: xhsf
  * @email: 827032783@qq.com

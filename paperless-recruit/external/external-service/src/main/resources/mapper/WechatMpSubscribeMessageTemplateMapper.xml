@@ -1,9 +1,85 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.external.service.dao.WechatMpSubscribeMessageTemplateMapper">
-<!--    <sql id="user">-->
-<!--        id, username, password, is_available as available, create_time, update_time-->
-<!--    </sql>-->
+    <sql id="wechatMpSubscribeMessageTemplate">
+        id, app_name, template_id, title, type, description, status, create_time, update_time
+    </sql>
+    <insert id="saveWechatMpSubscribeMessageTemplate" keyProperty="id">
+        insert into wechat_mp_subscribe_message_template
+        (app_name, template_id, title, type, description, status)
+        values(#{appName}, #{templateId}, #{title}, #{type}, #{description}, #{status})
+    </insert>
 
+    <select id="getWechatMpSubscribeMessageTemplate" resultType="wechatMpSubscribeMessageTemplate">
+        select <include refid="wechatMpSubscribeMessageTemplate"/>
+        from wechat_mp_subscribe_message_template
+        where id = #{id}
+    </select>
+
+    <select id="getWechatMpSubscribeMessageTemplateByQuery" resultType="wechatMpSubscribeMessageTemplate">
+        select <include refid="wechatMpSubscribeMessageTemplate"/>
+        from wechat_mp_subscribe_message_template
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="idList != null">
+                and id in (
+                <foreach collection="idList"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="app != null">
+                and app_name = #{app}
+            </if>
+            <if test="templateId != null">
+                and template_id like #{templateId}
+            </if>
+            <if test="title != null">
+                and title like "%"#{title}"%"
+            </if>
+            <if test="type != null">
+                and type like "%"#{type}"%"
+            </if>
+            <if test="description != null">
+                and description like "%"#{description}"%"
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="countByTemplateId" resultType="int">
+        select count(*)
+        from wechat_mp_subscribe_message_template
+        where template_id = #{templateId}
+    </select>
+
+    <update id="updateWechatMpSubscribeMessageTemplate">
+        update wechat_mp_subscribe_message_template
+        <set>
+            <if test="appName != null">
+                app_name = #{appName},
+            </if>
+            <if test="templateId != null">
+                template_id = #{templateId},
+            </if>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>

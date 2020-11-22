@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.external.api.query;
 
+import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.constant.TriStatus;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
     private Long pageSize = 10L;
     private Long id;
     private List<Long> idList;
+    private App app;
     private String templateId;
     private String title;
     private String type;
@@ -60,6 +62,14 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
 
     public void setIdList(List<Long> idList) {
         this.idList = idList;
+    }
+
+    public App getApp() {
+        return app;
+    }
+
+    public void setApp(App app) {
+        this.app = app;
     }
 
     public String getTemplateId() {
@@ -109,6 +119,7 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
                 ", pageSize=" + pageSize +
                 ", id=" + id +
                 ", idList=" + idList +
+                ", app=" + app +
                 ", templateId='" + templateId + '\'' +
                 ", title='" + title + '\'' +
                 ", type='" + type + '\'' +
@@ -117,11 +128,13 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
                 '}';
     }
 
+
     public static final class Builder {
         private Long pageNum = 1L;
         private Long pageSize = 10L;
         private Long id;
         private List<Long> idList;
+        private App app;
         private String templateId;
         private String title;
         private String type;
@@ -148,6 +161,11 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
 
         public Builder idList(List<Long> idList) {
             this.idList = idList;
+            return this;
+        }
+
+        public Builder app(App app) {
+            this.app = app;
             return this;
         }
 
@@ -182,6 +200,7 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
             wechatMpSubscribeMessageTemplateQuery.setPageSize(pageSize);
             wechatMpSubscribeMessageTemplateQuery.setId(id);
             wechatMpSubscribeMessageTemplateQuery.setIdList(idList);
+            wechatMpSubscribeMessageTemplateQuery.setApp(app);
             wechatMpSubscribeMessageTemplateQuery.setTemplateId(templateId);
             wechatMpSubscribeMessageTemplateQuery.setTitle(title);
             wechatMpSubscribeMessageTemplateQuery.setType(type);

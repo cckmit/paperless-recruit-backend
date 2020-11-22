@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.external.api.dto;
 
+import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.constant.TriStatus;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpSubscribeMessageTemplateService;
 
@@ -19,6 +20,9 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
 
     @NotNull(groups = WechatMpSubscribeMessageTemplateService.UpdateWechatMpSubscribeMessageTemplate.class)
     private Long id;
+
+    @NotNull(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
+    private App app;
 
     /**
      * 模板编号
@@ -47,7 +51,7 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
     /**
      * 模板的状态
      */
-    @NotBlank(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
+    @NotNull(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
     private TriStatus status;
 
     private LocalDateTime createTime;
@@ -60,6 +64,14 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public App getApp() {
+        return app;
+    }
+
+    public void setApp(App app) {
+        this.app = app;
     }
 
     public String getTemplateId() {
@@ -122,6 +134,7 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
     public String toString() {
         return "WechatMpSubscribeMessageTemplateDTO{" +
                 "id=" + id +
+                ", app=" + app +
                 ", templateId='" + templateId + '\'' +
                 ", title='" + title + '\'' +
                 ", type='" + type + '\'' +
@@ -135,6 +148,7 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
 
     public static final class Builder {
         private Long id;
+        private App app;
         private String templateId;
         private String title;
         private String type;
@@ -148,6 +162,11 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
 
         public Builder id(Long id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder app(App app) {
+            this.app = app;
             return this;
         }
 
@@ -189,6 +208,7 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
         public WechatMpSubscribeMessageTemplateDTO build() {
             WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO = new WechatMpSubscribeMessageTemplateDTO();
             wechatMpSubscribeMessageTemplateDTO.setId(id);
+            wechatMpSubscribeMessageTemplateDTO.setApp(app);
             wechatMpSubscribeMessageTemplateDTO.setTemplateId(templateId);
             wechatMpSubscribeMessageTemplateDTO.setTitle(title);
             wechatMpSubscribeMessageTemplateDTO.setType(type);

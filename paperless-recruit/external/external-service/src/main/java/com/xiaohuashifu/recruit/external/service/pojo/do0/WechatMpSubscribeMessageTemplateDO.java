@@ -1,6 +1,8 @@
 package com.xiaohuashifu.recruit.external.service.pojo.do0;
 
+import com.xiaohuashifu.recruit.common.constant.App;
 import com.xiaohuashifu.recruit.common.constant.TriStatus;
+import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
 
@@ -11,12 +13,19 @@ import java.time.LocalDateTime;
  * @email: 827032783@qq.com
  * @create: 2020/11/22 00:33
  */
+@Alias("wechatMpSubscribeMessageTemplate")
 public class WechatMpSubscribeMessageTemplateDO {
     private Long id;
     /**
      * 模板编号
      */
     private String templateId;
+
+    /**
+     * 具体的微信小程序
+     */
+    private App appName;
+
     /**
      * 模板标题
      */
@@ -46,6 +55,14 @@ public class WechatMpSubscribeMessageTemplateDO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public App getAppName() {
+        return appName;
+    }
+
+    public void setAppName(App appName) {
+        this.appName = appName;
     }
 
     public String getTemplateId() {
@@ -109,6 +126,7 @@ public class WechatMpSubscribeMessageTemplateDO {
         return "WechatMpSubscribeMessageTemplateDO{" +
                 "id=" + id +
                 ", templateId='" + templateId + '\'' +
+                ", appName=" + appName +
                 ", title='" + title + '\'' +
                 ", type='" + type + '\'' +
                 ", description='" + description + '\'' +
@@ -122,6 +140,7 @@ public class WechatMpSubscribeMessageTemplateDO {
     public static final class Builder {
         private Long id;
         private String templateId;
+        private App appName;
         private String title;
         private String type;
         private String description;
@@ -139,6 +158,11 @@ public class WechatMpSubscribeMessageTemplateDO {
 
         public Builder templateId(String templateId) {
             this.templateId = templateId;
+            return this;
+        }
+
+        public Builder appName(App appName) {
+            this.appName = appName;
             return this;
         }
 
@@ -176,6 +200,7 @@ public class WechatMpSubscribeMessageTemplateDO {
             WechatMpSubscribeMessageTemplateDO wechatMpSubscribeMessageTemplateDO = new WechatMpSubscribeMessageTemplateDO();
             wechatMpSubscribeMessageTemplateDO.setId(id);
             wechatMpSubscribeMessageTemplateDO.setTemplateId(templateId);
+            wechatMpSubscribeMessageTemplateDO.setAppName(appName);
             wechatMpSubscribeMessageTemplateDO.setTitle(title);
             wechatMpSubscribeMessageTemplateDO.setType(type);
             wechatMpSubscribeMessageTemplateDO.setDescription(description);

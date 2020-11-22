@@ -25,7 +25,6 @@ public class ImageAuthCodeUtils {
      * @param height 验证码高度
      * @param length 验证码字符串长度
      * @return 验证码图片的Base64编码和验证码
-     * @throws IOException .
      */
     public static ImageAuthCode createImageCode(int width, int height, int length) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

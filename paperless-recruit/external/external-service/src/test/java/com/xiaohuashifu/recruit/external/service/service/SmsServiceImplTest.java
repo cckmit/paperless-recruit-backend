@@ -42,7 +42,7 @@ public class SmsServiceImplTest {
     public void createAndSendSmsAuthCode() {
         System.out.println(smsService.createAndSendSmsAuthCode(
                 new SmsAuthCodeDTO.Builder()
-                        .phone("13534133310").subject("sms-login").expiredTime(600L).build()));
+                        .phone("13534133310").subject("sms-login").expiredTime(600).build()));
     }
 
     @Test

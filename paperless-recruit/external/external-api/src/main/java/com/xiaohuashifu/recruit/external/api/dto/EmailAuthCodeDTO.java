@@ -44,7 +44,7 @@ public class EmailAuthCodeDTO implements Serializable {
      */
     @NotNull(groups = EmailService.CreateAndSendEmailAuthCode.class)
     @Positive
-    private Long expiredTime;
+    private Integer expiredTime;
 
     /**
      * 邮箱验证码
@@ -89,11 +89,11 @@ public class EmailAuthCodeDTO implements Serializable {
         this.title = title;
     }
 
-    public Long getExpiredTime() {
+    public Integer getExpiredTime() {
         return expiredTime;
     }
 
-    public void setExpiredTime(Long expiredTime) {
+    public void setExpiredTime(Integer expiredTime) {
         this.expiredTime = expiredTime;
     }
 
@@ -130,7 +130,7 @@ public class EmailAuthCodeDTO implements Serializable {
         private String email;
         private String subject;
         private String title;
-        private Long expiredTime;
+        private Integer expiredTime;
         private String authCode;
         private Boolean delete;
 
@@ -152,7 +152,7 @@ public class EmailAuthCodeDTO implements Serializable {
             return this;
         }
 
-        public Builder expiredTime(Long expiredTime) {
+        public Builder expiredTime(Integer expiredTime) {
             this.expiredTime = expiredTime;
             return this;
         }

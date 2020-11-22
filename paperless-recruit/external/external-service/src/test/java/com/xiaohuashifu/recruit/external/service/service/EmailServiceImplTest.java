@@ -67,7 +67,7 @@ public class EmailServiceImplTest {
     public void createAndSendEmailAuthCode() {
         System.out.println(emailService.createAndSendEmailAuthCode(
                 new EmailAuthCodeDTO.Builder()
-                        .email("859703569@qq.com").subject("email-update").title("邮箱绑定").expiredTime(5L).build()));
+                        .email("859703569@qq.com").subject("email-update").title("邮箱绑定").expiredTime(5).build()));
     }
 
     @Test

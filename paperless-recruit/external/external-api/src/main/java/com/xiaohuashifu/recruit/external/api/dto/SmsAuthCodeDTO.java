@@ -36,7 +36,7 @@ public class SmsAuthCodeDTO implements Serializable {
      */
     @NotNull(groups = SmsService.CreateAndSendSmsAuthCode.class)
     @Positive
-    private Long expiredTime;
+    private Integer expiredTime;
 
     /**
      * 短信验证码
@@ -73,11 +73,11 @@ public class SmsAuthCodeDTO implements Serializable {
         this.subject = subject;
     }
 
-    public Long getExpiredTime() {
+    public Integer getExpiredTime() {
         return expiredTime;
     }
 
-    public void setExpiredTime(Long expiredTime) {
+    public void setExpiredTime(Integer expiredTime) {
         this.expiredTime = expiredTime;
     }
 
@@ -112,7 +112,7 @@ public class SmsAuthCodeDTO implements Serializable {
     public static final class Builder {
         private String phone;
         private String subject;
-        private Long expiredTime;
+        private Integer expiredTime;
         private String authCode;
         private Boolean delete;
 
@@ -129,7 +129,7 @@ public class SmsAuthCodeDTO implements Serializable {
             return this;
         }
 
-        public Builder expiredTime(Long expiredTime) {
+        public Builder expiredTime(Integer expiredTime) {
             this.expiredTime = expiredTime;
             return this;
         }

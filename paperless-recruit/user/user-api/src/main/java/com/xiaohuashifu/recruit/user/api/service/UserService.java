@@ -38,7 +38,7 @@ public interface UserService {
     /**
      * 验证码注册的主题，用于调用短信验证码服务
      */
-    String SIGN_UP_SUBJECT = "user:sign_up";
+    String SIGN_UP_SUBJECT = "user:sign-up";
 
     /**
      * 通过短信验证码注册账号
@@ -50,6 +50,23 @@ public interface UserService {
      */
     default Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone,
                                                   @NotBlank @AuthCode String authCode) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 通过短信验证码注册账号
+     * 该方式会随机生成用户名
+     * 若密码为null会随机生成密码
+     * 推荐使用该方式进行注册，且密码不允许为null
+     *
+     * @param phone 手机号码
+     * @param authCode 短信验证码
+     * @param password 密码
+     * @return 新创建的用户
+     */
+    default Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone,
+                                                @NotBlank @AuthCode String authCode,
+                                                @Password String password) {
         throw new UnsupportedOperationException();
     }
 

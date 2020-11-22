@@ -52,6 +52,13 @@ public class UserServiceImplTest {
         System.out.println(userService.signUpBySmsAuthCode("15992321303", "797607"));
     }
 
+
+    @Test
+    public void testSignUpBySmsAuthCode() {
+        System.out.println(userService.signUpBySmsAuthCode(
+                "15992321303", "907650", "1234567"));
+    }
+
     @Test
     public void getUserByUsername() {
         // 正确
@@ -139,4 +146,5 @@ public class UserServiceImplTest {
     public void userExists() {
         System.out.println(userService.userExists(16L));
     }
+
 }

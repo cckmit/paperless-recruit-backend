@@ -93,10 +93,25 @@ public class UserServiceImpl implements UserService {
      *
      * @param phone 手机号码
      * @param authCode 短信验证码
-     * @return 新注册的用户
+     * @return 新创建的用户
      */
     @Override
     public Result<UserDTO> signUpBySmsAuthCode(String phone, String authCode) {
+        return signUpBySmsAuthCode(phone, authCode, null);
+    }
+
+    /**
+     * 通过短信验证码注册账号
+     * 该方式会随机生成用户名
+     * 若密码为null会随机生成密码
+     *
+     * @param phone 手机号码
+     * @param authCode 短信验证码
+     * @param password 密码
+     * @return 新创建的用户
+     */
+    @Override
+    public Result<UserDTO> signUpBySmsAuthCode(String phone, String authCode, String password) {
         // 判断手机号码是否存在
         int count = userMapper.countByPhone(phone);
         if (count > 0) {
@@ -128,10 +143,15 @@ public class UserServiceImpl implements UserService {
             return Result.fail(checkEmailAuthCodeResult);
         }
 
+        // 如果密码为null，则随机生成密码
+        if (password == null) {
+            password = RandomStringUtils.randomNumeric(20);
+        }
+
         // 添加到数据库
         UserDO userDO = new UserDO.Builder()
                 .username(username)
-                .password(passwordService.encodePassword(RandomStringUtils.randomNumeric(20)))
+                .password(passwordService.encodePassword(password))
                 .phone(phone)
                 .build();
         userMapper.saveUser(userDO);

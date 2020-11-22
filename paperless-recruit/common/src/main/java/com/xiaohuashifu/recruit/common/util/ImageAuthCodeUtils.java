@@ -27,7 +27,7 @@ public class ImageAuthCodeUtils {
      * @return 验证码图片的Base64编码和验证码
      * @throws IOException .
      */
-    public static ImageAuthCode createImageCode(int width, int height, int length) throws IOException {
+    public static ImageAuthCode createImageCode(int width, int height, int length) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics g = image.getGraphics();
 
@@ -54,7 +54,12 @@ public class ImageAuthCodeUtils {
         g.dispose();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        ImageIO.write(image, "jpeg", stream);
+        try {
+            ImageIO.write(image, "jpeg", stream);
+        }
+        // 不会抛出异常
+        catch (IOException ignored) {
+        }
         String base64Image = Base64.encode(stream.toByteArray());
 
         return new ImageAuthCode(base64Image, sRand.toString());

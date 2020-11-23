@@ -5,10 +5,12 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.ImageAuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.service.ImageAuthCodeService;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -29,8 +31,21 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
      */
     private static final String IMAGE_AUTH_CODE_REDIS_KEY_PREFIX = "image-auth-code:auth-code";
 
-    public ImageAuthCodeServiceImpl(RedisTemplate<Object, Object> redisTemplate) {
+    /**
+     * 自增id Redis key前缀
+     */
+    private static final String INCREMENT_ID_REDIS_KEY_PREFIX = "image-auth-code:increment-id";
+
+    /**
+     * 自增id的脚本
+     */
+    private final RedisScript<Long> incrementIdRedisScript;
+
+    public ImageAuthCodeServiceImpl(
+            RedisTemplate<Object, Object> redisTemplate,
+            @Qualifier("incrementIdRedisScript") RedisScript<Long> incrementIdRedisScript) {
         this.redisTemplate = redisTemplate;
+        this.incrementIdRedisScript = incrementIdRedisScript;
     }
 
     /**
@@ -47,8 +62,9 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
                 imageAuthCodeDTO.getWidth(), imageAuthCodeDTO.getHeight(), imageAuthCodeDTO.getLength());
 
         // 创建图形验证码编号
-        // TODO: 2020/11/22 这里应该使用Redis创建编号
-        String id = UUID.randomUUID().toString() + RandomStringUtils.randomAlphanumeric(10);
+        Long incrementId = redisTemplate.execute(incrementIdRedisScript,
+                Collections.singletonList(INCREMENT_ID_REDIS_KEY_PREFIX), "0");
+        String id = UUID.randomUUID().toString() + incrementId;
 
         // 添加验证码到缓存
         String redisKey = IMAGE_AUTH_CODE_REDIS_KEY_PREFIX + ":" + id;

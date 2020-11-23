@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.user.service.dao.MajorMapper">
+    <sql id="major">
+        id, college_id, major_name, create_time, update_time
+    </sql>
+
+    <insert id="saveMajor" keyProperty="id">
+        insert into major
+        (college_id, major_name)
+        values(#{collegeId}, #{majorName})
+    </insert>
+
+    <delete id="delete">
+        delete from major
+        where id = #{id}
+    </delete>
+
+    <select id="getMajor" resultType="major">
+        select <include refid="major"/>
+        from major
+        where id = #{id}
+    </select>
+
+    <select id="getMajorByCollegeId" resultType="major">
+        select <include refid="major"/>
+        from major
+        where college_id = #{collegeId}
+    </select>
+
+    <select id="getMajorByQuery" resultType="major">
+        select <include refid="major"/>
+        from major
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="idList != null">
+                and id in (
+                <foreach collection="idList"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="collegeId != null">
+                and college_id = #{collegeId}
+            </if>
+            <if test="majorName != null">
+                and major_name like "%"#{majorName}"%"
+            </if>
+        </where>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*)
+        from major
+        where id = #{id}
+    </select>
+
+    <select id="countByCollegeId" resultType="int">
+        select count(*)
+        from major
+        where college_id = #{collegeId}
+    </select>
+
+    <select id="countByCollegeIdAndMajorName" resultType="int">
+        select count(*)
+        from major
+        where college_id = #{collegeId}
+        and major_name = #{majorName}
+    </select>
+
+
+    <update id="updateMajorName">
+        update major
+        set major_name = #{majorName}
+        where id = #{id}
+    </update>
+</mapper>

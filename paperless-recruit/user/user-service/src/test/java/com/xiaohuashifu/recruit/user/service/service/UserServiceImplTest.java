@@ -43,7 +43,8 @@ public class UserServiceImplTest {
 
     @Test
     public void signUpUser() {
-        final Result<UserDTO> saveUserResult = userService.signUpUser("xhsf4", "311211");
+        final Result<UserDTO> saveUserResult = userService.signUpUser(
+                "scaurecruitadmin", "2020scaucruit");
         System.out.println(saveUserResult);
     }
 

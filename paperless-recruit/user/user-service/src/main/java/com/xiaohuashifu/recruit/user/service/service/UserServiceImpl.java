@@ -13,6 +13,7 @@ import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
+import com.xiaohuashifu.recruit.user.api.service.UserProfileService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.UserDO;
@@ -47,6 +48,9 @@ public class UserServiceImpl implements UserService {
     @Reference
     private RoleService roleService;
 
+    @Reference
+    private UserProfileService userProfileService;
+
     private final UserMapper userMapper;
 
     private final Mapper mapper;
@@ -79,12 +83,7 @@ public class UserServiceImpl implements UserService {
                 .username(username.trim())
                 .password(passwordService.encodePassword(password))
                 .build();
-        userMapper.saveUser(userDO);
-
-        // 为新账号赋予最基本的权限
-        roleService.saveUserRole(userDO.getId(), defaultUserRoleId);
-
-        return getUser(userDO.getId());
+        return saveUser(userDO);
     }
 
     /**
@@ -154,12 +153,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordService.encodePassword(password))
                 .phone(phone)
                 .build();
-        userMapper.saveUser(userDO);
-
-        // 为新账号赋予最基本的权限
-        roleService.saveUserRole(userDO.getId(), defaultUserRoleId);
-
-        return getUser(userDO.getId());
+        return saveUser(userDO);
     }
 
     /**
@@ -510,4 +504,23 @@ public class UserServiceImpl implements UserService {
         }
         return Result.success();
     }
+
+    /**
+     * 保存用户
+     *
+     * @param userDO UserDO
+     * @return Result<UserDTO>
+     */
+    private Result<UserDTO> saveUser(UserDO userDO) {
+        userMapper.saveUser(userDO);
+
+        // 为新账号赋予最基本的权限
+        roleService.saveUserRole(userDO.getId(), defaultUserRoleId);
+
+        // 为账号初始化个人信息
+        userProfileService.createUserProfile(userDO.getId());
+
+        return getUser(userDO.getId());
+    }
+
 }

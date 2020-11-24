@@ -48,7 +48,7 @@ public class RoleServiceImplTest {
 
     @Test
     public void saveUserRole() {
-        System.out.println(roleService.saveUserRole(1L, 5L));
+        System.out.println(roleService.saveUserRole(12L, 4L));
     }
 
     @Test

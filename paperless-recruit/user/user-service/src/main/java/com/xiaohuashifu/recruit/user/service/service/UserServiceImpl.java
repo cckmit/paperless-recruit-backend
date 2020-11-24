@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户名是否存在
         int count = userMapper.countByUsername(username.trim());
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Username exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Username does already exist.");
         }
 
         // 添加到数据库
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
         // 判断手机号码是否存在
         int count = userMapper.countByPhone(phone);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Phone exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Phone does already exist.");
         }
 
         // 随机生成用户名，这里会尝试生成3次
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         if (username == null) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR, "Internal error, please repeat.");
+            return Result.fail(ErrorCode.INTERNAL_ERROR);
         }
 
         // 判断验证码是否正确
@@ -267,7 +267,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 去掉用户名两边的空白符
@@ -276,7 +276,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户名是否存在
         count = userMapper.countByUsername(newUsername);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "New username exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The new username already exist.");
         }
 
         // 更新用户名
@@ -297,13 +297,13 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
 
         // 判断手机号码是否存在
         count = userMapper.countByPhone(newPhone);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "New phone exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The new phone already exist.");
         }
 
         // 判断验证码是否正确
@@ -335,7 +335,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
 
         // 去掉邮箱两边的空白符
@@ -344,7 +344,7 @@ public class UserServiceImpl implements UserService {
         // 判断邮箱是否存在
         count = userMapper.countByEmail(newEmail);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "New email exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The new email already exist.");
         }
 
         // 判断验证码是否正确
@@ -375,7 +375,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
 
         // 更新密码
@@ -396,7 +396,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.countByEmail(email);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
 
         // 判断验证码是否正确
@@ -428,7 +428,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.countByPhone(phone);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
 
         // 判断验证码是否正确
@@ -459,12 +459,12 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);
         if (userDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
 
         // 判断用户当前的状态是不是已经是禁用
         if (!userDO.getAvailable()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user has been disable.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user already disable.");
         }
 
         // 禁用用户
@@ -483,12 +483,12 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);
         if (userDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "User not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
 
         // 判断用户当前的状态是不是已经是可用
         if (userDO.getAvailable()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user has been enable.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user already enable.");
         }
 
         // 解禁用户

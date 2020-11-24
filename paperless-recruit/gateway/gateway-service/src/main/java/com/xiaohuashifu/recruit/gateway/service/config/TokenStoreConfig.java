@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.user.service.config;
+package com.xiaohuashifu.recruit.gateway.service.config;
 
 import com.xiaohuashifu.recruit.authentication.api.service.JwtSigningKeyService;
 import org.apache.dubbo.config.annotation.Reference;

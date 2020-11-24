@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.user.service.config;
+package com.xiaohuashifu.recruit.gateway.service.config;
 
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

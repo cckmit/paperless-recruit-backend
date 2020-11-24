@@ -31,7 +31,7 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
     /**
      * 短信验证码登录的主题，用于调用发送和检验短信验证码服务
      */
-    public static final String SUBJECT = "authentication:sms-login";
+    public static final String SUBJECT = "authentication:sms-sign-in";
 
     private final SmsService smsService;
 

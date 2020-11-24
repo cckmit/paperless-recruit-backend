@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.user.service.dao.UserProfileMapper">
+    <sql id="userProfile">
+        id, user_id, full_name, student_number, college, major, introduction, create_time, update_time
+    </sql>
+
+    <insert id="saveUserProfile">
+        insert into user_profile(user_id)
+        values(#{userId})
+    </insert>
+
+    <select id="getUserProfile" resultType="userProfile">
+        select <include refid="userProfile"/>
+        from user_profile
+        where id = #{id}
+    </select>
+
+    <select id="getUserProfileByQuery" resultType="userProfile">
+        select <include refid="userProfile"/>
+        from user_profile
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="idList != null">
+                and id in (
+                <foreach collection="idList"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="fullName != null">
+                and full_name like "%"#{fullName}"%"
+            </if>
+            <if test="studentNumber != null">
+                and student_number like "%"#{studentNumber}"%"
+            </if>
+            <if test="college != null">
+                and college like "%"#{college}"%"
+            </if>
+            <if test="major != null">
+                and major like "%"#{major}"%"
+            </if>
+            <if test="introduction != null">
+                and introduction like "%"#{introduction}"%"
+            </if>
+        </where>
+    </select>
+
+    <select id="getUserProfileByUserId" resultType="userProfile">
+        select <include refid="userProfile"/>
+        from user_profile
+        where user_id = #{userId}
+    </select>
+
+    <select id="countByUserId" resultType="int">
+        select count(*)
+        from user_profile
+        where user_id = #{userId}
+    </select>
+
+
+</mapper>

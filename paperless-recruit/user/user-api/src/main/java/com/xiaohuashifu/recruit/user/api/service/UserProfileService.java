@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.user.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.validator.annotation.Chinese;
 import com.xiaohuashifu.recruit.user.api.dto.UserProfileDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
 
@@ -30,20 +31,20 @@ public interface UserProfileService {
     /**
      * 获取用户个人信息
      *
-     * @param query 查询参数
-     * @return PageInfo<UserProfileDTO> 带分页信息的查询结果
+     * @param id 用户个人信息编号
+     * @return UserProfileDTO
      */
-    default Result<PageInfo<UserProfileDTO>> getUserProfile(@NotNull UserProfileQuery query) {
+    default Result<UserProfileDTO> getUserProfile(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * 获取用户个人信息
      *
-     * @param id 用户个人信息编号
-     * @return UserProfileDTO
+     * @param query 查询参数
+     * @return PageInfo<UserProfileDTO> 带分页信息的查询结果
      */
-    default Result<UserProfileDTO> getUserProfile(@NotNull @Positive Long id) {
+    default Result<PageInfo<UserProfileDTO>> getUserProfile(@NotNull UserProfileQuery query) {
         throw new UnsupportedOperationException();
     }
 
@@ -67,7 +68,7 @@ public interface UserProfileService {
      */
     default Result<UserProfileDTO> updateFullName(
             @NotNull @Positive Long userId,
-            @NotBlank @Size(min = 2, max = 5) String fullName) {
+            @NotBlank @Size(min = 2, max = 5) @Chinese String fullName) {
         throw new UnsupportedOperationException();
     }
 

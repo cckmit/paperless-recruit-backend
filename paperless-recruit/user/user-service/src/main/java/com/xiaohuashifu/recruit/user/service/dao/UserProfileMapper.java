@@ -1,7 +1,9 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
+import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.UserProfileDO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,7 +18,6 @@ public interface UserProfileMapper {
 
     int saveUserProfile(Long userId);
 
-
     UserProfileDO getUserProfile(Long id);
 
     List<UserProfileDO> getUserProfileByQuery(UserProfileQuery query);
@@ -24,5 +25,15 @@ public interface UserProfileMapper {
     UserProfileDO getUserProfileByUserId(Long userId);
 
     int countByUserId(Long userId);
+
+    int updateFullName(@Param("userId") Long userId, @Param("fullName") String fullName);
+
+    int updateStudentNumber(@Param("userId") Long userId, @Param("studentNumber") String studentNumber);
+
+    int updateCollegeAndMajor(@Param("userId") Long userId, @Param("college") String college,
+                              @Param("major") String major);
+
+    int updateIntroduction(@Param("userId") Long userId, @Param("introduction") String introduction);
+
 
 }

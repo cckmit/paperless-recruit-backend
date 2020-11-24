@@ -63,12 +63,12 @@ public interface UserProfileService {
      * 姓名长度必须在2-5之间
      *
      * @param userId 用户编号
-     * @param fullName 姓名
+     * @param newFullName 新姓名
      * @return 更新后的用户个人信息
      */
     default Result<UserProfileDTO> updateFullName(
             @NotNull @Positive Long userId,
-            @NotBlank @Size(min = 2, max = 5) @Chinese String fullName) {
+            @NotBlank @Size(min = 2, max = 5) @Chinese String newFullName) {
         throw new UnsupportedOperationException();
     }
 
@@ -79,40 +79,26 @@ public interface UserProfileService {
      * 会进行学号格式校验
      *
      * @param userId 用户编号
-     * @param studentNumber 学号
+     * @param newStudentNumber 新学号
      * @return 更新后的用户个人信息
      */
     default Result<UserProfileDTO> updateStudentNumber(
             @NotNull @Positive Long userId,
-            @NotBlank @Pattern(regexp = "^20\\d{10}$") String studentNumber) {
+            @NotBlank @Pattern(regexp = "^20\\d{10}$") String newStudentNumber) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 更新学院
-     * 学院必须是存在系统的学院库里的
+     * 更新学院专业通过专业的编号
+     * 学院专业必须是存在系统的学院专业库里的
+     * 该方法会根据专业的编号去寻找学院
      *
      * @param userId 用户编号
-     * @param college 学院
+     * @param newMajorId 新专业编号
      * @return 更新后的用户个人信息
      */
-    default Result<UserProfileDTO> updateCollege(
-            @NotNull @Positive Long userId,
-            @NotBlank @Size(min = 1, max = 50) String college) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * 更新专业
-     * 专业必须是存在系统的专业库里的
-     *
-     * @param userId 用户编号
-     * @param major 专业
-     * @return 更新后的用户个人信息
-     */
-    default Result<UserProfileDTO> updateMajor(
-            @NotNull @Positive Long userId,
-            @NotBlank @Size(min = 1, max = 50) String major) {
+    default Result<UserProfileDTO> updateCollegeAndMajorByMajorId(
+            @NotNull @Positive Long userId, @NotNull @Positive Long newMajorId) {
         throw new UnsupportedOperationException();
     }
 
@@ -120,12 +106,12 @@ public interface UserProfileService {
      * 更新自我介绍
      *
      * @param userId 用户编号
-     * @param introduction 自我介绍
+     * @param newIntroduction 新自我介绍
      * @return 更新后的用户个人信息
      */
     default Result<UserProfileDTO> updateIntroduction(
             @NotNull @Positive Long userId,
-            @NotBlank @Size(min = 1, max = 400) String introduction) {
+            @NotBlank @Size(min = 1, max = 400) String newIntroduction) {
         throw new UnsupportedOperationException();
     }
 

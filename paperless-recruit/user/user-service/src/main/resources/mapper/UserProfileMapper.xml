@@ -63,5 +63,27 @@
         where user_id = #{userId}
     </select>
 
+    <update id="updateFullName">
+        update user_profile
+        set full_name = #{fullName}
+        where user_id = #{userId}
+    </update>
 
+    <update id="updateStudentNumber">
+        update user_profile
+        set student_number = #{studentNumber}
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateCollegeAndMajor">
+        update user_profile
+        set college = #{college}, major = #{major}
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateIntroduction">
+        update user_profile
+        set introduction = #{introduction}
+        where user_id = #{userId}
+    </update>
 </mapper>

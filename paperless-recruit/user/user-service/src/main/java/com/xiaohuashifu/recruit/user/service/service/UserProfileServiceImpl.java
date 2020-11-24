@@ -4,15 +4,18 @@ import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.dto.MajorDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserProfileDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
+import com.xiaohuashifu.recruit.user.api.service.CollegeService;
 import com.xiaohuashifu.recruit.user.api.service.UserProfileService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.dao.UserProfileMapper;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.UserProfileDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.security.core.parameters.P;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,10 +33,15 @@ import java.util.stream.Collectors;
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserProfileServiceImpl.class);
+
     private final UserProfileMapper userProfileMapper;
 
     @Reference
     private UserService userService;
+
+    @Reference
+    private CollegeService collegeService;
 
     private final Mapper mapper;
 
@@ -121,12 +129,100 @@ public class UserProfileServiceImpl implements UserProfileService {
      * 姓名长度必须在2-5之间
      *
      * @param userId 用户编号
-     * @param fullName 姓名
+     * @param newFullName 新姓名
      * @return 更新后的用户个人信息
      */
     @Override
-    public Result<UserProfileDTO> updateFullName(Long userId, String fullName) {
-        throw new UnsupportedOperationException();
+    public Result<UserProfileDTO> updateFullName(Long userId, String newFullName) {
+        // 判断用户信息是否存在
+        int count = userProfileMapper.countByUserId(userId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile does not exist.");
+        }
+
+        // 更新姓名
+        userProfileMapper.updateFullName(userId, newFullName);
+        return getUserProfileByUserId(userId);
+    }
+
+    /**
+     * 更新学号
+     * 学号长度必须是12
+     * 且为纯数字
+     * 会进行学号格式校验
+     *
+     * @param userId 用户编号
+     * @param newStudentNumber 新学号
+     * @return 更新后的用户个人信息
+     */
+    @Override
+    public Result<UserProfileDTO> updateStudentNumber(Long userId, String newStudentNumber) {
+        // 判断用户信息是否存在
+        int count = userProfileMapper.countByUserId(userId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile does not exist.");
+        }
+
+        // 更新学号
+        userProfileMapper.updateStudentNumber(userId, newStudentNumber);
+        return getUserProfileByUserId(userId);
+    }
+
+    /**
+     * 更新学院专业通过专业的编号
+     * 学院专业必须是存在系统的学院专业库里的
+     *
+     * @param userId 用户编号
+     * @param newMajorId 新专业编号
+     * @return 更新后的用户个人信息
+     */
+    @Override
+    public Result<UserProfileDTO> updateCollegeAndMajorByMajorId(Long userId, Long newMajorId) {
+        // 判断用户信息是否存在
+        int count = userProfileMapper.countByUserId(userId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile does not exist.");
+        }
+
+        // 判断该专业编号是否存在系统库里
+        Result<MajorDTO> getMajorResult = collegeService.getMajor(newMajorId);
+        if (!getMajorResult.isSuccess()) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The major does not exist.");
+        }
+
+        // 获取学院名
+        MajorDTO majorDTO = getMajorResult.getData();
+        Result<String> getCollegeNameResult = collegeService.getCollegeName(majorDTO.getCollegeId());
+        if (!getCollegeNameResult.isSuccess()) {
+            logger.error("Can't get the college name of major " + majorDTO);
+            return Result.fail(ErrorCode.INTERNAL_ERROR);
+        }
+        String college = getCollegeNameResult.getData();
+
+        // 更新学院专业
+        userProfileMapper.updateCollegeAndMajor(userId, college, majorDTO.getMajorName());
+        return getUserProfileByUserId(userId);
+    }
+
+
+    /**
+     * 更新自我介绍
+     *
+     * @param userId 用户编号
+     * @param newIntroduction 新自我介绍
+     * @return 更新后的用户个人信息
+     */
+    @Override
+    public Result<UserProfileDTO> updateIntroduction(Long userId, String newIntroduction) {
+        // 判断用户信息是否存在
+        int count = userProfileMapper.countByUserId(userId);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile does not exist.");
+        }
+
+        // 更新自我介绍
+        userProfileMapper.updateIntroduction(userId, newIntroduction);
+        return getUserProfileByUserId(userId);
     }
 
 }

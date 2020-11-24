@@ -164,6 +164,21 @@ public class CollegeServiceImpl implements CollegeService {
     }
 
     /**
+     * 获取学院名
+     *
+     * @param id 学院编号
+     * @return String 学院名
+     */
+    @Override
+    public Result<String> getCollegeName(Long id) {
+        String collegeName = collegeMapper.getCollegeName(id);
+        if (collegeName == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+        }
+        return Result.success(collegeName);
+    }
+
+    /**
      * 查询学院专业
      * 查询学院时会把专业信息一起查出来
      *

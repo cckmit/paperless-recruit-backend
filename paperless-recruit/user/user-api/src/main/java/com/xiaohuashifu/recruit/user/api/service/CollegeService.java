@@ -83,6 +83,16 @@ public interface CollegeService {
     }
 
     /**
+     * 获取学院名
+     *
+     * @param id 学院编号
+     * @return String 学院名
+     */
+    default Result<String> getCollegeName(@NotNull @Positive Long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * 查询学院专业
      * 查询学院时会把专业信息一起查出来
      *
@@ -134,6 +144,10 @@ public interface CollegeService {
      */
     default Result<MajorDTO> updateMajorName(@NotNull @Positive Long id,
                                          @NotBlank @Size(min = 1, max = 50) String newMajorName) {
+        throw new UnsupportedOperationException();
+    }
+
+    default Result<Void> collegeExists(@NotBlank @Size(min = 1, max = 50) String collegeName) {
         throw new UnsupportedOperationException();
     }
 

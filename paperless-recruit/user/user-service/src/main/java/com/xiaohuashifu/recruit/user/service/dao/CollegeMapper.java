@@ -23,6 +23,8 @@ public interface CollegeMapper {
 
     List<CollegeDO> getCollegeByQuery(CollegeQuery query);
 
+    String getCollegeName(Long id);
+
     int count(Long id);
 
     int countByCollegeName(String collegeName);

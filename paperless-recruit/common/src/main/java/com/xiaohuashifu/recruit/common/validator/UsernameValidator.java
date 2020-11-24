@@ -10,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 /**
  * 描述: 用户名校验器
  * 用户名不能是手机和邮箱的格式
- *  用户名长度必须在4~32位之间
+ *  用户名必须满足长度在4-32之间，只包含数字、小写字母、'-'、'_'，且以字母开头
  *
  * @author xhsf
  * @email 827032783@qq.com

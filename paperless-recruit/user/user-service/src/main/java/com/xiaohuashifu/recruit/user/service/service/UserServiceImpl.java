@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
         // 添加到数据库
         UserDO userDO = new UserDO.Builder()
-                .username(username.trim())
+                .username(username)
                 .password(passwordService.encodePassword(password))
                 .build();
         return saveUser(userDO);

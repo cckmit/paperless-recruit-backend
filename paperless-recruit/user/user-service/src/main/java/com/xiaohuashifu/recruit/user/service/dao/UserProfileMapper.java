@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
 import com.xiaohuashifu.recruit.user.service.pojo.do0.UserProfileDO;
 import org.apache.ibatis.annotations.Param;

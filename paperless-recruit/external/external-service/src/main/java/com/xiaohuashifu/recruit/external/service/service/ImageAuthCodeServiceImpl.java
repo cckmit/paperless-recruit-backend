@@ -97,7 +97,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
 
         // 判断验证码是否相同
         if (!authCode.equals(authCodeInRedis)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code is incorrect.");
         }
         return Result.success();
     }

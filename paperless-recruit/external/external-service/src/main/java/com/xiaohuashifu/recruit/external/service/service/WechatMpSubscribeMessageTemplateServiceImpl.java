@@ -48,7 +48,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
         int count = wechatMpSubscribeMessageTemplateMapper.countByTemplateId(
                 wechatMpSubscribeMessageTemplateDTO.getTemplateId());
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This template id already exists.");
         }
 
         // 添加到数据库
@@ -130,7 +130,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
 
         // 检查是否每个域都为null
         if (ObjectUtils.allFieldIsNull(wechatMpSubscribeMessageTemplateDO)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "At least one non null parameter.");
         }
 
         // 添加id属性

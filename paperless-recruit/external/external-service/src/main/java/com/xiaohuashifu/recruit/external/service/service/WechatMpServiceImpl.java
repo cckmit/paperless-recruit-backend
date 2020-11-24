@@ -58,13 +58,13 @@ public class WechatMpServiceImpl implements WechatMpService {
     public Result<String> getOpenid(String code, App app) {
         // 平台必须是微信小程序
         if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The platform must be wechat mp.");
         }
 
         // 获取openid
         Optional<Code2SessionDTO> code2SessionDTOOptional = wechatMpManager.getCode2Session(code, app);
         if (code2SessionDTOOptional.isEmpty()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The openid does not exist.");
         }
         return Result.success(code2SessionDTOOptional.get().getOpenid());
     }
@@ -81,7 +81,7 @@ public class WechatMpServiceImpl implements WechatMpService {
     public Result<Void> sendSubscribeMessage(App app, Long userId, SubscribeMessageDTO subscribeMessageDTO) {
         // 平台必须是微信小程序
         if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The platform must be wechat mp.");
         }
 
         // 获取openId
@@ -94,7 +94,7 @@ public class WechatMpServiceImpl implements WechatMpService {
         // 获取access-token
         Optional<String> accessToken = wechatMpManager.getAccessToken(app);
         if (accessToken.isEmpty()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER);
+            return Result.fail(ErrorCode.INTERNAL_ERROR);
         }
 
         // 发送消息

@@ -6,6 +6,8 @@ import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 描述: 用户名校验器
@@ -19,8 +21,18 @@ import javax.validation.ConstraintValidatorContext;
 public class UsernameValidator implements ConstraintValidator<Username, String> {
 
     private static final PhoneValidator phoneValidator = new PhoneValidator();
+
     private static final EmailValidator emailValidator = new EmailValidator();
 
+    /**
+     * 用户名匹配模式
+     */
+    private static final String REGEX_PHONE = "^([a-z])([a-z]|\\d|_|-){3,31}$";
+
+    /**
+     * 构造静态的匹配模式
+     */
+    private static final Pattern p = Pattern.compile(REGEX_PHONE);
 
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
@@ -37,7 +49,9 @@ public class UsernameValidator implements ConstraintValidator<Username, String> 
         if (emailValidator.isValid(username, constraintValidatorContext)) {
             return false;
         }
-        return username.length() >= 4 && username.length() <= 32;
+
+        Matcher matcher = p.matcher(username);
+        return matcher.matches();
     }
 
 }

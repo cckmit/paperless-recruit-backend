@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> signUpUser(String username, String password) {
         // 判断用户名是否存在
-        int count = userMapper.countByUsername(username.trim());
+        int count = userMapper.countByUsername(username);
         if (count > 0) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "Username does already exist.");
         }
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> getUserByUsername(String username) {
-        UserDO user = userMapper.getUserByUsername(username.trim());
+        UserDO user = userMapper.getUserByUsername(username);
         if (user == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> getUserByUsernameOrPhoneOrEmail(String usernameOrPhoneOrEmail) {
-        UserDO user = userMapper.getUserByUsernameOrPhoneOrEmail(usernameOrPhoneOrEmail.trim());
+        UserDO user = userMapper.getUserByUsernameOrPhoneOrEmail(usernameOrPhoneOrEmail);
         if (user == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
@@ -210,7 +210,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> getUserByPhone(String phone) {
-        final UserDO user = userMapper.getUserByPhone(phone.trim());
+        final UserDO user = userMapper.getUserByPhone(phone);
         if (user == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserDTO> getUserByEmail(String email) {
-        final UserDO user = userMapper.getUserByEmail(email.trim());
+        final UserDO user = userMapper.getUserByEmail(email);
         if (user == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
@@ -263,9 +263,6 @@ public class UserServiceImpl implements UserService {
         if (count < 1) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
-
-        // 去掉用户名两边的空白符
-        newUsername = newUsername.trim();
 
         // 判断用户名是否存在
         count = userMapper.countByUsername(newUsername);
@@ -331,9 +328,6 @@ public class UserServiceImpl implements UserService {
         if (count < 1) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
-
-        // 去掉邮箱两边的空白符
-        newEmail = newEmail.trim();
 
         // 判断邮箱是否存在
         count = userMapper.countByEmail(newEmail);

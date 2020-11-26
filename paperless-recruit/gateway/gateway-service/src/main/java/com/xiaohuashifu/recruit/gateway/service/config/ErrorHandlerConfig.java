@@ -55,13 +55,10 @@ public class ErrorHandlerConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes) {
         CustomErrorWebExceptionHandler exceptionHandler = new CustomErrorWebExceptionHandler(
-                errorAttributes,
-                this.resourceProperties,
-                this.serverProperties.getError(),
-                this.applicationContext);
-        exceptionHandler.setViewResolvers(this.viewResolvers);
-        exceptionHandler.setMessageWriters(this.serverCodecConfigurer.getWriters());
-        exceptionHandler.setMessageReaders(this.serverCodecConfigurer.getReaders());
+                errorAttributes, resourceProperties, serverProperties.getError(), applicationContext);
+        exceptionHandler.setViewResolvers(viewResolvers);
+        exceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
+        exceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
         return exceptionHandler;
     }
 

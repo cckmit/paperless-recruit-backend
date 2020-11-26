@@ -74,6 +74,6 @@ public class UrlAuthorityChecker {
             newPermissionNameAuthorizationUrlMap.put(permissionDTO.getPermissionName(),
                     permissionDTO.getAuthorizationUrl());
         }
-        this.permissionNameAuthorizationUrlMap = newPermissionNameAuthorizationUrlMap;
+        permissionNameAuthorizationUrlMap = newPermissionNameAuthorizationUrlMap;
     }
 }

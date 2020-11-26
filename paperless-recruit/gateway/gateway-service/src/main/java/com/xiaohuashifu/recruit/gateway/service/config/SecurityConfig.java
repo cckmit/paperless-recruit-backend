@@ -53,7 +53,8 @@ public class SecurityConfig {
                 HttpMethod requestMethod = requestHeaders.getAccessControlRequestMethod();
                 HttpHeaders headers = response.getHeaders();
                 headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestHeaders.getOrigin());
-                headers.addAll(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, requestHeaders.getAccessControlRequestHeaders());
+                headers.addAll(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
+                        requestHeaders.getAccessControlRequestHeaders());
                 if (requestMethod != null) {
                     headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, requestMethod.name());
                 }

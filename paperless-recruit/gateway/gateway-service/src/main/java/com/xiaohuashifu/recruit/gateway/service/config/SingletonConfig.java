@@ -1,25 +1,21 @@
 package com.xiaohuashifu.recruit.gateway.service.config;
 
-import com.github.dozermapper.spring.DozerBeanMapperFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.AntPathMatcher;
 
 /**
- * 描述：一些单例的配置
+ * 描述：一些单例
  *
- * @author: xhsf
- * @email: 827032783@qq.com
- * @create: 2020/10/30 21:31
+ * @author xhsf
+ * @create 2020/11/26 14:43
  */
 @Configuration
 public class SingletonConfig {
-    /**
-     * dozer配置
-     *
-     * @return Mapper
-     */
+
     @Bean
-    public DozerBeanMapperFactoryBean dozerMapper() {
-        return new DozerBeanMapperFactoryBean();
+    public AntPathMatcher antPathMatcher() {
+        return new AntPathMatcher();
     }
+
 }

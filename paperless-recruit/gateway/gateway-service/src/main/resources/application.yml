@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: request_rate_limiter_route
+          predicates:
+            - Path=/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                denyEmptyKey: true
+                emptyKeyStatus: SERVICE_UNAVAILABLE
+                keyResolver: '#{@ipAddressKeyResolver}'
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+          uri: http://127.0.0.1:8082

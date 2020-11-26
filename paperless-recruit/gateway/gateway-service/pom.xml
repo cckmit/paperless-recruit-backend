@@ -11,20 +11,29 @@
 	<name>gateway-service</name>
 
 	<dependencies>
+		<!--	Redis	-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 
 		<!--    oauth2    -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-oauth2</artifactId>
+		</dependency>
+
+		<!--	oauth2资源服务器	-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-resource-server</artifactId>
+			<version>5.2.3.RELEASE</version>
+		</dependency>
+
+		<!--	网关	-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
 
 		<!--    注册中心    -->
@@ -45,34 +54,28 @@
 			<artifactId>spring-cloud-starter-dubbo</artifactId>
 		</dependency>
 
-		<!-- dozer对象属性拷贝 -->
+		<!--    authentication-api接口    -->
 		<dependency>
-			<groupId>com.github.dozermapper</groupId>
-			<artifactId>dozer-spring-boot-starter</artifactId>
+			<groupId>com.xiaohuashifu.recruit</groupId>
+			<artifactId>authentication-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!--    user-api接口    -->
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>
 			<artifactId>user-api</artifactId>
-		</dependency>
-
-		<!--    authentication-api接口    -->
-		<dependency>
-			<groupId>com.xiaohuashifu.recruit</groupId>
-			<artifactId>authentication-api</artifactId>
-		</dependency>
-
-		<!--    external-api接口    -->
-		<dependency>
-			<groupId>com.xiaohuashifu.recruit</groupId>
-			<artifactId>external-api</artifactId>
-		</dependency>
-
-		<!--   公共对象     -->
-		<dependency>
-			<groupId>com.xiaohuashifu.recruit</groupId>
-			<artifactId>common</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 

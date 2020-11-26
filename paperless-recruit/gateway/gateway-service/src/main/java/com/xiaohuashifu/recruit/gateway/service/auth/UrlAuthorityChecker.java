@@ -67,7 +67,6 @@ public class UrlAuthorityChecker {
      */
     @Scheduled(initialDelay = 0, fixedDelay = REFRESH_DELAY)
     private void updatePermissionNameAuthorizationUrlMap() {
-        System.out.println("updatePermissionNameAuthorizationUrlMap");
         List<PermissionDTO> permissionDTOList = permissionService.getAllPermission().getData();
         Map<String, String> newPermissionNameAuthorizationUrlMap = new ConcurrentHashMap<>();
         for (PermissionDTO permissionDTO : permissionDTOList) {

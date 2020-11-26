@@ -1,6 +1,8 @@
 package com.xiaohuashifu.recruit.gateway.service.auth;
 
 import org.apache.dubbo.common.utils.ConcurrentHashSet;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -42,13 +44,19 @@ public class AccessManager implements ReactiveAuthorizationManager<Authorization
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authenticationMono,
                                              AuthorizationContext authorizationContext) {
-        ServerWebExchange exchange = authorizationContext.getExchange();
-        String url = exchange.getRequest().getURI().getPath();
+        ServerHttpRequest request = authorizationContext.getExchange().getRequest();
+        String url = request.getURI().getPath();
+
+        // 对应跨域的预检请求直接放行
+        if (request.getMethod() == HttpMethod.OPTIONS) {
+            return Mono.just(new AuthorizationDecision(true));
+        }
 
         // 是否在默认允许的Url集合里
         if (permittedUrlSet.stream().anyMatch(r -> antPathMatcher.match(r, url))) {
             return Mono.just(new AuthorizationDecision(true));
         }
+
 
         // 进行鉴权
         return authenticationMono

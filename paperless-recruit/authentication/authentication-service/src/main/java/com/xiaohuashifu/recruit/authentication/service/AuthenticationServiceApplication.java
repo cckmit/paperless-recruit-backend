@@ -9,7 +9,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableDubbo
-@MapperScan
+@MapperScan("com.xiaohuashifu.recruit.authentication.service.dao")
 public class AuthenticationServiceApplication {
 
     public static void main(String[] args) {

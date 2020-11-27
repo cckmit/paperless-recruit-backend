@@ -1,12 +1,15 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.xiaohuashifu.recruit.authentication.api.service.JwtSigningKeyService;
-import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+
+import java.security.KeyPair;
 
 /**
  * 描述：Token存储的配置
@@ -17,8 +20,23 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
  */
 @Configuration
 public class TokenStoreConfig {
-    @Reference
-    private JwtSigningKeyService jwtSigningKeyService;
+    /**
+     * JWT密钥密码
+     */
+    @Value("${jwt.secret.password}")
+    private String password;
+
+    /**
+     * JWT密钥别名
+     */
+    @Value("${jwt.secret.alias}")
+    private String alias;
+
+    /**
+     * JWT密钥存放路径
+     */
+    @Value("${jwt.secret.path}")
+    private String path;
 
     /**
      * 使用JWT的令牌，用于替换默认UUID的令牌，即access_token
@@ -44,8 +62,18 @@ public class TokenStoreConfig {
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
         // 签名密钥
-        jwtAccessTokenConverter.setSigningKey(jwtSigningKeyService.getSigningKey());
+        jwtAccessTokenConverter.setKeyPair(keyPair());
         return jwtAccessTokenConverter;
+    }
+
+    /**
+     * JWT的密钥对（公+私钥）
+     * @return KeyPair
+     */
+    @Bean
+    public KeyPair keyPair() {
+        KeyStoreKeyFactory factory = new KeyStoreKeyFactory(new ClassPathResource(path), password.toCharArray());
+        return factory.getKeyPair(alias, password.toCharArray());
     }
 
 }

@@ -20,7 +20,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests() // 授权配置
-                .antMatchers("/login/phone/sms/createSmsAuthCodeAndSend").permitAll() // 无需验证
+                .antMatchers("/oauth/**").permitAll() // 无需验证
                 .anyRequest() // 所有请求
                 .authenticated() // 都需要认证
             .and()

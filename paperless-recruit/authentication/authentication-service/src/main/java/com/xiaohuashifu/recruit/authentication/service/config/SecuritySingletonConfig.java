@@ -18,6 +18,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 public class SecuritySingletonConfig {
+
     /**
      * 客户端服务
      * @param dataSource 数据源

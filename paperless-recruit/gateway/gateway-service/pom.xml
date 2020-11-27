@@ -17,13 +17,6 @@
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 
-		<!--	配置处理器	-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
-
 		<!--	oauth2资源服务器	-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -31,11 +24,13 @@
 			<version>5.2.3.RELEASE</version>
 		</dependency>
 
+		<!--	Spring Security JWT	-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
 
+		<!--	Spring Security Config	-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>

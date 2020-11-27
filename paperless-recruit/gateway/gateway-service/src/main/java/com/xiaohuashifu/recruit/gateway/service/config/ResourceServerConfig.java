@@ -29,16 +29,13 @@ public class ResourceServerConfig {
     private final AccessManager authorizationManager;
     private final CustomServerAccessDeniedHandler customServerAccessDeniedHandler;
     private final CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint;
-    private final WhiteListConfig whiteListConfig;
 
     public ResourceServerConfig(AccessManager authorizationManager,
                                 CustomServerAccessDeniedHandler customServerAccessDeniedHandler,
-                                CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint,
-                                WhiteListConfig whiteListConfig) {
+                                CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint) {
         this.authorizationManager = authorizationManager;
         this.customServerAccessDeniedHandler = customServerAccessDeniedHandler;
         this.customServerAuthenticationEntryPoint = customServerAuthenticationEntryPoint;
-        this.whiteListConfig = whiteListConfig;
     }
 
     /**
@@ -48,21 +45,25 @@ public class ResourceServerConfig {
      */
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        // JWT处理
         http.oauth2ResourceServer().jwt()
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
+
         // 自定义处理JWT请求头过期或签名错误的结果
         http.oauth2ResourceServer().authenticationEntryPoint(customServerAuthenticationEntryPoint);
+
+        // 添加鉴权过滤器
         http.authorizeExchange()
-                .pathMatchers(whiteListConfig.getUrls()).permitAll()
-                .anyExchange().access(authorizationManager)
+                    .anyExchange().access(authorizationManager)
                 .and()
-                .exceptionHandling()
-                .accessDeniedHandler(customServerAccessDeniedHandler) // 处理未授权
-                .authenticationEntryPoint(customServerAuthenticationEntryPoint) //处理未认证
+                    // 鉴权异常处理
+                    .exceptionHandling()
+                        .accessDeniedHandler(customServerAccessDeniedHandler) // 处理未授权
+                        .authenticationEntryPoint(customServerAuthenticationEntryPoint) //处理未认证
                 .and()
-                .csrf().disable()
-                // TODO: 2020/11/27 这里要去找一下资料看CorsConfigurationSource怎么配置
-                .cors();
+                    .csrf().disable()
+                    // TODO: 2020/11/27 这里要去找一下资料看CorsConfigurationSource怎么配置
+                    .cors();
 
         return http.build();
     }

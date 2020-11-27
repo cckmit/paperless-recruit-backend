@@ -29,7 +29,7 @@ public class ResourceServerConfig {
     private final AccessManager authorizationManager;
     private final CustomServerAccessDeniedHandler customServerAccessDeniedHandler;
     private final CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint;
-    
+
     public ResourceServerConfig(AccessManager authorizationManager,
                                 CustomServerAccessDeniedHandler customServerAccessDeniedHandler,
                                 CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint) {

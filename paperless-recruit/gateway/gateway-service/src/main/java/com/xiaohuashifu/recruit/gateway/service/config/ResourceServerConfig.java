@@ -29,7 +29,7 @@ public class ResourceServerConfig {
     private final AccessManager authorizationManager;
     private final CustomServerAccessDeniedHandler customServerAccessDeniedHandler;
     private final CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint;
-
+    
     public ResourceServerConfig(AccessManager authorizationManager,
                                 CustomServerAccessDeniedHandler customServerAccessDeniedHandler,
                                 CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint) {
@@ -46,8 +46,7 @@ public class ResourceServerConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         // JWT处理
-        http.oauth2ResourceServer().jwt()
-                .jwtAuthenticationConverter(jwtAuthenticationConverter());
+        http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
 
         // 自定义处理JWT请求头过期或签名错误的结果
         http.oauth2ResourceServer().authenticationEntryPoint(customServerAuthenticationEntryPoint);
@@ -62,9 +61,7 @@ public class ResourceServerConfig {
                         .authenticationEntryPoint(customServerAuthenticationEntryPoint) //处理未认证
                 .and()
                     .csrf().disable()
-                    // TODO: 2020/11/27 这里要去找一下资料看CorsConfigurationSource怎么配置
                     .cors();
-
         return http.build();
     }
 

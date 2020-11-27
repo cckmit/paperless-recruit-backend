@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
@@ -56,7 +55,6 @@ public class AccessManager implements ReactiveAuthorizationManager<Authorization
         if (permittedUrlSet.stream().anyMatch(r -> antPathMatcher.match(r, url))) {
             return Mono.just(new AuthorizationDecision(true));
         }
-
 
         // 进行鉴权
         return authenticationMono

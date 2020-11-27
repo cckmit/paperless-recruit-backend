@@ -2,6 +2,8 @@ package com.xiaohuashifu.recruit.gateway.service.config;
 
 import com.xiaohuashifu.recruit.gateway.service.auth.AccessManager;
 import com.xiaohuashifu.recruit.gateway.service.auth.ReactiveJwtAuthenticationManager;
+import com.xiaohuashifu.recruit.gateway.service.handler.CustomServerAccessDeniedHandler;
+import com.xiaohuashifu.recruit.gateway.service.handler.CustomServerAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +25,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 /**
- * 描述：
+ * 描述：网关鉴权的配置
  *
  * @author xhsf
  * @create 2020/11/26 11:23
@@ -33,11 +35,16 @@ public class SecurityConfig {
     private static final String MAX_AGE = "18000L";
     private final AccessManager accessManager;
     private final TokenStore tokenStore;
+    private final CustomServerAccessDeniedHandler customServerAccessDeniedHandler;
+    private final CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint;
 
     public SecurityConfig(AccessManager accessManager,
-                          TokenStore tokenStore) {
+                          TokenStore tokenStore, CustomServerAccessDeniedHandler customServerAccessDeniedHandler,
+                          CustomServerAuthenticationEntryPoint customServerAuthenticationEntryPoint) {
         this.accessManager = accessManager;
         this.tokenStore = tokenStore;
+        this.customServerAccessDeniedHandler = customServerAccessDeniedHandler;
+        this.customServerAuthenticationEntryPoint = customServerAuthenticationEntryPoint;
     }
 
     /**
@@ -90,7 +97,10 @@ public class SecurityConfig {
                 // 跨域过滤器
                 .addFilterAt(corsFilter(), SecurityWebFiltersOrder.CORS)
                 // oauth2认证过滤器
-                .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION);
+                .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .exceptionHandling()
+                .accessDeniedHandler(customServerAccessDeniedHandler) // 处理未授权
+                .authenticationEntryPoint(customServerAuthenticationEntryPoint); //处理未认证
         return http.build();
     }
 }

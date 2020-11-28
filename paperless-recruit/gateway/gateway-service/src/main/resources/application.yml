@@ -13,4 +13,4 @@ spring:
                 keyResolver: '#{@ipAddressKeyResolver}'
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
-          uri: http://127.0.0.1:8082
+          uri: http://127.0.0.1:8084

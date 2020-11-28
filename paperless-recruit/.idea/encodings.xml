@@ -9,7 +9,6 @@
     <file url="file://$PROJECT_DIR$/external/external-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/external/external-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/facade/facade-api/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/facade/facade-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/facade/facade-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/facade/facade-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gateway/gateway-api/src/main/java" charset="UTF-8" />

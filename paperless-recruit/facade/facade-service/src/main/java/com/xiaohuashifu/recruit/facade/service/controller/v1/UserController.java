@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
 import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
-import com.xiaohuashifu.recruit.common.result.ErrorResponse;
 import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.authorize.SecurityAuthorize;
@@ -13,7 +12,6 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

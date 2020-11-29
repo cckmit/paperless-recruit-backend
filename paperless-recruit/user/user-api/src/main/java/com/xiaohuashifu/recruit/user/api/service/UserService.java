@@ -27,6 +27,9 @@ public interface UserService {
     /**
      * 创建用户，对外不使用该方式进行注册
      *
+     * @errorCode OperationConflict: 用户名已经存在
+     *              InvalidParameter: 用户名或密码格式错误
+     *
      * @param username 用户名
      * @param password 密码
      * @return 新创建的用户
@@ -44,6 +47,12 @@ public interface UserService {
      * 通过短信验证码注册账号
      * 该方式会随机生成用户名和密码
      *
+     * @errorCode OperationConflict: 手机号码已经存在
+     *              InvalidParameter: 手机号码或验证码或密码格式错误
+     *              InternalError: 服务器错误，请重试
+     *              InvalidParameter.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
+     *              InvalidParameter.Incorrect: 短信验证码值不正确
+     *
      * @param phone 手机号码
      * @param authCode 短信验证码
      * @return 新创建的用户
@@ -58,6 +67,12 @@ public interface UserService {
      * 该方式会随机生成用户名
      * 若密码为null会随机生成密码
      * 推荐使用该方式进行注册，且密码不允许为null
+     *
+     * @errorCode OperationConflict: 手机号码已经存在
+     *              InvalidParameter: 手机号码或验证码或密码格式错误
+     *              InternalError: 服务器错误，请重试
+     *              InvalidParameter.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
+     *              InvalidParameter.Incorrect: 短信验证码值不正确
      *
      * @param phone 手机号码
      * @param authCode 短信验证码

@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.gateway.service.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.xiaohuashifu.recruit.common.result.rest.ErrorCode;
-import com.xiaohuashifu.recruit.common.result.rest.Result;
+import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.Result;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

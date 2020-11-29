@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.gateway.service.handler;
 
 
-import com.xiaohuashifu.recruit.common.result.rest.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;

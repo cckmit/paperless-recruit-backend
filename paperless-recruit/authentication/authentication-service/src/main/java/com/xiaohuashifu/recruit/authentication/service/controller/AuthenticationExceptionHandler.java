@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.controller;
 
-import com.xiaohuashifu.recruit.common.result.rest.ErrorCode;
-import com.xiaohuashifu.recruit.common.result.rest.ErrorResponse;
+import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;

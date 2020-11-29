@@ -90,12 +90,12 @@ public class SmsServiceImpl implements SmsService {
 
         // 验证码不存在
         if (authCode == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code does not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Auth code does not exists.");
         }
 
         // 验证码不正确
         if (!authCode.equals(smsAuthCodeDTO.getAuthCode())) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code is incorrect.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_INCORRECT, "Auth code is incorrect.");
         }
 
         // 验证通过，如果需要删除验证码，则删除

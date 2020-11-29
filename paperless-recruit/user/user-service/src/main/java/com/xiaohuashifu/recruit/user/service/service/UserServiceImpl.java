@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户名是否存在
         int count = userMapper.countByUsername(username);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Username does already exist.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "Username does already exist.");
         }
 
         // 添加到数据库
@@ -114,10 +114,11 @@ public class UserServiceImpl implements UserService {
         // 判断手机号码是否存在
         int count = userMapper.countByPhone(phone);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Phone does already exist.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "Phone does already exist.");
         }
 
         // 随机生成用户名，这里会尝试生成3次
+        // TODO: 2020/11/29 这里应该做成生成不会重复的随机用户名
         String username = null;
         for (int i = 0; i < 3; i++) {
             String randomUsername = UsernameUtils.randomUsername();

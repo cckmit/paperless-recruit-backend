@@ -6,8 +6,6 @@ import org.apache.dubbo.common.utils.ConfigUtils;
 import org.apache.dubbo.rpc.*;
 import org.apache.dubbo.validation.Validation;
 import org.apache.dubbo.validation.Validator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -30,8 +28,6 @@ import static org.apache.dubbo.common.constants.FilterConstants.VALIDATION_KEY;
  */
 @Activate(group = {CONSUMER, PROVIDER}, value = VALIDATION_KEY, order = 10000)
 public class CustomValidationFilter implements Filter {
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomValidationFilter.class);
 
     private Validation validation;
 
@@ -65,7 +61,6 @@ public class CustomValidationFilter implements Filter {
             // 添加catch ConstraintViolationException用于实现自定义的参数校验异常处理逻辑
             catch (ConstraintViolationException e) {
                 Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
-                logger.info("校验错误详情：{}", constraintViolations);
                 // 把Set<ConstraintViolation<?>>转换成List<CustomConstraintViolation>
                 final List<CustomConstraintViolation> collect = constraintViolations.stream()
                         .map(CustomConstraintViolation::buildCustomConstraintViolation)

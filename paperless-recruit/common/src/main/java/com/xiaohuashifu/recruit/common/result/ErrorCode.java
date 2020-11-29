@@ -13,7 +13,6 @@ import java.io.Serializable;
  */
 public enum ErrorCode implements Serializable {
 
-
     /**
      * 非法参数
      */

@@ -14,7 +14,7 @@ public class ErrorResponse implements Serializable {
     /**
      * 错误码
      */
-    private String error;
+    private String code;
 
     /**
      * 错误信息
@@ -24,21 +24,21 @@ public class ErrorResponse implements Serializable {
     public ErrorResponse() {
     }
 
-    public ErrorResponse(String error, String message) {
-        this.error = error;
+    public ErrorResponse(String code, String message) {
+        this.code = code;
         this.message = message;
     }
 
-    public String getError() {
-        return error;
+    public String getCode() {
+        return code;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public void setMessage(String message) {
@@ -48,7 +48,7 @@ public class ErrorResponse implements Serializable {
     @Override
     public String toString() {
         return "ErrorResponse{" +
-                "error='" + error + '\'' +
+                "code='" + code + '\'' +
                 ", message='" + message + '\'' +
                 '}';
     }

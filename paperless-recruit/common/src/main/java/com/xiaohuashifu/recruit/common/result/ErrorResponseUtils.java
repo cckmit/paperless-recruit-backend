@@ -47,15 +47,15 @@ public class ErrorResponseUtils {
     /**
      * 用于快速构建ResponseEntity<ErrorResponse>
      *
-     * @param errorCode 自定义错误码
+     * @param code 自定义错误码
      * @param message 错误信息
      * @param httpStatus HTTP 状态码
      * @return ResponseEntity<ErrorResponse>
      */
     public static ResponseEntity<ErrorResponse> instanceResponseEntity(
-            String errorCode, String message, HttpStatus httpStatus) {
+            String code, String message, HttpStatus httpStatus) {
         ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setError(errorCode);
+        errorResponse.setCode(code);
         errorResponse.setMessage(message);
         return new ResponseEntity<>(errorResponse, httpStatus);
     }

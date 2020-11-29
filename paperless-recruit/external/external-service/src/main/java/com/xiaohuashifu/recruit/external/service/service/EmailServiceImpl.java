@@ -74,7 +74,7 @@ public class EmailServiceImpl implements EmailService {
                 }
             }
         } catch (MessagingException e) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR);
+            return Result.fail(ErrorCode.UNKNOWN_ERROR);
         }
 
         mailSender.send(mimeMessage);
@@ -117,7 +117,7 @@ public class EmailServiceImpl implements EmailService {
                 }
             }
         } catch (MessagingException e) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR);
+            return Result.fail(ErrorCode.UNKNOWN_ERROR);
         }
 
         mailSender.send(mimeMessage);
@@ -162,6 +162,10 @@ public class EmailServiceImpl implements EmailService {
      * 邮箱验证码检验验证码是否有效的服务
      * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次（EmailAuthCodeDTO.delete == true即可）
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.AuthCode.NotFound: 找不到对应邮箱的验证码，有可能已经过期或者没有发送成功
+     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码值不正确
+     *
      * @param emailAuthCodeDTO 邮箱验证码对象
      * @return Result<Void> 返回结果若Result.isSuccess()为true表示验证成功，否则验证失败
      */
@@ -174,12 +178,12 @@ public class EmailServiceImpl implements EmailService {
 
         // 验证码不存在
         if (authCode == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_FOUND, "Auth code does not exist.");
         }
 
         // 验证码不正确
         if (!authCode.equals(emailAuthCodeDTO.getAuthCode())) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code is incorrect.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
         }
 
         // 验证通过，如果需要删除验证码，则删除

@@ -31,6 +31,11 @@ public enum ErrorCode implements Serializable {
     INVALID_PARAMETER_INCORRECT(HttpStatus.BAD_REQUEST,
             "InvalidParameter.Incorrect", "Incorrect parameter."),
 
+    /**
+     * 非法参数，验证码错误
+     */
+    INVALID_PARAMETER_AUTH_CODE_INCORRECT(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.AuthCode.Incorrect", "Incorrect auth code."),
 
     /**
      * 参数为空，即字符串，集合等为null或者长度为0
@@ -111,16 +116,17 @@ public enum ErrorCode implements Serializable {
             "Forbidden.Unauthorized", "User not authorized to operate on the specified resource."),
 
     /**
-     * 用户在无权操作该资源
-     */
-    FORBIDDEN_SUB_USER(HttpStatus.FORBIDDEN,
-            "Forbidden.SubUser", "The specified action is not available for you."),
-
-    /**
      * 未找到该参数
      */
     INVALID_PARAMETER_NOT_FOUND(HttpStatus.NOT_FOUND,
             "InvalidParameter.NotFound", "The specified resource does not exist."),
+
+    /**
+     * 未找到验证码
+     */
+    INVALID_PARAMETER_AUTH_CODE_NOT_FOUND(HttpStatus.NOT_FOUND,
+            "InvalidParameter.AuthCode.NotFound", "The auth code does not exist."),
+
 
     /**
      * 操作冲突

@@ -132,11 +132,34 @@ public enum ErrorCode implements Serializable {
      * 由于某些未知错误、异常或失败，请求处理失败。
      */
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "InternalError",
-            "The request processing has failed due to some unknown exception, exception or failure.");
+            "The request processing has failed due to some unknown exception, exception or failure."),
+
+    /**
+     * 服务不可用
+     */
+    SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "ServiceUnavailable",
+            "The request has failed due to a temporary failure of the server."),
+
+    /**
+     * 请求超时
+     */
+    SERVICE_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "ServiceTimeout",
+            "The request processing has failed due to timeout.");
 
 
+    /**
+     * HTTP 响应码，符合 HTTP 协议语义
+     */
     private final HttpStatus httpStatus;
+
+    /**
+     * 错误标识
+     */
     private final String code;
+
+    /**
+     * 错误消息
+     */
     private final String message;
 
     ErrorCode(HttpStatus httpStatus, String code, String message) {

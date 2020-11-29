@@ -37,7 +37,8 @@ public class AccessManager implements ReactiveAuthorizationManager<Authorization
         }
 
         // 进行鉴权
-        String url = request.getURI().getPath();
+        String url0 = request.getURI().getPath();
+        String url = url0.startsWith("/v1") ? url0.substring(3) : url0;
         return authenticationMono
                 .map(auth -> new AuthorizationDecision(urlAuthorityChecker.check(auth.getAuthorities(), url)))
                 .defaultIfEmpty(new AuthorizationDecision(false));

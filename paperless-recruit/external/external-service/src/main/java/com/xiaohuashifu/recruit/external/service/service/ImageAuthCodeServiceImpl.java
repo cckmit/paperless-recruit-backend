@@ -52,6 +52,8 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
      * 创建图形验证码
      * 会把验证码缓存，可用通过checkImageAuthCode检查是否通过校验
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param imageAuthCodeDTO ImageAuthCodeDTO
      * @return ImageAuthCodeDTO
      */
@@ -84,20 +86,30 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
      * 该接口不管校验是否通过都会删除缓存里的验证码
      * 即验证码只能进行一次校验（进行一次校验后即失效）
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.AuthCode.Incorrect: 验证码错误
+     *              InvalidParameter.AuthCode.NotFound: 验证码不存在，可能是因为过期
+     *
      * @param id 图形验证码编号
      * @param authCode 用户输入的验证码字符串
      * @return 校验结果
      */
     @Override
     public Result<Void> checkImageAuthCode(String id, String authCode) {
-        // 从缓存获取图形验证码并删除
+        // 从缓存获取图形验证码
         String redisKey = IMAGE_AUTH_CODE_REDIS_KEY_PREFIX + ":" + id;
         String authCodeInRedis = (String) redisTemplate.opsForValue().get(redisKey);
+        // 验证码不存在
+        if (authCodeInRedis == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_FOUND, "Auth code does not exist.");
+        }
+
+        // 删除验证码
         redisTemplate.delete(redisKey);
 
         // 判断验证码是否相同
         if (!authCode.equals(authCodeInRedis)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Auth code is incorrect.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
         }
         return Result.success();
     }

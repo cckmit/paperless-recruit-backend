@@ -52,6 +52,6 @@ public class ImageAuthCodeServiceImplTest {
     @Test
     public void checkImageAuthCode() {
         System.out.println(imageAuthCodeService.checkImageAuthCode(
-                "09661b30-b93b-4ad2-b02c-214f9eb14917sl6GMDMaxd","90573"));
+                "e4a7df78-c5b3-4fb2-b143-aad07524b9594","90573"));
     }
 }

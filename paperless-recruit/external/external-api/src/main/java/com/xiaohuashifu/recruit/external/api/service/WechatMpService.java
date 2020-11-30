@@ -21,6 +21,9 @@ public interface WechatMpService {
     /**
      * 通过code获得openid
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
+     *
      * @param code code
      * @param app 具体的微信小程序
      * @return openid

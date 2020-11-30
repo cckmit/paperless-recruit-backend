@@ -64,9 +64,11 @@ public class SmsServiceImpl implements SmsService {
     public Result<Void> createAndSendSmsAuthCode(SmsAuthCodeDTO smsAuthCodeDTO) {
         // 发送短信验证码到手机
         String authCode = AuthCodeUtils.randomAuthCode();
-        Result<Void> sendSmsAuthCodeResult = sendSmsAuthCode(smsAuthCodeDTO.getPhone(), authCode);
-        if (!sendSmsAuthCodeResult.isSuccess()) {
-            return sendSmsAuthCodeResult;
+        try {
+            sendSmsAuthCode(smsAuthCodeDTO.getPhone(), authCode);
+        } catch (ClientException clientException) {
+            logger.warn("Send sms auth code fail");
+            return Result.fail(ErrorCode.INTERNAL_ERROR, "Send sms auth code failed.");
         }
 
         // 添加短信验证码到缓存
@@ -116,13 +118,11 @@ public class SmsServiceImpl implements SmsService {
     /**
      * 发送短信验证码的具体逻辑
      *
-     * @errorCode InternalError: 发送短信验证码错误，需要重试
-     *
      * @param phone 手机号码
      * @param authCode 验证码
-     * @return 发送结果
+     * @throws ClientException 发送短信验证码出错
      */
-    private Result<Void> sendSmsAuthCode(String phone, String authCode) {
+    private void sendSmsAuthCode(String phone, String authCode) throws ClientException {
         DefaultProfile profile = DefaultProfile.getProfile(
                 "cn-hangzhou", accessKeyId, accessKeySecret);
         IAcsClient client = new DefaultAcsClient(profile);
@@ -137,13 +137,7 @@ public class SmsServiceImpl implements SmsService {
         request.putQueryParameter("SignName", "招新小程序");
         request.putQueryParameter("TemplateCode", "SMS_205464852");
         request.putQueryParameter("TemplateParam", "{\"code\":\"" + authCode + "\"}");
-        try {
-            client.getCommonResponse(request);
-            return Result.success();
-        } catch (ClientException e) {
-            logger.warn("Send sms auth code fail");
-            return Result.fail(ErrorCode.INTERNAL_ERROR, "Send sms auth code failed.");
-        }
+        client.getCommonResponse(request);
     }
 
 }

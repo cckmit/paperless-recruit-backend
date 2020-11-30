@@ -58,6 +58,51 @@ public class UserServiceImpl implements UserService {
     @Value("${service.user.default-role-id}")
     private Long defaultUserRoleId;
 
+    /**
+     * 短信验证码过期时间5分钟
+     */
+    private static final int SMS_AUTH_CODE_EXPIRED_TIME = 5;
+
+    /**
+     * 邮箱验证码过期时间5分钟
+     */
+    private static final int EMAIL_AUTH_CODE_EXPIRED_TIME = 5;
+
+    /**
+     * 验证码注册的主题，用于调用短信验证码服务
+     */
+    private static final String SMS_AUTH_CODE_SIGN_UP_SUBJECT = "user:sign-up";
+
+    /**
+     * 更新手机号码的主题，用于调用短信验证码服务
+     */
+    private static final String SMS_AUTH_CODE_UPDATE_PHONE_SUBJECT = "user:update-phone";
+
+    /**
+     * 短信验证码更新密码的主题，用于调用短信验证码服务
+     */
+    private static final String SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT = "user:update-password";
+
+    /**
+     * 更新邮件的主题，用于调用邮箱验证码服务
+     */
+    private static final String EMAIL_AUTH_CODE_UPDATE_EMAIL_SUBJECT = "user:update-email";
+
+    /**
+     * 更新邮箱的的邮件标题
+     */
+    private static final String EMAIL_AUTH_CODE_UPDATE_EMAIL_TITLE = "更新邮箱验证码";
+
+    /**
+     * 邮箱验证码更新密码的主题，用于调用邮箱验证码服务
+     */
+    private static final String EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT = "user:update-password";
+
+    /**
+     * 邮箱验证码更新密码的邮件标题
+     */
+    private static final String EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE = "更新密码验证码";
+
     public UserServiceImpl(UserMapper userMapper, Mapper mapper) {
         this.userMapper = userMapper;
         this.mapper = mapper;
@@ -151,7 +196,7 @@ public class UserServiceImpl implements UserService {
         // 判断验证码是否正确
         Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
                 .phone(phone)
-                .subject(SIGN_UP_SUBJECT)
+                .subject(SMS_AUTH_CODE_SIGN_UP_SUBJECT)
                 .authCode(authCode)
                 .delete(true)
                 .build());
@@ -344,7 +389,7 @@ public class UserServiceImpl implements UserService {
         // 判断验证码是否正确
         Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
                 .phone(newPhone)
-                .subject(UPDATE_PHONE_SUBJECT)
+                .subject(SMS_AUTH_CODE_UPDATE_PHONE_SUBJECT)
                 .authCode(authCode)
                 .delete(true)
                 .build());
@@ -388,7 +433,7 @@ public class UserServiceImpl implements UserService {
         // 判断验证码是否正确
         Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
                 .email(newEmail)
-                .subject(UPDATE_EMAIL_SUBJECT)
+                .subject(EMAIL_AUTH_CODE_UPDATE_EMAIL_SUBJECT)
                 .authCode(authCode)
                 .delete(true)
                 .build());
@@ -448,7 +493,7 @@ public class UserServiceImpl implements UserService {
         // 判断验证码是否正确
         Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
                 .email(email)
-                .subject(UPDATE_PASSWORD_BY_EMAIL_AUTH_CODE_SUBJECT)
+                .subject(EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
                 .authCode(authCode)
                 .delete(true)
                 .build());
@@ -485,7 +530,7 @@ public class UserServiceImpl implements UserService {
         // 判断验证码是否正确
         Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
                 .phone(phone)
-                .subject(UPDATE_PASSWORD_BY_SMS_AUTH_CODE_SUBJECT)
+                .subject(SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
                 .authCode(authCode)
                 .delete(true)
                 .build());
@@ -571,6 +616,147 @@ public class UserServiceImpl implements UserService {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success();
+    }
+
+    /**
+     * 发送注册账号时使用的短信验证码
+     *
+     * @errorCode InvalidParameter: 手机号码格式错误
+     *              OperationConflict: 该手机号码已经被注册，无法发送验证码
+     *              InternalError: 发送短信验证码错误，需要重试
+     *
+     * @param phone 手机号码
+     * @return 发送结果
+     */
+    @Override
+    public Result<Void> sendSmsAuthCodeForSignUp(String phone) {
+        // 判断该手机号码是否存在，如果存在就不发送短信验证码
+        int count = userMapper.countByPhone(phone);
+        if (count > 0) {
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This phone already exist.");
+        }
+
+        return sendSmsAuthCode(phone, SMS_AUTH_CODE_SIGN_UP_SUBJECT);
+    }
+
+    /**
+     * 发送更新手机号码时使用的短信验证码
+     *
+     * @errorCode InvalidParameter: 手机号码格式错误
+     *              OperationConflict: 该手机号码已经被使用，无法发送验证码
+     *              InternalError: 发送短信验证码错误，需要重试
+     *
+     * @param phone 手机号码
+     * @return 发送结果
+     */
+    @Override
+    public Result<Void> sendSmsAuthCodeForUpdatePhone(String phone) {
+        // 判断该手机号码是否存在，如果存在就不发送短信验证码
+        int count = userMapper.countByPhone(phone);
+        if (count > 0) {
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This phone already exist.");
+        }
+
+        return sendSmsAuthCode(phone, SMS_AUTH_CODE_UPDATE_PHONE_SUBJECT);
+    }
+
+    /**
+     * 发送更新密码时使用的短信验证码
+     *
+     * @errorCode InvalidParameter: 手机号码格式错误
+     *              InvalidParameter.NotFound: 手机号码不存在，不给发送验证码
+     *              InternalError: 发送短信验证码错误，需要重试
+     *
+     * @param phone 手机号码
+     * @return 发送结果
+     */
+    @Override
+    public Result<Void> sendSmsAuthCodeForUpdatePassword(String phone) {
+        // 判断该手机号码是否存在，如果不存在就不发送短信验证码
+        int count = userMapper.countByPhone(phone);
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This phone does not exist.");
+        }
+
+        return sendSmsAuthCode(phone, SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT);
+    }
+
+    /**
+     * 发送更新邮箱时使用的邮箱验证码
+     *
+     * @errorCode InvalidParameter: 邮箱格式错误
+     *              OperationConflict: 该邮箱已经被使用，无法发送验证码
+     *              InternalError: 发送邮件验证码失败，可能是邮箱地址错误，或者网络延迟
+     *
+     * @param email 邮箱
+     * @return 发送结果
+     */
+    @Override
+    public Result<Void> sendEmailAuthCodeForUpdateEmail(String email) {
+        // 判断邮箱是否存在，邮箱如果存在就不给发送验证码
+        int count = userMapper.countByEmail(email);
+        if (count > 0) {
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This email already exist.");
+        }
+
+        return sendEmailAuthCode(email, EMAIL_AUTH_CODE_UPDATE_EMAIL_SUBJECT, EMAIL_AUTH_CODE_UPDATE_EMAIL_TITLE);
+    }
+
+    /**
+     * 发送更新密码时使用的邮箱验证码
+     *
+     * @errorCode InvalidParameter: 邮箱格式错误
+     *              InvalidParameter.NotFound: 邮箱地址不存在，不给发送验证码
+     *              InternalError: 发送邮件验证码失败，可能是邮箱地址错误，或者网络延迟
+     *
+     * @param email 邮箱
+     * @return 发送结果
+     */
+    @Override
+    public Result<Void> sendEmailAuthCodeForUpdatePassword(String email) {
+        // 判断邮箱是否存在，邮箱如果不存在就不给发送验证码
+        int count = userMapper.countByEmail(email);
+        if (count < 1) {
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This email does not exist.");
+        }
+
+        return sendEmailAuthCode(email, EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT, EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE);
+    }
+
+    /**
+     * 发送邮件验证码
+     *
+     * @param email 邮件
+     * @param subject 主题
+     * @param title 标题
+     * @return 发送结果
+     */
+    private Result<Void> sendEmailAuthCode(String email, String subject, String title) {
+        // 创建发送邮件验证码
+        EmailAuthCodeDTO emailAuthCodeDTO = new EmailAuthCodeDTO.Builder()
+                .email(email)
+                .subject(subject)
+                .title(title)
+                .expiredTime(EMAIL_AUTH_CODE_EXPIRED_TIME)
+                .build();
+        return emailService.createAndSendEmailAuthCode(emailAuthCodeDTO);
+    }
+
+    /**
+     * 发送短信验证码
+     *
+     * @param phone 手机号码
+     * @param subject 主题
+     * @return 发送结果
+     */
+    private Result<Void> sendSmsAuthCode(String phone, String subject) {
+        // 创建发送短信验证码
+        SmsAuthCodeDTO smsAuthCodeDTO = new SmsAuthCodeDTO.Builder()
+                .phone(phone)
+                .subject(subject)
+                .expiredTime(SMS_AUTH_CODE_EXPIRED_TIME)
+                .build();
+        return smsService.createAndSendSmsAuthCode(smsAuthCodeDTO);
     }
 
     /**

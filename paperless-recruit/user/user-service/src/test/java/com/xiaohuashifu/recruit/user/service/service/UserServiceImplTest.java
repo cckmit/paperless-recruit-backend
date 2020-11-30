@@ -148,4 +148,28 @@ public class UserServiceImplTest {
         System.out.println(userService.userExists(16L));
     }
 
+    @Test
+    public void sendSmsAuthCodeForSignUp() {
+        System.out.println(userService.sendSmsAuthCodeForSignUp("15992321303"));
+    }
+
+    @Test
+    public void sendSmsAuthCodeForUpdatePhone() {
+        System.out.println(userService.sendSmsAuthCodeForUpdatePhone("15992321303"));
+    }
+
+    @Test
+    public void sendSmsAuthCodeForUpdatePassword() {
+        System.out.println(userService.sendSmsAuthCodeForUpdatePassword("15992321303"));
+    }
+
+    @Test
+    public void sendEmailAuthCodeForUpdateEmail() {
+        System.out.println(userService.sendEmailAuthCodeForUpdateEmail("827032783@qq.com"));
+    }
+
+    @Test
+    public void sendEmailAuthCodeForUpdatePassword() {
+        System.out.println(userService.sendEmailAuthCodeForUpdatePassword("827032783@qq.com"));
+    }
 }

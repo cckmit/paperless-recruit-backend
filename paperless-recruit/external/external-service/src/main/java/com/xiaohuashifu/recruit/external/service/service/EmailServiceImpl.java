@@ -51,6 +51,9 @@ public class EmailServiceImpl implements EmailService {
     /**
      * 发送简单邮件
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              UnknownError: 发送邮件失败，可能是邮箱地址错误，或者网络延迟
+     *
      * @param emailDTO 需要to、subject、text三个字段
      * @param attachmentMap 附件Map，可以为null
      * @return 发送结果
@@ -85,6 +88,9 @@ public class EmailServiceImpl implements EmailService {
     // TODO: 2020/11/18 目前不支持附件功能
     /**
      * 发送模板邮件，使用的是velocity模板
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              UnknownError: 发送邮件失败，可能是邮箱地址错误，或者网络延迟
      *
      * @param emailDTO 需要to、subject两个字段
      * @param templateName 模板名，模板需要提前创建
@@ -128,6 +134,9 @@ public class EmailServiceImpl implements EmailService {
     /**
      * 发送邮箱验证码服务
      * 该服务会把邮箱验证码进行缓存
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              UnknownError: 发送邮件验证码失败，可能是邮箱地址错误，或者网络延迟
      *
      * @param emailAuthCodeDTO 邮箱验证码对象
      * @return Result<Void> 返回结果若Result.isSuccess()为true表示发送成功，否则发送失败

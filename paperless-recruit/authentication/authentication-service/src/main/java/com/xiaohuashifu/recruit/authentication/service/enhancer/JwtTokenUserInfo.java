@@ -12,14 +12,16 @@ public class JwtTokenUserInfo {
     private String username;
     private String phone;
     private String email;
+    private Boolean available;
 
     public JwtTokenUserInfo() {}
 
-    public JwtTokenUserInfo(Long id, String username, String phone, String email) {
+    public JwtTokenUserInfo(Long id, String username, String phone, String email, Boolean available) {
         this.id = id;
         this.username = username;
         this.phone = phone;
         this.email = email;
+        this.available = available;
     }
 
     public Long getId() {
@@ -54,6 +56,14 @@ public class JwtTokenUserInfo {
         this.email = email;
     }
 
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+
     @Override
     public String toString() {
         return "JwtTokenUserInfo{" +
@@ -61,6 +71,7 @@ public class JwtTokenUserInfo {
                 ", username='" + username + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
+                ", available=" + available +
                 '}';
     }
 }

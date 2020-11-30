@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 更新邮箱的的邮件标题
      */
-    private static final String EMAIL_AUTH_CODE_UPDATE_EMAIL_TITLE = "更新邮箱验证码";
+    private static final String EMAIL_AUTH_CODE_UPDATE_EMAIL_TITLE = "更新邮箱";
 
     /**
      * 邮箱验证码更新密码的主题，用于调用邮箱验证码服务
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 邮箱验证码更新密码的邮件标题
      */
-    private static final String EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE = "更新密码验证码";
+    private static final String EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE = "更新密码";
 
     public UserServiceImpl(UserMapper userMapper, Mapper mapper) {
         this.userMapper = userMapper;
@@ -542,7 +542,6 @@ public class UserServiceImpl implements UserService {
         userMapper.updatePasswordByPhone(phone, passwordService.encodePassword(newPassword));
         return getUserByPhone(phone);
     }
-
 
     /**
      * 禁用用户

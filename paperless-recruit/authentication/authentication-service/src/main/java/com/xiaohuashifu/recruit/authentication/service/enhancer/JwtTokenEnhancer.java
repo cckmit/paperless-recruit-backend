@@ -42,7 +42,7 @@ public class JwtTokenEnhancer implements TokenEnhancer {
         Result<UserDTO> getUserResult = userService.getUserByUsername(username);
         UserDTO userDTO = getUserResult.getData();
         JwtTokenUserInfo jwtTokenUserInfo = new JwtTokenUserInfo(
-                userDTO.getId(), userDTO.getUsername(), userDTO.getPhone(), userDTO.getEmail());
+                userDTO.getId(), userDTO.getUsername(), userDTO.getPhone(), userDTO.getEmail(), userDTO.getAvailable());
 
         // 设置到JwtToken中
         Map<String, Object> info = new HashMap<>();

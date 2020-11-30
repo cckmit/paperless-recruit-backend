@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
  * 描述：发送邮件的服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/18 16:19
  */
 @Service

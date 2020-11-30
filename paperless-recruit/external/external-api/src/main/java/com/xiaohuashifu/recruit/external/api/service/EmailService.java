@@ -13,7 +13,6 @@ import java.util.Map;
  * 描述：发送邮件的服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/18 16:18
  */
 public interface EmailService {

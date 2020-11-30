@@ -84,7 +84,6 @@ public class EmailServiceImpl implements EmailService {
         return Result.success();
     }
 
-
     // TODO: 2020/11/18 目前不支持附件功能
     /**
      * 发送模板邮件，使用的是velocity模板
@@ -129,7 +128,6 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(mimeMessage);
         return Result.success();
     }
-
 
     /**
      * 发送邮箱验证码服务

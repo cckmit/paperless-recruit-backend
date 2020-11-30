@@ -8,7 +8,7 @@ import com.xiaohuashifu.recruit.external.api.dto.EmailDTO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -47,7 +47,6 @@ public class EmailServiceImpl implements EmailService {
         this.redisTemplate = redisTemplate;
     }
 
-    // TODO: 2020/11/18 目前不支持附件功能
     /**
      * 发送简单邮件
      *
@@ -59,7 +58,7 @@ public class EmailServiceImpl implements EmailService {
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendSimpleEmail(EmailDTO emailDTO, Map<String, FileSystemResource> attachmentMap) {
+    public Result<Void> sendSimpleEmail(EmailDTO emailDTO, Map<String, byte[]> attachmentMap) {
         MimeMessageHelper helper;
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
@@ -72,10 +71,11 @@ public class EmailServiceImpl implements EmailService {
 
             // 如果附件不为null，添加附件
             if (attachmentMap != null) {
-                for (Map.Entry<String, FileSystemResource> attachment : attachmentMap.entrySet()) {
-                    helper.addAttachment(attachment.getKey(), attachment.getValue());
+                for (Map.Entry<String, byte[]> attachment : attachmentMap.entrySet()) {
+                    helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
                 }
             }
+
         } catch (MessagingException e) {
             return Result.fail(ErrorCode.UNKNOWN_ERROR);
         }
@@ -84,7 +84,6 @@ public class EmailServiceImpl implements EmailService {
         return Result.success();
     }
 
-    // TODO: 2020/11/18 目前不支持附件功能
     /**
      * 发送模板邮件，使用的是velocity模板
      *
@@ -99,7 +98,7 @@ public class EmailServiceImpl implements EmailService {
      */
     @Override
     public Result<Void> sendTemplateEmail(EmailDTO emailDTO, String templateName, Map<String, Object> model,
-                                          Map<String, FileSystemResource> attachmentMap) {
+                                          Map<String, byte[]> attachmentMap) {
         MimeMessageHelper helper;
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
@@ -117,8 +116,8 @@ public class EmailServiceImpl implements EmailService {
 
             // 如果附件不为null，添加附件
             if (attachmentMap != null) {
-                for (Map.Entry<String, FileSystemResource> attachment : attachmentMap.entrySet()) {
-                    helper.addAttachment(attachment.getKey(), attachment.getValue());
+                for (Map.Entry<String, byte[]> attachment : attachmentMap.entrySet()) {
+                    helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
                 }
             }
         } catch (MessagingException e) {

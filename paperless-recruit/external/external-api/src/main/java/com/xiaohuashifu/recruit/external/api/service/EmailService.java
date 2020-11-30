@@ -3,7 +3,6 @@ package com.xiaohuashifu.recruit.external.api.service;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.EmailDTO;
-import org.springframework.core.io.FileSystemResource;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -11,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
- * 描述：
+ * 描述：发送邮件的服务
  *
  * @author: xhsf
  * @email: 827032783@qq.com
@@ -25,7 +24,6 @@ public interface EmailService {
      */
     String EMAIL_AUTH_CODE_REDIS_PREFIX = "email:auth-code";
 
-
     @interface SendSimpleEmail{}
     /**
      * 发送简单邮件
@@ -37,7 +35,7 @@ public interface EmailService {
      * @param attachmentMap 附件Map，可以为null
      * @return 发送结果
      */
-    default Result<Void> sendSimpleEmail(@NotNull EmailDTO emailDTO, Map<String, FileSystemResource> attachmentMap) {
+    default Result<Void> sendSimpleEmail(@NotNull EmailDTO emailDTO, Map<String, byte[]> attachmentMap) {
         throw new UnsupportedOperationException();
     }
 
@@ -56,8 +54,7 @@ public interface EmailService {
      * @return 发送结果
      */
     default Result<Void> sendTemplateEmail(@NotNull EmailDTO emailDTO, @NotBlank String templateName,
-                                             @NotEmpty Map<String, Object> model,
-                                           Map<String, FileSystemResource> attachmentMap) {
+                                             @NotEmpty Map<String, Object> model, Map<String, byte[]> attachmentMap) {
         throw new UnsupportedOperationException();
     }
 

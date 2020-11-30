@@ -7,9 +7,10 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,24 +38,28 @@ public class EmailServiceImplTest {
     }
 
     @Test
-    public void sendSimpleEmail() {
+    public void sendSimpleEmail() throws IOException {
+
+        File file = new File("C:\\Users\\82703\\Desktop\\1068912bdede14ff37ad3b88c7d89b5.jpg");
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Map<String, byte[]> attachmentMap = new HashMap<>();
+        byte[] bytes = fileInputStream.readAllBytes();
+        attachmentMap.put("hhx.jpg", bytes);
         System.out.println(emailService.sendSimpleEmail(new EmailDTO.Builder()
-                .to("827032783@qq.com")
+                .to("859703569@qq.com")
                 .subject("邮箱测试")
                 .text("测测测")
-                .build(), null));
+                .build(), attachmentMap));
     }
 
     @Test
-    public void sendTemplateEmail() {
+    public void sendTemplateEmail() throws IOException {
         Map<String, Object> model = new HashMap<>();
         model.put("authCode", "123456");
         model.put("subject", "邮箱绑定");
         model.put("validTime", 10);
 
-        Map<String, FileSystemResource> attachmentMap = new HashMap<>();
-        attachmentMap.put("test1", new FileSystemResource(new File("application.properties")));
-        attachmentMap.put("test2", new FileSystemResource(new File("D:\\Github\\paperless-recruit\\paperless-recruit-backend\\paperless-recruit\\external\\external-service\\src\\main\\resources\\application.properties")));
+        Map<String, byte[]> attachmentMap = new HashMap<>();
 
         System.out.println(emailService.sendTemplateEmail(new EmailDTO.Builder()
                         .to("827032783@qq.com")

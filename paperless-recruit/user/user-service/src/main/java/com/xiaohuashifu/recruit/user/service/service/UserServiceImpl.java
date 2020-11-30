@@ -180,6 +180,7 @@ public class UserServiceImpl implements UserService {
 
         // 随机生成用户名，这里会尝试生成3次
         // TODO: 2020/11/29 这里应该做成生成不会重复的随机用户名
+        // 这里的解决方案是scau_recruit_{9随机数}_{9自增id}
         String username = null;
         for (int i = 0; i < 3; i++) {
             String randomUsername = UsernameUtils.randomUsername();

@@ -75,7 +75,6 @@ public class EmailServiceImpl implements EmailService {
                     helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
                 }
             }
-
         } catch (MessagingException e) {
             return Result.fail(ErrorCode.UNKNOWN_ERROR);
         }

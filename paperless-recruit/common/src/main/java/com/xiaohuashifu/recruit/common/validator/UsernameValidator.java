@@ -27,12 +27,12 @@ public class UsernameValidator implements ConstraintValidator<Username, String> 
     /**
      * 用户名匹配模式
      */
-    private static final String REGEX_PHONE = "^([a-z])([a-z]|\\d|_|-){3,31}$";
+    private static final String USERNAME_REGEX = "^([a-z])([a-z]|\\d|_|-){3,31}$";
 
     /**
      * 构造静态的匹配模式
      */
-    private static final Pattern p = Pattern.compile(REGEX_PHONE);
+    private static final Pattern p = Pattern.compile(USERNAME_REGEX);
 
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {

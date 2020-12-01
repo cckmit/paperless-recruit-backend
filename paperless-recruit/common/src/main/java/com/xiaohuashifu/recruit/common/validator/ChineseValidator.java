@@ -18,12 +18,12 @@ public class ChineseValidator implements ConstraintValidator<Chinese, String> {
     /**
      * 中文匹配模式
      */
-    private static final String REGEX_PHONE = "^[\\u4E00-\\u9FA5]+$";
+    private static final String CHINESE_REGEX = "^[\\u4E00-\\u9FA5]+$";
 
     /**
      * 构造静态的匹配模式
      */
-    private static final Pattern p = Pattern.compile(REGEX_PHONE);
+    private static final Pattern p = Pattern.compile(CHINESE_REGEX);
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {

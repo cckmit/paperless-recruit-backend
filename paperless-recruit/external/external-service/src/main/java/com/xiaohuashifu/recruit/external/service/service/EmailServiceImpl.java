@@ -9,7 +9,7 @@ import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
@@ -34,13 +34,13 @@ public class EmailServiceImpl implements EmailService {
 
     private final TemplateEngine templateEngine;
 
-    private final RedisTemplate<Object, Object> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Value("${spring.mail.username}")
     private String from;
 
     public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine,
-                            RedisTemplate<Object, Object> redisTemplate) {
+                            StringRedisTemplate redisTemplate) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.redisTemplate = redisTemplate;
@@ -178,7 +178,7 @@ public class EmailServiceImpl implements EmailService {
         // 从缓存取出验证码
         String redisKey = EMAIL_AUTH_CODE_REDIS_PREFIX
                 + ":" + emailAuthCodeDTO.getSubject() + ":" + emailAuthCodeDTO.getEmail();
-        String authCode = (String) redisTemplate.opsForValue().get(redisKey);
+        String authCode = redisTemplate.opsForValue().get(redisKey);
 
         // 验证码不存在
         if (authCode == null) {

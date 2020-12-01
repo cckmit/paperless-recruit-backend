@@ -10,7 +10,7 @@ import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -53,10 +53,10 @@ public class WechatMpManagerImpl implements WechatMpManager {
 
     private final RestTemplate restTemplate;
 
-    private final RedisTemplate<Object, Object> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     public WechatMpManagerImpl(WechatMpDetails wechatMpDetails, RestTemplate restTemplate,
-                               RedisTemplate<Object, Object> redisTemplate) {
+                               StringRedisTemplate redisTemplate) {
         this.wechatMpDetails = wechatMpDetails;
         this.restTemplate = restTemplate;
         this.redisTemplate = redisTemplate;
@@ -99,7 +99,7 @@ public class WechatMpManagerImpl implements WechatMpManager {
 
         // 获取access-token
         String redisKey = WechatMpManagerConstant.REDIS_KEY + ":" + app.name();
-        return Optional.ofNullable((String) redisTemplate.opsForValue().get(redisKey));
+        return Optional.ofNullable(redisTemplate.opsForValue().get(redisKey));
     }
 
     /**

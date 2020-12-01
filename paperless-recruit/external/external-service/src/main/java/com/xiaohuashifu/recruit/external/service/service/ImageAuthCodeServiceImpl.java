@@ -6,8 +6,7 @@ import com.xiaohuashifu.recruit.common.util.ImageAuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.service.ImageAuthCodeService;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 
 import java.util.Collections;
@@ -24,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
 
-    private final RedisTemplate<Object, Object> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     /**
      * 图形验证码的Redis key前缀
@@ -42,8 +41,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
     private final RedisScript<Long> incrementIdRedisScript;
 
     public ImageAuthCodeServiceImpl(
-            RedisTemplate<Object, Object> redisTemplate,
-            @Qualifier("incrementIdRedisScript") RedisScript<Long> incrementIdRedisScript) {
+            StringRedisTemplate redisTemplate, RedisScript<Long> incrementIdRedisScript) {
         this.redisTemplate = redisTemplate;
         this.incrementIdRedisScript = incrementIdRedisScript;
     }
@@ -98,7 +96,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
     public Result<Void> checkImageAuthCode(String id, String authCode) {
         // 从缓存获取图形验证码
         String redisKey = IMAGE_AUTH_CODE_REDIS_KEY_PREFIX + ":" + id;
-        String authCodeInRedis = (String) redisTemplate.opsForValue().get(redisKey);
+        String authCodeInRedis = redisTemplate.opsForValue().get(redisKey);
         // 验证码不存在
         if (authCodeInRedis == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_FOUND, "Auth code does not exist.");

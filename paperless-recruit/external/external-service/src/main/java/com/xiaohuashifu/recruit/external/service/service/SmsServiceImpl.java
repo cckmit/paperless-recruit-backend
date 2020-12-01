@@ -16,7 +16,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +32,7 @@ public class SmsServiceImpl implements SmsService {
 
     private static final Logger logger = LoggerFactory.getLogger(SmsServiceImpl.class);
 
-    private final RedisTemplate<Object, Object> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Value("${aliyun.access-key-id}")
     private String accessKeyId;
@@ -40,7 +40,7 @@ public class SmsServiceImpl implements SmsService {
     @Value("${aliyun.access-key-secret}")
     private String accessKeySecret;
 
-    public SmsServiceImpl(RedisTemplate<Object, Object> redisTemplate) {
+    public SmsServiceImpl(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -95,7 +95,7 @@ public class SmsServiceImpl implements SmsService {
         // 从缓存取出验证码
         String redisKey = SMS_AUTH_CODE_REDIS_PREFIX
                 + ":" + smsAuthCodeDTO.getSubject() + ":" + smsAuthCodeDTO.getPhone();
-        String authCode = (String) redisTemplate.opsForValue().get(redisKey);
+        String authCode = redisTemplate.opsForValue().get(redisKey);
 
         // 验证码不存在
         if (authCode == null) {

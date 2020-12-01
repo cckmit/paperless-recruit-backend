@@ -16,7 +16,7 @@ import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserProfileService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.UserDO;
+import com.xiaohuashifu.recruit.user.service.do0.UserDO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;

@@ -12,8 +12,8 @@ import com.xiaohuashifu.recruit.user.api.query.MajorQuery;
 import com.xiaohuashifu.recruit.user.api.service.CollegeService;
 import com.xiaohuashifu.recruit.user.service.dao.CollegeMapper;
 import com.xiaohuashifu.recruit.user.service.dao.MajorMapper;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.CollegeDO;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.MajorDO;
+import com.xiaohuashifu.recruit.user.service.do0.CollegeDO;
+import com.xiaohuashifu.recruit.user.service.do0.MajorDO;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;

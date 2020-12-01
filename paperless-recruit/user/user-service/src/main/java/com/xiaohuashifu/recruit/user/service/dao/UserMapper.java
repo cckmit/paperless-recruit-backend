@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.UserDO;
+import com.xiaohuashifu.recruit.user.service.do0.UserDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

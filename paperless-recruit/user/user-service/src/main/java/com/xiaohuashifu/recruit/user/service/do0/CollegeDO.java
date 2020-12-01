@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.user.service.pojo.do0;
+package com.xiaohuashifu.recruit.user.service.do0;
 
 import org.apache.ibatis.type.Alias;
 

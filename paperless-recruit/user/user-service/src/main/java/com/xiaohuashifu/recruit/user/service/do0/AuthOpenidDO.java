@@ -1,5 +1,6 @@
-package com.xiaohuashifu.recruit.user.service.pojo.do0;
+package com.xiaohuashifu.recruit.user.service.do0;
 
+import com.xiaohuashifu.recruit.common.constant.App;
 import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
@@ -11,13 +12,15 @@ import java.time.LocalDateTime;
  * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
-@Alias("major")
-public class MajorDO {
+@Alias("authOpenid")
+public class AuthOpenidDO {
     private Long id;
 
-    private Long collegeId;
+    private Long userId;
 
-    private String majorName;
+    private App appName;
+
+    private String openid;
 
     private LocalDateTime createTime;
 
@@ -31,20 +34,28 @@ public class MajorDO {
         this.id = id;
     }
 
-    public Long getCollegeId() {
-        return collegeId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setCollegeId(Long collegeId) {
-        this.collegeId = collegeId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getMajorName() {
-        return majorName;
+    public App getAppName() {
+        return appName;
     }
 
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
+    public void setAppName(App appName) {
+        this.appName = appName;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
 
     public LocalDateTime getCreateTime() {
@@ -65,10 +76,11 @@ public class MajorDO {
 
     @Override
     public String toString() {
-        return "MajorDO{" +
+        return "AuthOpenidDO{" +
                 "id=" + id +
-                ", collegeId=" + collegeId +
-                ", majorName='" + majorName + '\'' +
+                ", userId=" + userId +
+                ", appName=" + appName +
+                ", openid='" + openid + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -77,8 +89,9 @@ public class MajorDO {
 
     public static final class Builder {
         private Long id;
-        private Long collegeId;
-        private String majorName;
+        private Long userId;
+        private App appName;
+        private String openid;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -90,13 +103,18 @@ public class MajorDO {
             return this;
         }
 
-        public Builder collegeId(Long collegeId) {
-            this.collegeId = collegeId;
+        public Builder userId(Long userId) {
+            this.userId = userId;
             return this;
         }
 
-        public Builder majorName(String majorName) {
-            this.majorName = majorName;
+        public Builder appName(App appName) {
+            this.appName = appName;
+            return this;
+        }
+
+        public Builder openid(String openid) {
+            this.openid = openid;
             return this;
         }
 
@@ -110,14 +128,15 @@ public class MajorDO {
             return this;
         }
 
-        public MajorDO build() {
-            MajorDO majorDO = new MajorDO();
-            majorDO.setId(id);
-            majorDO.setCollegeId(collegeId);
-            majorDO.setMajorName(majorName);
-            majorDO.setCreateTime(createTime);
-            majorDO.setUpdateTime(updateTime);
-            return majorDO;
+        public AuthOpenidDO build() {
+            AuthOpenidDO authOpenidDO = new AuthOpenidDO();
+            authOpenidDO.setId(id);
+            authOpenidDO.setUserId(userId);
+            authOpenidDO.setAppName(appName);
+            authOpenidDO.setOpenid(openid);
+            authOpenidDO.setCreateTime(createTime);
+            authOpenidDO.setUpdateTime(updateTime);
+            return authOpenidDO;
         }
     }
 }

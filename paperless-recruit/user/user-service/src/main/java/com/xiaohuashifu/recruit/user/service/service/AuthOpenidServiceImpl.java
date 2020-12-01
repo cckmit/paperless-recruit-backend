@@ -12,7 +12,7 @@ import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.dao.AuthOpenidMapper;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.AuthOpenidDO;
+import com.xiaohuashifu.recruit.user.service.do0.AuthOpenidDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;

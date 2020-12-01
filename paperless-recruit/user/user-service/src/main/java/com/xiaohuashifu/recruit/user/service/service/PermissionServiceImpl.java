@@ -9,7 +9,7 @@ import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import com.xiaohuashifu.recruit.user.service.dao.RoleMapper;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.PermissionDO;
+import com.xiaohuashifu.recruit.user.service.do0.PermissionDO;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.HashMap;

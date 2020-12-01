@@ -1,25 +1,27 @@
-package com.xiaohuashifu.recruit.user.service.pojo.do0;
+package com.xiaohuashifu.recruit.user.service.do0;
 
 import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
 
 /**
- * 描述：角色
+ * 描述：
  *
  * @author: xhsf
  * @email: 827032783@qq.com
- * @create: 2020/11/12 19:42
+ * @create: 2020/10/30 15:05
  */
-@Alias("role")
-public class RoleDO {
+@Alias("user")
+public class UserDO {
     private Long id;
 
-    private Long parentRoleId;
+    private String username;
 
-    private String roleName;
+    private String phone;
 
-    private String description;
+    private String email;
+
+    private String password;
 
     private Boolean available;
 
@@ -27,15 +29,16 @@ public class RoleDO {
 
     private LocalDateTime updateTime;
 
-    public RoleDO() {
+    public UserDO() {
     }
 
-    public RoleDO(Long id, Long parentRoleId, String roleName, String description, Boolean available,
+    public UserDO(Long id, String username, String phone, String email, String password, Boolean available,
                   LocalDateTime createTime, LocalDateTime updateTime) {
         this.id = id;
-        this.parentRoleId = parentRoleId;
-        this.roleName = roleName;
-        this.description = description;
+        this.username = username;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
         this.available = available;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -49,28 +52,36 @@ public class RoleDO {
         this.id = id;
     }
 
-    public Long getParentRoleId() {
-        return parentRoleId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setParentRoleId(Long parentRoleId) {
-        this.parentRoleId = parentRoleId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getDescription() {
-        return description;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Boolean getAvailable() {
@@ -99,11 +110,12 @@ public class RoleDO {
 
     @Override
     public String toString() {
-        return "RoleDO{" +
+        return "UserDO{" +
                 "id=" + id +
-                ", parentRoleId=" + parentRoleId +
-                ", roleName='" + roleName + '\'' +
-                ", description='" + description + '\'' +
+                ", username='" + username + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", available=" + available +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
@@ -113,9 +125,10 @@ public class RoleDO {
 
     public static final class Builder {
         private Long id;
-        private Long parentRoleId;
-        private String roleName;
-        private String description;
+        private String username;
+        private String phone;
+        private String email;
+        private String password;
         private Boolean available;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -128,18 +141,23 @@ public class RoleDO {
             return this;
         }
 
-        public Builder parentRoleId(Long parentRoleId) {
-            this.parentRoleId = parentRoleId;
+        public Builder username(String username) {
+            this.username = username;
             return this;
         }
 
-        public Builder roleName(String roleName) {
-            this.roleName = roleName;
+        public Builder phone(String phone) {
+            this.phone = phone;
             return this;
         }
 
-        public Builder description(String description) {
-            this.description = description;
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
             return this;
         }
 
@@ -158,16 +176,17 @@ public class RoleDO {
             return this;
         }
 
-        public RoleDO build() {
-            RoleDO roleDO = new RoleDO();
-            roleDO.setId(id);
-            roleDO.setParentRoleId(parentRoleId);
-            roleDO.setRoleName(roleName);
-            roleDO.setDescription(description);
-            roleDO.setAvailable(available);
-            roleDO.setCreateTime(createTime);
-            roleDO.setUpdateTime(updateTime);
-            return roleDO;
+        public UserDO build() {
+            UserDO userDO = new UserDO();
+            userDO.setId(id);
+            userDO.setUsername(username);
+            userDO.setPhone(phone);
+            userDO.setEmail(email);
+            userDO.setPassword(password);
+            userDO.setAvailable(available);
+            userDO.setCreateTime(createTime);
+            userDO.setUpdateTime(updateTime);
+            return userDO;
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.RoleDO;
+import com.xiaohuashifu.recruit.user.service.do0.RoleDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

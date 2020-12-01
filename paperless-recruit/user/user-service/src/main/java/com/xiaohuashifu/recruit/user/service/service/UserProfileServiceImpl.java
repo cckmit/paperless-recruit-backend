@@ -11,7 +11,7 @@ import com.xiaohuashifu.recruit.user.api.service.CollegeService;
 import com.xiaohuashifu.recruit.user.api.service.UserProfileService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.dao.UserProfileMapper;
-import com.xiaohuashifu.recruit.user.service.pojo.do0.UserProfileDO;
+import com.xiaohuashifu.recruit.user.service.do0.UserProfileDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;

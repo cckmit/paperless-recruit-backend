@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.common.util.UsernameUtils;
 import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
@@ -21,7 +20,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,10 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     private final Mapper mapper;
+
+    private final StringRedisTemplate redisTemplate;
+
+    private final RedisScript<Long> incrementIdRedisScript;
 
     @Value("${service.user.default-role-id}")
     private Long defaultUserRoleId;
@@ -103,9 +109,27 @@ public class UserServiceImpl implements UserService {
      */
     private static final String EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE = "更新密码";
 
-    public UserServiceImpl(UserMapper userMapper, Mapper mapper) {
+    /**
+     * 注册时用户名的自增编号Redis Key，用于避免用户名重复
+     */
+    private static final String SIGN_UP_USERNAME_INCREMENT_ID_REDIS_KEY = "user:sign-up:username:increment-id";
+
+    /**
+     * 注册时用户名的自增编号Redis里的起始值
+     */
+    private static final String SIGN_UP_USERNAME_INCREMENT_ID_REDIS_START_VALUE = "0";
+
+    /**
+     * 注册时用户名的前缀
+     */
+    private static final String SIGN_UP_USERNAME_PREFIX = "scau_recruit";
+
+    public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate,
+                           RedisScript<Long> incrementIdRedisScript) {
         this.userMapper = userMapper;
         this.mapper = mapper;
+        this.redisTemplate = redisTemplate;
+        this.incrementIdRedisScript = incrementIdRedisScript;
     }
 
     /**
@@ -161,7 +185,6 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode OperationConflict: 手机号码已经存在
      *              InvalidParameter: 手机号码或验证码或密码格式错误
-     *              InternalError: 服务器错误，请重试
      *              InvalidParameter.AuthCode.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码值不正确
      *
@@ -178,21 +201,14 @@ public class UserServiceImpl implements UserService {
             return Result.fail(ErrorCode.OPERATION_CONFLICT, "Phone does already exist.");
         }
 
-        // 随机生成用户名，这里会尝试生成3次
-        // TODO: 2020/11/29 这里应该做成生成不会重复的随机用户名
-        // 这里的解决方案是scau_recruit_{9随机数}_{9自增id}
-        String username = null;
-        for (int i = 0; i < 3; i++) {
-            String randomUsername = UsernameUtils.randomUsername();
-            count = userMapper.countByUsername(randomUsername);
-            if (count == 0) {
-                username = randomUsername;
-                break;
-            }
-        }
-        if (username == null) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR);
-        }
+        // 随机生成用户名
+        // 这里的解决方案是scau_recruit_{7随机数}_{10自增id}
+        Long incrementId = redisTemplate.execute(incrementIdRedisScript,
+                Collections.singletonList(SIGN_UP_USERNAME_INCREMENT_ID_REDIS_KEY),
+                SIGN_UP_USERNAME_INCREMENT_ID_REDIS_START_VALUE);
+        String username = SIGN_UP_USERNAME_PREFIX + "_"
+                + RandomStringUtils.randomNumeric(7) + "_"
+                + String.format("%010d", incrementId);
 
         // 判断验证码是否正确
         Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()

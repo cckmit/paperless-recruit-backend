@@ -57,7 +57,7 @@ public class UserServiceImplTest {
     @Test
     public void testSignUpBySmsAuthCode() {
         System.out.println(userService.signUpBySmsAuthCode(
-                "15992321303", "907650", "1234567"));
+                "15992321303", "989575", "123456"));
     }
 
     @Test

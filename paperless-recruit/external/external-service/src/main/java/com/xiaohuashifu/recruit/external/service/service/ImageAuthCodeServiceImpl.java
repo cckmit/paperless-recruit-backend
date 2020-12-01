@@ -32,9 +32,9 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
     private static final String IMAGE_AUTH_CODE_REDIS_KEY_PREFIX = "image-auth-code:auth-code";
 
     /**
-     * 自增id Redis key前缀
+     * 图形验证码自增id Redis key，用于避免图形验证码编号重复
      */
-    private static final String INCREMENT_ID_REDIS_KEY_PREFIX = "image-auth-code:increment-id";
+    private static final String IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY = "image-auth-code:increment-id";
 
     /**
      * 自增id的脚本
@@ -65,7 +65,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
 
         // 创建图形验证码编号
         Long incrementId = redisTemplate.execute(incrementIdRedisScript,
-                Collections.singletonList(INCREMENT_ID_REDIS_KEY_PREFIX), "0");
+                Collections.singletonList(IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY), "0");
         String id = UUID.randomUUID().toString() + incrementId;
 
         // 添加验证码到缓存

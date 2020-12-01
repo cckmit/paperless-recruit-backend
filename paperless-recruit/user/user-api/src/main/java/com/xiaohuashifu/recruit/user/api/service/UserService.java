@@ -65,7 +65,6 @@ public interface UserService {
      *
      * @errorCode OperationConflict: 手机号码已经存在
      *              InvalidParameter: 手机号码或验证码或密码格式错误
-     *              InternalError: 服务器错误，请重试
      *              InvalidParameter.AuthCode.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码值不正确
      *

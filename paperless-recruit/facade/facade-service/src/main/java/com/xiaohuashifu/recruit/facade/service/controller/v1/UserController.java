@@ -76,9 +76,6 @@ public class UserController {
                 if (signUpBySmsAuthCodeResult.getErrorCode() == ErrorCode.INVALID_PARAMETER) {
                     message = "手机号码或验证码或密码格式错误";
                 }
-                if (signUpBySmsAuthCodeResult.getErrorCode() == ErrorCode.INTERNAL_ERROR) {
-                    message = "服务器错误，请重试";
-                }
                 if (signUpBySmsAuthCodeResult.getErrorCode() == ErrorCode.INVALID_PARAMETER_NOT_FOUND) {
                     message = "找不到对应的验证码，请重新发送";
                 }

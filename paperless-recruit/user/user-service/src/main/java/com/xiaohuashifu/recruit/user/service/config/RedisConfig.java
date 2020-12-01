@@ -11,7 +11,6 @@ import org.springframework.scripting.support.ResourceScriptSource;
  * 描述：Redis相关配置
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/23 13:45
  */
 @Configuration

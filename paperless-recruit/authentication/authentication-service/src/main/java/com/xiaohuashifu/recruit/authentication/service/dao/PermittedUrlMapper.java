@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.dao;
 
 import com.xiaohuashifu.recruit.authentication.api.query.PermittedUrlQuery;
-import com.xiaohuashifu.recruit.authentication.service.pojo.do0.PermittedUrlDO;
+import com.xiaohuashifu.recruit.authentication.service.do0.PermittedUrlDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

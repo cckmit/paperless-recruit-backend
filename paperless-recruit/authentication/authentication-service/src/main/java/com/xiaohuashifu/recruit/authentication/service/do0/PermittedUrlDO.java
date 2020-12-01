@@ -1,8 +1,7 @@
-package com.xiaohuashifu.recruit.authentication.service.pojo.do0;
+package com.xiaohuashifu.recruit.authentication.service.do0;
 
 import org.apache.ibatis.type.Alias;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**

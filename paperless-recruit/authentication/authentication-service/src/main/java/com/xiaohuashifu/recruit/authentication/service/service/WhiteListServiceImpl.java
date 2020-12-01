@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.authentication.api.dto.PermittedUrlDTO;
 import com.xiaohuashifu.recruit.authentication.api.query.PermittedUrlQuery;
 import com.xiaohuashifu.recruit.authentication.api.service.WhiteListService;
 import com.xiaohuashifu.recruit.authentication.service.dao.PermittedUrlMapper;
-import com.xiaohuashifu.recruit.authentication.service.pojo.do0.PermittedUrlDO;
+import com.xiaohuashifu.recruit.authentication.service.do0.PermittedUrlDO;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import org.apache.dubbo.config.annotation.Service;

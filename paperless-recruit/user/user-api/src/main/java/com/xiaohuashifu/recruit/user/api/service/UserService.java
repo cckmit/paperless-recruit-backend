@@ -58,8 +58,8 @@ public interface UserService {
     /**
      * 通过短信验证码注册账号
      * 该方式会随机生成用户名
-     * 若密码为null会随机生成密码
-     * 推荐使用该方式进行注册，且密码不允许为null
+     * 若密码为 null 会随机生成密码
+     * 推荐使用该方式进行注册，且密码不允许为 null
      *
      * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
      *              OperationConflict: 手机号码已经存在

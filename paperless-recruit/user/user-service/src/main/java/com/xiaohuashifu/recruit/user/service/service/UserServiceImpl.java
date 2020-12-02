@@ -198,15 +198,6 @@ public class UserServiceImpl implements UserService {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Phone does already exist.");
         }
 
-        // 随机生成用户名
-        // 这里的解决方案是scau_recruit_{7随机数}_{10自增id}
-        Long incrementId = redisTemplate.execute(incrementIdRedisScript,
-                Collections.singletonList(SIGN_UP_USERNAME_INCREMENT_ID_REDIS_KEY),
-                SIGN_UP_USERNAME_INCREMENT_ID_REDIS_START_VALUE);
-        String username = SIGN_UP_USERNAME_PREFIX + "_"
-                + RandomStringUtils.randomNumeric(7) + "_"
-                + String.format("%010d", incrementId);
-
         // 判断验证码是否正确
         Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
                 .phone(phone)
@@ -222,6 +213,9 @@ public class UserServiceImpl implements UserService {
         if (password == null) {
             password = RandomStringUtils.randomNumeric(20);
         }
+
+        // 生成用户名
+        String username = generateRandomUsername();
 
         // 添加到数据库
         UserDO userDO = new UserDO.Builder()
@@ -777,6 +771,21 @@ public class UserServiceImpl implements UserService {
         userProfileService.createUserProfile(userDO.getId());
 
         return getUser(userDO.getId());
+    }
+
+    /**
+     * 随机生成用户名
+     * 这里的解决方案是scau_recruit_{7随机数}_{10自增id}
+     *
+     * @return 随机产生的用户名
+     */
+    private String generateRandomUsername() {
+        Long incrementId = redisTemplate.execute(incrementIdRedisScript,
+                Collections.singletonList(SIGN_UP_USERNAME_INCREMENT_ID_REDIS_KEY),
+                SIGN_UP_USERNAME_INCREMENT_ID_REDIS_START_VALUE);
+        return SIGN_UP_USERNAME_PREFIX + "_"
+                + RandomStringUtils.randomNumeric(7) + "_"
+                + String.format("%010d", incrementId);
     }
 
 }

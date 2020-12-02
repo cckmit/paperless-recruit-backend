@@ -21,6 +21,16 @@ import java.util.Map;
  */
 public class CustomErrorWebExceptionHandler extends DefaultErrorWebExceptionHandler {
 
+    /**
+     * 错误响应的键1
+     */
+    private static final String ERROR_RESPONSE_MESSAGE_KEY = "message";
+
+    /**
+     * 错误响应的键2
+     */
+    private static final String ERROR_RESPONSE_CODE_KEY = "code";
+
     public CustomErrorWebExceptionHandler(
             ErrorAttributes errorAttributes, ResourceProperties resourceProperties,
             ErrorProperties errorProperties, ApplicationContext applicationContext) {
@@ -36,15 +46,13 @@ public class CustomErrorWebExceptionHandler extends DefaultErrorWebExceptionHand
     @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, boolean includeStackTrace) {
         Map<String, Object> map = new HashMap<>();
-        map.put("success", false);
-        map.put("data", null);
         Throwable error = super.getError(request);
-        map.put("message", error.getMessage());
-        map.put("errorCode", ErrorCodeEnum.INVALID_PARAMETER);
+        map.put(ERROR_RESPONSE_MESSAGE_KEY, error.getMessage());
+        map.put(ERROR_RESPONSE_CODE_KEY, ErrorCodeEnum.INVALID_PARAMETER.getCode());
 
         // 网关的异常
         if (error instanceof NotFoundException) {
-            map.put("errorCode", ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+            map.put(ERROR_RESPONSE_CODE_KEY, ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
 
         return map;
@@ -69,8 +77,8 @@ public class CustomErrorWebExceptionHandler extends DefaultErrorWebExceptionHand
      */
     @Override
     protected int getHttpStatus(Map<String, Object> errorAttributes) {
-        ErrorCodeEnum errorCode = (ErrorCodeEnum) errorAttributes.get("errorCode");
-        return errorCode.getHttpStatus().value();
+        String code = (String) errorAttributes.get(ERROR_RESPONSE_CODE_KEY);
+        return ErrorCodeEnum.getHttpStatus(code).value();
     }
 
 }

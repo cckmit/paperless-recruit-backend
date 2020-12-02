@@ -37,6 +37,11 @@ public class PermissionServiceImpl implements PermissionService {
      */
     private static final String SPRING_SECURITY_ROLE_PREFIX = "ROLE_";
 
+    /**
+     * 当权限没有父亲时的 parentPermissionId
+     */
+    private static final Long NO_PARENT_PERMISSION_ID = 0L;
+
     public PermissionServiceImpl(PermissionMapper permissionMapper, RoleMapper roleMapper, Mapper mapper) {
         this.permissionMapper = permissionMapper;
         this.roleMapper = roleMapper;
@@ -60,7 +65,8 @@ public class PermissionServiceImpl implements PermissionService {
         if (!permissionDTO.getParentPermissionId().equals(0L)) {
             int count = permissionMapper.count(permissionDTO.getParentPermissionId());
             if (count < 1) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent permission does not exist.");
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
+                        "The parent permission does not exist.");
             }
         }
 
@@ -74,7 +80,7 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         // 如果父权限编号不为0，且被禁用了，则该权限也应该被禁用
-        if (!permissionDTO.getParentPermissionId().equals(0L)) {
+        if (!permissionDTO.getParentPermissionId().equals(NO_PARENT_PERMISSION_ID)) {
             count = permissionMapper.countByIdAndAvailable(permissionDTO.getParentPermissionId(), false);
             if (count > 0) {
                 permissionDTO.setAvailable(false);
@@ -372,7 +378,7 @@ public class PermissionServiceImpl implements PermissionService {
 
         // 如果该权限的父权限编号不为0
         // 判断该权限的父权限是否已经被禁用，如果父权限已经被禁用，则无法解禁该权限
-        if (!permissionDO.getParentPermissionId().equals(0L)) {
+        if (!permissionDO.getParentPermissionId().equals(NO_PARENT_PERMISSION_ID)) {
             int count = permissionMapper.countByIdAndAvailable(permissionDO.getParentPermissionId(), false);
             if (count > 0) {
                 return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
@@ -417,7 +423,7 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         // 若父权限编号不为0，则判断要设置的父权限是否存在
-        if (parentPermissionId != 0) {
+        if (!parentPermissionId.equals(NO_PARENT_PERMISSION_ID)) {
             int count = permissionMapper.count(parentPermissionId);
             if (count < 1) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent permission does not exist.");
@@ -430,7 +436,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 如果要设置的父权限编号为0（取消父权限）
         // 或者要设置的父权限的状态为可用
         // 或者要设置的父权限的状态为禁用且当前权限的状态也为禁用，则直接返回
-        if (parentPermissionId.equals(0L)
+        if (parentPermissionId.equals(NO_PARENT_PERMISSION_ID)
                 || permissionMapper.countByIdAndAvailable(parentPermissionId, true) == 1
                 || !permissionDO.getAvailable()) {
             Map<String, Object> map = new HashMap<>();

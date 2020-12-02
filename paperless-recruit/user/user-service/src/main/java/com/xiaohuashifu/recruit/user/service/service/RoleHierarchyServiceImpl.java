@@ -27,6 +27,16 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
     private PermissionService permissionService;
 
     /**
+     * 角色大于号
+     */
+    private static final String ROLE_GREATER_THAN = " > ";
+
+    /**
+     * 当权限没有父亲时的 parentPermissionId
+     */
+    private static final Long NO_PARENT_PERMISSION_ID = 0L;
+
+    /**
      * 这个服务会返回当前权限的层级结构，用于构建RoleHierarchy
      * 例如：    "root > user\n" +
      *           "user > get_user\n" +
@@ -42,12 +52,12 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
                 .collect(Collectors.toMap(PermissionDTO::getId, PermissionDTO::getPermissionName));
         StringBuilder roleHierarchy = new StringBuilder();
         for (PermissionDTO permissionDTO : permissionDTOList) {
-            if (permissionDTO.getParentPermissionId().equals(0L)) {
+            if (permissionDTO.getParentPermissionId().equals(NO_PARENT_PERMISSION_ID)) {
                 continue;
             }
             String parentPermissionName = permissionDTOMap.get(permissionDTO.getParentPermissionId());
             String permissionName = permissionDTO.getPermissionName();
-            roleHierarchy.append(parentPermissionName).append(" > ").append(permissionName).append('\n');
+            roleHierarchy.append(parentPermissionName).append(ROLE_GREATER_THAN).append(permissionName).append('\n');
         }
         return Result.success(roleHierarchy.toString());
     }

@@ -3,10 +3,9 @@ package com.xiaohuashifu.recruit.common.util;
 import java.lang.reflect.Field;
 
 /**
- * 描述: Object检查器
+ * 描述: Object 检查器
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-08-23 1:26
  */
 public class ObjectUtils {
@@ -25,9 +24,9 @@ public class ObjectUtils {
             Object value = null;
             try {
                 value = field.get(o);
+            } catch (IllegalAccessException ignored) {
+                // 该异常不可能抛出，忽略
             }
-            // 该异常不可能抛出，忽略
-            catch (IllegalAccessException ignored) {}
             if (null != value) {
                 return false;
             }

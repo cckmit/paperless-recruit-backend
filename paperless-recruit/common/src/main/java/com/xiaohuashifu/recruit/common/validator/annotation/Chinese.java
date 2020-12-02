@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-
 import com.xiaohuashifu.recruit.common.validator.ChineseValidator;
 
 import javax.validation.Constraint;

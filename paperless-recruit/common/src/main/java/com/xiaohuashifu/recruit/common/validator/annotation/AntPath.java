@@ -1,18 +1,15 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-
 import com.xiaohuashifu.recruit.common.validator.AntPathValidator;
-import com.xiaohuashifu.recruit.common.validator.UrlValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 描述: AntPath校验 判断一个url是否是ant格式的
+ * 描述: AntPath 校验 判断一个 url 是否是 ant 格式的
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 @Documented

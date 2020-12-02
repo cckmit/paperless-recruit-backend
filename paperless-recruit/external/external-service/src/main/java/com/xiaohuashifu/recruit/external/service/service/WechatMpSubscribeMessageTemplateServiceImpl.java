@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
  * 描述：微信小程序订阅消息模板的服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/22 01:32
  */
 @Service
@@ -47,7 +46,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     @Override
     public Result<WechatMpSubscribeMessageTemplateDTO> saveWechatMpSubscribeMessageTemplate(
             WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO) {
-        // 查看是否存在相同的模板id
+        // 查看是否存在相同的模板 id
         int count = wechatMpSubscribeMessageTemplateMapper.countByTemplateId(
                 wechatMpSubscribeMessageTemplateDTO.getTemplateId());
         if (count > 0) {
@@ -89,7 +88,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     }
 
     /**
-     * 获取模板通过query参数
+     * 获取模板通过 query 参数
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *
@@ -99,11 +98,11 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     @Override
     public Result<PageInfo<WechatMpSubscribeMessageTemplateDTO>> listWechatMpSubscribeMessageTemplates(
             WechatMpSubscribeMessageTemplateQuery query) {
-        // 获取WechatMpSubscribeMessageTemplateDO
+        // 获取 WechatMpSubscribeMessageTemplateDO
         List<WechatMpSubscribeMessageTemplateDO> wechatMpSubscribeMessageTemplateDOList =
                 wechatMpSubscribeMessageTemplateMapper.listWechatMpSubscribeMessageTemplates(query);
 
-        // 转换成WechatMpSubscribeMessageTemplateDTO
+        // 转换成 WechatMpSubscribeMessageTemplateDTO
         List<WechatMpSubscribeMessageTemplateDTO> wechatMpSubscribeMessageTemplateDTOList =
                 wechatMpSubscribeMessageTemplateDOList
                 .stream()
@@ -111,7 +110,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
                         mapper.map(wechatMpSubscribeMessageTemplateDO, WechatMpSubscribeMessageTemplateDTO.class))
                 .collect(Collectors.toList());
 
-        // 包装PageInfo
+        // 包装 PageInfo
         PageInfo<WechatMpSubscribeMessageTemplateDTO> pageInfo =
                 new PageInfo<>(wechatMpSubscribeMessageTemplateDTOList);
         return Result.success(pageInfo);
@@ -120,7 +119,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     /**
      * 更新模板，这是一个较广的更新接口，请小心使用
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为null
+     * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为 null
      *
      * @param wechatMpSubscribeMessageTemplateDTO WechatMpSubscribeMessageTemplateDTO
      * @return WechatMpSubscribeMessageTemplateDTO
@@ -145,12 +144,12 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
                         .status(wechatMpSubscribeMessageTemplateDTO.getStatus())
                         .build();
 
-        // 检查是否每个域都为null
+        // 检查是否每个域都为 null
         if (ObjectUtils.allFieldIsNull(wechatMpSubscribeMessageTemplateDO)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "At least one non null parameter.");
         }
 
-        // 添加id属性
+        // 添加 id 属性
         wechatMpSubscribeMessageTemplateDO.setId(wechatMpSubscribeMessageTemplateDTO.getId());
 
         // 更新到数据库

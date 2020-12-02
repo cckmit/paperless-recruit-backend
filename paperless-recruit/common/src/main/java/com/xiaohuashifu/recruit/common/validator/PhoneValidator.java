@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator;
 
-
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 
 import javax.validation.ConstraintValidator;
@@ -11,9 +10,7 @@ import java.util.regex.Pattern;
 /**
  * 描述: 手机号码校验器
  *
- *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 public class PhoneValidator implements ConstraintValidator<Phone, String> {

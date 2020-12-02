@@ -8,10 +8,9 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 import java.util.Collection;
 
 /**
- * 描述：Openid登录的Token
+ * 描述：Openid 登录的 Token
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/11 17:47
  */
 public class OpenidAuthenticationToken extends AbstractAuthenticationToken {
@@ -19,12 +18,12 @@ public class OpenidAuthenticationToken extends AbstractAuthenticationToken {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
     /**
-     * 具体的app
+     * 具体的 app
      */
     private final AppEnum app;
 
     /**
-     * 微信小程序登录时需要带上的code
+     * 微信小程序登录时需要带上的 code
      */
     private final String code;
 

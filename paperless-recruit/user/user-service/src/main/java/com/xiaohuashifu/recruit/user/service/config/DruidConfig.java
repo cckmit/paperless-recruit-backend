@@ -8,17 +8,17 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 
 /**
- * 描述：Druid数据源配置
+ * 描述：Druid 数据源配置
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
 @Configuration
 public class DruidConfig {
 
     /**
-     * 配置servlet开启druid监控页面
+     * 配置 servlet 开启 druid 监控页面
+     *
      * @return ServletRegistrationBean
      */
     @Bean
@@ -33,4 +33,5 @@ public class DruidConfig {
         bean.setInitParameters(initParameters);
         return bean;
     }
+
 }

@@ -9,11 +9,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
+// TODO: 2020/12/3 该库生成的验证码很粗糙，需要改进
 /**
  * 描述：生成图形验证码的工具类
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/22 16:14
  */
 public class ImageAuthCodeUtils {
@@ -47,7 +47,8 @@ public class ImageAuthCodeUtils {
         for (int i = 0; i < length; i++) {
             String rand = String.valueOf(random.nextInt(10));
             sRand.append(rand);
-            g.setColor(new Color(20 + random.nextInt(110), 20 + random.nextInt(110), 20 + random.nextInt(110)));
+            g.setColor(new Color(20 + random.nextInt(110),
+                    20 + random.nextInt(110), 20 + random.nextInt(110)));
             g.drawString(rand, 13 * i + 6, 16);
         }
         g.dispose();
@@ -81,7 +82,7 @@ public class ImageAuthCodeUtils {
     public static class ImageAuthCode {
 
         /**
-         * base64形式编码的图形验证码
+         * base64 形式编码的图形验证码
          */
         private String base64Image;
 

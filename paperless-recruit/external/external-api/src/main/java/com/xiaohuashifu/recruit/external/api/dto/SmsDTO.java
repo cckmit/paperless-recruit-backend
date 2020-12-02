@@ -11,7 +11,6 @@ import java.io.Serializable;
  * 描述：手机短信
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/11 15:19
  */
 public class SmsDTO implements Serializable {
@@ -23,8 +22,7 @@ public class SmsDTO implements Serializable {
     @Sms
     private String message;
 
-    public SmsDTO() {
-    }
+    public SmsDTO() {}
 
     public SmsDTO(String phone, String message) {
         this.phone = phone;
@@ -55,13 +53,9 @@ public class SmsDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private String phone;
         private String message;
-
-        public Builder() {
-        }
 
         public Builder phone(String phone) {
             this.phone = phone;

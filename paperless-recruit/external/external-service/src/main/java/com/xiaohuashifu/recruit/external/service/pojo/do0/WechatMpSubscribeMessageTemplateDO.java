@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
  * 描述：
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/22 00:33
  */
 @Alias("wechatMpSubscribeMessageTemplate")
@@ -136,7 +135,6 @@ public class WechatMpSubscribeMessageTemplateDO {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private String templateId;
@@ -147,9 +145,6 @@ public class WechatMpSubscribeMessageTemplateDO {
         private TriStatusEnum status;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

@@ -6,10 +6,9 @@ import com.xiaohuashifu.recruit.external.service.pojo.do0.WechatMpSubscribeMessa
 import java.util.List;
 
 /**
- * 描述：
+ * 描述：微信订阅消息模板数据库映射层
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/11 15:12
  */
 public interface WechatMpSubscribeMessageTemplateMapper {

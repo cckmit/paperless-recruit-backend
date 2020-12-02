@@ -4,7 +4,6 @@ package com.xiaohuashifu.recruit.external.service.pojo.dto;
  * 描述:微信小程序接口的返回值
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-08-31 19:22
  */
 public class WeChatMpResponseDTO {

@@ -15,10 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 描述：在JWT中添加一些额外的信息，我们需要实现TokenEnhancer（Token增强器）
+ * 描述：在 JWT 中添加一些额外的信息
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/10 21:20
  */
 @Component
@@ -26,6 +25,11 @@ public class JwtTokenEnhancer implements TokenEnhancer {
 
     @Reference
     private UserService userService;
+
+    /**
+     * JWT 中用户信息在 map 中的 key
+     */
+    private static final String JWT_USER_INFO_KEY = "user_info";
 
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken oAuth2AccessToken, OAuth2Authentication oAuth2Authentication) {
@@ -44,9 +48,9 @@ public class JwtTokenEnhancer implements TokenEnhancer {
         JwtTokenUserInfo jwtTokenUserInfo = new JwtTokenUserInfo(
                 userDTO.getId(), userDTO.getUsername(), userDTO.getPhone(), userDTO.getEmail(), userDTO.getAvailable());
 
-        // 设置到JwtToken中
+        // 设置到 JwtToken 中
         Map<String, Object> info = new HashMap<>();
-        info.put("user_info", jwtTokenUserInfo);
+        info.put(JWT_USER_INFO_KEY, jwtTokenUserInfo);
         ((DefaultOAuth2AccessToken)oAuth2AccessToken).setAdditionalInformation(info);
         return oAuth2AccessToken;
     }

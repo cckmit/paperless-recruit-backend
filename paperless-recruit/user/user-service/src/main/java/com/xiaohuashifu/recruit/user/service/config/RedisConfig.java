@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
 
 /**
- * 描述：Redis相关配置
+ * 描述：Redis 相关配置
  *
  * @author: xhsf
  * @create: 2020/11/23 13:45
@@ -22,8 +22,8 @@ public class RedisConfig {
     private static final String INCREMENT_ID_REDIS_LUA_SCRIPT_CLASS_PATH = "/redis/lua/IncrementId.lua";
 
     /**
-     * 自增id Redis脚本
-     * @return 自增id值
+     * 自增 id Redis 脚本
+     * @return 自增 id 值
      */
     @Bean("incrementIdRedisScript")
     public RedisScript<Long> incrementIdRedisScript() {

@@ -11,8 +11,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 
 /**
- * 描述：AuthenticationManager之后正在处理短信验证码登录的类
- *      接受SmsAuthenticationToken类型的Token并处理
+ * 描述：AuthenticationManager 之后正在处理短信验证码登录的类
+ *      接受 SmsAuthenticationToken 类型的 Token 并处理
  *
  * @author: xhsf
  * @create: 2020/11/11 19:59

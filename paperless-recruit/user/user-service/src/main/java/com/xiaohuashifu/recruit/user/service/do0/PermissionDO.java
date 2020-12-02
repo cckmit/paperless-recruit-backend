@@ -5,10 +5,9 @@ import org.apache.ibatis.type.Alias;
 import java.time.LocalDateTime;
 
 /**
- * 描述：权限
+ * 描述：权限表映射对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
 @Alias("permission")
@@ -122,7 +121,6 @@ public class PermissionDO {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private Long parentPermissionId;
@@ -132,9 +130,6 @@ public class PermissionDO {
         private Boolean available;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

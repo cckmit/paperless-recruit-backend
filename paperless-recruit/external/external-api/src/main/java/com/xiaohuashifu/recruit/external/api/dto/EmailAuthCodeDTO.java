@@ -10,7 +10,6 @@ import java.io.Serializable;
  * 描述：邮箱验证码，用于发送邮箱验证码时带的信息
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/19 13:42
  */
 public class EmailAuthCodeDTO implements Serializable {
@@ -20,7 +19,7 @@ public class EmailAuthCodeDTO implements Serializable {
 
     /**
      * 主题必须是该业务唯一的，不可以产生冲突，否则不准确
-     * 用来作为缓存时key的前缀
+     * 用来作为缓存时 key 的前缀
      * 推荐格式为{服务名}:{具体业务名}
      */
     @NotBlank
@@ -37,7 +36,7 @@ public class EmailAuthCodeDTO implements Serializable {
     /**
      * 缓存键的过期时间，单位分钟
      * 推荐5或10分钟
-     * 在调用EmailService.createAndSendEmailAuthCode()时需要带上
+     * 在调用 EmailService.createAndSendEmailAuthCode() 时需要带上
      */
     @NotNull(groups = EmailService.CreateAndSendEmailAuthCode.class)
     @Positive
@@ -46,7 +45,7 @@ public class EmailAuthCodeDTO implements Serializable {
 
     /**
      * 邮箱验证码
-     * 在调用EmailService.checkEmailAuthCode()时需要带上
+     * 在调用 EmailService.checkEmailAuthCode() 时需要带上
      */
     @NotBlank(groups = EmailService.CheckEmailAuthCode.class)
     @AuthCode
@@ -54,14 +53,10 @@ public class EmailAuthCodeDTO implements Serializable {
 
     /**
      * 检查成功后是否删除该键
-     * 在调用EmailService.checkEmailAuthCode()时需要带上
+     * 在调用 EmailService.checkEmailAuthCode() 时需要带上
      */
     @NotNull(groups = EmailService.CheckEmailAuthCode.class)
     private Boolean delete;
-
-
-    public EmailAuthCodeDTO() {
-    }
 
     public String getEmail() {
         return email;
@@ -123,7 +118,6 @@ public class EmailAuthCodeDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private String email;
         private String subject;
@@ -131,9 +125,6 @@ public class EmailAuthCodeDTO implements Serializable {
         private Integer expiredTime;
         private String authCode;
         private Boolean delete;
-
-        public Builder() {
-        }
 
         public Builder email(String email) {
             this.email = email;

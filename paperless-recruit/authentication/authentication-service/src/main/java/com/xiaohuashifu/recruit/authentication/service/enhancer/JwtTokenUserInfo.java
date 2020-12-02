@@ -1,10 +1,9 @@
 package com.xiaohuashifu.recruit.authentication.service.enhancer;
 
 /**
- * 描述：JWT里附加的用户信息
+ * 描述：JWT 里附加的用户信息
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/24 21:20
  */
 public class JwtTokenUserInfo {

@@ -6,10 +6,9 @@ import org.apache.ibatis.type.Alias;
 import java.time.LocalDateTime;
 
 /**
- * 描述：
+ * 描述：AuthOpenid 表映射对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
 @Alias("authOpenid")
@@ -86,7 +85,6 @@ public class AuthOpenidDO {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private Long userId;
@@ -94,9 +92,6 @@ public class AuthOpenidDO {
         private String openid;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

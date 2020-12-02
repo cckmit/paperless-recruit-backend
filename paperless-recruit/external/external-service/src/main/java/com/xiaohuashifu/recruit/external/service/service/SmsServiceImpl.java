@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
  * 描述：发送短信服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/11 15:22
  */
 @Service
@@ -41,8 +40,8 @@ public class SmsServiceImpl implements SmsService {
     private String accessKeySecret;
 
     /**
-     * 短信验证码的Redis key前缀
-     * 推荐格式为SMS_AUTH_CODE_REDIS_PREFIX:{subject}:{phone}
+     * 短信验证码的 Redis key 前缀
+     * 推荐格式为 SMS_AUTH_CODE_REDIS_PREFIX:{subject}:{phone}
      */
     private static final String SMS_AUTH_CODE_REDIS_PREFIX = "sms:auth-code";
 
@@ -64,7 +63,7 @@ public class SmsServiceImpl implements SmsService {
      *              UnknownError: 发送短信验证码错误，需要重试
      *
      * @param smsAuthCodeDTO 短信验证码对象
-     * @return Result<Void> 返回结果若Result.isSuccess()为true表示发送成功，否则发送失败
+     * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示发送成功，否则发送失败
      */
     @Override
     public Result<Void> createAndSendSmsAuthCode(SmsAuthCodeDTO smsAuthCodeDTO) {
@@ -87,14 +86,14 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 短信验证码检验验证码是否有效的服务
-     * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次（SmsAuthCodeDTO.delete == true即可）
+     * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次 （SmsAuthCodeDTO.delete == true 即可）
      *
-     * @errorCode InvalidParameter: 需要正确的手机号码或验证码参数格式错误
+     * @errorCode InvalidParameter: 请求参数格式错误
      *              InvalidParameter.AuthCode.NotExist: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码值不正确
      *
      * @param smsAuthCodeDTO 短信验证码对象
-     * @return Result<Void> 返回结果若Result.isSuccess()为true表示验证成功，否则验证失败
+     * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示验证成功，否则验证失败
      */
     @Override
     public Result<Void> checkSmsAuthCode(SmsAuthCodeDTO smsAuthCodeDTO) {
@@ -105,12 +104,14 @@ public class SmsServiceImpl implements SmsService {
 
         // 验证码不存在
         if (authCode == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST,
+                    "Auth code does not exists.");
         }
 
         // 验证码不正确
         if (!authCode.equals(smsAuthCodeDTO.getAuthCode())) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT,
+                    "Auth code is incorrect.");
         }
 
         // 验证通过，如果需要删除验证码，则删除

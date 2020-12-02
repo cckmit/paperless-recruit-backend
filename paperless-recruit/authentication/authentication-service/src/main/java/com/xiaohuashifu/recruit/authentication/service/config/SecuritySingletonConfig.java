@@ -10,10 +10,9 @@ import org.springframework.security.oauth2.provider.client.JdbcClientDetailsServ
 import javax.sql.DataSource;
 
 /**
- * 描述：与Spring Security相关的一些单例的配置类
+ * 描述：Spring Security 相关的一些单例的配置类
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 18:13
  */
 @Configuration
@@ -22,7 +21,7 @@ public class SecuritySingletonConfig {
     /**
      * 客户端服务
      * @param dataSource 数据源
-     * @return ClientDetailsService 这里是JdbcClientDetailsService
+     * @return ClientDetailsService 这里是 JdbcClientDetailsService
      */
     @Bean
     public ClientDetailsService clientDetailsService(DataSource dataSource) {
@@ -31,7 +30,8 @@ public class SecuritySingletonConfig {
 
     /**
      * 密码编码器
-     * 默认使用 bcrypt， strength=10
+     * 默认使用 bcrypt
+     *
      * @return PasswordEncoder 密码编码器
      */
     @Bean

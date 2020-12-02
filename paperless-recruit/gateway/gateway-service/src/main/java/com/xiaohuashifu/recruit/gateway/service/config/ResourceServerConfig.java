@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.gateway.service.config;
 
 
 import com.xiaohuashifu.recruit.gateway.service.auth.AccessManager;
-import com.xiaohuashifu.recruit.gateway.service.constant.ResourceServerConstant;
+import com.xiaohuashifu.recruit.gateway.service.constant.ResourceServerConstants;
 import com.xiaohuashifu.recruit.gateway.service.handler.CustomServerAccessDeniedHandler;
 import com.xiaohuashifu.recruit.gateway.service.handler.CustomServerAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
@@ -74,8 +74,8 @@ public class ResourceServerConfig {
     @Bean
     public Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix(ResourceServerConstant.AUTHORITY_PREFIX);
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName(ResourceServerConstant.AUTHORITIES_CLAIM_NAME);
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix(ResourceServerConstants.AUTHORITY_PREFIX);
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName(ResourceServerConstants.AUTHORITIES_CLAIM_NAME);
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

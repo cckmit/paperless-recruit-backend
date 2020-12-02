@@ -11,7 +11,6 @@ import java.util.Map;
  * 描述: 封装微信小程序订阅消息的各种数据
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2020-11-21 18:58
  */
 public class SubscribeMessageDTO implements Serializable {
@@ -22,13 +21,13 @@ public class SubscribeMessageDTO implements Serializable {
     private String touser;
 
     /**
-     * 所需下发的模板消息的id
+     * 所需下发的模板消息的 id
      */
     @NotBlank(groups = WechatMpService.SendSubscribeMessage.class)
     private String template_id;
 
     /**
-     * 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
+     * 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例 index?foo=bar）。该字段不填则模板无跳转。
      */
     private String page;
 
@@ -39,12 +38,12 @@ public class SubscribeMessageDTO implements Serializable {
     private Map<String, SubscribeTemplateDataDTO> data;
 
     /**
-     * 	跳转小程序类型：developer为开发版；trial为体验版；formal为正式版；默认为正式版
+     * 	跳转小程序类型：developer 为开发版；trial 为体验版；formal 为正式版；默认为正式版
      */
     private String miniprogram_state;
 
     /**
-     * 进入小程序查看”的语言类型，支持zh_CN(简体中文)、en_US(英文)、zh_HK(繁体中文)、zh_TW(繁体中文)，默认为zh_CN
+     * 进入小程序查看的语言类型，支持 zh_CN (简体中文)、en_US (英文)、zh_HK (繁体中文)、zh_TW (繁体中文)，默认为 zh_CN
      */
     private String lang;
 
@@ -108,7 +107,6 @@ public class SubscribeMessageDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private String touser;
         private String template_id;
@@ -116,9 +114,6 @@ public class SubscribeMessageDTO implements Serializable {
         private Map<String, SubscribeTemplateDataDTO> data;
         private String miniprogram_state;
         private String lang;
-
-        public Builder() {
-        }
 
         public Builder touser(String touser) {
             this.touser = touser;

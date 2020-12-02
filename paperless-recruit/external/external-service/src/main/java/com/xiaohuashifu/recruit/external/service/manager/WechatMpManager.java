@@ -9,12 +9,12 @@ import java.util.Optional;
  * 描述：微信小程序相关服务封装
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/20 15:53
  */
 public interface WechatMpManager {
     /**
-     * 通过code获取封装过的Code2SessionDTO
+     * 通过 code 获取封装过的 Code2SessionDTO
+     *
      * @param code String
      * @param app 微信小程序类别
      * @return Code2SessionDTO
@@ -22,7 +22,7 @@ public interface WechatMpManager {
     Optional<Code2SessionDTO> getCode2Session(String code, AppEnum app);
 
     /**
-     * 获取access-token
+     * 获取 access-token
      *
      * @param app 具体的微信小程序类型
      * @return access-token
@@ -30,8 +30,8 @@ public interface WechatMpManager {
     Optional<String> getAccessToken(AppEnum app);
 
     /**
-     * 获取新的access-token
-     * 并添加到redis
+     * 获取新的 access-token
+     * 并添加到 redis
      * 并设置过期时间
      *
      * @param app 具体的微信小程序类型

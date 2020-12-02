@@ -5,10 +5,9 @@ import org.apache.ibatis.type.Alias;
 import java.time.LocalDateTime;
 
 /**
- * 描述：角色
+ * 描述：角色表映射对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
 @Alias("role")
@@ -110,7 +109,6 @@ public class RoleDO {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private Long parentRoleId;
@@ -119,9 +117,6 @@ public class RoleDO {
         private Boolean available;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

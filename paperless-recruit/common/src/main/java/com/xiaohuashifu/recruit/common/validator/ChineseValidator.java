@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator;
 
-
 import com.xiaohuashifu.recruit.common.validator.annotation.Chinese;
 
 import javax.validation.ConstraintValidator;
@@ -15,6 +14,7 @@ import java.util.regex.Pattern;
  * @create 2020-11-24
  */
 public class ChineseValidator implements ConstraintValidator<Chinese, String> {
+
     /**
      * 中文匹配模式
      */

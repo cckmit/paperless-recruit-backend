@@ -10,7 +10,6 @@ import java.io.Serializable;
  * 描述：基本邮件传输对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/18 16:47
  */
 public class EmailDTO implements Serializable {
@@ -23,9 +22,6 @@ public class EmailDTO implements Serializable {
 
     @NotBlank(groups = EmailService.SendSimpleEmail.class)
     private String text;
-
-    public EmailDTO() {
-    }
 
     public String getTo() {
         return to;
@@ -60,14 +56,10 @@ public class EmailDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private String to;
         private String subject;
         private String text;
-
-        public Builder() {
-        }
 
         public Builder to(String to) {
             this.to = to;

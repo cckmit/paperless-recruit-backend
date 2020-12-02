@@ -4,7 +4,6 @@ import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
 import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WechatMpDetails;
-import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WechatMpManagerConstant;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.AccessTokenDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 import org.slf4j.Logger;
@@ -23,7 +22,6 @@ import java.util.concurrent.TimeUnit;
  * 描述：微信小程序相关服务封装
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/20 15:53
  */
 @Component
@@ -32,22 +30,22 @@ public class WechatMpManagerImpl implements WechatMpManager {
     private static final Logger logger = LoggerFactory.getLogger(WechatMpManagerImpl.class);
 
     /**
-     * 请求code2Session的url
+     * 请求 code2Session 的 url
      */
     @Value("${wechat.mp.code-2-session-url}")
     private String code2SessionUrl;
 
     /**
-     * 获取access_token的url
+     * 获取 access_token 的 url
      */
     @Value("${wechat.mp.access-token-url}")
     private String accessTokenUrl;
 
     /**
-     * 获取DailyVisitTrend的url
+     * 微信小程序 access-token 的 redis key 前缀名
+     * 推荐格式为REDIS_KEY:{app}
      */
-    @Value("${wechat.mp.daily-visit-trend-url}")
-    private String dailyVisitTrendUrl;
+    public static final String ACCESS_TOKEN_REDIS_KEY_PREFIX = "wechat-mp:access-token";
 
     private final WechatMpDetails wechatMpDetails;
 
@@ -62,9 +60,8 @@ public class WechatMpManagerImpl implements WechatMpManager {
         this.redisTemplate = redisTemplate;
     }
 
-
     /**
-     * 通过code获取封装过的Code2SessionDTO
+     * 通过 code 获取封装过的 Code2SessionDTO
      *
      * @param code String
      * @param app 微信小程序类别
@@ -77,7 +74,7 @@ public class WechatMpManagerImpl implements WechatMpManager {
             return Optional.empty();
         }
 
-        // 获取Code2SessionDTO
+        // 获取 Code2SessionDTO
         String url = MessageFormat.format("{0}?appid={1}&secret={2}&js_code={3}&grant_type=authorization_code",
                 code2SessionUrl, wechatMpDetails.getAppId(app), wechatMpDetails.getSecret(app), code);
         ResponseEntity<Code2SessionDTO> responseEntity = restTemplate.getForEntity(url, Code2SessionDTO.class);
@@ -85,7 +82,7 @@ public class WechatMpManagerImpl implements WechatMpManager {
     }
 
     /**
-     * 获取access-token
+     * 获取 access-token
      *
      * @param app 具体的微信小程序类型
      * @return access-token
@@ -97,14 +94,14 @@ public class WechatMpManagerImpl implements WechatMpManager {
             return Optional.empty();
         }
 
-        // 获取access-token
-        String redisKey = WechatMpManagerConstant.REDIS_KEY + ":" + app.name();
+        // 获取 access-token
+        String redisKey = ACCESS_TOKEN_REDIS_KEY_PREFIX + ":" + app.name();
         return Optional.ofNullable(redisTemplate.opsForValue().get(redisKey));
     }
 
     /**
-     * 获取新的access-token
-     * 并添加到redis
+     * 获取新的 access-token
+     * 并添加到 redis
      * 并设置过期时间
      *
      * @param app 具体的微信小程序类型
@@ -117,7 +114,7 @@ public class WechatMpManagerImpl implements WechatMpManager {
             return false;
         }
 
-        // 获取access-token
+        // 获取 access-token
         String url = MessageFormat.format("{0}?grant_type=client_credential&appid={1}&secret={2}",
                 accessTokenUrl, wechatMpDetails.getAppId(app), wechatMpDetails.getSecret(app));
         ResponseEntity<AccessTokenDTO> entity = restTemplate.getForEntity(url, AccessTokenDTO.class);
@@ -127,11 +124,11 @@ public class WechatMpManagerImpl implements WechatMpManager {
             return false;
         }
 
-        // 添加到redis
-        String redisKey = WechatMpManagerConstant.REDIS_KEY + ":" + app.name();
+        // 添加到 redis
+        String redisKey = ACCESS_TOKEN_REDIS_KEY_PREFIX + ":" + app.name();
         redisTemplate.opsForValue().set(redisKey, entity.getBody().getAccess_token());
 
-        // 设置access-token在redis的过期时间
+        // 设置 access-token 在 redis 的过期时间
         redisTemplate.expire(redisKey, entity.getBody().getExpires_in(), TimeUnit.SECONDS);
         return true;
     }

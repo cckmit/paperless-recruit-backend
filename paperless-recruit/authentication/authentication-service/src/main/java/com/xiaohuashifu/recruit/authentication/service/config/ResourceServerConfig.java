@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
  * 描述：资源服务器配置
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/10 16:04
  */
 @EnableResourceServer
@@ -24,12 +23,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .anyRequest() // 所有请求
                 .authenticated() // 都需要认证
             .and()
-                // 关闭csrf保护：跨站请求伪造（Cross-site request forgery）
+                // 关闭 csrf 保护：跨站请求伪造（Cross-site request forgery）
                 .csrf().disable()
-                // 允许cors：跨域资源共享（Cross-origin resource sharing）
+                // 允许 cors：跨域资源共享（Cross-origin resource sharing）
                 .cors()
             .and()
-                // 关闭session，任何情况不创建Cookie
+                // 关闭 session，任何情况不创建 Cookie
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 }

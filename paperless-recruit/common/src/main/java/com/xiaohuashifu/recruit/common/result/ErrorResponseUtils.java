@@ -18,7 +18,7 @@ public class ErrorResponseUtils {
             instanceResponseEntity(ErrorCodeEnum.UNKNOWN_ERROR, ErrorCodeEnum.UNKNOWN_ERROR.getMessage());
 
     /**
-     * 用于快速构建ResponseEntity<ErrorResponse>
+     * 用于快速构建 ResponseEntity<ErrorResponse>
      *     会获取错误码里面的状态码
      *
      * @param errorCode 自定义错误码
@@ -31,7 +31,7 @@ public class ErrorResponseUtils {
     }
 
     /**
-     * 用于快速构建ResponseEntity<ErrorResponse>
+     * 用于快速构建 ResponseEntity<ErrorResponse>
      *     会获取错误码里面的状态码
      *
      * @param errorCode 自定义错误码
@@ -45,7 +45,7 @@ public class ErrorResponseUtils {
 
 
     /**
-     * 用于快速构建ResponseEntity<ErrorResponse>
+     * 用于快速构建 ResponseEntity<ErrorResponse>
      *
      * @param errorCode 自定义错误码
      * @param message 错误信息
@@ -58,7 +58,7 @@ public class ErrorResponseUtils {
     }
 
     /**
-     * 用于快速构建ResponseEntity<ErrorResponse>
+     * 用于快速构建 ResponseEntity<ErrorResponse>
      *
      * @param code 自定义错误码
      * @param message 错误信息

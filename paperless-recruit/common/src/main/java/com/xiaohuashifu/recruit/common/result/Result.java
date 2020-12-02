@@ -7,7 +7,6 @@ import java.text.MessageFormat;
  * 描述: 请求结果封装
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 public class Result<T> implements Serializable {

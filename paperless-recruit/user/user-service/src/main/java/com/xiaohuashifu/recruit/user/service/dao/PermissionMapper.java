@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 描述：
+ * 描述：权限表数据库映射层
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 20:44
  */
 public interface PermissionMapper {

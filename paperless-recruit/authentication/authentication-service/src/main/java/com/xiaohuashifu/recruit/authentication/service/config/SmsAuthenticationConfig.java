@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
  * 描述：短信验证码认证的配置器
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/11 20:28
  */
 @Component
@@ -28,7 +27,7 @@ public class SmsAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSe
 
     @Override
     public void configure(HttpSecurity http) {
-        // 添加provider
+        // 添加 provider
         http.authenticationProvider(new SmsAuthenticationProvider(smsService, userService, permissionService));
     }
 

@@ -12,10 +12,14 @@ import javax.crypto.spec.DESKeySpec;
  * 描述：DES加密工具类
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/20 20:47
  */
 public class DesUtils {
+
+    /**
+     * 加密算法
+     */
+    private static final String ENCRYPTION_ALGORITHM = "DES";
 
     /**
      * 加密
@@ -26,7 +30,7 @@ public class DesUtils {
      * @throws Exception .
      */
     public static String encrypt(String data, String secretKey) throws Exception {
-        Cipher cipher = Cipher.getInstance("DES");
+        Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKeyFactory(secretKey));
         return new String(Base64.encodeBase64(cipher.doFinal(data.getBytes())));
     }
@@ -40,7 +44,7 @@ public class DesUtils {
      * @throws Exception .
      */
     public static String decrypt(String data, String secretKey) throws Exception {
-        Cipher cipher = Cipher.getInstance("DES");
+        Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, getSecretKeyFactory(secretKey));
         return new String(cipher.doFinal(Base64.decodeBase64(data.getBytes())));
     }
@@ -52,7 +56,7 @@ public class DesUtils {
      * @throws Exception .
      */
     private static SecretKey getSecretKeyFactory(String secretKey) throws Exception {
-        SecretKeyFactory des = SecretKeyFactory.getInstance("DES");
+        SecretKeyFactory des = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
         return des.generateSecret(new DESKeySpec(secretKey.getBytes()));
     }
 

@@ -14,7 +14,6 @@ import java.io.Serializable;
  * 描述：短信验证码，用于发送短信验证码时带的信息
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/19 13:42
  */
 public class SmsAuthCodeDTO implements Serializable {
@@ -24,7 +23,7 @@ public class SmsAuthCodeDTO implements Serializable {
 
     /**
      * 主题必须是该业务唯一的，不可以产生冲突，否则不准确
-     * 用来作为缓存时key的前缀
+     * 用来作为缓存时 key 的前缀
      * 推荐格式为{服务名}:{具体业务名}
      */
     @NotBlank
@@ -33,7 +32,7 @@ public class SmsAuthCodeDTO implements Serializable {
     /**
      * 缓存键的过期时间，单位分钟
      * 推荐5或10分钟
-     * 在调用SmsService.createAndSendSmsAuthCode()时需要带上
+     * 在调用 SmsService.createAndSendSmsAuthCode() 时需要带上
      */
     @NotNull(groups = SmsService.CreateAndSendSmsAuthCode.class)
     @Positive
@@ -42,7 +41,7 @@ public class SmsAuthCodeDTO implements Serializable {
 
     /**
      * 短信验证码
-     * 在调用SmsService.checkSmsAuthCode()时需要带上
+     * 在调用 SmsService.checkSmsAuthCode() 时需要带上
      */
     @NotBlank(groups = SmsService.CheckSmsAuthCode.class)
     @AuthCode
@@ -50,14 +49,10 @@ public class SmsAuthCodeDTO implements Serializable {
 
     /**
      * 检查成功后是否删除该键
-     * 在调用SmsService.checkSmsAuthCode()时需要带上
+     * 在调用 SmsService.checkSmsAuthCode() 时需要带上
      */
     @NotNull(groups = SmsService.CheckSmsAuthCode.class)
     private Boolean delete;
-
-
-    public SmsAuthCodeDTO() {
-    }
 
     public String getPhone() {
         return phone;
@@ -110,16 +105,12 @@ public class SmsAuthCodeDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private String phone;
         private String subject;
         private Integer expiredTime;
         private String authCode;
         private Boolean delete;
-
-        public Builder() {
-        }
 
         public Builder phone(String phone) {
             this.phone = phone;

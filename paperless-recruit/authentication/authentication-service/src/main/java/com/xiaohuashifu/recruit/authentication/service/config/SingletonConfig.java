@@ -9,13 +9,12 @@ import org.springframework.context.annotation.Configuration;
  * 描述：一些单例的配置
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 21:31
  */
 @Configuration
 public class SingletonConfig {
     /**
-     * dozer配置
+     * dozer 配置
      *
      * @return Mapper
      */
@@ -25,7 +24,7 @@ public class SingletonConfig {
     }
 
     /**
-     * fastjson的ObjectMapper单例
+     * fastjson 的 ObjectMapper 单例
      *
      * @return ObjectMapper
      */

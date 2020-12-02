@@ -11,11 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 /**
- * 描述：继承于WebSecurityConfigurerAdapter，
- *
+ * 描述：继承于 WebSecurityConfigurerAdapter
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/10 19:26
  */
 @EnableWebSecurity
@@ -33,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * 获取AuthenticationManager对象，该对象只能在这获取
+     * 获取 AuthenticationManager 对象，该对象只能在这获取
      *
      * @return AuthenticationManager
      * @throws Exception .
@@ -59,29 +57,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                    // 当前SecurityFilterChain匹配那些请求，表示认证
+                    // 当前 SecurityFilterChain 匹配那些请求，表示认证
                     // 这里表示匹配任何请求（URL），表示都需要认证
                     .requestMatchers()
                     .anyRequest()
                 .and()
-                    // 这里是FilterSecurityInterceptor拦截器，表示授权
+                    // 这里是 FilterSecurityInterceptor 拦截器，表示授权
                     // 允许所有请求（URL），表示都不需要授权
                     .authorizeRequests()
                     .anyRequest()
                     .permitAll()
                 .and()
-                    // 关闭csrf保护：跨站请求伪造（Cross-site request forgery）
+                    // 关闭 csrf 保护：跨站请求伪造（Cross-site request forgery）
                     .csrf().disable()
-                    // 允许cors：跨域资源共享（Cross-origin resource sharing）
+                    // 允许 cors：跨域资源共享（Cross-origin resource sharing）
                     .cors()
                 .and()
-                    // 关闭session，任何情况不创建Cookie
+                    // 关闭 session，任何情况不创建 Cookie
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     // 添加短信验证码认证配置
                     .apply(smsAuthenticationConfig)
                 .and()
-                    // 添加openid认证配置
+                    // 添加 openid 认证配置
                     .apply(openidAuthenticationConfig);
         // TODO: 2020/11/14 匿名认证过滤器AnonymousAuthenticationFilter，
         //  给匿名用户填充`AnonymousAuthenticationToken`到`SecurityContextHolder`的`Authentication`

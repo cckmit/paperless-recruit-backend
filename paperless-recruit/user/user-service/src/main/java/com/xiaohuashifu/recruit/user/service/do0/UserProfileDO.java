@@ -5,10 +5,9 @@ import org.apache.ibatis.type.Alias;
 import java.time.LocalDateTime;
 
 /**
- * 描述：
+ * 描述：用户信息表映射对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
 @Alias("userProfile")
@@ -118,7 +117,6 @@ public class UserProfileDO {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private Long userId;
@@ -129,9 +127,6 @@ public class UserProfileDO {
         private String introduction;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

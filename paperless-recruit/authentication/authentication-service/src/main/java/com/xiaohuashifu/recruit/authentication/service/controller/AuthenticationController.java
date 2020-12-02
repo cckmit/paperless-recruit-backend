@@ -15,10 +15,9 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 
 /**
- * 描述：和认证相关的公开接口
+ * 描述：认证相关的公开接口
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/10 16:00
  */
 @RestController
@@ -35,7 +34,7 @@ public class AuthenticationController {
     }
 
     /**
-     * 获得解析jwt的公钥
+     * 获得解析 jwt 的公钥
      *
      * @return Map<String, Object>
      */
@@ -47,10 +46,10 @@ public class AuthenticationController {
     }
 
     /**
-     * 解析jwt
+     * 解析 jwt
      *
      * @param request HttpServletRequest
-     * @return 解析后的jwt对象
+     * @return 解析后的 jwt 对象
      */
     @GetMapping("/jwt")
     public Object getJwt(HttpServletRequest request) {
@@ -62,6 +61,7 @@ public class AuthenticationController {
 
     /**
      * 对认证请求进行拦截
+     *
      * @param principal 主体
      * @param parameters 请求参数
      * @return ResponseEntity<OAuth2AccessToken>

@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * 描述：
+ * 描述：统一拦截认证过程中发生的异常
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/19 20:42
  */
 @RestControllerAdvice

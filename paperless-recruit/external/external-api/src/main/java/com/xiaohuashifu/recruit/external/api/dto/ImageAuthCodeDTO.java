@@ -11,7 +11,6 @@ import java.io.Serializable;
  * 描述：图形验证码传输类型
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/22 15:44
  */
 public class ImageAuthCodeDTO implements Serializable {
@@ -22,7 +21,7 @@ public class ImageAuthCodeDTO implements Serializable {
     private String id;
 
     /**
-     * 图形验证码的Base64编码字符串
+     * 图形验证码的 Base64 编码字符串
      */
     private String authCode;
 
@@ -116,7 +115,6 @@ public class ImageAuthCodeDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private String id;
         private String authCode;
@@ -124,9 +122,6 @@ public class ImageAuthCodeDTO implements Serializable {
         private Integer height;
         private Integer length;
         private Integer expiredTime;
-
-        public Builder() {
-        }
 
         public Builder id(String id) {
             this.id = id;

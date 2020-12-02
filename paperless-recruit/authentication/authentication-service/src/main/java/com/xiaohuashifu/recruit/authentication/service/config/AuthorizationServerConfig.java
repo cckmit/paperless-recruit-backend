@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.provider.TokenGranter;
  * 描述：认证服务器配置
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/10 15:46
  */
 @Configuration
@@ -26,7 +25,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private final TokenGranter tokenGranter;
 
     /**
-     * 客户端服务，这里使用的是JdbcClientDetailsService
+     * 客户端服务，这里使用的是 JdbcClientDetailsService
      */
     private final ClientDetailsService clientDetailsService;
 

@@ -10,7 +10,6 @@ import java.util.List;
  * 描述: 微信小程序相关信息
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-08-13 19:23
  */
 @Component
@@ -23,12 +22,12 @@ public class WechatMpDetails {
     private List<String> names;
 
     /**
-     * 微信小程序appId
+     * 微信小程序 appId
      */
     private List<String> appIds;
 
     /**
-     * 微信小程序secret
+     * 微信小程序 secret
      */
     private List<String> secrets;
 
@@ -45,7 +44,7 @@ public class WechatMpDetails {
     }
 
     /**
-     * 通过WechatMp类型获取appId
+     * 通过 WechatMp 类型获取 appId
      *
      * @param wechatMp 具体的微信小程序
      * @return appId
@@ -67,7 +66,7 @@ public class WechatMpDetails {
     }
 
     /**
-     * 通过WechatMp类型获取secret
+     * 通过 WechatMp 类型获取 secret
      *
      * @param wechatMp 具体的微信小程序
      * @return secret

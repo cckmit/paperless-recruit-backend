@@ -1,10 +1,9 @@
 package com.xiaohuashifu.recruit.external.service.pojo.dto;
 
 /**
- * 描述: 封装Code2Session的各种属性
+ * 描述: 封装 Code2Session 的各种属性
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-02-28 16:46
  */
 public class Code2SessionDTO {

@@ -6,7 +6,6 @@ import java.io.Serializable;
  * 描述: 错误响应对象
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 public class ErrorResponse implements Serializable {

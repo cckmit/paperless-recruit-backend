@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-
 import com.xiaohuashifu.recruit.common.validator.UsernameValidator;
 
 import javax.validation.Constraint;
@@ -13,7 +12,6 @@ import java.lang.annotation.*;
  *     用户名不能是手机和邮箱的格式
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 @Documented

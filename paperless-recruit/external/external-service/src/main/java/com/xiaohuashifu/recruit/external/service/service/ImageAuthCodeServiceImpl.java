@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
  * 描述：图形验证码服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/22 16:02
  */
 @Service
@@ -26,14 +25,19 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
     private final StringRedisTemplate redisTemplate;
 
     /**
-     * 图形验证码的Redis key前缀
+     * 图形验证码的 Redis key 前缀
      */
     private static final String IMAGE_AUTH_CODE_REDIS_KEY_PREFIX = "image-auth-code:auth-code";
 
     /**
-     * 图形验证码自增id Redis key，用于避免图形验证码编号重复
+     * 图形验证码自增 id Redis key，用于避免图形验证码编号重复
      */
     private static final String IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY = "image-auth-code:increment-id";
+
+    /**
+     * 图形验证码自增 id Redis 里的初始值
+     */
+    private static final String IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_START_VALUE = "0";
 
     /**
      * 自增id的脚本
@@ -48,7 +52,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
 
     /**
      * 创建图形验证码
-     * 会把验证码缓存，可用通过checkImageAuthCode检查是否通过校验
+     * 会把验证码缓存，可用通过 checkImageAuthCode 检查是否通过校验
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *
@@ -63,7 +67,8 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
 
         // 创建图形验证码编号
         Long incrementId = redisTemplate.execute(incrementIdRedisScript,
-                Collections.singletonList(IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY), "0");
+                Collections.singletonList(IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY),
+                IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_START_VALUE);
         String id = UUID.randomUUID().toString() + incrementId;
 
         // 添加验证码到缓存
@@ -99,7 +104,8 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
         String authCodeInRedis = redisTemplate.opsForValue().get(redisKey);
         // 验证码不存在
         if (authCodeInRedis == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST,
+                    "Auth code does not exist.");
         }
 
         // 删除验证码
@@ -107,7 +113,8 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
 
         // 判断验证码是否相同
         if (!authCode.equals(authCodeInRedis)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT,
+                    "Auth code is incorrect.");
         }
         return Result.success();
     }

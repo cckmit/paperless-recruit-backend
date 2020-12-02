@@ -17,8 +17,8 @@ import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER;
 import static org.apache.dubbo.common.constants.FilterConstants.VALIDATION_KEY;
 
 /**
- * 描述：参数校验过滤器，改写自ValidationFilter，
- *          该类捕获ConstraintViolationException异常，并封装成Result对象返回
+ * 描述：参数校验过滤器，改写自 ValidationFilter，
+ *          该类捕获 ConstraintViolationException 异常，并封装成 Result 对象返回
  *
  * @author: xhsf
  * @create: 2020/10/30 15:05
@@ -55,7 +55,7 @@ public class CustomValidationFilter implements Filter {
             } catch (RpcException e) {
                 throw e;
             }
-            // 添加catch ConstraintViolationException用于实现自定义的参数校验异常处理逻辑
+            // 添加 catch ConstraintViolationException 用于实现自定义的参数校验异常处理逻辑
             catch (ConstraintViolationException e) {
                 Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
                 ConstraintViolation<?> firsConstraintViolation = constraintViolations.iterator().next();

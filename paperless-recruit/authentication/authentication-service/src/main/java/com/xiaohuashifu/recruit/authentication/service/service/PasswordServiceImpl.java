@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * 描述：与密码有关的服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/16 20:40
  */
 @Service
@@ -21,6 +20,7 @@ public class PasswordServiceImpl implements PasswordService {
 
     /**
      * 对密码进行编码
+     *
      * @param password 原密码
      * @return 编码后的密码
      */

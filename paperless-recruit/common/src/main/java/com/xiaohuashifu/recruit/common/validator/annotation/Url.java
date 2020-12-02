@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-
 import com.xiaohuashifu.recruit.common.validator.UrlValidator;
 
 import javax.validation.Constraint;
@@ -8,10 +7,9 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 描述: URL链接校验
+ * 描述: URL 链接校验
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 @Documented
@@ -22,7 +20,7 @@ import java.lang.annotation.*;
 @Repeatable(Url.List.class)
 public @interface Url {
 
-    String message() default "The parameter of url is invalid.";
+    String message() default "The url is invalid.";
 
     Class<?>[] groups() default {};
 

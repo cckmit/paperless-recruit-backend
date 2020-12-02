@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.gateway.service.auth;
 
 import com.xiaohuashifu.recruit.authentication.api.service.WhiteListService;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.gateway.service.constant.ResourceServerConstant;
+import com.xiaohuashifu.recruit.gateway.service.constant.ResourceServerConstants;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -89,7 +89,7 @@ public class UrlAuthorityChecker {
         Map<String, String> newPermissionNameAuthorizationUrlMap = new ConcurrentHashMap<>();
         for (PermissionDTO permissionDTO : permissionDTOList) {
             newPermissionNameAuthorizationUrlMap.put(
-                    ResourceServerConstant.AUTHORITY_PREFIX + permissionDTO.getPermissionName(),
+                    ResourceServerConstants.AUTHORITY_PREFIX + permissionDTO.getPermissionName(),
                     permissionDTO.getAuthorizationUrl());
         }
         permissionNameAuthorizationUrlMap = newPermissionNameAuthorizationUrlMap;

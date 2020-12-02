@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 描述：
+ * 描述：被允许路径查询参数
  *
  * @author xhsf
  * @create 2020/11/27 17:30

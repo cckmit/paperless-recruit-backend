@@ -5,10 +5,9 @@ import org.apache.ibatis.type.Alias;
 import java.time.LocalDateTime;
 
 /**
- * 描述：
+ * 描述：专业表映射对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
 @Alias("major")
@@ -74,16 +73,12 @@ public class MajorDO {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private Long collegeId;
         private String majorName;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

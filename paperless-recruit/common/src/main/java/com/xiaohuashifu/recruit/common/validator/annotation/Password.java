@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-
 import com.xiaohuashifu.recruit.common.validator.PasswordValidator;
 
 import javax.validation.Constraint;
@@ -8,10 +7,9 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 描述: password校验
+ * 描述: password 校验
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 @Documented

@@ -6,7 +6,7 @@ package com.xiaohuashifu.recruit.gateway.service.constant;
  * @author xhsf
  * @create 2020/11/27 16:22
  */
-public class ResourceServerConstant {
+public class ResourceServerConstants {
 
     /**
      * 权限的前缀

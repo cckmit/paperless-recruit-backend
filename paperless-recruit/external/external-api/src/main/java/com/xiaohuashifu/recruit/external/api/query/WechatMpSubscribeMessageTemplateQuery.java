@@ -9,20 +9,19 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 描述：
+ * 描述：微信订阅消息模板的查询参数
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/29 23:48
  */
 public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
 
     @NotNull
     @Positive
-    private Long pageNum = 1L;
+    private Long pageNum;
     @NotNull
     @Positive
-    private Long pageSize = 10L;
+    private Long pageSize;
     private Long id;
     private List<Long> idList;
     private AppEnum app;
@@ -128,10 +127,9 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
-        private Long pageNum = 1L;
-        private Long pageSize = 10L;
+        private Long pageNum;
+        private Long pageSize;
         private Long id;
         private List<Long> idList;
         private AppEnum app;
@@ -140,9 +138,6 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
         private String type;
         private String description;
         private TriStatusEnum status;
-
-        public Builder() {
-        }
 
         public Builder pageNum(Long pageNum) {
             this.pageNum = pageNum;
@@ -195,7 +190,8 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
         }
 
         public WechatMpSubscribeMessageTemplateQuery build() {
-            WechatMpSubscribeMessageTemplateQuery wechatMpSubscribeMessageTemplateQuery = new WechatMpSubscribeMessageTemplateQuery();
+            WechatMpSubscribeMessageTemplateQuery wechatMpSubscribeMessageTemplateQuery
+                    = new WechatMpSubscribeMessageTemplateQuery();
             wechatMpSubscribeMessageTemplateQuery.setPageNum(pageNum);
             wechatMpSubscribeMessageTemplateQuery.setPageSize(pageSize);
             wechatMpSubscribeMessageTemplateQuery.setId(id);

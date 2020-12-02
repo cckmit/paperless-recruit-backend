@@ -8,7 +8,6 @@ import java.io.Serializable;
  * 描述: 错误码与错误信息的映射
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 public enum ErrorCodeEnum implements Serializable {
@@ -33,7 +32,7 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.Unsupported", "Unsupported parameter."),
 
     /**
-     * 非法参数，不支持的APP类型
+     * 非法参数，不支持的 APP 类型
      */
     INVALID_PARAMETER_APP_UNSUPPORTED(HttpStatus.BAD_REQUEST,
             "InvalidParameter.App.Unsupported", "Unsupported app."),
@@ -52,31 +51,31 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.AuthCode.Incorrect", "Incorrect auth code."),
 
     /**
-     * 参数为空，即字符串，集合等为null或者长度为0
+     * 参数为空，即字符串，集合等为 null 或者长度为0
      */
     INVALID_PARAMETER_IS_EMPTY(HttpStatus.BAD_REQUEST,
             "InvalidParameter.IsEmpty", "The required parameter must be not empty."),
 
     /**
-     * 参数为null
+     * 参数为 null
      */
     INVALID_PARAMETER_IS_NULL(HttpStatus.BAD_REQUEST,
             "InvalidParameter.IsNull", "The required parameter must be not null."),
 
     /**
-     * 字符串参数为NULL或者没有非空白字符
+     * 字符串参数为 NULL 或者没有非空白字符
      */
     INVALID_PARAMETER_IS_BLANK(HttpStatus.BAD_REQUEST,
             "InvalidParameter.IsBlank", "The required parameter must be not blank."),
 
     /**
-     * 参数值超过限定范围，Number类型
+     * 参数值超过限定范围， Number 类型
      */
     INVALID_PARAMETER_VALUE_EXCEEDED(HttpStatus.BAD_REQUEST,
             "InvalidParameter.ValueExceeded", "The name of {Parameter} exceeded, max: {Value}."),
 
     /**
-     * 参数值小于限定范围，Number类型
+     * 参数值小于限定范围， Number 类型
      */
     INVALID_PARAMETER_VALUE_BELOW(HttpStatus.BAD_REQUEST,
             "InvalidParameter.ValueBelow", "The name of {Parameter} below, min: {Value}."),
@@ -88,7 +87,7 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.Value", "The parameter of {Parameter} is invalid."),
 
     /**
-     * 参数长度不在规定范围内，String或集合类型
+     * 参数长度不在规定范围内，String 或集合类型
      */
     INVALID_PARAMETER_SIZE(HttpStatus.BAD_REQUEST,
             "InvalidParameter.Size", "The size of {Parameter} must be from {Min} to {Max}."),
@@ -124,7 +123,7 @@ public enum ErrorCodeEnum implements Serializable {
             "Unauthorized", "User not authorized."),
 
     /**
-     * 没有附带请求该资源所需的token
+     * 没有附带请求该资源所需的 token
      */
     UNAUTHORIZED_TOKEN_IS_NULL(HttpStatus.UNAUTHORIZED,
             "Unauthorized.TokenIsNull", "The request auth token is null."),
@@ -160,7 +159,7 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.AuthCode.NotExist", "The auth code does not exist."),
 
     /**
-     * 未找到openid
+     * 未找到 openid
      */
     INVALID_PARAMETER_OPENID_NOT_FOUND(HttpStatus.NOT_FOUND,
             "InvalidParameter.NotFound", "The specified resource does not exist."),
@@ -217,10 +216,10 @@ public enum ErrorCodeEnum implements Serializable {
     }
 
     /**
-     * 通过code获取HttpStatus
+     * 通过 code 获取 HttpStatus
      *
      * @param code ErrorCodeEnum.code
-     * @return 这里若找不到对应的HttpStatus，会默认返回HttpStatus.BAD_REQUEST
+     * @return 这里若找不到对应的 HttpStatus，会默认返回 HttpStatus.BAD_REQUEST
      */
     public static HttpStatus getHttpStatus(String code) {
         for (ErrorCodeEnum value : ErrorCodeEnum.values()) {

@@ -26,11 +26,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 描述：TokenGranter的配置，自定义
- *      可以添加Granter类型
+ * 描述：TokenGranter 的配置
+ *      可以添加 Granter 类型
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 11:20
  */
 @Configuration
@@ -42,22 +41,22 @@ public class TokenGranterConfig {
     private final ClientDetailsService clientDetailsService;
 
     /**
-     * 具体实现类为UserDetailsServiceImpl
+     * 具体实现类为 UserDetailsServiceImpl
      */
     private final UserDetailsService userDetailsService;
 
     /**
-     * Spring Security的AuthenticationManager
+     * Spring Security 的 AuthenticationManager
      */
     private final AuthenticationManager authenticationManager;
 
     /**
-     * TokenStore这里使用JwtTokenStore
+     * TokenStore 这里使用 JwtTokenStore
      */
     private final TokenStore tokenStore;
 
     /**
-     * TokenEnhancer列表，只要添加成Bean就会自动注入
+     * TokenEnhancer 列表，只要添加成 Bean 就会自动注入
      */
     private final List<TokenEnhancer> tokenEnhancer;
 
@@ -67,7 +66,7 @@ public class TokenGranterConfig {
     private RandomValueAuthorizationCodeServices authorizationCodeServices;
 
     /**
-     * 是否重用RefreshToken
+     * 是否重用 RefreshToken
      */
     private boolean reuseRefreshToken = true;
 
@@ -85,6 +84,7 @@ public class TokenGranterConfig {
 
     /**
      * 授权模式
+     *
      * @return TokenGranter 这里是一个授权模式代理，里面有所有授权模式
      */
     @Bean

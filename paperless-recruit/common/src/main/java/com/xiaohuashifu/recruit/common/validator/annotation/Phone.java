@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-
 import com.xiaohuashifu.recruit.common.validator.PhoneValidator;
 
 import javax.validation.Constraint;
@@ -11,7 +10,6 @@ import java.lang.annotation.*;
  * 描述: 手机号码校验
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 @Documented
@@ -22,7 +20,7 @@ import java.lang.annotation.*;
 @Repeatable(Phone.List.class)
 public @interface Phone {
 
-    String message() default "The parameter of phone is invalid.";
+    String message() default "The phone is invalid.";
 
     Class<?>[] groups() default {};
 

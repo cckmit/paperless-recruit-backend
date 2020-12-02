@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-
 import com.xiaohuashifu.recruit.common.validator.AuthCodeValidator;
 
 import javax.validation.Constraint;
@@ -11,7 +10,6 @@ import java.lang.annotation.*;
  * 描述: 通用验证码校验
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 @Documented

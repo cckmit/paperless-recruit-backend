@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-
 import com.xiaohuashifu.recruit.common.validator.SmsValidator;
 
 import javax.validation.Constraint;
@@ -11,7 +10,6 @@ import java.lang.annotation.*;
  * 描述: 短信内容校验
  *
  * @author xhsf
- * @email 827032783@qq.com
  * @create 2019-10-09
  */
 @Documented
@@ -22,7 +20,7 @@ import java.lang.annotation.*;
 @Repeatable(Sms.List.class)
 public @interface Sms {
 
-    String message() default "The sms length is between 1 to 70.";
+    String message() default "The sms length must be between 1 and 70.";
 
     Class<?>[] groups() default {};
 

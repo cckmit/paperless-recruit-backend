@@ -14,10 +14,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 描述：处理grant_type=openid类型的认证请求，并封装成类型OpenidAuthenticationToken，交给OpenidAuthenticationProvider处理
+ * 描述：处理 grant_type=openid 类型的认证请求，并封装成类型 OpenidAuthenticationToken，
+ *          交给 OpenidAuthenticationProvider 处理
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/21 11:16
  */
 public class OpenidGranter extends AbstractTokenGranter {

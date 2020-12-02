@@ -12,11 +12,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 
 /**
- * 描述：AuthenticationManager之后正在处理Openid登录的类
- *      接受OpenidAuthenticationToken类型的Token并处理
+ * 描述：AuthenticationManager 之后正在处理 Openid 登录的类
+ *      接受 OpenidAuthenticationToken 类型的 Token 并处理
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/21 19:59
  */
 public class OpenidAuthenticationProvider extends AbstractAuthenticationProvider {

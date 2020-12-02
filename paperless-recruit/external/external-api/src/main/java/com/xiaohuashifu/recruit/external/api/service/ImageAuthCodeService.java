@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
  * 描述：图形验证码服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/22 15:36
  */
 public interface ImageAuthCodeService {
@@ -18,7 +17,7 @@ public interface ImageAuthCodeService {
     @interface CreateImageAuthCode {}
     /**
      * 创建图形验证码
-     * 会把验证码缓存，可用通过checkImageAuthCode检查是否通过校验
+     * 会把验证码缓存，可用通过 checkImageAuthCode 检查是否通过校验
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *

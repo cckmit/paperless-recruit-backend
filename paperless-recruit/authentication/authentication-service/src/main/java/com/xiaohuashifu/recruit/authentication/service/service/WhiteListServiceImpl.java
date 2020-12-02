@@ -134,24 +134,24 @@ public class WhiteListServiceImpl implements WhiteListService {
      */
     @Override
     public Result<PermittedUrlDTO> updateUrl(Long id, String newUrl) {
-        // 判断该url是否存在
+        // 判断该 url 是否存在
         PermittedUrlDO permittedUrlDO = permittedUrlMapper.getPermittedUrl(id);
         if (permittedUrlDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The url does not exist.");
         }
 
-        // 判断该url是否与原url相同
+        // 判断该 url 是否与原 url 相同
         if (permittedUrlDO.getUrl().equals(newUrl)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The new url must not same as old url.");
         }
 
-        // 判断该url是否已经存在
+        // 判断该 url 是否已经存在
         int count = permittedUrlMapper.countByUrl(newUrl);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The url already exist.");
         }
 
-        // 更新url
+        // 更新 url
         permittedUrlMapper.updateUrl(id, newUrl);
         return getPermittedUrl(id);
     }

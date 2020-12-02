@@ -7,10 +7,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 描述：
+ * 描述：角色表数据库映射层
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 20:44
  */
 public interface RoleMapper {
@@ -101,7 +100,7 @@ public interface RoleMapper {
     int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
 
     /**
-     * 更新available字段为true如果available字段原来为false
+     * 更新 available 字段为 true 如果 available 字段原来为 false
      *
      * @param id 角色编号
      * @return 成功更新数量

@@ -22,7 +22,7 @@ public interface PermittedUrlMapper {
     List<PermittedUrlDO> listPermittedUrls(PermittedUrlQuery query);
 
     /**
-     * 获取所有的url，用于白名单
+     * 获取所有的 url，用于白名单
      *
      * @return List<String> urlList
      */

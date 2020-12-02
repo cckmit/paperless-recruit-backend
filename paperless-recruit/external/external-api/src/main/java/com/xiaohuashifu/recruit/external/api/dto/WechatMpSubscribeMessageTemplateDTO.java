@@ -10,10 +10,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 描述：
+ * 描述：微信订阅消息模板的传输对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/22 00:33
  */
 public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
@@ -145,7 +144,6 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private AppEnum app;
@@ -156,9 +154,6 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
         private TriStatusEnum status;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;
@@ -206,7 +201,8 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
         }
 
         public WechatMpSubscribeMessageTemplateDTO build() {
-            WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO = new WechatMpSubscribeMessageTemplateDTO();
+            WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO
+                    = new WechatMpSubscribeMessageTemplateDTO();
             wechatMpSubscribeMessageTemplateDTO.setId(id);
             wechatMpSubscribeMessageTemplateDTO.setApp(app);
             wechatMpSubscribeMessageTemplateDTO.setTemplateId(templateId);

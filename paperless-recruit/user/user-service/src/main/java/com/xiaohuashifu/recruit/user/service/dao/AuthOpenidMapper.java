@@ -5,13 +5,13 @@ import com.xiaohuashifu.recruit.user.service.do0.AuthOpenidDO;
 import org.apache.ibatis.annotations.Param;
 
 /**
- * 描述：数据库映射层
+ * 描述：AuthOpenid 数据库映射层
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
 public interface AuthOpenidMapper {
+
     int insertAuthOpenid(AuthOpenidDO authOpenidDO);
 
     AuthOpenidDO getAuthOpenid(Long id);

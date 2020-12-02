@@ -12,7 +12,6 @@ import javax.validation.constraints.Positive;
  * 描述：微信小程序订阅消息模板的服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/22 00:39
  */
 public interface WechatMpSubscribeMessageTemplateService {
@@ -47,7 +46,7 @@ public interface WechatMpSubscribeMessageTemplateService {
     }
 
     /**
-     * 获取模板通过query参数
+     * 获取模板通过 query 参数
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *
@@ -63,7 +62,7 @@ public interface WechatMpSubscribeMessageTemplateService {
     /**
      * 更新模板，这是一个较广的更新接口，请小心使用
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为null
+     * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为 null
      *
      * @param wechatMpSubscribeMessageTemplateDTO WechatMpSubscribeMessageTemplateDTO
      * @return WechatMpSubscribeMessageTemplateDTO

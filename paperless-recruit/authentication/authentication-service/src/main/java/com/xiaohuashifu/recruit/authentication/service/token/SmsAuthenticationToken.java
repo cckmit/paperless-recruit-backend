@@ -7,17 +7,23 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 import java.util.Collection;
 
 /**
- * 描述：短信验证码登录的Token
+ * 描述：短信验证码登录的 Token
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/11 17:47
  */
 public class SmsAuthenticationToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
+    /**
+     * 手机号码
+     */
     private final String phone;
+
+    /**
+     * 短信验证码
+     */
     private final String authCode;
 
     public SmsAuthenticationToken(String phone, String authCode) {

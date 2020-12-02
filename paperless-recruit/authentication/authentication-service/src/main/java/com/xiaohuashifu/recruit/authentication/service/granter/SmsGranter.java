@@ -13,10 +13,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 描述：处理grant_type=sms类型的认证请求，并封装成类型SmsAuthenticationToken，交给SmsAuthenticationProvider处理
+ * 描述：处理 grant_type=sms 类型的认证请求，并封装成类型 SmsAuthenticationToken，交给 SmsAuthenticationProvider 处理
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 11:16
  */
 public class SmsGranter extends AbstractTokenGranter {

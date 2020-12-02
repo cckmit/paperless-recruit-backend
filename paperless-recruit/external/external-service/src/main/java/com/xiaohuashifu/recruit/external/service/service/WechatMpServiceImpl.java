@@ -20,10 +20,9 @@ import java.text.MessageFormat;
 import java.util.Optional;
 
 /**
- * 描述：微信小程序相关服务RPC实现
+ * 描述：微信小程序相关服务 RPC 实现
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/20 14:14
  */
 @Service
@@ -37,7 +36,7 @@ public class WechatMpServiceImpl implements WechatMpService {
     private final RestTemplate restTemplate;
 
     /**
-     * 发送模板消息的url
+     * 发送模板消息的 url
      */
     @Value("${wechat.mp.subscribe-message-url}")
     private String subscribeMessageUrl;
@@ -48,9 +47,9 @@ public class WechatMpServiceImpl implements WechatMpService {
     }
 
     /**
-     * 通过code获得openid
+     * 通过 code 获得 openid
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | App是不支持的类型 | 非法code
+     * @errorCode InvalidParameter: 请求参数格式错误 | App 是不支持的类型 | 非法 code
      *
      * @param code code
      * @param app 具体的微信小程序
@@ -63,7 +62,7 @@ public class WechatMpServiceImpl implements WechatMpService {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The platform must be wechat mp.");
         }
 
-        // 获取openid
+        // 获取 openid
         Optional<Code2SessionDTO> code2SessionDTOOptional = wechatMpManager.getCode2Session(code, app);
         if (code2SessionDTOOptional.isEmpty()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The code is invalid.");
@@ -75,12 +74,12 @@ public class WechatMpServiceImpl implements WechatMpService {
     /**
      * 发送订阅消息
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | App是不支持的类型 | 用户还未绑定此app
-     *              InternalError: 服务器错误 | access-token获取失败 | 发送订阅消息出错
+     * @errorCode InvalidParameter: 请求参数格式错误 | App 是不支持的类型 | 用户还未绑定此 app
+     *              InternalError: 服务器错误 | access-token 获取失败 | 发送订阅消息出错
      *              UnknownError: 未知错误 | 发送订阅消息时微信小程序报的错误，具体查看错误消息
      *
      * @param app 微信小程序类型
-     * @param userId 用于获取openid
+     * @param userId 用于获取 openid
      * @param subscribeMessageDTO 订阅消息
      * @return 发送结果
      */
@@ -91,14 +90,14 @@ public class WechatMpServiceImpl implements WechatMpService {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The platform must be wechat mp.");
         }
 
-        // 获取openId
+        // 获取 openId
         Result<String> getOpenidResult = authOpenidService.getOpenid(app, userId);
         if (!getOpenidResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user has not been bound this app.");
         }
         subscribeMessageDTO.setTouser(getOpenidResult.getData());
 
-        // 获取access-token
+        // 获取 access-token
         Optional<String> accessToken = wechatMpManager.getAccessToken(app);
         if (accessToken.isEmpty()) {
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);

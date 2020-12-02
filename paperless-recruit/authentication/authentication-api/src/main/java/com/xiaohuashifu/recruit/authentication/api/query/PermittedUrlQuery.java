@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.api.query;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
@@ -12,14 +13,20 @@ import java.util.List;
  * @create 2020/11/27 17:30
  */
 public class PermittedUrlQuery implements Serializable {
+
     @NotNull
     @Positive
     private Long pageNum;
+
     @NotNull
     @Positive
+    @Max(50)
     private Long pageSize;
+
     private Long id;
+
     private List<Long> idList;
+
     private String url;
 
     public Long getPageNum() {

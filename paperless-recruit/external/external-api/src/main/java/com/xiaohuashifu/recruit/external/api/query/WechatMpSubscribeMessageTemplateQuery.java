@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.external.api.query;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
@@ -19,16 +20,26 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
     @NotNull
     @Positive
     private Long pageNum;
+
     @NotNull
     @Positive
+    @Max(50)
     private Long pageSize;
+
     private Long id;
+
     private List<Long> idList;
+
     private AppEnum app;
+
     private String templateId;
+
     private String title;
+
     private String type;
+
     private String description;
+
     private TriStatusEnum status;
 
     public Long getPageNum() {

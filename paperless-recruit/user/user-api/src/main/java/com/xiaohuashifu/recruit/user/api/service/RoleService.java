@@ -72,7 +72,7 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<Void>
      */
-    default Result<Void> deleteRole(@NotNull @Positive Long id) {
+    default Result<Void> removeRole(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -85,7 +85,7 @@ public interface RoleService {
      * @param roleId 角色编号
      * @return Result<Void>
      */
-    default Result<Void> deleteUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId) {
+    default Result<Void> removeUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId) {
         throw new UnsupportedOperationException();
     }
 
@@ -98,7 +98,7 @@ public interface RoleService {
      * @param permissionId 权限编号
      * @return Result<Void>
      */
-    default Result<Void> deleteRolePermission(@NotNull @Positive Long roleId, @NotNull @Positive Long permissionId) {
+    default Result<Void> removeRolePermission(@NotNull @Positive Long roleId, @NotNull @Positive Long permissionId) {
         throw new UnsupportedOperationException();
     }
 
@@ -123,7 +123,7 @@ public interface RoleService {
      * @param query 查询参数
      * @return Result<PageInfo<RoleDTO>> 带分页信息的角色列表，可能返回空列表
      */
-    default Result<PageInfo<RoleDTO>> getRole(@NotNull RoleQuery query) {
+    default Result<PageInfo<RoleDTO>> listRoles(@NotNull RoleQuery query) {
         throw new UnsupportedOperationException();
     }
 

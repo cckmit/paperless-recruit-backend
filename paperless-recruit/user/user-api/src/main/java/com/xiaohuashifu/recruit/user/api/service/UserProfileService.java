@@ -51,7 +51,7 @@ public interface UserProfileService {
      * @param query 查询参数
      * @return PageInfo<UserProfileDTO> 带分页信息的查询结果，可能返回空列表
      */
-    default Result<PageInfo<UserProfileDTO>> getUserProfile(@NotNull UserProfileQuery query) {
+    default Result<PageInfo<UserProfileDTO>> listUserProfiles(@NotNull UserProfileQuery query) {
         throw new UnsupportedOperationException();
     }
 

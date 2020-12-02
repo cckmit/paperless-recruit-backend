@@ -3,13 +3,10 @@ package com.xiaohuashifu.recruit.user.service.service;
 import com.xiaohuashifu.recruit.user.api.query.CollegeQuery;
 import com.xiaohuashifu.recruit.user.api.query.MajorQuery;
 import com.xiaohuashifu.recruit.user.api.service.CollegeService;
-import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -61,12 +58,12 @@ public class CollegeServiceImplTest {
 
     @Test
     public void testGetCollege() {
-        System.out.println(collegeService.getCollege(new CollegeQuery.Builder().collegeName("软件").build()));
+        System.out.println(collegeService.listColleges(new CollegeQuery.Builder().collegeName("软件").build()));
     }
 
     @Test
     public void getCollegeMajor() {
-        System.out.println(collegeService.getCollegeMajor(new CollegeQuery.Builder().id(1L).build()));
+        System.out.println(collegeService.listCollegeMajors(new CollegeQuery.Builder().id(1L).build()));
     }
 
     @Test
@@ -76,7 +73,7 @@ public class CollegeServiceImplTest {
 
     @Test
     public void testGetMajor() {
-        System.out.println(collegeService.getMajor(new MajorQuery.Builder().id(1L).build()));
+        System.out.println(collegeService.listMajors(new MajorQuery.Builder().id(1L).build()));
     }
 
     @Test

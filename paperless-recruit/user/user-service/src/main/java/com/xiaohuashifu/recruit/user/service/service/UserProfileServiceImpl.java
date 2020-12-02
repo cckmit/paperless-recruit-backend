@@ -71,7 +71,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         // 创建用户个人信息
-        userProfileMapper.saveUserProfile(userId);
+        userProfileMapper.insertUserProfile(userId);
         return Result.success();
     }
 
@@ -102,8 +102,8 @@ public class UserProfileServiceImpl implements UserProfileService {
      * @return PageInfo<UserProfileDTO> 带分页信息的查询结果，可能返回空列表
      */
     @Override
-    public Result<PageInfo<UserProfileDTO>> getUserProfile(UserProfileQuery query) {
-        List<UserProfileDO> userProfileDOList = userProfileMapper.getUserProfileByQuery(query);
+    public Result<PageInfo<UserProfileDTO>> listUserProfiles(UserProfileQuery query) {
+        List<UserProfileDO> userProfileDOList = userProfileMapper.listUserProfiles(query);
         List<UserProfileDTO> userProfileDTOList = userProfileDOList
                 .stream()
                 .map(userProfileDO -> mapper.map(userProfileDO, UserProfileDTO.class))

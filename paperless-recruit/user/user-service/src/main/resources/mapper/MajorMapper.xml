@@ -5,7 +5,7 @@
         id, college_id, major_name, create_time, update_time
     </sql>
 
-    <insert id="saveMajor" keyProperty="id">
+    <insert id="insertMajor" keyProperty="id">
         insert into major
         (college_id, major_name)
         values(#{collegeId}, #{majorName})
@@ -27,13 +27,13 @@
         where id = #{id}
     </select>
 
-    <select id="getMajorByCollegeId" resultType="major">
+    <select id="listMajorsByCollegeId" resultType="major">
         select <include refid="major"/>
         from major
         where college_id = #{collegeId}
     </select>
 
-    <select id="getMajorByQuery" resultType="major">
+    <select id="listMajors" resultType="major">
         select <include refid="major"/>
         from major
         <where>

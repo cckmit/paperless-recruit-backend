@@ -11,7 +11,7 @@
         p.create_time, p.update_time
     </sql>
 
-    <insert id="savePermission" keyProperty="id">
+    <insert id="insertPermission" keyProperty="id">
         insert into permission(parent_permission_id, permission_name, authorization_url, description, is_available)
         values(#{parentPermissionId}, #{permissionName}, #{authorizationUrl}, #{description}, #{available})
     </insert>
@@ -34,7 +34,7 @@
     </select>
 
 
-    <select id="getPermissionListByRoleIdList" resultType="permission">
+    <select id="listPermissionsByRoleIds" resultType="permission">
         select
         <include refid="p_permission"/>
         from role_permission rp inner join permission p on rp.permission_id = p.id
@@ -44,7 +44,7 @@
         </foreach>
     </select>
 
-    <select id="getPermissionByUserId" resultType="permission">
+    <select id="listPermissionsByUserId" resultType="permission">
         select
             <include refid="p_permission"/>
         from user u
@@ -57,7 +57,7 @@
 --         and p.id is not null
     </select>
 
-    <select id="getPermissionByQuery" resultType="permission">
+    <select id="listPermissions" resultType="permission">
         select
             <include refid="permission"/>
         from permission
@@ -87,12 +87,12 @@
         </where>
     </select>
 
-    <select id="getAllPermission" resultType="permission">
+    <select id="listAllPermissions" resultType="permission">
         select <include refid="permission"/>
         from permission
     </select>
 
-    <select id="getPermissionNameByUserId" resultType="string">
+    <select id="listPermissionNamesByUserId" resultType="string">
         select p.permission_name
         from user u
         inner join user_role ur on u.id = ur.user_id
@@ -102,14 +102,14 @@
         where u.id = #{userId}
     </select>
 
-    <select id="getIdListByParentPermissionId" resultType="long">
+    <select id="listIdsByParentPermissionId" resultType="long">
         select id
         from permission
         where parent_permission_id = #{parentPermissionId}
     </select>
 
 
-    <select id="getIdListByParentPermissionIdAndAvailable" resultType="long">
+    <select id="listIdsByParentPermissionIdAndAvailable" resultType="long">
         select id
         from permission
         where parent_permission_id = #{parentPermissionId}

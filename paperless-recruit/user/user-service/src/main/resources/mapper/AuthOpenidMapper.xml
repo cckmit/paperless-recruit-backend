@@ -4,7 +4,7 @@
     <sql id="auth_openid">
         id, user_id, app_name , openid, create_time, update_time
     </sql>
-    <insert id="saveAuthOpenid" keyProperty="id">
+    <insert id="insertAuthOpenid" keyProperty="id">
         insert into auth_openid(user_id, app_name, openid)
         values(#{userId}, #{appName}, #{openid})
     </insert>

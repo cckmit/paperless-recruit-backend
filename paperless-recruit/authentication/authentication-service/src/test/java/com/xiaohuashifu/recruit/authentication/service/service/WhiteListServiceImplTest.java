@@ -2,13 +2,10 @@ package com.xiaohuashifu.recruit.authentication.service.service;
 
 import com.xiaohuashifu.recruit.authentication.api.query.PermittedUrlQuery;
 import com.xiaohuashifu.recruit.authentication.api.service.WhiteListService;
-import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -39,7 +36,7 @@ public class WhiteListServiceImplTest {
 
     @Test
     public void deletePermittedUrl() {
-        System.out.println(whiteListService.deletePermittedUrl(3L));
+        System.out.println(whiteListService.removePermittedUrl(3L));
     }
 
     @Test
@@ -49,7 +46,7 @@ public class WhiteListServiceImplTest {
 
     @Test
     public void testGetPermittedUrl() {
-        System.out.println(whiteListService.getPermittedUrl(new PermittedUrlQuery.Builder().url("/oaut2h").build()));
+        System.out.println(whiteListService.listPermittedUrls(new PermittedUrlQuery.Builder().url("/oaut2h").build()));
     }
 
     @Test

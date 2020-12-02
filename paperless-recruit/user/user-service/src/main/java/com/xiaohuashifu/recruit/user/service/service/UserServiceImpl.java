@@ -332,8 +332,8 @@ public class UserServiceImpl implements UserService {
      * @return Result<PageInfo<UserDTO>> 带分页信息的查询结果用户列表，可能返回空列表
      */
     @Override
-    public Result<PageInfo<UserDTO>> getUser(UserQuery query) {
-        List<UserDO> userDOList = userMapper.getUserByQuery(query);
+    public Result<PageInfo<UserDTO>> listUsers(UserQuery query) {
+        List<UserDO> userDOList = userMapper.listUsers(query);
         List<UserDTO> userDTOList = userDOList
                 .stream()
                 .map(userDO -> mapper.map(userDO, UserDTO.class))
@@ -768,7 +768,7 @@ public class UserServiceImpl implements UserService {
      * @return Result<UserDTO>
      */
     private Result<UserDTO> saveUser(UserDO userDO) {
-        userMapper.saveUser(userDO);
+        userMapper.insertUser(userDO);
 
         // 为新账号赋予最基本的权限
         roleService.saveUserRole(userDO.getId(), defaultUserRoleId);

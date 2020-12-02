@@ -15,13 +15,13 @@ import java.util.List;
  */
 public interface CollegeMapper {
 
-    int saveCollege(CollegeDO collegeDO);
+    int insertCollege(CollegeDO collegeDO);
 
     int delete(Long id);
 
     CollegeDO getCollege(Long id);
 
-    List<CollegeDO> getCollegeByQuery(CollegeQuery query);
+    List<CollegeDO> listColleges(CollegeQuery query);
 
     String getCollegeName(Long id);
 

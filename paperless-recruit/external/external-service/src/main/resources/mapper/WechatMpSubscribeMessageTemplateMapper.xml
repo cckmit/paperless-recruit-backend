@@ -4,7 +4,7 @@
     <sql id="wechatMpSubscribeMessageTemplate">
         id, app_name, template_id, title, type, description, status, create_time, update_time
     </sql>
-    <insert id="saveWechatMpSubscribeMessageTemplate" keyProperty="id">
+    <insert id="insertWechatMpSubscribeMessageTemplate" keyProperty="id">
         insert into wechat_mp_subscribe_message_template
         (app_name, template_id, title, type, description, status)
         values(#{appName}, #{templateId}, #{title}, #{type}, #{description}, #{status})
@@ -16,7 +16,7 @@
         where id = #{id}
     </select>
 
-    <select id="getWechatMpSubscribeMessageTemplateByQuery" resultType="wechatMpSubscribeMessageTemplate">
+    <select id="listWechatMpSubscribeMessageTemplates" resultType="wechatMpSubscribeMessageTemplate">
         select <include refid="wechatMpSubscribeMessageTemplate"/>
         from wechat_mp_subscribe_message_template
         <where>

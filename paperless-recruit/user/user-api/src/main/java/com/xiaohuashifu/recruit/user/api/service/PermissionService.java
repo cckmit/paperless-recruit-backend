@@ -44,7 +44,7 @@ public interface PermissionService {
      * @param id 权限编号
      * @return Result<Void>
      */
-    default Result<Void> deletePermission(@NotNull @Positive Long id) {
+    default Result<Void> removePermission(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -69,7 +69,7 @@ public interface PermissionService {
      * @param query 查询参数
      * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表，可能返回空列表
      */
-    default Result<PageInfo<PermissionDTO>> getPermission(@NotNull PermissionQuery query) {
+    default Result<PageInfo<PermissionDTO>> listPermissions(@NotNull PermissionQuery query) {
         throw new UnsupportedOperationException();
     }
 
@@ -78,7 +78,7 @@ public interface PermissionService {
      *
      * @return 权限列表
      */
-    default Result<List<PermissionDTO>> getAllPermission() {
+    default Result<List<PermissionDTO>> listAllPermissions() {
         throw new UnsupportedOperationException();
     }
 
@@ -88,10 +88,10 @@ public interface PermissionService {
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *
-     * @param roleIdList 角色id列表
+     * @param roleIds 角色id列表
      * @return 角色的权限列表，可能返回空列表
      */
-    default Result<List<PermissionDTO>> getPermissionByRoleIdList(@NotEmpty List<Long> roleIdList) {
+    default Result<List<PermissionDTO>> listPermissionsByRoleIds(@NotEmpty List<Long> roleIds) {
         throw new UnsupportedOperationException();
     }
 
@@ -103,7 +103,7 @@ public interface PermissionService {
      * @param userId 用户id
      * @return 用户的权限列表，可能返回空列表
      */
-    default Result<List<PermissionDTO>> getPermissionByUserId(@NotNull @Positive Long userId) {
+    default Result<List<PermissionDTO>> listPermissionsByUserId(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 
@@ -120,7 +120,7 @@ public interface PermissionService {
      * @param userId 用户id
      * @return 用户的权限 Authority 列表，可能返回空列表
      */
-    default Result<Set<String>> getAuthorityByUserId(@NotNull @Positive Long userId) {
+    default Result<Set<String>> listAuthoritiesByUserId(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 

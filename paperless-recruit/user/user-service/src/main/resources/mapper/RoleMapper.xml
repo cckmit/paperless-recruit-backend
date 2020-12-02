@@ -9,17 +9,17 @@
         r.id, r.parent_role_id, r.role_name, r.description, r.is_available as available, r.create_time, r.update_time
     </sql>
 
-    <insert id="saveRole" keyProperty="id">
+    <insert id="insertRole" keyProperty="id">
         insert into role(parent_role_id, role_name, description, is_available)
         values(#{parentRoleId}, #{roleName}, #{description}, #{available})
     </insert>
 
-    <insert id="saveUserRole">
+    <insert id="insertUserRole">
         insert into user_role(user_id, role_id)
         values(#{userId}, #{roleId})
     </insert>
 
-    <insert id="saveRolePermission">
+    <insert id="insertRolePermission">
         insert into role_permission(role_id, permission_id)
         values(#{roleId}, #{permissionId})
     </insert>
@@ -59,7 +59,7 @@
         where id = #{id}
     </select>
 
-    <select id="getRoleByQuery" resultType="role">
+    <select id="listRoles" resultType="role">
         select <include refid="role"/>
         from role
         <where>
@@ -85,26 +85,26 @@
         </where>
     </select>
 
-    <select id="getRoleListByUserId" resultType="role">
+    <select id="listRolesByUserId" resultType="role">
         select <include refid="r_role"/>
         from user_role as ur inner join role as r on ur.role_id = r.id
         where ur.user_id = #{userId}
     </select>
 
-    <select id="getIdListByParentRoleId" resultType="long">
+    <select id="listIdsByParentRoleId" resultType="long">
         select id
         from role
         where parent_role_id = #{parentRoleId}
     </select>
 
-    <select id="getIdListByParentRoleIdAndAvailable" resultType="long">
+    <select id="listIdsByParentRoleIdAndAvailable" resultType="long">
         select id
         from role
         where parent_role_id = #{parentRoleId}
         and is_available = #{available}
     </select>
 
-    <select id="getRoleNameByUserId" resultType="string">
+    <select id="listRoleNamesByUserId" resultType="string">
         select r.role_name
         from user_role as ur inner join role as r on ur.role_id = r.id
         where ur.user_id = #{userId}

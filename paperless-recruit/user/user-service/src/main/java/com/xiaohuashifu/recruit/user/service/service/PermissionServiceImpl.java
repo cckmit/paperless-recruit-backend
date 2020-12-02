@@ -93,7 +93,7 @@ public class PermissionServiceImpl implements PermissionService {
                 .description(permissionDTO.getDescription())
                 .available(permissionDTO.getAvailable())
                 .build();
-        permissionMapper.savePermission(permissionDO);
+        permissionMapper.insertPermission(permissionDO);
         return getPermission(permissionDO.getId());
     }
 
@@ -107,7 +107,7 @@ public class PermissionServiceImpl implements PermissionService {
      * @return Result<Void>
      */
     @Override
-    public Result<Void> deletePermission(Long id) {
+    public Result<Void> removePermission(Long id) {
         // 判断该权限存不存在
         int count = permissionMapper.count(id);
         if (count < 1) {
@@ -155,8 +155,8 @@ public class PermissionServiceImpl implements PermissionService {
      * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表，可能返回空列表
      */
     @Override
-    public Result<PageInfo<PermissionDTO>> getPermission(PermissionQuery query) {
-        List<PermissionDO> permissionDOList = permissionMapper.getPermissionByQuery(query);
+    public Result<PageInfo<PermissionDTO>> listPermissions(PermissionQuery query) {
+        List<PermissionDO> permissionDOList = permissionMapper.listPermissions(query);
         List<PermissionDTO> permissionDTOList = permissionDOList
                 .stream()
                 .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
@@ -171,9 +171,9 @@ public class PermissionServiceImpl implements PermissionService {
      * @return 权限列表
      */
     @Override
-    public Result<List<PermissionDTO>> getAllPermission() {
+    public Result<List<PermissionDTO>> listAllPermissions() {
         return Result.success(permissionMapper
-                .getAllPermission()
+                .listAllPermissions()
                 .stream()
                 .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
                 .collect(Collectors.toList()));
@@ -185,14 +185,14 @@ public class PermissionServiceImpl implements PermissionService {
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *
-     * @param roleIdList 角色id列表
+     * @param roleIds 角色id列表
      * @return 角色的权限列表
      */
     @Override
-    public Result<List<PermissionDTO>> getPermissionByRoleIdList(List<Long> roleIdList) {
+    public Result<List<PermissionDTO>> listPermissionsByRoleIds(List<Long> roleIds) {
         return Result.success(
                 permissionMapper
-                        .getPermissionListByRoleIdList(roleIdList)
+                        .listPermissionsByRoleIds(roleIds)
                         .stream()
                         .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
                         .collect(Collectors.toList()));
@@ -207,8 +207,8 @@ public class PermissionServiceImpl implements PermissionService {
      * @return 用户的权限列表
      */
     @Override
-    public Result<List<PermissionDTO>> getPermissionByUserId(Long userId) {
-        List<PermissionDO> permissionDOList = permissionMapper.getPermissionByUserId(userId);
+    public Result<List<PermissionDTO>> listPermissionsByUserId(Long userId) {
+        List<PermissionDO> permissionDOList = permissionMapper.listPermissionsByUserId(userId);
         return Result.success(permissionDOList
                 .stream()
                 .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
@@ -229,10 +229,10 @@ public class PermissionServiceImpl implements PermissionService {
      * @return 用户的权限 Authority 列表，可能返回空列表
      */
     @Override
-    public Result<Set<String>> getAuthorityByUserId(Long userId) {
+    public Result<Set<String>> listAuthoritiesByUserId(Long userId) {
         // 下面将直接复用这个 Set，不再构造一次浪费资源
-        Set<String> permissionNameSet = permissionMapper.getPermissionNameByUserId(userId);
-        List<String> roleNameList = roleMapper.getRoleNameByUserId(userId);
+        Set<String> permissionNameSet = permissionMapper.listPermissionNamesByUserId(userId);
+        List<String> roleNameList = roleMapper.listRoleNamesByUserId(userId);
         roleNameList.forEach(roleName -> permissionNameSet.add(SPRING_SECURITY_ROLE_PREFIX + roleName));
         return Result.success(permissionNameSet);
     }
@@ -451,7 +451,7 @@ public class PermissionServiceImpl implements PermissionService {
      */
     private int recursiveDisablePermission(Long id) {
         int count = permissionMapper.updateAvailable(id, false);
-        List<Long> permissionIdList = permissionMapper.getIdListByParentPermissionIdAndAvailable(id, true);
+        List<Long> permissionIdList = permissionMapper.listIdsByParentPermissionIdAndAvailable(id, true);
         for (Long permissionId : permissionIdList) {
             count += recursiveDisablePermission(permissionId);
         }
@@ -466,7 +466,7 @@ public class PermissionServiceImpl implements PermissionService {
      */
     private int recursiveEnablePermission(Long id) {
         int count = permissionMapper.updateAvailableIfUnavailable(id);
-        List<Long> permissionIdList = permissionMapper.getIdListByParentPermissionId(id);
+        List<Long> permissionIdList = permissionMapper.listIdsByParentPermissionId(id);
         for (Long permissionId : permissionIdList) {
             count += recursiveEnablePermission(permissionId);
         }

@@ -50,7 +50,7 @@ public class WhiteListServiceImpl implements WhiteListService {
 
         // 保存
         PermittedUrlDO permittedUrlDO = new PermittedUrlDO.Builder().url(url).build();
-        permittedUrlMapper.savePermittedUrl(permittedUrlDO);
+        permittedUrlMapper.insertPermittedUrl(permittedUrlDO);
         return getPermittedUrl(permittedUrlDO.getId());
     }
 
@@ -63,7 +63,7 @@ public class WhiteListServiceImpl implements WhiteListService {
      * @return PermittedUrlDTO
      */
     @Override
-    public Result<Void> deletePermittedUrl(Long id) {
+    public Result<Void> removePermittedUrl(Long id) {
         // 判断要删除的 permittedUrl 存不存在
         int count = permittedUrlMapper.count(id);
         if (count < 1) {
@@ -102,8 +102,8 @@ public class WhiteListServiceImpl implements WhiteListService {
      * @return PageInfo<PermittedUrlDTO> 这里可能返回空列表
      */
     @Override
-    public Result<PageInfo<PermittedUrlDTO>> getPermittedUrl(PermittedUrlQuery query) {
-        List<PermittedUrlDO> permittedUrlDOList = permittedUrlMapper.getPermittedUrlByQuery(query);
+    public Result<PageInfo<PermittedUrlDTO>> listPermittedUrls(PermittedUrlQuery query) {
+        List<PermittedUrlDO> permittedUrlDOList = permittedUrlMapper.listPermittedUrls(query);
         List<PermittedUrlDTO> permittedUrlDTOList = permittedUrlDOList.stream()
                 .map(permittedUrlDO -> mapper.map(permittedUrlDO, PermittedUrlDTO.class))
                 .collect(Collectors.toList());
@@ -118,7 +118,7 @@ public class WhiteListServiceImpl implements WhiteListService {
      */
     @Override
     public Result<List<String>> getWhiteList() {
-        List<String> whiteList = permittedUrlMapper.getAllUrl();
+        List<String> whiteList = permittedUrlMapper.listAllUrls();
         return Result.success(whiteList);
     }
 

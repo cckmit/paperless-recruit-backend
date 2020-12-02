@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
  * @create: 2020/10/30 15:05
  */
 public interface AuthOpenidMapper {
-    int saveAuthOpenid(AuthOpenidDO authOpenidDO);
+    int insertAuthOpenid(AuthOpenidDO authOpenidDO);
 
     AuthOpenidDO getAuthOpenid(Long id);
 

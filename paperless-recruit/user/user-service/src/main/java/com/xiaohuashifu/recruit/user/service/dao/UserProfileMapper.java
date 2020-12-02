@@ -15,11 +15,11 @@ import java.util.List;
  */
 public interface UserProfileMapper {
 
-    int saveUserProfile(Long userId);
+    int insertUserProfile(Long userId);
 
     UserProfileDO getUserProfile(Long id);
 
-    List<UserProfileDO> getUserProfileByQuery(UserProfileQuery query);
+    List<UserProfileDO> listUserProfiles(UserProfileQuery query);
 
     UserProfileDO getUserProfileByUserId(Long userId);
 

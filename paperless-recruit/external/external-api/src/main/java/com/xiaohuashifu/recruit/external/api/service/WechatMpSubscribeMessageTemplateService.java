@@ -54,7 +54,7 @@ public interface WechatMpSubscribeMessageTemplateService {
      * @param query 查询参数
      * @return WechatMpSubscribeMessageTemplateDTO 可能返回空列表
      */
-    default Result<PageInfo<WechatMpSubscribeMessageTemplateDTO>> getWechatMpSubscribeMessageTemplate(
+    default Result<PageInfo<WechatMpSubscribeMessageTemplateDTO>> listWechatMpSubscribeMessageTemplates(
             @NotNull WechatMpSubscribeMessageTemplateQuery query) {
         throw new UnsupportedOperationException();
     }

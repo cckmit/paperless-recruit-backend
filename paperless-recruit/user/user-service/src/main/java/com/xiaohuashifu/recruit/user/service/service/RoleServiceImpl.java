@@ -88,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
                 .description(roleDTO.getDescription())
                 .available(roleDTO.getAvailable())
                 .build();
-        roleMapper.saveRole(roleDO);
+        roleMapper.insertRole(roleDO);
         return getRole(roleDO.getId());
     }
 
@@ -123,7 +123,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 绑定用户与角色
-        roleMapper.saveUserRole(userId, roleId);
+        roleMapper.insertUserRole(userId, roleId);
         return Result.success();
     }
 
@@ -158,7 +158,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 绑定角色权限
-        roleMapper.saveRolePermission(roleId, permissionId);
+        roleMapper.insertRolePermission(roleId, permissionId);
         return Result.success();
     }
 
@@ -174,7 +174,7 @@ public class RoleServiceImpl implements RoleService {
      * @return Result<Void>
      */
     @Override
-    public Result<Void> deleteRole(Long id) {
+    public Result<Void> removeRole(Long id) {
         // 判断该角色存不存在
         int count = roleMapper.count(id);
         if (count < 1) {
@@ -208,7 +208,7 @@ public class RoleServiceImpl implements RoleService {
      * @return Result<Void>
      */
     @Override
-    public Result<Void> deleteUserRole(Long userId, Long roleId) {
+    public Result<Void> removeUserRole(Long userId, Long roleId) {
         // 判断该用户存不存在
         int count = userMapper.count(userId);
         if (count < 1) {
@@ -242,7 +242,7 @@ public class RoleServiceImpl implements RoleService {
      * @return Result<Void>
      */
     @Override
-    public Result<Void> deleteRolePermission(Long roleId, Long permissionId) {
+    public Result<Void> removeRolePermission(Long roleId, Long permissionId) {
         // 判断该角色存不存在
         int count = roleMapper.count(roleId);
         if (count < 1) {
@@ -293,8 +293,8 @@ public class RoleServiceImpl implements RoleService {
      * @return Result<PageInfo<RoleDTO>> 带分页信息的角色列表，可能返回空列表
      */
     @Override
-    public Result<PageInfo<RoleDTO>> getRole(RoleQuery query) {
-        List<RoleDO> roleDOList = roleMapper.getRoleByQuery(query);
+    public Result<PageInfo<RoleDTO>> listRoles(RoleQuery query) {
+        List<RoleDO> roleDOList = roleMapper.listRoles(query);
         List<RoleDTO> roleDTOList = roleDOList
                 .stream()
                 .map(roleDO -> mapper.map(roleDO, RoleDTO.class))
@@ -314,7 +314,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Result<List<RoleDTO>> getRoleListByUserId(Long userId) {
-        return Result.success(roleMapper.getRoleListByUserId(userId)
+        return Result.success(roleMapper.listRolesByUserId(userId)
                 .stream()
                 .map((roleDO -> mapper.map(roleDO, RoleDTO.class)))
                 .collect(Collectors.toList()));
@@ -507,7 +507,7 @@ public class RoleServiceImpl implements RoleService {
      */
     private int recursiveDisableRole(Long id) {
         int count = roleMapper.updateAvailable(id, false);
-        List<Long> roleIdList = roleMapper.getIdListByParentRoleIdAndAvailable(id, true);
+        List<Long> roleIdList = roleMapper.listIdsByParentRoleIdAndAvailable(id, true);
         for (Long roleId : roleIdList) {
             count += recursiveDisableRole(roleId);
         }
@@ -522,7 +522,7 @@ public class RoleServiceImpl implements RoleService {
      */
     private int recursiveEnableRole(Long id) {
         int count = roleMapper.updateAvailableIfUnavailable(id);
-        List<Long> roleIdList = roleMapper.getIdListByParentRoleId(id);
+        List<Long> roleIdList = roleMapper.listIdsByParentRoleId(id);
         for (Long roleId : roleIdList) {
             count += recursiveEnableRole(roleId);
         }

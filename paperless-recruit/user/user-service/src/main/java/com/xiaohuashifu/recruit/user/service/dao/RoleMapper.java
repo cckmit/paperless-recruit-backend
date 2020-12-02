@@ -15,11 +15,11 @@ import java.util.List;
  */
 public interface RoleMapper {
 
-    int saveRole(RoleDO roleDO);
+    int insertRole(RoleDO roleDO);
 
-    int saveUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
+    int insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
-    int saveRolePermission(@Param("roleId") Long roleId, @Param("permissionId") Long permissionId);
+    int insertRolePermission(@Param("roleId") Long roleId, @Param("permissionId") Long permissionId);
 
     int deleteRole(Long id);
 
@@ -34,9 +34,9 @@ public interface RoleMapper {
 
     RoleDO getRole(Long id);
 
-    List<RoleDO> getRoleByQuery(RoleQuery query);
+    List<RoleDO> listRoles(RoleQuery query);
 
-    List<RoleDO> getRoleListByUserId(Long userId);
+    List<RoleDO> listRolesByUserId(Long userId);
 
     /**
      * 通过父角色编号获取角色编号列表
@@ -45,7 +45,7 @@ public interface RoleMapper {
      * @param parentRoleId 父角色编号
      * @return 子角色编号列表
      */
-    List<Long> getIdListByParentRoleId(Long parentRoleId);
+    List<Long> listIdsByParentRoleId(Long parentRoleId);
 
     /**
      * 通过父角色编号和角色状态获取角色编号列表
@@ -55,10 +55,10 @@ public interface RoleMapper {
      * @param available 角色状态
      * @return 子角色编号列表
      */
-    List<Long> getIdListByParentRoleIdAndAvailable(@Param("parentRoleId") Long parentRoleId,
-                                                   @Param("available") Boolean available);
+    List<Long> listIdsByParentRoleIdAndAvailable(@Param("parentRoleId") Long parentRoleId,
+                                                 @Param("available") Boolean available);
 
-    List<String> getRoleNameByUserId(Long userId);
+    List<String> listRoleNamesByUserId(Long userId);
 
     /**
      * 通过角色编号获取父角色编号

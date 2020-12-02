@@ -14,11 +14,11 @@ import java.util.List;
  */
 public interface WechatMpSubscribeMessageTemplateMapper {
 
-    int saveWechatMpSubscribeMessageTemplate(WechatMpSubscribeMessageTemplateDO wechatMpSubscribeMessageTemplateDO);
+    int insertWechatMpSubscribeMessageTemplate(WechatMpSubscribeMessageTemplateDO wechatMpSubscribeMessageTemplateDO);
 
     WechatMpSubscribeMessageTemplateDO getWechatMpSubscribeMessageTemplate(Long id);
 
-    List<WechatMpSubscribeMessageTemplateDO> getWechatMpSubscribeMessageTemplateByQuery(
+    List<WechatMpSubscribeMessageTemplateDO> listWechatMpSubscribeMessageTemplates(
             WechatMpSubscribeMessageTemplateQuery query);
 
     int count(Long id);

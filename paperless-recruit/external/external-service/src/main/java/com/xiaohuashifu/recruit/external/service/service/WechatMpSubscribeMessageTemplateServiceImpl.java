@@ -64,7 +64,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
                         .description(wechatMpSubscribeMessageTemplateDTO.getDescription())
                         .status(wechatMpSubscribeMessageTemplateDTO.getStatus())
                         .build();
-        wechatMpSubscribeMessageTemplateMapper.saveWechatMpSubscribeMessageTemplate(wechatMpSubscribeMessageTemplateDO);
+        wechatMpSubscribeMessageTemplateMapper.insertWechatMpSubscribeMessageTemplate(wechatMpSubscribeMessageTemplateDO);
         return getWechatMpSubscribeMessageTemplate(wechatMpSubscribeMessageTemplateDO.getId());
     }
 
@@ -97,11 +97,11 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
      * @return WechatMpSubscribeMessageTemplateDTO 可能返回空列表
      */
     @Override
-    public Result<PageInfo<WechatMpSubscribeMessageTemplateDTO>> getWechatMpSubscribeMessageTemplate(
+    public Result<PageInfo<WechatMpSubscribeMessageTemplateDTO>> listWechatMpSubscribeMessageTemplates(
             WechatMpSubscribeMessageTemplateQuery query) {
         // 获取WechatMpSubscribeMessageTemplateDO
         List<WechatMpSubscribeMessageTemplateDO> wechatMpSubscribeMessageTemplateDOList =
-                wechatMpSubscribeMessageTemplateMapper.getWechatMpSubscribeMessageTemplateByQuery(query);
+                wechatMpSubscribeMessageTemplateMapper.listWechatMpSubscribeMessageTemplates(query);
 
         // 转换成WechatMpSubscribeMessageTemplateDTO
         List<WechatMpSubscribeMessageTemplateDTO> wechatMpSubscribeMessageTemplateDTOList =

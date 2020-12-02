@@ -5,7 +5,7 @@
         id, college_name, create_time, update_time
     </sql>
 
-    <insert id="saveCollege" keyProperty="id">
+    <insert id="insertCollege" keyProperty="id">
         insert into college
         (college_name)
         values(#{collegeName})
@@ -22,7 +22,7 @@
         where id = #{id}
     </select>
 
-    <select id="getCollegeByQuery" resultType="college">
+    <select id="listColleges" resultType="college">
         select <include refid="college"/>
         from college
         <where>

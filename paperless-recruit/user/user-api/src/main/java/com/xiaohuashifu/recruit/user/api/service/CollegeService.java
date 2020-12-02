@@ -90,7 +90,7 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<CollegeDTO> 带分页信息的查询结果，可能返回空列表
      */
-    default Result<PageInfo<CollegeDTO>> getCollege(@NotNull CollegeQuery query) {
+    default Result<PageInfo<CollegeDTO>> listColleges(@NotNull CollegeQuery query) {
         throw new UnsupportedOperationException();
     }
 
@@ -116,7 +116,7 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<CollegeMajorDTO> 带分页信息的查询结果，可以返回空列表
      */
-    default Result<PageInfo<CollegeMajorDTO>> getCollegeMajor(@NotNull CollegeQuery query) {
+    default Result<PageInfo<CollegeMajorDTO>> listCollegeMajors(@NotNull CollegeQuery query) {
         throw new UnsupportedOperationException();
     }
 
@@ -141,7 +141,7 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<MajorDTO> 带分页信息的查询结果，可能会返回空列表
      */
-    default Result<PageInfo<MajorDTO>> getMajor(@NotNull MajorQuery query) {
+    default Result<PageInfo<MajorDTO>> listMajors(@NotNull MajorQuery query) {
         throw new UnsupportedOperationException();
     }
 

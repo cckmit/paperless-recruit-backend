@@ -68,7 +68,7 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
         UserDTO userDTO = userService.getUserByPhone(phone).getData();
 
         // 获取权限列表
-        Set<String> authoritySet = permissionService.getAuthorityByUserId(userDTO.getId()).getData();
+        Set<String> authoritySet = permissionService.listAuthoritiesByUserId(userDTO.getId()).getData();
         List<SimpleGrantedAuthority> authorityList = authoritySet.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());

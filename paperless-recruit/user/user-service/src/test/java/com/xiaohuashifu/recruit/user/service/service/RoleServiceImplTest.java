@@ -58,22 +58,22 @@ public class RoleServiceImplTest {
 
     @Test
     public void getRole() {
-        System.out.println(roleService.getRole(new RoleQuery()));
+        System.out.println(roleService.listRoles(new RoleQuery()));
     }
 
     @Test
     public void deleteRole() {
-        System.out.println(roleService.deleteRole(7L));
+        System.out.println(roleService.removeRole(7L));
     }
 
     @Test
     public void deleteUserRole() {
-        System.out.println(roleService.deleteUserRole(7L, 10L));
+        System.out.println(roleService.removeUserRole(7L, 10L));
     }
 
     @Test
     public void deleteRolePermission() {
-        System.out.println(roleService.deleteRolePermission(11L, 9L));
+        System.out.println(roleService.removeRolePermission(11L, 9L));
     }
 
     @Test

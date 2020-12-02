@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface MajorMapper {
 
-    int saveMajor(MajorDO majorDO);
+    int insertMajor(MajorDO majorDO);
 
     int deleteByCollegeId(Long collegeId);
 
@@ -23,9 +23,9 @@ public interface MajorMapper {
 
     MajorDO getMajor(Long id);
 
-    List<MajorDO> getMajorByCollegeId(Long collegeId);
+    List<MajorDO> listMajorsByCollegeId(Long collegeId);
 
-    List<MajorDO> getMajorByQuery(MajorQuery query);
+    List<MajorDO> listMajors(MajorQuery query);
 
     int count(Long id);
 

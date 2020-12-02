@@ -14,11 +14,11 @@ import java.util.List;
  * @create: 2020/10/30 15:05
  */
 public interface UserMapper {
-    int saveUser(UserDO user);
+    int insertUser(UserDO user);
 
     UserDO getUser(Long id);
 
-    List<UserDO> getUserByQuery(UserQuery query);
+    List<UserDO> listUsers(UserQuery query);
 
     UserDO getUserByUsername(String username);
 

@@ -15,7 +15,7 @@ import java.util.Set;
  * @create: 2020/11/12 20:44
  */
 public interface PermissionMapper {
-    int savePermission(PermissionDO permissionDO);
+    int insertPermission(PermissionDO permissionDO);
 
     int deletePermission(Long id);
 
@@ -23,20 +23,20 @@ public interface PermissionMapper {
 
     PermissionDO getPermission(Long id);
 
-    List<PermissionDO> getPermissionListByRoleIdList(List<Long> roleIdList);
+    List<PermissionDO> listPermissionsByRoleIds(List<Long> roleIds);
 
-    List<PermissionDO> getPermissionByUserId(Long userId);
+    List<PermissionDO> listPermissionsByUserId(Long userId);
 
-    List<PermissionDO> getPermissionByQuery(PermissionQuery query);
+    List<PermissionDO> listPermissions(PermissionQuery query);
 
-    List<PermissionDO> getAllPermission();
+    List<PermissionDO> listAllPermissions();
 
-    Set<String> getPermissionNameByUserId(Long userId);
+    Set<String> listPermissionNamesByUserId(Long userId);
 
-    List<Long> getIdListByParentPermissionId(Long parentPermissionId);
+    List<Long> listIdsByParentPermissionId(Long parentPermissionId);
 
-    List<Long> getIdListByParentPermissionIdAndAvailable(@Param("parentPermissionId") Long parentPermissionId,
-                                                         @Param("available") Boolean available);
+    List<Long> listIdsByParentPermissionIdAndAvailable(@Param("parentPermissionId") Long parentPermissionId,
+                                                       @Param("available") Boolean available);
 
     int count(Long id);
 

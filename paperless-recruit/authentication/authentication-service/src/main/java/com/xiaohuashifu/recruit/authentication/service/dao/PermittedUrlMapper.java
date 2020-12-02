@@ -13,20 +13,20 @@ import java.util.List;
  * @create 2020/11/27 20:22
  */
 public interface PermittedUrlMapper {
-    int savePermittedUrl(PermittedUrlDO permittedUrlDO);
+    int insertPermittedUrl(PermittedUrlDO permittedUrlDO);
 
     int deletePermittedUrl(Long id);
 
     PermittedUrlDO getPermittedUrl(Long id);
 
-    List<PermittedUrlDO> getPermittedUrlByQuery(PermittedUrlQuery query);
+    List<PermittedUrlDO> listPermittedUrls(PermittedUrlQuery query);
 
     /**
      * 获取所有的url，用于白名单
      *
      * @return List<String> urlList
      */
-    List<String> getAllUrl();
+    List<String> listAllUrls();
 
     int count(Long id);
 

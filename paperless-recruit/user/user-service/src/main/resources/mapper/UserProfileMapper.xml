@@ -5,7 +5,7 @@
         id, user_id, full_name, student_number, college, major, introduction, create_time, update_time
     </sql>
 
-    <insert id="saveUserProfile">
+    <insert id="insertUserProfile">
         insert into user_profile(user_id)
         values(#{userId})
     </insert>
@@ -16,7 +16,7 @@
         where id = #{id}
     </select>
 
-    <select id="getUserProfileByQuery" resultType="userProfile">
+    <select id="listUserProfiles" resultType="userProfile">
         select <include refid="userProfile"/>
         from user_profile
         <where>

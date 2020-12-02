@@ -36,7 +36,7 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
      */
     @Override
     public Result<String> createRoleHierarchy() {
-        Result<List<PermissionDTO>> getAllPermissionResult = permissionService.getAllPermission();
+        Result<List<PermissionDTO>> getAllPermissionResult = permissionService.listAllPermissions();
         List<PermissionDTO> permissionDTOList = getAllPermissionResult.getData();
         Map<Long, String> permissionDTOMap = permissionDTOList.stream()
                 .collect(Collectors.toMap(PermissionDTO::getId, PermissionDTO::getPermissionName));

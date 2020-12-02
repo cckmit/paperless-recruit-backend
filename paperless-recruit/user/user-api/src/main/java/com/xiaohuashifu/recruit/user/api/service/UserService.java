@@ -150,7 +150,7 @@ public interface UserService {
      * @param query 查询参数
      * @return Result<PageInfo<UserDTO>> 带分页信息的查询结果用户列表，可能返回空列表
      */
-    default Result<PageInfo<UserDTO>> getUser(@NotNull UserQuery query) {
+    default Result<PageInfo<UserDTO>> listUsers(@NotNull UserQuery query) {
         throw new UnsupportedOperationException();
     }
 
@@ -283,7 +283,7 @@ public interface UserService {
      *              InvalidParameter.User.NotExist: 对应编号的用户不存在
      *
      * @param id 用户编号
-     * @return 是否存在
+     * @return 是否存在，Result.success=true表示用户存在
      */
     default Result<Void> userExists(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();

@@ -43,7 +43,7 @@ public class UserProfileServiceImplTest {
 
     @Test
     public void testGetUserProfile() {
-        System.out.println(userProfileService.getUserProfile(new UserProfileQuery.Builder().id(1L).build()));
+        System.out.println(userProfileService.listUserProfiles(new UserProfileQuery.Builder().id(1L).build()));
     }
 
     @Test

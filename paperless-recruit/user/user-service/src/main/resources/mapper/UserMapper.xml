@@ -5,7 +5,7 @@
         id, username, password, phone, email, is_available as available, create_time, update_time
     </sql>
 
-    <insert id="saveUser" keyProperty="id">
+    <insert id="insertUser" keyProperty="id">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides="," >
             username, password,
@@ -28,7 +28,7 @@
         where id = #{id}
     </select>
 
-    <select id="getUserByQuery" resultType="user">
+    <select id="listUsers" resultType="user">
         select <include refid="user"/>
         from user
         <where>

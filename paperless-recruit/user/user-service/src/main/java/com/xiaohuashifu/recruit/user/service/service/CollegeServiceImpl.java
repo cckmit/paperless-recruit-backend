@@ -55,7 +55,7 @@ public class CollegeServiceImpl implements CollegeService {
 
         // 添加到数据库
         CollegeDO collegeDO = new CollegeDO.Builder().collegeName(collegeName).build();
-        collegeMapper.saveCollege(collegeDO);
+        collegeMapper.insertCollege(collegeDO);
         return getCollege(collegeDO.getId());
     }
 
@@ -86,7 +86,7 @@ public class CollegeServiceImpl implements CollegeService {
 
         // 保存到数据库
         MajorDO majorDO = new MajorDO.Builder().collegeId(collegeId).majorName(majorName).build();
-        majorMapper.saveMajor(majorDO);
+        majorMapper.insertMajor(majorDO);
         return getMajor(majorDO.getId());
     }
 
@@ -162,8 +162,8 @@ public class CollegeServiceImpl implements CollegeService {
      * @return PageInfo<CollegeDTO> 带分页信息的查询结果，可能返回空列表
      */
     @Override
-    public Result<PageInfo<CollegeDTO>> getCollege(CollegeQuery query) {
-        List<CollegeDO> collegeDOList = collegeMapper.getCollegeByQuery(query);
+    public Result<PageInfo<CollegeDTO>> listColleges(CollegeQuery query) {
+        List<CollegeDO> collegeDOList = collegeMapper.listColleges(query);
         List<CollegeDTO> collegeDTOList = collegeDOList
                 .stream()
                 .map(collegeDO -> mapper.map(collegeDO, CollegeDTO.class))
@@ -200,15 +200,15 @@ public class CollegeServiceImpl implements CollegeService {
      * @return PageInfo<CollegeMajorDTO> 带分页信息的查询结果，可以返回空列表
      */
     @Override
-    public Result<PageInfo<CollegeMajorDTO>> getCollegeMajor(CollegeQuery query) {
-        List<CollegeDO> collegeDOList = collegeMapper.getCollegeByQuery(query);
+    public Result<PageInfo<CollegeMajorDTO>> listCollegeMajors(CollegeQuery query) {
+        List<CollegeDO> collegeDOList = collegeMapper.listColleges(query);
         List<CollegeMajorDTO> collegeMajorDTOList = collegeDOList
                 .stream()
                 .map(collegeDO -> mapper.map(collegeDO, CollegeMajorDTO.class))
                 .collect(Collectors.toList());
         PageInfo<CollegeMajorDTO> pageInfo = new PageInfo<>(collegeMajorDTOList);
         for (CollegeMajorDTO collegeMajorDTO : collegeMajorDTOList) {
-            List<MajorDO> majorDOList = majorMapper.getMajorByCollegeId(collegeMajorDTO.getId());
+            List<MajorDO> majorDOList = majorMapper.listMajorsByCollegeId(collegeMajorDTO.getId());
             List<MajorDTO> majorDTOList = majorDOList
                     .stream()
                     .map(majorDO -> mapper.map(majorDO, MajorDTO.class))
@@ -245,8 +245,8 @@ public class CollegeServiceImpl implements CollegeService {
      * @return PageInfo<MajorDTO> 带分页信息的查询结果，可能会返回空列表
      */
     @Override
-    public Result<PageInfo<MajorDTO>> getMajor(MajorQuery query) {
-        List<MajorDO> majorDOList = majorMapper.getMajorByQuery(query);
+    public Result<PageInfo<MajorDTO>> listMajors(MajorQuery query) {
+        List<MajorDO> majorDOList = majorMapper.listMajors(query);
         List<MajorDTO> majorDTOList = majorDOList
                 .stream()
                 .map(majorDO -> mapper.map(majorDO, MajorDTO.class))

@@ -5,7 +5,7 @@
         id, url, create_time, update_time
     </sql>
 
-    <insert id="savePermittedUrl" keyProperty="id">
+    <insert id="insertPermittedUrl" keyProperty="id">
         insert into permitted_url(url)
         values(#{url})
     </insert>
@@ -21,7 +21,7 @@
         where id = #{id}
     </select>
 
-    <select id="getPermittedUrlByQuery" resultType="permittedUrl">
+    <select id="listPermittedUrls" resultType="permittedUrl">
         select <include refid="permittedUrl"/>
         from permitted_url
         <where>
@@ -41,7 +41,7 @@
         </where>
     </select>
 
-    <select id="getAllUrl" resultType="string">
+    <select id="listAllUrls" resultType="string">
         select url
         from permitted_url
     </select>

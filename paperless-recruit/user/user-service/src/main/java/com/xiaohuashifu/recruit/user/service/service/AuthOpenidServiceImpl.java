@@ -116,7 +116,7 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
                 .appName(app)
                 .openid(openid)
                 .build();
-        authOpenidMapper.saveAuthOpenid(authOpenidDO);
+        authOpenidMapper.insertAuthOpenid(authOpenidDO);
 
         // 给用户添加微信小程序基本权限
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP) {

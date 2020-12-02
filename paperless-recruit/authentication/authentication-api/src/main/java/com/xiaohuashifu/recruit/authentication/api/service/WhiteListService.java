@@ -42,7 +42,7 @@ public interface WhiteListService {
      * @param id 被允许的 url 的编号
      * @return PermittedUrlDTO
      */
-    default Result<Void> deletePermittedUrl(@NotNull @Positive Long id) {
+    default Result<Void> removePermittedUrl(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -67,7 +67,7 @@ public interface WhiteListService {
      * @param query 查询参数
      * @return PageInfo<PermittedUrlDTO> 这里可能返回空列表
      */
-    default Result<PageInfo<PermittedUrlDTO>> getPermittedUrl(@NotNull PermittedUrlQuery query) {
+    default Result<PageInfo<PermittedUrlDTO>> listPermittedUrls(@NotNull PermittedUrlQuery query) {
         throw new UnsupportedOperationException();
     }
 

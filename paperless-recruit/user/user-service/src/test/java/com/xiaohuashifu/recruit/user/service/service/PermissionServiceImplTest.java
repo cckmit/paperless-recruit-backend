@@ -60,7 +60,7 @@ public class PermissionServiceImplTest {
 
     @Test
     public void deletePermission() {
-        System.out.println(permissionService.deletePermission(14L));
+        System.out.println(permissionService.removePermission(14L));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class PermissionServiceImplTest {
 
     @Test
     public void testGetPermission() {
-        System.out.println(permissionService.getPermission(
+        System.out.println(permissionService.listPermissions(
                 new PermissionQuery.Builder()
                         .permissionName("test")
                         .build()));
@@ -78,7 +78,7 @@ public class PermissionServiceImplTest {
 
     @Test
     public void getAllPermission() {
-        System.out.println(permissionService.getAllPermission());
+        System.out.println(permissionService.listAllPermissions());
     }
 
     @Test
@@ -88,18 +88,18 @@ public class PermissionServiceImplTest {
                 .map(RoleDTO::getId)
                 .collect(Collectors.toList());
 
-        System.out.println(permissionService.getPermissionByRoleIdList(roleIdList));
+        System.out.println(permissionService.listPermissionsByRoleIds(roleIdList));
     }
 
     @Test
     public void getPermissionByUserId() {
-        System.out.println(permissionService.getPermissionByUserId(7L));
+        System.out.println(permissionService.listPermissionsByUserId(7L));
     }
 
 
     @Test
     public void getAuthorityByUserId() {
-        System.out.println(permissionService.getAuthorityByUserId(4L));
+        System.out.println(permissionService.listAuthoritiesByUserId(4L));
     }
 
     @Test

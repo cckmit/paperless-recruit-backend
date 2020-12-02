@@ -59,7 +59,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         // 判断该编号的用户是否存在
         Result<Void> userExistsResult = userService.userExists(userId);
         if (!userExistsResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user does not exist.");
+            return Result.fail(userExistsResult);
         }
 
         // 判断用户信息是否已经存在

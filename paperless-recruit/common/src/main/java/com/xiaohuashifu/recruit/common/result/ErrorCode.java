@@ -20,10 +20,24 @@ public enum ErrorCode implements Serializable {
             "InvalidParameter", "The required parameter is not valid."),
 
     /**
+     * 非法Code
+     */
+    INVALID_PARAMETER_CODE(HttpStatus.NOT_FOUND,
+            "InvalidParameter.Code", "The code is invalid."),
+
+
+    /**
      * 非法参数，不支持的类型
      */
     INVALID_PARAMETER_UNSUPPORTED(HttpStatus.BAD_REQUEST,
-            "InvalidParameter.unsupported", "Unsupported parameter."),
+            "InvalidParameter.Unsupported", "Unsupported parameter."),
+
+    /**
+     * 非法参数，不支持的APP类型
+     */
+    INVALID_PARAMETER_APP_UNSUPPORTED(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.App.Unsupported", "Unsupported app."),
+
 
     /**
      * 非法参数，值不正确
@@ -80,6 +94,18 @@ public enum ErrorCode implements Serializable {
             "InvalidParameter.Size", "The size of {Parameter} must be from {Min} to {Max}."),
 
     /**
+     * 非法参数，不存在
+     */
+    INVALID_PARAMETER_NOT_EXIST(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.NotExist", "The resource of this parameter does not exist."),
+
+    /**
+     * 非法参数，不存在
+     */
+    INVALID_PARAMETER_USER_NOT_EXIST(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.User.NotExist", "The user does not exist."),
+
+    /**
      * 未知错误
      */
     UNKNOWN_ERROR(HttpStatus.BAD_REQUEST,
@@ -116,7 +142,7 @@ public enum ErrorCode implements Serializable {
             "Forbidden.Unauthorized", "User not authorized to operate on the specified resource."),
 
     /**
-     * 未找到该参数
+     * 未找到该参数对应的资源
      */
     INVALID_PARAMETER_NOT_FOUND(HttpStatus.NOT_FOUND,
             "InvalidParameter.NotFound", "The specified resource does not exist."),
@@ -126,6 +152,18 @@ public enum ErrorCode implements Serializable {
      */
     INVALID_PARAMETER_AUTH_CODE_NOT_FOUND(HttpStatus.NOT_FOUND,
             "InvalidParameter.AuthCode.NotFound", "The auth code does not exist."),
+
+    /**
+     * 未找到验证码
+     */
+    INVALID_PARAMETER_AUTH_CODE_NOT_EXIST(HttpStatus.NOT_FOUND,
+            "InvalidParameter.AuthCode.NotExist", "The auth code does not exist."),
+
+    /**
+     * 未找到openid
+     */
+    INVALID_PARAMETER_OPENID_NOT_FOUND(HttpStatus.NOT_FOUND,
+            "InvalidParameter.NotFound", "The specified resource does not exist."),
 
 
     /**

@@ -86,7 +86,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *              InvalidParameter.AuthCode.Incorrect: 验证码错误
-     *              InvalidParameter.AuthCode.NotFound: 验证码不存在，可能是因为过期
+     *              InvalidParameter.AuthCode.NotExist: 验证码不存在，可能是因为过期
      *
      * @param id 图形验证码编号
      * @param authCode 用户输入的验证码字符串
@@ -99,7 +99,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
         String authCodeInRedis = redisTemplate.opsForValue().get(redisKey);
         // 验证码不存在
         if (authCodeInRedis == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_FOUND, "Auth code does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exist.");
         }
 
         // 删除验证码

@@ -620,7 +620,7 @@ public class UserServiceImpl implements UserService {
      * 判断用户是否存在
      *
      * @errorCode InvalidParameter: 用户编号格式错误
-     *              InvalidParameter.NotFound: 对应编号的用户不存在
+     *              InvalidParameter.User.NotExist: 对应编号的用户不存在
      *
      * @param id 用户编号
      * @return 是否存在
@@ -629,7 +629,7 @@ public class UserServiceImpl implements UserService {
     public Result<Void> userExists(Long id) {
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCode.INVALID_PARAMETER_USER_NOT_EXIST);
         }
         return Result.success();
     }

@@ -50,6 +50,8 @@ public class WechatMpServiceImpl implements WechatMpService {
     /**
      * 通过code获得openid
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | App是不支持的类型 | 非法code
+     *
      * @param code code
      * @param app 具体的微信小程序
      * @return openid
@@ -64,13 +66,18 @@ public class WechatMpServiceImpl implements WechatMpService {
         // 获取openid
         Optional<Code2SessionDTO> code2SessionDTOOptional = wechatMpManager.getCode2Session(code, app);
         if (code2SessionDTOOptional.isEmpty()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The openid does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The code is invalid.");
         }
+
         return Result.success(code2SessionDTOOptional.get().getOpenid());
     }
 
     /**
      * 发送订阅消息
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | App是不支持的类型 | 用户还未绑定此app
+     *              InternalError: 服务器错误 | access-token获取失败 | 发送订阅消息出错
+     *              UnknownError: 未知错误 | 发送订阅消息时微信小程序报的错误，具体查看错误消息
      *
      * @param app 微信小程序类型
      * @param userId 用于获取openid
@@ -87,7 +94,7 @@ public class WechatMpServiceImpl implements WechatMpService {
         // 获取openId
         Result<String> getOpenidResult = authOpenidService.getOpenid(app, userId);
         if (!getOpenidResult.isSuccess()) {
-            return Result.fail(getOpenidResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user has not been bound this app.");
         }
         subscribeMessageDTO.setTouser(getOpenidResult.getData());
 
@@ -102,10 +109,10 @@ public class WechatMpServiceImpl implements WechatMpService {
         ResponseEntity<WeChatMpResponseDTO> responseEntity =
                 restTemplate.postForEntity(url, subscribeMessageDTO, WeChatMpResponseDTO.class);
         if (responseEntity.getBody() == null) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR);
+            return Result.fail(ErrorCode.INTERNAL_ERROR, "Send subscribe message failed.");
         }
         if (!responseEntity.getBody().getErrcode().equals(0)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, responseEntity.getBody().getErrmsg());
+            return Result.fail(ErrorCode.UNKNOWN_ERROR, responseEntity.getBody().getErrmsg());
         }
         return Result.success();
     }

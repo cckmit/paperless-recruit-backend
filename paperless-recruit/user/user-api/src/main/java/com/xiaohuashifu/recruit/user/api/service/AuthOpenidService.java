@@ -22,10 +22,12 @@ public interface AuthOpenidService {
      * 用于微信小程序用户绑定AuthOpenid
      * 会通过code获取openid
      * 保存时会对openid进行加密
-     * 只支持App.SCAU_RECRUIT_INTERVIEWEE_MP和App.SCAU_RECRUIT_INTERVIEWER_MP两种类型的绑定
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误|不支持的App类型|非法code|对应编号的用户不存在
+     *              OperationConflict: 用户已经绑定在此App上
      *
      * @param userId 用户编号
-     * @param app 具体的微信小程序
+     * @param app 具体的微信小程序，只支持SCAU_RECRUIT_INTERVIEWEE_MP和SCAU_RECRUIT_INTERVIEWER_MP两种类型的绑定
      * @param code 微信小程序wx.login()接口的返回结果
      * @return AuthOpenidDTO
      */
@@ -40,6 +42,9 @@ public interface AuthOpenidService {
      * 可以用于快捷登录时使用
      * 该接口调用成功即可证明用户身份
      *
+     * @errorCode InvalidParameter: 请求参数格式错误|不支持的App类型|非法code
+     *              InvalidParameter.NotExist: 该用户还未绑定到此App
+     *
      * @param app 具体的微信小程序
      * @param code 微信小程序wx.login()接口的返回结果
      * @return AuthOpenidDTO
@@ -52,9 +57,12 @@ public interface AuthOpenidService {
     /**
      * 获取openid
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到对应的openid
+     *
      * @param userId 用户编号
      * @param app 具体的微信小程序
-     * @return openid
+     * @return openid 若参数错误的情况下，返回null
      */
     default Result<String> getOpenid(@NotNull App app, @NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();

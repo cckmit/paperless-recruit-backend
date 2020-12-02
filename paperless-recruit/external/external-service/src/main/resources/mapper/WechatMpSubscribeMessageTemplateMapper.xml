@@ -51,6 +51,12 @@
         </where>
     </select>
 
+    <select id="count" resultType="int">
+        select count(*)
+        from wechat_mp_subscribe_message_template
+        where id = #{id}
+    </select>
+
     <select id="countByTemplateId" resultType="int">
         select count(*)
         from wechat_mp_subscribe_message_template

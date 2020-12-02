@@ -294,7 +294,7 @@ public interface UserService {
      * 判断用户是否存在
      *
      * @errorCode InvalidParameter: 用户编号格式错误
-     *              InvalidParameter.NotFound: 对应编号的用户不存在
+     *              InvalidParameter.User.NotExist: 对应编号的用户不存在
      *
      * @param id 用户编号
      * @return 是否存在

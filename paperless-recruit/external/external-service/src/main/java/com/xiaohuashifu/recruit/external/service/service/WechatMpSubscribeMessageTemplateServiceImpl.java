@@ -38,6 +38,9 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     /**
      * 添加模板
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              OperationConflict: 存在相同的模板编号
+     *
      * @param wechatMpSubscribeMessageTemplateDTO WechatMpSubscribeMessageTemplateDTO
      * @return WechatMpSubscribeMessageTemplateDTO
      */
@@ -48,7 +51,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
         int count = wechatMpSubscribeMessageTemplateMapper.countByTemplateId(
                 wechatMpSubscribeMessageTemplateDTO.getTemplateId());
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This template id already exists.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This template id already exists.");
         }
 
         // 添加到数据库
@@ -68,6 +71,9 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     /**
      * 获取模板
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 该编号的模板不存在
+     *
      * @param id 模板编号
      * @return WechatMpSubscribeMessageTemplateDTO
      */
@@ -85,8 +91,10 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     /**
      * 获取模板通过query参数
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return WechatMpSubscribeMessageTemplateDTO
+     * @return WechatMpSubscribeMessageTemplateDTO 可能返回空列表
      */
     @Override
     public Result<PageInfo<WechatMpSubscribeMessageTemplateDTO>> getWechatMpSubscribeMessageTemplate(
@@ -110,7 +118,9 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     }
 
     /**
-     * 更新模板
+     * 更新模板，这是一个较广的更新接口，请小心使用
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为null
      *
      * @param wechatMpSubscribeMessageTemplateDTO WechatMpSubscribeMessageTemplateDTO
      * @return WechatMpSubscribeMessageTemplateDTO
@@ -118,6 +128,13 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
     @Override
     public Result<WechatMpSubscribeMessageTemplateDTO> updateWechatMpSubscribeMessageTemplate(
             WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO) {
+        // 判断该编号的模板存不存在
+        int count = wechatMpSubscribeMessageTemplateMapper.count(wechatMpSubscribeMessageTemplateDTO.getId());
+        if (count < 1) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This template does not exist.");
+        }
+
+        // 配置更新参数
         WechatMpSubscribeMessageTemplateDO wechatMpSubscribeMessageTemplateDO =
                 new WechatMpSubscribeMessageTemplateDO.Builder()
                         .appName(wechatMpSubscribeMessageTemplateDTO.getApp())

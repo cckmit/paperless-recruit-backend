@@ -21,7 +21,10 @@ public interface WechatMpSubscribeMessageTemplateMapper {
     List<WechatMpSubscribeMessageTemplateDO> getWechatMpSubscribeMessageTemplateByQuery(
             WechatMpSubscribeMessageTemplateQuery query);
 
+    int count(Long id);
+
     int countByTemplateId(String templateId);
 
     int updateWechatMpSubscribeMessageTemplate(WechatMpSubscribeMessageTemplateDO wechatMpSubscribeMessageTemplateDO);
+
 }

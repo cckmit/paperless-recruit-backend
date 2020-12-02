@@ -10,6 +10,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
@@ -39,6 +40,12 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String from;
 
+    /**
+     * 邮箱验证码的Redis key前缀
+     * 推荐格式为EMAIL_AUTH_CODE_REDIS_PREFIX:{subject}:{email}
+     */
+    private static final String EMAIL_AUTH_CODE_REDIS_PREFIX = "email:auth-code";
+
     public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine,
                             StringRedisTemplate redisTemplate) {
         this.mailSender = mailSender;
@@ -50,7 +57,7 @@ public class EmailServiceImpl implements EmailService {
      * 发送简单邮件
      *
      * @errorCode InvalidParameter: 请求参数格式错误
-     *              UnknownError: 发送邮件失败，可能是邮箱地址错误，或者网络延迟
+     *              UnknownError: 发送邮件失败 | 邮箱地址错误 | 网络延迟
      *
      * @param emailDTO 需要to、subject、text三个字段
      * @param attachmentMap 附件Map，可以为null
@@ -74,11 +81,13 @@ public class EmailServiceImpl implements EmailService {
                     helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
                 }
             }
-        } catch (MessagingException e) {
+
+            // 发送邮件
+            mailSender.send(mimeMessage);
+        } catch (MessagingException | MailException e) {
             return Result.fail(ErrorCode.UNKNOWN_ERROR);
         }
 
-        mailSender.send(mimeMessage);
         return Result.success();
     }
 
@@ -86,7 +95,7 @@ public class EmailServiceImpl implements EmailService {
      * 发送模板邮件，使用的是velocity模板
      *
      * @errorCode InvalidParameter: 请求参数格式错误
-     *              UnknownError: 发送邮件失败，可能是邮箱地址错误，或者网络延迟
+     *              UnknownError: 发送邮件失败 | 邮箱地址错误 | 网络延迟 | 模板不存在 | 模板参数错误等
      *
      * @param emailDTO 需要to、subject两个字段
      * @param templateName 模板名，模板需要提前创建
@@ -118,11 +127,13 @@ public class EmailServiceImpl implements EmailService {
                     helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
                 }
             }
+
+            // 发送邮件
+            mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             return Result.fail(ErrorCode.UNKNOWN_ERROR);
         }
 
-        mailSender.send(mimeMessage);
         return Result.success();
     }
 
@@ -131,7 +142,7 @@ public class EmailServiceImpl implements EmailService {
      * 该服务会把邮箱验证码进行缓存
      *
      * @errorCode InvalidParameter: 请求参数格式错误
-     *              UnknownError: 发送邮件验证码失败，可能是邮箱地址错误，或者网络延迟
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
      * @param emailAuthCodeDTO 邮箱验证码对象
      * @return Result<Void> 返回结果若Result.isSuccess()为true表示发送成功，否则发送失败
@@ -151,7 +162,7 @@ public class EmailServiceImpl implements EmailService {
         Result<Void> sendEmailAuthCodeResult = sendTemplateEmail(
                 emailD, "RecruitAuthCode", model, null);
         if (!sendEmailAuthCodeResult.isSuccess()) {
-            return sendEmailAuthCodeResult;
+            return Result.fail(ErrorCode.UNKNOWN_ERROR, "Send email auth code failed.");
         }
 
         // 添加邮箱验证码到缓存
@@ -167,7 +178,7 @@ public class EmailServiceImpl implements EmailService {
      * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次（EmailAuthCodeDTO.delete == true即可）
      *
      * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.AuthCode.NotFound: 找不到对应邮箱的验证码，有可能已经过期或者没有发送成功
+     *              InvalidParameter.AuthCode.NotExist: 找不到对应邮箱的验证码，有可能已经过期或者没有发送成功
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码值不正确
      *
      * @param emailAuthCodeDTO 邮箱验证码对象
@@ -182,7 +193,7 @@ public class EmailServiceImpl implements EmailService {
 
         // 验证码不存在
         if (authCode == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_FOUND, "Auth code does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exist.");
         }
 
         // 验证码不正确

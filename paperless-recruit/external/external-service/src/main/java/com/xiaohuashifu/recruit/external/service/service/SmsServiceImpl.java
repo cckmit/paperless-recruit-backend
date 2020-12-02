@@ -40,6 +40,12 @@ public class SmsServiceImpl implements SmsService {
     @Value("${aliyun.access-key-secret}")
     private String accessKeySecret;
 
+    /**
+     * 短信验证码的Redis key前缀
+     * 推荐格式为SMS_AUTH_CODE_REDIS_PREFIX:{subject}:{phone}
+     */
+    private static final String SMS_AUTH_CODE_REDIS_PREFIX = "sms:auth-code";
+
     public SmsServiceImpl(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
@@ -55,7 +61,7 @@ public class SmsServiceImpl implements SmsService {
      * 该服务会把短信验证码进行缓存
      *
      * @errorCode InvalidParameter: 手机号码或主题或过期时间的格式错误
-     *              InternalError: 发送短信验证码错误，需要重试
+     *              UnknownError: 发送短信验证码错误，需要重试
      *
      * @param smsAuthCodeDTO 短信验证码对象
      * @return Result<Void> 返回结果若Result.isSuccess()为true表示发送成功，否则发送失败
@@ -68,7 +74,7 @@ public class SmsServiceImpl implements SmsService {
             sendSmsAuthCode(smsAuthCodeDTO.getPhone(), authCode);
         } catch (ClientException clientException) {
             logger.warn("Send sms auth code fail");
-            return Result.fail(ErrorCode.INTERNAL_ERROR, "Send sms auth code failed.");
+            return Result.fail(ErrorCode.UNKNOWN_ERROR, "Send sms auth code failed.");
         }
 
         // 添加短信验证码到缓存
@@ -84,7 +90,7 @@ public class SmsServiceImpl implements SmsService {
      * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次（SmsAuthCodeDTO.delete == true即可）
      *
      * @errorCode InvalidParameter: 需要正确的手机号码或验证码参数格式错误
-     *              InvalidParameter.AuthCode.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
+     *              InvalidParameter.AuthCode.NotExist: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码值不正确
      *
      * @param smsAuthCodeDTO 短信验证码对象
@@ -99,7 +105,7 @@ public class SmsServiceImpl implements SmsService {
 
         // 验证码不存在
         if (authCode == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_FOUND, "Auth code does not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exists.");
         }
 
         // 验证码不正确

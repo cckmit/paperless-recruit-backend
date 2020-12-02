@@ -20,6 +20,7 @@ public interface UserProfileService {
      * 创建用户个人信息，创建的是一个空白的个人信息
      * 需要用户后续填写
      * 用户必须还没有创建个人信息
+     * @errorCode InvalidParameter.User.NotExist: 用户不存在
      *
      * @param userId 用户编号
      * @return 创建结果

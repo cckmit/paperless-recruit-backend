@@ -37,7 +37,7 @@ public interface ImageAuthCodeService {
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *              InvalidParameter.AuthCode.Incorrect: 验证码错误
-     *              InvalidParameter.AuthCode.NotFound: 验证码不存在，可能是因为过期
+     *              InvalidParameter.AuthCode.NotExist: 验证码不存在，可能是因为过期
      *
      * @param id 图形验证码编号
      * @param authCode 用户输入的验证码字符串

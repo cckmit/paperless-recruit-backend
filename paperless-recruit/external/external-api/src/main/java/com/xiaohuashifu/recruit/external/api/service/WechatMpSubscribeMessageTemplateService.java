@@ -21,6 +21,9 @@ public interface WechatMpSubscribeMessageTemplateService {
     /**
      * 添加模板
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              OperationConflict: 存在相同的模板编号
+     *
      * @param wechatMpSubscribeMessageTemplateDTO WechatMpSubscribeMessageTemplateDTO
      * @return WechatMpSubscribeMessageTemplateDTO
      */
@@ -31,6 +34,9 @@ public interface WechatMpSubscribeMessageTemplateService {
 
     /**
      * 获取模板
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 该编号的模板不存在
      *
      * @param id 模板编号
      * @return WechatMpSubscribeMessageTemplateDTO
@@ -43,8 +49,10 @@ public interface WechatMpSubscribeMessageTemplateService {
     /**
      * 获取模板通过query参数
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return WechatMpSubscribeMessageTemplateDTO
+     * @return WechatMpSubscribeMessageTemplateDTO 可能返回空列表
      */
     default Result<PageInfo<WechatMpSubscribeMessageTemplateDTO>> getWechatMpSubscribeMessageTemplate(
             @NotNull WechatMpSubscribeMessageTemplateQuery query) {
@@ -53,7 +61,9 @@ public interface WechatMpSubscribeMessageTemplateService {
 
     @interface UpdateWechatMpSubscribeMessageTemplate{}
     /**
-     * 更新模板
+     * 更新模板，这是一个较广的更新接口，请小心使用
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为null
      *
      * @param wechatMpSubscribeMessageTemplateDTO WechatMpSubscribeMessageTemplateDTO
      * @return WechatMpSubscribeMessageTemplateDTO

@@ -1,22 +1,20 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
-import com.xiaohuashifu.recruit.common.constant.Platform;
-import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
-import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.Platform;
 import com.xiaohuashifu.recruit.common.result.ErrorCode;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.DesUtils;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
+import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.dao.AuthOpenidMapper;
 import com.xiaohuashifu.recruit.user.service.do0.AuthOpenidDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -28,8 +26,6 @@ import org.springframework.beans.factory.annotation.Value;
  */
 @Service
 public class AuthOpenidServiceImpl implements AuthOpenidService {
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthOpenidService.class);
 
     @Reference
     private WechatMpService wechatMpService;
@@ -71,10 +67,12 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
      * 用于微信小程序用户绑定AuthOpenid
      * 会通过code获取openid
      * 保存时会对openid进行加密
-     * 只支持App.SCAU_RECRUIT_INTERVIEWEE_MP和App.SCAU_RECRUIT_INTERVIEWER_MP两种类型的绑定
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误|不支持的App类型|非法code|对应编号的用户不存在
+     *              OperationConflict: 用户已经绑定在此App上
      *
      * @param userId 用户编号
-     * @param app 具体的微信小程序
+     * @param app 具体的微信小程序，只支持SCAU_RECRUIT_INTERVIEWEE_MP和SCAU_RECRUIT_INTERVIEWER_MP两种类型的绑定
      * @param code 微信小程序wx.login()接口的返回结果
      * @return AuthOpenidDTO
      */
@@ -88,28 +86,27 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
         // 检查用户是否存在
         Result<Void> userExistsResult = userService.userExists(userId);
         if (!userExistsResult.isSuccess()) {
-            return Result.fail(userExistsResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user does not exist.");
         }
 
         // 检查用户是否已经绑定在这个app上
         int count = authOpenidMapper.countByUserIdAndAppName(userId, app);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Has been bind.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This user Has been bind.");
         }
 
         // 获取openid
         Result<String> getOpenidResult = wechatMpService.getOpenid(code, app);
         if (!getOpenidResult.isSuccess()) {
-            return Result.fail(getOpenidResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Invalid code.");
         }
         String openid = getOpenidResult.getData();
 
         // 加密openid
         try {
             openid = DesUtils.encrypt(openid, secretKey);
-        } catch (Exception e) {
-            logger.warn("Encode openid error.", e);
-            return Result.fail(ErrorCode.INTERNAL_ERROR);
+        } catch (Exception ignored) {
+            // 本地操作，不会报错
         }
 
         // 添加到数据库
@@ -121,7 +118,6 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
                 .build();
         authOpenidMapper.saveAuthOpenid(authOpenidDO);
 
-        // TODO: 2020/11/21 这里如果数量大于2，可以改造成通过APP类型判断roleId
         // 给用户添加微信小程序基本权限
         if (app == App.SCAU_RECRUIT_INTERVIEWEE_MP) {
             roleService.saveUserRole(userId, scauRecruitIntervieweeMpDefaultRoleId);
@@ -139,6 +135,9 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
      * 可以用于快捷登录时使用
      * 该接口调用成功即可证明用户身份
      *
+     * @errorCode InvalidParameter: 请求参数格式错误|不支持的App类型|非法code
+     *              InvalidParameter.NotExist: 该用户还未绑定到此App
+     *
      * @param app 具体的微信小程序
      * @param code 微信小程序wx.login()接口的返回结果
      * @return AuthOpenidDTO
@@ -153,22 +152,21 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
         // 获取openid
         Result<String> getOpenidResult = wechatMpService.getOpenid(code, app);
         if (!getOpenidResult.isSuccess()) {
-            return Result.fail(getOpenidResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "Invalid code.");
         }
         String openid = getOpenidResult.getData();
 
         // 加密openid
         try {
             openid = DesUtils.encrypt(openid, secretKey);
-        } catch (Exception e) {
-            logger.warn("Encode openid error.", e);
-            return Result.fail(ErrorCode.INTERNAL_ERROR);
+        } catch (Exception ignored) {
+            // 本地操作，不会报错
         }
 
         // 检查是否存在数据库，结合app_name+openid（加密后）
         Long id = authOpenidMapper.getIdByAppNameAndOpenid(app, openid);
         if (id == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_EXIST, "The user has not been bound this app.");
         }
 
         return getAuthOpenid(id);
@@ -177,9 +175,12 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
     /**
      * 获取openid
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到对应的openid
+     *
      * @param userId 用户编号
      * @param app 具体的微信小程序
-     * @return openid
+     * @return openid 若参数错误的情况下，返回null
      */
     @Override
     public Result<String> getOpenid(App app, Long userId) {
@@ -192,15 +193,17 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
         // 解码openid
         try {
             openid = DesUtils.decrypt(openid, secretKey);
-        } catch (Exception e) {
-            logger.warn("Decode openid error.", e);
-            return Result.fail(ErrorCode.INTERNAL_ERROR);
+        } catch (Exception ignored) {
+            // 内部操作，不会抛出异常
         }
         return Result.success(openid);
     }
 
     /**
      * 获取AuthOpenidDTO
+     *
+     * @errorCode InvalidParameter.NotFound: 该编号对应的AuthOpenid不存在
+     *
      * @param id AuthOpenid编号
      * @return AuthOpenidDTO
      */

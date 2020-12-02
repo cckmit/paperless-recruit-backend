@@ -21,8 +21,7 @@ public interface WechatMpService {
     /**
      * 通过code获得openid
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | App是不支持的类型 | 非法code
      *
      * @param code code
      * @param app 具体的微信小程序
@@ -35,6 +34,10 @@ public interface WechatMpService {
     @interface SendSubscribeMessage{}
     /**
      * 发送订阅消息
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | App是不支持的类型 | 用户还未绑定此app
+     *              InternalError: 服务器错误 | access-token获取失败 | 发送订阅消息出错
+     *              UnknownError: 未知错误 | 发送订阅消息时微信小程序报的错误，具体查看错误消息
      *
      * @param app 微信小程序类型
      * @param userId 用于获取openid

@@ -74,8 +74,8 @@ public class PermittedUrlQuery implements Serializable {
     }
 
     public static final class Builder {
-        private Long pageNum = 1L;
-        private Long pageSize = 10L;
+        private Long pageNum;
+        private Long pageSize;
         private Long id;
         private List<Long> idList;
         private String url;

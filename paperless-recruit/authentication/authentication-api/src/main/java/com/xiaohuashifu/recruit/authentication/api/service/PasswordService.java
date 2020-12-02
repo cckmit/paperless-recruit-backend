@@ -9,6 +9,7 @@ package com.xiaohuashifu.recruit.authentication.api.service;
 public interface PasswordService {
     /**
      * 对密码进行编码
+     *
      * @param password 原密码
      * @return 编码后的密码
      */

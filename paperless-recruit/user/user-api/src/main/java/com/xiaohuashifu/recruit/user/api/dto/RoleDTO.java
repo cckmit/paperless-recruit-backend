@@ -7,10 +7,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 描述：角色
+ * 描述：角色传输对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
 public class RoleDTO implements Serializable {
@@ -118,7 +117,6 @@ public class RoleDTO implements Serializable {
                 ", updateTime=" + updateTime +
                 '}';
     }
-
 
     public static final class Builder {
         private Long id;

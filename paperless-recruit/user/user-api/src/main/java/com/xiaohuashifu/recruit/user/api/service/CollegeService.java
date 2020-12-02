@@ -14,7 +14,6 @@ import javax.validation.constraints.*;
  * 描述：学院专业相关操作的服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/23 17:02
  */
 public interface CollegeService {

@@ -60,7 +60,6 @@ public class PermittedUrlDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private String url;

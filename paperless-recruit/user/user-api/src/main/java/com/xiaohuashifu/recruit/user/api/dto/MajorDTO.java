@@ -4,10 +4,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 描述：专业对象
+ * 描述：专业传输对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
 public class MajorDTO implements Serializable {
@@ -72,16 +71,12 @@ public class MajorDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private Long collegeId;
         private String majorName;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

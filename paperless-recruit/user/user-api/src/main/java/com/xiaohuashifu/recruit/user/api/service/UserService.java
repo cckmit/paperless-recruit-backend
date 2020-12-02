@@ -14,12 +14,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-
 /**
- * 描述：用户RPC服务公开接口
+ * 描述：用户 RPC 服务公开接口
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/29 23:48
  */
 public interface UserService {

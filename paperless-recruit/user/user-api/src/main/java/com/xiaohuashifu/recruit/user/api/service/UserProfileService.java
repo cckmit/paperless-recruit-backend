@@ -12,10 +12,10 @@ import javax.validation.constraints.*;
  * 描述：用户个人信息服务
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/23 17:01
  */
 public interface UserProfileService {
+
     /**
      * 创建用户个人信息，创建的是一个空白的个人信息
      * 需要用户后续填写

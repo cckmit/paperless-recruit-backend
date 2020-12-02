@@ -13,7 +13,6 @@ import javax.validation.constraints.Size;
  * 描述：AuthOpenid 相关服务，用于接入第三方平台的身份认证
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/20 19:29
  */
 public interface AuthOpenidService {

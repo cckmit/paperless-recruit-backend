@@ -14,7 +14,6 @@ import java.util.Set;
  * 描述：权限服务 RPC 接口
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
 public interface PermissionService {

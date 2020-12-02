@@ -10,10 +10,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 描述：用户
+ * 描述：用户传输对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
 public class UserDTO implements Serializable {
@@ -131,7 +130,6 @@ public class UserDTO implements Serializable {
                 ", updateTime=" + updateTime +
                 '}';
     }
-
 
     public static final class Builder {
         private Long id;

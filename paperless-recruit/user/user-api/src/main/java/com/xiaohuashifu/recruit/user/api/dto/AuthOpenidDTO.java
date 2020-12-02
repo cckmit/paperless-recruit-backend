@@ -8,13 +8,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 描述：
+ * 描述：AuthOpenid 的传输对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/20 19:40
  */
 public class AuthOpenidDTO implements Serializable {
+
     private Long id;
 
     @Positive
@@ -89,7 +89,6 @@ public class AuthOpenidDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private Long userId;
@@ -97,9 +96,6 @@ public class AuthOpenidDTO implements Serializable {
         private String openid;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

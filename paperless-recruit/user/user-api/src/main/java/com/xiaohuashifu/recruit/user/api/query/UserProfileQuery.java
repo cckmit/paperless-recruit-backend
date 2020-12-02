@@ -6,20 +6,19 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 描述：
+ * 描述：用户个人信息查询参数
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/29 23:48
  */
 public class UserProfileQuery implements Serializable {
 
     @NotNull
     @Positive
-    private Long pageNum = 1L;
+    private Long pageNum;
     @NotNull
     @Positive
-    private Long pageSize = 10L;
+    private Long pageSize;
     private Long id;
     private List<Long> idList;
     private Long userId;
@@ -126,8 +125,8 @@ public class UserProfileQuery implements Serializable {
     }
 
     public static final class Builder {
-        private Long pageNum = 1L;
-        private Long pageSize = 10L;
+        private Long pageNum;
+        private Long pageSize;
         private Long id;
         private List<Long> idList;
         private Long userId;

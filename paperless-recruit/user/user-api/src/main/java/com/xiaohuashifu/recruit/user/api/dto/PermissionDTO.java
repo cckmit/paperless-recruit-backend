@@ -7,10 +7,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 描述：权限
+ * 描述：权限传输对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/12 19:42
  */
 public class PermissionDTO implements Serializable {
@@ -135,7 +134,6 @@ public class PermissionDTO implements Serializable {
                 ", updateTime=" + updateTime +
                 '}';
     }
-
 
     public static final class Builder {
         private Long id;

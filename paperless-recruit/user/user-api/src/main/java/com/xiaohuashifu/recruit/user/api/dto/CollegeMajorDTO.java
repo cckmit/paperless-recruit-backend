@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 描述：学院专业对象
+ * 描述：学院专业传输对象
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
 public class CollegeMajorDTO implements Serializable {
+
     private Long id;
 
     private String collegeName;
@@ -73,16 +73,12 @@ public class CollegeMajorDTO implements Serializable {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private String collegeName;
         private List<MajorDTO> majorList;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;

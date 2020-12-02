@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.api.service;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
 
@@ -27,7 +27,7 @@ public interface WechatMpService {
      * @param app 具体的微信小程序
      * @return openid
      */
-    default Result<String> getOpenid(@NotBlank @Size(max = 32, min = 32) String code, @NotNull App app) {
+    default Result<String> getOpenid(@NotBlank @Size(max = 32, min = 32) String code, @NotNull AppEnum app) {
         throw new UnsupportedOperationException();
     }
 
@@ -44,7 +44,7 @@ public interface WechatMpService {
      * @param subscribeMessageDTO 订阅消息
      * @return 发送结果
      */
-    default Result<Void> sendSubscribeMessage(@NotNull App app, @NotNull @Positive Long userId,
+    default Result<Void> sendSubscribeMessage(@NotNull AppEnum app, @NotNull @Positive Long userId,
                                               @NotNull SubscribeMessageDTO subscribeMessageDTO) {
         throw new UnsupportedOperationException();
     }

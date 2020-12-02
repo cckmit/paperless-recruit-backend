@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @email 827032783@qq.com
  * @create 2019-10-09
  */
-public enum ErrorCode implements Serializable {
+public enum ErrorCodeEnum implements Serializable {
 
     /**
      * 非法参数
@@ -206,7 +206,7 @@ public enum ErrorCode implements Serializable {
      */
     private final String message;
 
-    ErrorCode(HttpStatus httpStatus, String code, String message) {
+    ErrorCodeEnum(HttpStatus httpStatus, String code, String message) {
         this.httpStatus = httpStatus;
         this.code = code;
         this.message = message;

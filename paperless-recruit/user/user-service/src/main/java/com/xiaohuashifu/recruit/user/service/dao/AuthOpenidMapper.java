@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.user.service.do0.AuthOpenidDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,12 +16,12 @@ public interface AuthOpenidMapper {
 
     AuthOpenidDO getAuthOpenid(Long id);
 
-    String getOpenidByAppNameAndUserId(@Param("appName") App appName, @Param("userId") Long userId);
+    String getOpenidByAppNameAndUserId(@Param("appName") AppEnum appName, @Param("userId") Long userId);
 
-    Long getIdByAppNameAndOpenid(@Param("appName") App appName, @Param("openid") String openid);
+    Long getIdByAppNameAndOpenid(@Param("appName") AppEnum appName, @Param("openid") String openid);
 
-    int countByUserIdAndAppName(@Param("userId") Long userId, @Param("appName") App appName);
+    int countByUserIdAndAppName(@Param("userId") Long userId, @Param("appName") AppEnum appName);
 
-    int countByAppNameAndOpenid(@Param("appName") App appName, @Param("openid") String openid);
+    int countByAppNameAndOpenid(@Param("appName") AppEnum appName, @Param("openid") String openid);
 
 }

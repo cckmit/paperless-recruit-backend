@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.common.constant.Platform;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
@@ -57,16 +57,16 @@ public class WechatMpServiceImpl implements WechatMpService {
      * @return openid
      */
     @Override
-    public Result<String> getOpenid(String code, App app) {
+    public Result<String> getOpenid(String code, AppEnum app) {
         // 平台必须是微信小程序
-        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The platform must be wechat mp.");
+        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The platform must be wechat mp.");
         }
 
         // 获取openid
         Optional<Code2SessionDTO> code2SessionDTOOptional = wechatMpManager.getCode2Session(code, app);
         if (code2SessionDTOOptional.isEmpty()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The code is invalid.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The code is invalid.");
         }
 
         return Result.success(code2SessionDTOOptional.get().getOpenid());
@@ -85,23 +85,23 @@ public class WechatMpServiceImpl implements WechatMpService {
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendSubscribeMessage(App app, Long userId, SubscribeMessageDTO subscribeMessageDTO) {
+    public Result<Void> sendSubscribeMessage(AppEnum app, Long userId, SubscribeMessageDTO subscribeMessageDTO) {
         // 平台必须是微信小程序
-        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The platform must be wechat mp.");
+        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The platform must be wechat mp.");
         }
 
         // 获取openId
         Result<String> getOpenidResult = authOpenidService.getOpenid(app, userId);
         if (!getOpenidResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user has not been bound this app.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user has not been bound this app.");
         }
         subscribeMessageDTO.setTouser(getOpenidResult.getData());
 
         // 获取access-token
         Optional<String> accessToken = wechatMpManager.getAccessToken(app);
         if (accessToken.isEmpty()) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR);
+            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
         }
 
         // 发送消息
@@ -109,10 +109,10 @@ public class WechatMpServiceImpl implements WechatMpService {
         ResponseEntity<WeChatMpResponseDTO> responseEntity =
                 restTemplate.postForEntity(url, subscribeMessageDTO, WeChatMpResponseDTO.class);
         if (responseEntity.getBody() == null) {
-            return Result.fail(ErrorCode.INTERNAL_ERROR, "Send subscribe message failed.");
+            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR, "Send subscribe message failed.");
         }
         if (!responseEntity.getBody().getErrcode().equals(0)) {
-            return Result.fail(ErrorCode.UNKNOWN_ERROR, responseEntity.getBody().getErrmsg());
+            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, responseEntity.getBody().getErrmsg());
         }
         return Result.success();
     }

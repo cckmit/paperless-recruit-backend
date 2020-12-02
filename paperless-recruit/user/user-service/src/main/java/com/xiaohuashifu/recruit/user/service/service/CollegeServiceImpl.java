@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.CollegeDTO;
 import com.xiaohuashifu.recruit.user.api.dto.CollegeMajorDTO;
@@ -50,7 +50,7 @@ public class CollegeServiceImpl implements CollegeService {
         // 判断是否已经存在这个学院
         int count = collegeMapper.countByCollegeName(collegeName);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This college name already exists.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This college name already exists.");
         }
 
         // 添加到数据库
@@ -74,13 +74,13 @@ public class CollegeServiceImpl implements CollegeService {
         // 判断这个学院是否存在
         int count = collegeMapper.count(collegeId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This college does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This college does not exists.");
         }
 
         // 判断这个学院是否已经存在这个专业
         count = majorMapper.countByCollegeIdAndMajorName(collegeId, majorName);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER,
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                     "This major name already exists in the college.");
         }
 
@@ -103,7 +103,7 @@ public class CollegeServiceImpl implements CollegeService {
         // 查看学院是否存在
         CollegeDO collegeDO = collegeMapper.getCollege(id);
         if (collegeDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The college does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The college does not exists.");
         }
 
         // 删除该学院的所有专业
@@ -127,7 +127,7 @@ public class CollegeServiceImpl implements CollegeService {
         // 查看专业是否存在
         MajorDO majorDO = majorMapper.getMajor(id);
         if (majorDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The major does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The major does not exists.");
         }
 
         // 删除专业
@@ -148,7 +148,7 @@ public class CollegeServiceImpl implements CollegeService {
     public Result<CollegeDTO> getCollege(Long id) {
         CollegeDO collegeDO = collegeMapper.getCollege(id);
         if (collegeDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(collegeDO, CollegeDTO.class));
     }
@@ -185,7 +185,7 @@ public class CollegeServiceImpl implements CollegeService {
     public Result<String> getCollegeName(Long id) {
         String collegeName = collegeMapper.getCollegeName(id);
         if (collegeName == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(collegeName);
     }
@@ -231,7 +231,7 @@ public class CollegeServiceImpl implements CollegeService {
     public Result<MajorDTO> getMajor(Long id) {
         MajorDO majorDO = majorMapper.getMajor(id);
         if (majorDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(majorDO, MajorDTO.class));
     }
@@ -270,19 +270,19 @@ public class CollegeServiceImpl implements CollegeService {
         // 查看学院是否存在
         CollegeDO collegeDO = collegeMapper.getCollege(id);
         if (collegeDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The college does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The college does not exists.");
         }
 
         // 查看新学院名是否和旧学院名相同
         if (collegeDO.getCollegeName().equals(newCollegeName)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER,
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                     "The new college name can't be the same as the old college name.");
         }
 
         // 查看新学院名是否存在
         int count = collegeMapper.countByCollegeName(newCollegeName);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This college name already exists.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This college name already exists.");
         }
 
         // 更新到数据库
@@ -305,19 +305,19 @@ public class CollegeServiceImpl implements CollegeService {
         // 查看专业是否存在
         MajorDO majorDO = majorMapper.getMajor(id);
         if (majorDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The major does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The major does not exists.");
         }
 
         // 查看新专业名是否和旧专业名相同
         if (majorDO.getMajorName().equals(newMajorName)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER,
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                     "The new major name can't be the same as the old major name.");
         }
 
         // 查看该学院是否存在新专业名
         int count = majorMapper.countByCollegeIdAndMajorName(majorDO.getCollegeId(), newMajorName);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT,
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
                     "This major name already exists in the college.");
         }
 

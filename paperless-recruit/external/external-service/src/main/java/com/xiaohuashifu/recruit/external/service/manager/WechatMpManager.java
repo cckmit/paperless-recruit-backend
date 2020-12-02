@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.manager;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 
 import java.util.Optional;
@@ -19,7 +19,7 @@ public interface WechatMpManager {
      * @param app 微信小程序类别
      * @return Code2SessionDTO
      */
-    Optional<Code2SessionDTO> getCode2Session(String code, App app);
+    Optional<Code2SessionDTO> getCode2Session(String code, AppEnum app);
 
     /**
      * 获取access-token
@@ -27,7 +27,7 @@ public interface WechatMpManager {
      * @param app 具体的微信小程序类型
      * @return access-token
      */
-    Optional<String> getAccessToken(App app);
+    Optional<String> getAccessToken(AppEnum app);
 
     /**
      * 获取新的access-token
@@ -37,6 +37,6 @@ public interface WechatMpManager {
      * @param app 具体的微信小程序类型
      * @return 刷新是否成功
      */
-    boolean refreshAccessToken(App app);
+    boolean refreshAccessToken(AppEnum app);
 
 }

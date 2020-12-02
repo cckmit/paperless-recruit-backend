@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.granter;
 
 import com.xiaohuashifu.recruit.authentication.service.token.OpenidAuthenticationToken;
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -38,7 +38,7 @@ public class OpenidGranter extends AbstractTokenGranter {
         String code = parameters.get("code");
         parameters.remove("code");
 
-        Authentication userAuth = new OpenidAuthenticationToken(App.valueOf(app), code);
+        Authentication userAuth = new OpenidAuthenticationToken(AppEnum.valueOf(app), code);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);
         userAuth = authenticationManager.authenticate(userAuth);
         if (userAuth == null || !userAuth.isAuthenticated()) {

@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -20,7 +20,7 @@ public class AuthOpenidDTO implements Serializable {
     @Positive
     private Long userId;
 
-    private App app;
+    private AppEnum app;
 
     @Size(min = 28, max = 28)
     private String openid;
@@ -45,11 +45,11 @@ public class AuthOpenidDTO implements Serializable {
         this.userId = userId;
     }
 
-    public App getApp() {
+    public AppEnum getApp() {
         return app;
     }
 
-    public void setApp(App app) {
+    public void setApp(AppEnum app) {
         this.app = app;
     }
 
@@ -93,7 +93,7 @@ public class AuthOpenidDTO implements Serializable {
     public static final class Builder {
         private Long id;
         private Long userId;
-        private App app;
+        private AppEnum app;
         private String openid;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -111,7 +111,7 @@ public class AuthOpenidDTO implements Serializable {
             return this;
         }
 
-        public Builder app(App app) {
+        public Builder app(AppEnum app) {
             this.app = app;
             return this;
         }

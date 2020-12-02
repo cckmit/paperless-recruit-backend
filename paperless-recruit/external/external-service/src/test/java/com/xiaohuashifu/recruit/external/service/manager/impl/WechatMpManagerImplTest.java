@@ -1,12 +1,10 @@
 package com.xiaohuashifu.recruit.external.service.manager.impl;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.service.ExternalServiceApplicationTests;
 import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -26,12 +24,12 @@ public class WechatMpManagerImplTest extends ExternalServiceApplicationTests {
 
     @Test
     public void getAccessToken() {
-        System.out.println(wechatMpManager.getAccessToken(App.SCAU_RECRUIT_INTERVIEWEE_MP));
+        System.out.println(wechatMpManager.getAccessToken(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP));
     }
 
     @Test
     public void refreshAccessToken() {
-        System.out.println(wechatMpManager.refreshAccessToken(App.SCAU_RECRUIT_INTERVIEWEE_MP));
+        System.out.println(wechatMpManager.refreshAccessToken(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP));
     }
 
 }

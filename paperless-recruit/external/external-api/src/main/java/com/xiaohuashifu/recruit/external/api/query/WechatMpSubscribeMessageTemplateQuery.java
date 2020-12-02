@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.query;
 
-import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.common.constant.TriStatus;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -25,12 +25,12 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
     private Long pageSize = 10L;
     private Long id;
     private List<Long> idList;
-    private App app;
+    private AppEnum app;
     private String templateId;
     private String title;
     private String type;
     private String description;
-    private TriStatus status;
+    private TriStatusEnum status;
 
     public Long getPageNum() {
         return pageNum;
@@ -64,11 +64,11 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
         this.idList = idList;
     }
 
-    public App getApp() {
+    public AppEnum getApp() {
         return app;
     }
 
-    public void setApp(App app) {
+    public void setApp(AppEnum app) {
         this.app = app;
     }
 
@@ -104,11 +104,11 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
         this.description = description;
     }
 
-    public TriStatus getStatus() {
+    public TriStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(TriStatus status) {
+    public void setStatus(TriStatusEnum status) {
         this.status = status;
     }
 
@@ -134,12 +134,12 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
         private Long pageSize = 10L;
         private Long id;
         private List<Long> idList;
-        private App app;
+        private AppEnum app;
         private String templateId;
         private String title;
         private String type;
         private String description;
-        private TriStatus status;
+        private TriStatusEnum status;
 
         public Builder() {
         }
@@ -164,7 +164,7 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
             return this;
         }
 
-        public Builder app(App app) {
+        public Builder app(AppEnum app) {
             this.app = app;
             return this;
         }
@@ -189,7 +189,7 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
             return this;
         }
 
-        public Builder status(TriStatus status) {
+        public Builder status(TriStatusEnum status) {
             this.status = status;
             return this;
         }

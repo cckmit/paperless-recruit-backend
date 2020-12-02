@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.user.service.do0;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ public class AuthOpenidDO {
 
     private Long userId;
 
-    private App appName;
+    private AppEnum appName;
 
     private String openid;
 
@@ -42,11 +42,11 @@ public class AuthOpenidDO {
         this.userId = userId;
     }
 
-    public App getAppName() {
+    public AppEnum getAppName() {
         return appName;
     }
 
-    public void setAppName(App appName) {
+    public void setAppName(AppEnum appName) {
         this.appName = appName;
     }
 
@@ -90,7 +90,7 @@ public class AuthOpenidDO {
     public static final class Builder {
         private Long id;
         private Long userId;
-        private App appName;
+        private AppEnum appName;
         private String openid;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -108,7 +108,7 @@ public class AuthOpenidDO {
             return this;
         }
 
-        public Builder appName(App appName) {
+        public Builder appName(AppEnum appName) {
             this.appName = appName;
             return this;
         }

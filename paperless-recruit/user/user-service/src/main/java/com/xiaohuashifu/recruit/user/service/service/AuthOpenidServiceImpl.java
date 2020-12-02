@@ -1,9 +1,9 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
-import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.common.constant.Platform;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.DesUtils;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
@@ -77,28 +77,28 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
      * @return AuthOpenidDTO
      */
     @Override
-    public Result<AuthOpenidDTO> bindAuthOpenidForWechatMp(Long userId, App app, String code) {
+    public Result<AuthOpenidDTO> bindAuthOpenidForWechatMp(Long userId, AppEnum app, String code) {
         // 如果 App 类型不是微信小程序，则不给绑定
-        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Unsupported app.");
+        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Unsupported app.");
         }
 
         // 检查用户是否存在
         Result<Void> userExistsResult = userService.userExists(userId);
         if (!userExistsResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This user does not exist.");
         }
 
         // 检查用户是否已经绑定在这个 app 上
         int count = authOpenidMapper.countByUserIdAndAppName(userId, app);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This user Has been bind.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This user Has been bind.");
         }
 
         // 获取 openid
         Result<String> getOpenidResult = wechatMpService.getOpenid(code, app);
         if (!getOpenidResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Invalid code.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Invalid code.");
         }
         String openid = getOpenidResult.getData();
 
@@ -119,10 +119,10 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
         authOpenidMapper.saveAuthOpenid(authOpenidDO);
 
         // 给用户添加微信小程序基本权限
-        if (app == App.SCAU_RECRUIT_INTERVIEWEE_MP) {
+        if (app == AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP) {
             roleService.saveUserRole(userId, scauRecruitIntervieweeMpDefaultRoleId);
         }
-        if (app == App.SCAU_RECRUIT_INTERVIEWER_MP) {
+        if (app == AppEnum.SCAU_RECRUIT_INTERVIEWER_MP) {
             roleService.saveUserRole(userId, scauRecruitInterviewerMpDefaultRoleId);
         }
         return getAuthOpenid(authOpenidDO.getId());
@@ -143,16 +143,16 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
      * @return AuthOpenidDTO
      */
     @Override
-    public Result<AuthOpenidDTO> checkAuthOpenidForWechatMp(App app, String code) {
+    public Result<AuthOpenidDTO> checkAuthOpenidForWechatMp(AppEnum app, String code) {
         // 如果 App 类型不是微信小程序，则不需要继续下去
-        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Unsupported app.");
+        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Unsupported app.");
         }
 
         // 获取 openid
         Result<String> getOpenidResult = wechatMpService.getOpenid(code, app);
         if (!getOpenidResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "Invalid code.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Invalid code.");
         }
         String openid = getOpenidResult.getData();
 
@@ -166,7 +166,7 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
         // 检查是否存在数据库，结合 app_name + openid （加密后）
         Long id = authOpenidMapper.getIdByAppNameAndOpenid(app, openid);
         if (id == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_EXIST, "The user has not been bound this app.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The user has not been bound this app.");
         }
 
         return getAuthOpenid(id);
@@ -183,11 +183,11 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
      * @return openid 若参数错误的情况下，返回 null
      */
     @Override
-    public Result<String> getOpenid(App app, Long userId) {
+    public Result<String> getOpenid(AppEnum app, Long userId) {
         // 获取 openid
         String openid = authOpenidMapper.getOpenidByAppNameAndUserId(app, userId);
         if (openid == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
 
         // 解码 openid
@@ -210,7 +210,7 @@ public class AuthOpenidServiceImpl implements AuthOpenidService {
     private Result<AuthOpenidDTO> getAuthOpenid(Long id) {
         AuthOpenidDO authOpenidDO = authOpenidMapper.getAuthOpenid(id);
         if (authOpenidDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         AuthOpenidDTO authOpenidDTO = mapper.map(authOpenidDO, AuthOpenidDTO.class);
         authOpenidDTO.setApp(authOpenidDO.getAppName());

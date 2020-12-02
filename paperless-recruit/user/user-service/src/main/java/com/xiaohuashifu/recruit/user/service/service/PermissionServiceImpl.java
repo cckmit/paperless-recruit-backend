@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
@@ -60,7 +60,7 @@ public class PermissionServiceImpl implements PermissionService {
         if (!permissionDTO.getParentPermissionId().equals(0L)) {
             int count = permissionMapper.count(permissionDTO.getParentPermissionId());
             if (count < 1) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent permission does not exist.");
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent permission does not exist.");
             }
         }
 
@@ -70,7 +70,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断权限名存不存在，权限名必须不存在
         int count = permissionMapper.countByPermissionName(permissionDTO.getPermissionName());
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The permission name already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The permission name already exist.");
         }
 
         // 如果父权限编号不为0，且被禁用了，则该权限也应该被禁用
@@ -111,13 +111,13 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This permission not exists.");
         }
 
         // 判断该权限是否还拥有子权限，必须没有子权限才可以删除
         count = permissionMapper.countByParentPermissionId(id);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission exist children.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission exist children.");
         }
 
         // 删除该权限所关联的角色 Role 的关联关系
@@ -141,7 +141,7 @@ public class PermissionServiceImpl implements PermissionService {
     public Result<PermissionDTO> getPermission(Long id) {
         PermissionDO permissionDO = permissionMapper.getPermission(id);
         if (permissionDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(permissionDO, PermissionDTO.class));
     }
@@ -252,7 +252,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在，该权限必须存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 去除权限名两边空白符
@@ -261,7 +261,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断新权限名存不存在，新权限名必须不存在
         count = permissionMapper.countByPermissionName(newPermissionName);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The new permission name already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new permission name already exist.");
         }
 
         // 更新权限名
@@ -283,7 +283,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在，该权限必须存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 去除授权路径两边空白符
@@ -306,7 +306,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在，该权限必须存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 去除权限描述两边空白符
@@ -330,13 +330,13 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 判断该权限是否已经被禁用
         count = permissionMapper.countByIdAndAvailable(id, false);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The permission already disable.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The permission already disable.");
         }
 
         // 递归的禁用权限
@@ -362,12 +362,12 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在
         PermissionDO permissionDO = permissionMapper.getPermission(id);
         if (permissionDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 不能解禁已经有效的权限
         if (permissionDO.getAvailable()) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The permission is available.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The permission is available.");
         }
 
         // 如果该权限的父权限编号不为0
@@ -375,7 +375,7 @@ public class PermissionServiceImpl implements PermissionService {
         if (!permissionDO.getParentPermissionId().equals(0L)) {
             int count = permissionMapper.countByIdAndAvailable(permissionDO.getParentPermissionId(), false);
             if (count > 0) {
-                return Result.fail(ErrorCode.OPERATION_CONFLICT,
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
                         "Can't enable this permission, because the parent permission is disable.");
             }
         }
@@ -407,12 +407,12 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在
         PermissionDO permissionDO = permissionMapper.getPermission(id);
         if (permissionDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 如果原来的父权限编号和要设置的父权限编号相同，则直接返回
         if (permissionDO.getParentPermissionId().equals(parentPermissionId)) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT,
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
                     "The new permission same as the old permission.");
         }
 
@@ -420,7 +420,7 @@ public class PermissionServiceImpl implements PermissionService {
         if (parentPermissionId != 0) {
             int count = permissionMapper.count(parentPermissionId);
             if (count < 1) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent permission does not exist.");
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent permission does not exist.");
             }
         }
 

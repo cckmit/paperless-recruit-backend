@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
@@ -57,7 +57,7 @@ public class RoleServiceImpl implements RoleService {
         if (!roleDTO.getParentRoleId().equals(0L)) {
             int count = roleMapper.count(roleDTO.getParentRoleId());
             if (count < 1) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent does not exist.");
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent does not exist.");
             }
         }
 
@@ -67,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
         // 判断角色名存不存在，角色名必须不存在
         int count = roleMapper.countByRoleName(roleDTO.getRoleName());
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role name already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The role name already exist.");
         }
 
         // 如果父角色编号不为0，且被禁用了，则该角色也应该被禁用
@@ -107,19 +107,19 @@ public class RoleServiceImpl implements RoleService {
         // 判断该用户存不存在
         int count = userMapper.count(userId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断该角色存不存在
         count = roleMapper.count(roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该用户角色存不存在
         count = roleMapper.countUserRoleByUserIdAndRoleId(userId, roleId);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The user already has this role.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The user already has this role.");
         }
 
         // 绑定用户与角色
@@ -142,19 +142,19 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         int count = roleMapper.count(roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该权限存不存在
         count = permissionMapper.count(permissionId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 判断该角色权限存不存在
         count = roleMapper.countRolePermissionByRoleIdAndPermissionId(roleId, permissionId);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role already has this permission.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The role already has this permission.");
         }
 
         // 绑定角色权限
@@ -178,13 +178,13 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         int count = roleMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该角色是否还拥有子角色，必须没有子角色才可以删除
         count = roleMapper.countByParentRoleId(id);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role exists children.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The role exists children.");
         }
 
         // 删除该角色所关联的权限（Permission）的关联关系
@@ -212,19 +212,19 @@ public class RoleServiceImpl implements RoleService {
         // 判断该用户存不存在
         int count = userMapper.count(userId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断该角色存不存在
         count = roleMapper.count(roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该用户角色存不存在
         count = roleMapper.countUserRoleByUserIdAndRoleId(userId, roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not have this role.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not have this role.");
         }
 
         // 删除用户角色
@@ -246,19 +246,19 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         int count = roleMapper.count(roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该权限存不存在
         count = permissionMapper.count(permissionId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This permission does not exist.");
         }
 
         // 判断该角色权限存不存在
         count = roleMapper.countRolePermissionByRoleIdAndPermissionId(roleId, permissionId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not have this permission.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not have this permission.");
         }
 
         // 删除角色权限
@@ -279,7 +279,7 @@ public class RoleServiceImpl implements RoleService {
     public Result<RoleDTO> getRole(Long id) {
         RoleDO role = roleMapper.getRole(id);
         if (role == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(role, RoleDTO.class));
     }
@@ -335,7 +335,7 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在，该角色必须存在
         int count = roleMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 去除角色名两边空白符
@@ -344,7 +344,7 @@ public class RoleServiceImpl implements RoleService {
         // 判断新角色名存不存在，新角色名必须不存在
         count = roleMapper.countByRoleName(newRoleName);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role name already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The role name already exist.");
         }
 
         // 更新角色名
@@ -366,7 +366,7 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在，该角色必须存在
         int count = roleMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 去除角色描述两边空白符
@@ -391,13 +391,13 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         int count = roleMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该角色是否已经被禁用
         count = roleMapper.countByIdAndAvailable(id, false);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role already disable.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The role already disable.");
         }
 
         // 递归的禁用角色
@@ -422,12 +422,12 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         RoleDO roleDO = roleMapper.getRole(id);
         if (roleDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 不能解禁已经有效的角色
         if (roleDO.getAvailable()) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role is available.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The role is available.");
         }
 
         // 如果该角色的父角色编号不为0
@@ -435,7 +435,7 @@ public class RoleServiceImpl implements RoleService {
         if (!roleDO.getParentRoleId().equals(0L)) {
             int count = roleMapper.countByIdAndAvailable(roleDO.getParentRoleId(), false);
             if (count > 0) {
-                return Result.fail(ErrorCode.OPERATION_CONFLICT,
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
                         "Can't enable this role, because the parent role is disable.");
             }
         }
@@ -465,19 +465,19 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         RoleDO roleDO = roleMapper.getRole(id);
         if (roleDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 如果原来的父角色编号和要设置的父角色编号相同，则直接返回
         if (roleDO.getParentRoleId().equals(parentRoleId)) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The new parent can't same as old parent.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new parent can't same as old parent.");
         }
 
         // 若父角色编号不为0，则判断要设置的父角色是否存在
         if (!parentRoleId.equals(0L)) {
             int count = roleMapper.count(parentRoleId);
             if (count < 1) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent role does not exist.");
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent role does not exist.");
             }
         }
 

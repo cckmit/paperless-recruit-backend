@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.token;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
@@ -21,28 +21,28 @@ public class OpenidAuthenticationToken extends AbstractAuthenticationToken {
     /**
      * 具体的app
      */
-    private final App app;
+    private final AppEnum app;
 
     /**
      * 微信小程序登录时需要带上的code
      */
     private final String code;
 
-    public OpenidAuthenticationToken(App app, String code) {
+    public OpenidAuthenticationToken(AppEnum app, String code) {
         super(null);
         this.app = app;
         this.code = code;
         setAuthenticated(false);
     }
 
-    public OpenidAuthenticationToken(App app, String code, Collection<? extends GrantedAuthority> authorities) {
+    public OpenidAuthenticationToken(AppEnum app, String code, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.app = app;
         this.code = code;
         super.setAuthenticated(true); // must use super, as we override
     }
 
-    public App getApp() {
+    public AppEnum getApp() {
         return app;
     }
 

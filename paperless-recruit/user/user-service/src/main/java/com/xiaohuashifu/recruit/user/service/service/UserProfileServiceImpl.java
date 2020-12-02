@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.MajorDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserProfileDTO;
@@ -61,13 +61,13 @@ public class UserProfileServiceImpl implements UserProfileService {
         // 判断该编号的用户是否存在
         Result<Void> userExistsResult = userService.userExists(userId);
         if (!userExistsResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断用户信息是否已经存在
         int count = userProfileMapper.countByUserId(userId);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile already exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user profile already exist.");
         }
 
         // 创建用户个人信息
@@ -88,7 +88,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     public Result<UserProfileDTO> getUserProfile(Long id) {
         UserProfileDO userProfileDO = userProfileMapper.getUserProfile(id);
         if (userProfileDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(userProfileDO, UserProfileDTO.class));
     }
@@ -125,7 +125,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     public Result<UserProfileDTO> getUserProfileByUserId(Long userId) {
         UserProfileDO userProfileDO = userProfileMapper.getUserProfileByUserId(userId);
         if (userProfileDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(userProfileDO, UserProfileDTO.class));
     }
@@ -145,7 +145,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         // 判断用户信息是否存在
         int count = userProfileMapper.countByUserId(userId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user profile does not exist.");
         }
 
         // 更新姓名
@@ -170,7 +170,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         // 判断用户信息是否存在
         int count = userProfileMapper.countByUserId(userId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user profile does not exist.");
         }
 
         // 更新学号
@@ -194,13 +194,13 @@ public class UserProfileServiceImpl implements UserProfileService {
         // 判断用户信息是否存在
         int count = userProfileMapper.countByUserId(userId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user profile does not exist.");
         }
 
         // 判断该专业编号是否存在系统库里
         Result<MajorDTO> getMajorResult = collegeService.getMajor(newMajorId);
         if (!getMajorResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The major does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The major does not exist.");
         }
 
         // 获取学院名
@@ -227,7 +227,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         // 判断用户信息是否存在
         int count = userProfileMapper.countByUserId(userId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user profile does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user profile does not exist.");
         }
 
         // 更新自我介绍

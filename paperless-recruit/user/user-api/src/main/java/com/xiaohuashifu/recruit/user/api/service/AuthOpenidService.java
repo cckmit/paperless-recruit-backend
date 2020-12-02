@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
 
@@ -31,7 +31,7 @@ public interface AuthOpenidService {
      * @param code 微信小程序 wx.login() 接口的返回结果
      * @return AuthOpenidDTO
      */
-    default Result<AuthOpenidDTO> bindAuthOpenidForWechatMp(@NotNull @Positive Long userId, @NotNull App app,
+    default Result<AuthOpenidDTO> bindAuthOpenidForWechatMp(@NotNull @Positive Long userId, @NotNull AppEnum app,
                                                             @NotBlank @Size(min = 32, max = 32) String code) {
         throw new UnsupportedOperationException();
     }
@@ -49,7 +49,7 @@ public interface AuthOpenidService {
      * @param code 微信小程序 wx.login() 接口的返回结果
      * @return AuthOpenidDTO
      */
-    default Result<AuthOpenidDTO> checkAuthOpenidForWechatMp(@NotNull App app,
+    default Result<AuthOpenidDTO> checkAuthOpenidForWechatMp(@NotNull AppEnum app,
                                                              @NotBlank @Size(min = 32, max = 32) String code) {
         throw new UnsupportedOperationException();
     }
@@ -64,7 +64,7 @@ public interface AuthOpenidService {
      * @param app 具体的微信小程序
      * @return openid 若参数错误的情况下，返回 null
      */
-    default Result<String> getOpenid(@NotNull App app, @NotNull @Positive Long userId) {
+    default Result<String> getOpenid(@NotNull AppEnum app, @NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 

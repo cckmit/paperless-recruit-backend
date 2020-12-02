@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
@@ -85,7 +85,7 @@ public class EmailServiceImpl implements EmailService {
             // 发送邮件
             mailSender.send(mimeMessage);
         } catch (MessagingException | MailException e) {
-            return Result.fail(ErrorCode.UNKNOWN_ERROR);
+            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR);
         }
 
         return Result.success();
@@ -131,7 +131,7 @@ public class EmailServiceImpl implements EmailService {
             // 发送邮件
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            return Result.fail(ErrorCode.UNKNOWN_ERROR);
+            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR);
         }
 
         return Result.success();
@@ -162,7 +162,7 @@ public class EmailServiceImpl implements EmailService {
         Result<Void> sendEmailAuthCodeResult = sendTemplateEmail(
                 emailD, "RecruitAuthCode", model, null);
         if (!sendEmailAuthCodeResult.isSuccess()) {
-            return Result.fail(ErrorCode.UNKNOWN_ERROR, "Send email auth code failed.");
+            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Send email auth code failed.");
         }
 
         // 添加邮箱验证码到缓存
@@ -193,12 +193,12 @@ public class EmailServiceImpl implements EmailService {
 
         // 验证码不存在
         if (authCode == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exist.");
         }
 
         // 验证码不正确
         if (!authCode.equals(emailAuthCodeDTO.getAuthCode())) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
         }
 
         // 验证通过，如果需要删除验证码，则删除

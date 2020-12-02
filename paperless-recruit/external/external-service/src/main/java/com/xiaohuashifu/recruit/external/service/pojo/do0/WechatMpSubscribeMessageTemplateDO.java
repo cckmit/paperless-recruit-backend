@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.pojo.do0;
 
-import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.common.constant.TriStatus;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
 import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class WechatMpSubscribeMessageTemplateDO {
     /**
      * 具体的微信小程序
      */
-    private App appName;
+    private AppEnum appName;
 
     /**
      * 模板标题
@@ -43,7 +43,7 @@ public class WechatMpSubscribeMessageTemplateDO {
     /**
      * 状态
      */
-    private TriStatus status;
+    private TriStatusEnum status;
 
     private LocalDateTime createTime;
 
@@ -57,11 +57,11 @@ public class WechatMpSubscribeMessageTemplateDO {
         this.id = id;
     }
 
-    public App getAppName() {
+    public AppEnum getAppName() {
         return appName;
     }
 
-    public void setAppName(App appName) {
+    public void setAppName(AppEnum appName) {
         this.appName = appName;
     }
 
@@ -97,11 +97,11 @@ public class WechatMpSubscribeMessageTemplateDO {
         this.description = description;
     }
 
-    public TriStatus getStatus() {
+    public TriStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(TriStatus status) {
+    public void setStatus(TriStatusEnum status) {
         this.status = status;
     }
 
@@ -140,11 +140,11 @@ public class WechatMpSubscribeMessageTemplateDO {
     public static final class Builder {
         private Long id;
         private String templateId;
-        private App appName;
+        private AppEnum appName;
         private String title;
         private String type;
         private String description;
-        private TriStatus status;
+        private TriStatusEnum status;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -161,7 +161,7 @@ public class WechatMpSubscribeMessageTemplateDO {
             return this;
         }
 
-        public Builder appName(App appName) {
+        public Builder appName(AppEnum appName) {
             this.appName = appName;
             return this;
         }
@@ -181,7 +181,7 @@ public class WechatMpSubscribeMessageTemplateDO {
             return this;
         }
 
-        public Builder status(TriStatus status) {
+        public Builder status(TriStatusEnum status) {
             this.status = status;
             return this;
         }

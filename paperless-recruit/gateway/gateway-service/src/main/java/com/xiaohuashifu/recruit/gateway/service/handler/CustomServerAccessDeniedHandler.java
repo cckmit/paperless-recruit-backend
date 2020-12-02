@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.gateway.service.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +32,7 @@ public class CustomServerAccessDeniedHandler implements ServerAccessDeniedHandle
         response.getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         response.getHeaders().set("Access-Control-Allow-Origin", "*");
         response.getHeaders().set("Cache-Control", "no-cache");
-        String body = JSON.toJSONString(Result.fail(ErrorCode.FORBIDDEN, e.getMessage()));
+        String body = JSON.toJSONString(Result.fail(ErrorCodeEnum.FORBIDDEN, e.getMessage()));
         DataBuffer buffer =  response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
     }

@@ -7,7 +7,7 @@ import com.xiaohuashifu.recruit.authentication.api.query.PermittedUrlQuery;
 import com.xiaohuashifu.recruit.authentication.api.service.WhiteListService;
 import com.xiaohuashifu.recruit.authentication.service.dao.PermittedUrlMapper;
 import com.xiaohuashifu.recruit.authentication.service.do0.PermittedUrlDO;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import org.apache.dubbo.config.annotation.Service;
 
@@ -45,7 +45,7 @@ public class WhiteListServiceImpl implements WhiteListService {
         // 判断该 url 是否已经存在
         int count = permittedUrlMapper.countByUrl(url);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The url already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The url already exist.");
         }
 
         // 保存
@@ -67,7 +67,7 @@ public class WhiteListServiceImpl implements WhiteListService {
         // 判断要删除的 permittedUrl 存不存在
         int count = permittedUrlMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The url does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The url does not exist.");
         }
 
         // 删除
@@ -88,7 +88,7 @@ public class WhiteListServiceImpl implements WhiteListService {
     public Result<PermittedUrlDTO> getPermittedUrl(Long id) {
         PermittedUrlDO permittedUrlDO = permittedUrlMapper.getPermittedUrl(id);
         if (permittedUrlDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(permittedUrlDO, PermittedUrlDTO.class));
     }
@@ -137,18 +137,18 @@ public class WhiteListServiceImpl implements WhiteListService {
         // 判断该url是否存在
         PermittedUrlDO permittedUrlDO = permittedUrlMapper.getPermittedUrl(id);
         if (permittedUrlDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The url does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The url does not exist.");
         }
 
         // 判断该url是否与原url相同
         if (permittedUrlDO.getUrl().equals(newUrl)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The new url must not same as old url.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The new url must not same as old url.");
         }
 
         // 判断该url是否已经存在
         int count = permittedUrlMapper.countByUrl(newUrl);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The url already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The url already exist.");
         }
 
         // 更新url

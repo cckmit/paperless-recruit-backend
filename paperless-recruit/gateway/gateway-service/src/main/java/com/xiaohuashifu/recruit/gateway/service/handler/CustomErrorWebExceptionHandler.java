@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.gateway.service.handler;
 
 
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
@@ -40,11 +40,11 @@ public class CustomErrorWebExceptionHandler extends DefaultErrorWebExceptionHand
         map.put("data", null);
         Throwable error = super.getError(request);
         map.put("message", error.getMessage());
-        map.put("errorCode", ErrorCode.INVALID_PARAMETER);
+        map.put("errorCode", ErrorCodeEnum.INVALID_PARAMETER);
 
         // 网关的异常
         if (error instanceof NotFoundException) {
-            map.put("errorCode", ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            map.put("errorCode", ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
 
         return map;
@@ -69,7 +69,7 @@ public class CustomErrorWebExceptionHandler extends DefaultErrorWebExceptionHand
      */
     @Override
     protected int getHttpStatus(Map<String, Object> errorAttributes) {
-        ErrorCode errorCode = (ErrorCode) errorAttributes.get("errorCode");
+        ErrorCodeEnum errorCode = (ErrorCodeEnum) errorAttributes.get("errorCode");
         return errorCode.getHttpStatus().value();
     }
 

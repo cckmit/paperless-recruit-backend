@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.dto;
 
-import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.common.constant.TriStatus;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpSubscribeMessageTemplateService;
 
 import javax.validation.constraints.NotBlank;
@@ -22,7 +22,7 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
     private Long id;
 
     @NotNull(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
-    private App app;
+    private AppEnum app;
 
     /**
      * 模板编号
@@ -52,7 +52,7 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
      * 模板的状态
      */
     @NotNull(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
-    private TriStatus status;
+    private TriStatusEnum status;
 
     private LocalDateTime createTime;
 
@@ -66,11 +66,11 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
         this.id = id;
     }
 
-    public App getApp() {
+    public AppEnum getApp() {
         return app;
     }
 
-    public void setApp(App app) {
+    public void setApp(AppEnum app) {
         this.app = app;
     }
 
@@ -102,11 +102,11 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
         return description;
     }
 
-    public TriStatus getStatus() {
+    public TriStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(TriStatus status) {
+    public void setStatus(TriStatusEnum status) {
         this.status = status;
     }
 
@@ -148,12 +148,12 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
 
     public static final class Builder {
         private Long id;
-        private App app;
+        private AppEnum app;
         private String templateId;
         private String title;
         private String type;
         private String description;
-        private TriStatus status;
+        private TriStatusEnum status;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -165,7 +165,7 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
             return this;
         }
 
-        public Builder app(App app) {
+        public Builder app(AppEnum app) {
             this.app = app;
             return this;
         }
@@ -190,7 +190,7 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
             return this;
         }
 
-        public Builder status(TriStatus status) {
+        public Builder status(TriStatusEnum status) {
             this.status = status;
             return this;
         }

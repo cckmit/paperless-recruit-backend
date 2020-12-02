@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.api.dto.SubscribeTemplateDataDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
@@ -37,7 +37,7 @@ public class WechatMpServiceImplTest {
 
     @Test
     public void getOpenid() {
-        System.out.println(wechatMpService.getOpenid("043WLGll2yCLZ541iKkl2lC1RC3WLGlC", App.SCAU_RECRUIT_INTERVIEWEE_MP));
+        System.out.println(wechatMpService.getOpenid("043WLGll2yCLZ541iKkl2lC1RC3WLGlC", AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP));
     }
 
     @Test
@@ -52,6 +52,6 @@ public class WechatMpServiceImplTest {
         map.put("phrase5", new SubscribeTemplateDataDTO("通过"));
         subscribeMessageDTO.setData(map);
         System.out.println(wechatMpService.sendSubscribeMessage(
-                App.SCAU_RECRUIT_INTERVIEWEE_MP, 1L, subscribeMessageDTO));
+                AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP, 1L, subscribeMessageDTO));
     }
 }

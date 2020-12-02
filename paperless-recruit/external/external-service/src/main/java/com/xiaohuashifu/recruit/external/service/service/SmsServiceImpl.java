@@ -6,7 +6,7 @@ import com.aliyuncs.IAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
@@ -74,7 +74,7 @@ public class SmsServiceImpl implements SmsService {
             sendSmsAuthCode(smsAuthCodeDTO.getPhone(), authCode);
         } catch (ClientException clientException) {
             logger.warn("Send sms auth code fail");
-            return Result.fail(ErrorCode.UNKNOWN_ERROR, "Send sms auth code failed.");
+            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Send sms auth code failed.");
         }
 
         // 添加短信验证码到缓存
@@ -105,12 +105,12 @@ public class SmsServiceImpl implements SmsService {
 
         // 验证码不存在
         if (authCode == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exists.");
         }
 
         // 验证码不正确
         if (!authCode.equals(smsAuthCodeDTO.getAuthCode())) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
         }
 
         // 验证通过，如果需要删除验证码，则删除

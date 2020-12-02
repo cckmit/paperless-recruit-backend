@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.manager.impl.constant;
 
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +50,7 @@ public class WechatMpDetails {
      * @param wechatMp 具体的微信小程序
      * @return appId
      */
-    public String getAppId(App wechatMp) {
+    public String getAppId(AppEnum wechatMp) {
         int index = names.indexOf(wechatMp.name());
         if (index == -1) {
             return null;
@@ -72,7 +72,7 @@ public class WechatMpDetails {
      * @param wechatMp 具体的微信小程序
      * @return secret
      */
-    public String getSecret(App wechatMp) {
+    public String getSecret(AppEnum wechatMp) {
         int index = names.indexOf(wechatMp.name());
         if (index == -1) {
             return null;

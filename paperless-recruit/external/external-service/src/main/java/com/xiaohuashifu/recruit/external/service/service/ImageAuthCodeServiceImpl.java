@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.ImageAuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
@@ -99,7 +99,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
         String authCodeInRedis = redisTemplate.opsForValue().get(redisKey);
         // 验证码不存在
         if (authCodeInRedis == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST, "Auth code does not exist.");
         }
 
         // 删除验证码
@@ -107,7 +107,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
 
         // 判断验证码是否相同
         if (!authCode.equals(authCodeInRedis)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Auth code is incorrect.");
         }
         return Result.success();
     }

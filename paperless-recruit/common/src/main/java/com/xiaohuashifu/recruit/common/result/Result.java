@@ -25,16 +25,16 @@ public class Result<T> implements Serializable {
     /**
      * 错误码，在出错时才会带上
      */
-    private final ErrorCode errorCode;
+    private final ErrorCodeEnum errorCode;
 
     /**
      * 错误简短信息
      */
-    private final Object message;
+    private final String message;
 
     private static final Result<Void> SUCCESS = new Result<>(true, null, null, null);
 
-    private Result(Boolean success, T data, ErrorCode errorCode, Object message) {
+    private Result(Boolean success, T data, ErrorCodeEnum errorCode, String message) {
         this.success = success;
         this.data = data;
         this.errorCode = errorCode;
@@ -67,7 +67,7 @@ public class Result<T> implements Serializable {
      * @param message 错误简短信息
      * @return Result<T>
      */
-    public static <T> Result<T> fail(ErrorCode errorCode, Object message) {
+    public static <T> Result<T> fail(ErrorCodeEnum errorCode, String message) {
         return new Result<>(false, null, errorCode, message);
     }
 
@@ -79,7 +79,7 @@ public class Result<T> implements Serializable {
      * @param args 参数
      * @return Result<T>
      */
-    public static <T> Result<T> fail(ErrorCode errorCode, String format, Object... args) {
+    public static <T> Result<T> fail(ErrorCodeEnum errorCode, String format, Object... args) {
         return new Result<>(false, null, errorCode, MessageFormat.format(format, args));
     }
 
@@ -89,7 +89,7 @@ public class Result<T> implements Serializable {
      * @param errorCode 错误码
      * @return Result<T>
      */
-    public static <T> Result<T> fail(ErrorCode errorCode) {
+    public static <T> Result<T> fail(ErrorCodeEnum errorCode) {
         return new Result<>(false, null, errorCode, null);
     }
 
@@ -101,7 +101,7 @@ public class Result<T> implements Serializable {
         return data;
     }
 
-    public ErrorCode getErrorCode() {
+    public ErrorCodeEnum getErrorCode() {
         return errorCode;
     }
 

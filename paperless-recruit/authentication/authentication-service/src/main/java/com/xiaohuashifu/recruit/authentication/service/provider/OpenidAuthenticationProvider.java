@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.authentication.service.provider;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.authentication.service.token.OpenidAuthenticationToken;
-import com.xiaohuashifu.recruit.common.constant.App;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
@@ -45,7 +45,7 @@ public class OpenidAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         OpenidAuthenticationToken openidAuthenticationToken = (OpenidAuthenticationToken) authentication;
-        App app = openidAuthenticationToken.getApp();
+        AppEnum app = openidAuthenticationToken.getApp();
         String code = openidAuthenticationToken.getCode();
 
         // 验证短信验证码

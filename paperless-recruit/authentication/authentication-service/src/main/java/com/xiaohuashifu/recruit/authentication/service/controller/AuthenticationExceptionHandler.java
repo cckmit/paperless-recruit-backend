@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.controller;
 
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,18 +21,18 @@ public class AuthenticationExceptionHandler {
     @ExceptionHandler(InvalidGrantException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse invalidGrantExceptionExceptionHandler(InvalidGrantException e) {
-        return new ErrorResponse(ErrorCode.INVALID_PARAMETER.getCode(), e.getMessage());
+        return new ErrorResponse(ErrorCodeEnum.INVALID_PARAMETER.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse badCredentialsExceptionExceptionHandler(BadCredentialsException e) {
-        return new ErrorResponse(ErrorCode.INVALID_PARAMETER.getCode(), e.getMessage());
+        return new ErrorResponse(ErrorCodeEnum.INVALID_PARAMETER.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse processingExceptionHandler(RuntimeException e) {
-        return new ErrorResponse(ErrorCode.INVALID_PARAMETER.getCode(), e.getMessage());
+        return new ErrorResponse(ErrorCodeEnum.INVALID_PARAMETER.getCode(), e.getMessage());
     }
 }

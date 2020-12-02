@@ -7,7 +7,7 @@ package com.xiaohuashifu.recruit.common.constant;
  * @email: 827032783@qq.com
  * @create: 2020/11/22 01:18
  */
-public enum TriStatus {
+public enum TriStatusEnum {
     /**
      * 可用
      */

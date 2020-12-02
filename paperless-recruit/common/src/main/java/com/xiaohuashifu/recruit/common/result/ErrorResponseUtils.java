@@ -15,7 +15,7 @@ public class ErrorResponseUtils {
      * 未知错误时使用
      */
     public static final ResponseEntity<ErrorResponse> UNKNOWN_ERROR =
-            instanceResponseEntity(ErrorCode.UNKNOWN_ERROR, ErrorCode.UNKNOWN_ERROR.getMessage());
+            instanceResponseEntity(ErrorCodeEnum.UNKNOWN_ERROR, ErrorCodeEnum.UNKNOWN_ERROR.getMessage());
 
     /**
      * 用于快速构建ResponseEntity<ErrorResponse>
@@ -26,7 +26,7 @@ public class ErrorResponseUtils {
      * @return ResponseEntity<ErrorResponse>
      */
     public static ResponseEntity<ErrorResponse> instanceResponseEntity(
-            ErrorCode errorCode, String message) {
+            ErrorCodeEnum errorCode, String message) {
         return instanceResponseEntity(errorCode, message, errorCode.getHttpStatus());
     }
 
@@ -40,7 +40,7 @@ public class ErrorResponseUtils {
      * @return ResponseEntity<ErrorResponse>
      */
     public static ResponseEntity<ErrorResponse> instanceResponseEntity(
-            ErrorCode errorCode, String message, HttpStatus httpStatus) {
+            ErrorCodeEnum errorCode, String message, HttpStatus httpStatus) {
         return instanceResponseEntity(errorCode.getCode(), message, httpStatus);
     }
 

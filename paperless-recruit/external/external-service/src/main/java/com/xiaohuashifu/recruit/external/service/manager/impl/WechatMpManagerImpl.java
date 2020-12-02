@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.manager.impl;
 
-import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.common.constant.Platform;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
 import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WechatMpDetails;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WechatMpManagerConstant;
@@ -71,9 +71,9 @@ public class WechatMpManagerImpl implements WechatMpManager {
      * @return Code2SessionDTO
      */
     @Override
-    public Optional<Code2SessionDTO> getCode2Session(String code, App app) {
+    public Optional<Code2SessionDTO> getCode2Session(String code, AppEnum app) {
         // 平台必须是微信小程序
-        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
+        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
             return Optional.empty();
         }
 
@@ -91,9 +91,9 @@ public class WechatMpManagerImpl implements WechatMpManager {
      * @return access-token
      */
     @Override
-    public Optional<String> getAccessToken(App app) {
+    public Optional<String> getAccessToken(AppEnum app) {
         // 平台必须是微信小程序
-        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
+        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
             return Optional.empty();
         }
 
@@ -111,9 +111,9 @@ public class WechatMpManagerImpl implements WechatMpManager {
      * @return 刷新是否成功
      */
     @Override
-    public boolean refreshAccessToken(App app) {
+    public boolean refreshAccessToken(AppEnum app) {
         // 平台必须是微信小程序
-        if (app.getPlatform() != Platform.WECHAT_MINI_PROGRAM) {
+        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
             return false;
         }
 

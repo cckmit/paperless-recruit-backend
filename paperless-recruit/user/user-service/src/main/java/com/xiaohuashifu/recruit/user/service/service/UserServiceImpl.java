@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户名是否存在
         int count = userMapper.countByUsername(username);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The username already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The username already exist.");
         }
 
         // 添加到数据库
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
         // 判断手机号码是否存在
         int count = userMapper.countByPhone(phone);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "Phone does already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Phone does already exist.");
         }
 
         // 随机生成用户名
@@ -215,7 +215,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 如果密码为null，则随机生成密码
@@ -245,7 +245,7 @@ public class UserServiceImpl implements UserService {
     public Result<UserDTO> getUser(Long id) {
         final UserDO user = userMapper.getUser(id);
         if (user == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(user, UserDTO.class));
     }
@@ -263,7 +263,7 @@ public class UserServiceImpl implements UserService {
     public Result<UserDTO> getUserByUsername(String username) {
         UserDO user = userMapper.getUserByUsername(username);
         if (user == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(user, UserDTO.class));
     }
@@ -282,7 +282,7 @@ public class UserServiceImpl implements UserService {
     public Result<UserDTO> getUserByUsernameOrPhoneOrEmail(String usernameOrPhoneOrEmail) {
         UserDO user = userMapper.getUserByUsernameOrPhoneOrEmail(usernameOrPhoneOrEmail);
         if (user == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(user, UserDTO.class));
     }
@@ -300,7 +300,7 @@ public class UserServiceImpl implements UserService {
     public Result<UserDTO> getUserByPhone(String phone) {
         final UserDO user = userMapper.getUserByPhone(phone);
         if (user == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(user, UserDTO.class));
     }
@@ -318,7 +318,7 @@ public class UserServiceImpl implements UserService {
     public Result<UserDTO> getUserByEmail(String email) {
         final UserDO user = userMapper.getUserByEmail(email);
         if (user == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(mapper.map(user, UserDTO.class));
     }
@@ -357,13 +357,13 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断用户名是否存在
         count = userMapper.countByUsername(newUsername);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The new username already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new username already exist.");
         }
 
         // 更新用户名
@@ -388,13 +388,13 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断手机号码是否存在
         count = userMapper.countByPhone(newPhone);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The new phone already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new phone already exist.");
         }
 
         // 判断验证码是否正确
@@ -405,7 +405,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 更新手机号码
@@ -430,13 +430,13 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断邮箱是否存在
         count = userMapper.countByEmail(newEmail);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The new email already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new email already exist.");
         }
 
         // 判断验证码是否正确
@@ -447,7 +447,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 更新邮箱
@@ -469,7 +469,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 更新密码
@@ -493,7 +493,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.countByEmail(email);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断验证码是否正确
@@ -504,7 +504,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 更新密码
@@ -529,7 +529,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.countByPhone(phone);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
         }
 
         // 判断验证码是否正确
@@ -540,7 +540,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 更新密码
@@ -562,12 +562,12 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);
         if (userDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断用户当前的状态是不是已经是禁用
         if (!userDO.getAvailable()) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This user already disable.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This user already disable.");
         }
 
         // 禁用用户
@@ -589,12 +589,12 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);
         if (userDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断用户当前的状态是不是已经是可用
         if (userDO.getAvailable()) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This user already enable.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This user already enable.");
         }
 
         // 解禁用户
@@ -615,7 +615,7 @@ public class UserServiceImpl implements UserService {
     public Result<Void> userExists(Long id) {
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_USER_NOT_EXIST);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_USER_NOT_EXIST);
         }
         return Result.success();
     }
@@ -635,7 +635,7 @@ public class UserServiceImpl implements UserService {
         // 判断该手机号码是否存在，如果存在就不发送短信验证码
         int count = userMapper.countByPhone(phone);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This phone already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This phone already exist.");
         }
 
         return sendSmsAuthCode(phone, SMS_AUTH_CODE_SIGN_UP_SUBJECT);
@@ -656,7 +656,7 @@ public class UserServiceImpl implements UserService {
         // 判断该手机号码是否存在，如果存在就不发送短信验证码
         int count = userMapper.countByPhone(phone);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This phone already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This phone already exist.");
         }
 
         return sendSmsAuthCode(phone, SMS_AUTH_CODE_UPDATE_PHONE_SUBJECT);
@@ -677,7 +677,7 @@ public class UserServiceImpl implements UserService {
         // 判断该手机号码是否存在，如果不存在就不发送短信验证码
         int count = userMapper.countByPhone(phone);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This phone does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND, "This phone does not exist.");
         }
 
         return sendSmsAuthCode(phone, SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT);
@@ -698,7 +698,7 @@ public class UserServiceImpl implements UserService {
         // 判断邮箱是否存在，邮箱如果存在就不给发送验证码
         int count = userMapper.countByEmail(email);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This email already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This email already exist.");
         }
 
         return sendEmailAuthCode(email, EMAIL_AUTH_CODE_UPDATE_EMAIL_SUBJECT, EMAIL_AUTH_CODE_UPDATE_EMAIL_TITLE);
@@ -719,7 +719,7 @@ public class UserServiceImpl implements UserService {
         // 判断邮箱是否存在，邮箱如果不存在就不给发送验证码
         int count = userMapper.countByEmail(email);
         if (count < 1) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This email does not exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This email does not exist.");
         }
 
         return sendEmailAuthCode(email, EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT, EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE);

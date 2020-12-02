@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.external.service.service;
 
 import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.ErrorCode;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.ObjectUtils;
 import com.xiaohuashifu.recruit.external.api.dto.WechatMpSubscribeMessageTemplateDTO;
@@ -51,7 +51,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
         int count = wechatMpSubscribeMessageTemplateMapper.countByTemplateId(
                 wechatMpSubscribeMessageTemplateDTO.getTemplateId());
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This template id already exists.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This template id already exists.");
         }
 
         // 添加到数据库
@@ -82,7 +82,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
         WechatMpSubscribeMessageTemplateDO wechatMpSubscribeMessageTemplateDO =
                 wechatMpSubscribeMessageTemplateMapper.getWechatMpSubscribeMessageTemplate(id);
         if (wechatMpSubscribeMessageTemplateDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
         return Result.success(
                 mapper.map(wechatMpSubscribeMessageTemplateDO, WechatMpSubscribeMessageTemplateDTO.class));
@@ -131,7 +131,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
         // 判断该编号的模板存不存在
         int count = wechatMpSubscribeMessageTemplateMapper.count(wechatMpSubscribeMessageTemplateDTO.getId());
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This template does not exist.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This template does not exist.");
         }
 
         // 配置更新参数
@@ -147,7 +147,7 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
 
         // 检查是否每个域都为null
         if (ObjectUtils.allFieldIsNull(wechatMpSubscribeMessageTemplateDO)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "At least one non null parameter.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "At least one non null parameter.");
         }
 
         // 添加id属性

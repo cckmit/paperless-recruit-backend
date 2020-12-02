@@ -1,20 +1,14 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.netflix.servo.util.Objects;
-import com.xiaohuashifu.recruit.common.constant.App;
-import com.xiaohuashifu.recruit.common.constant.TriStatus;
+import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
 import com.xiaohuashifu.recruit.external.api.dto.WechatMpSubscribeMessageTemplateDTO;
 import com.xiaohuashifu.recruit.external.api.query.WechatMpSubscribeMessageTemplateQuery;
-import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
 import com.xiaohuashifu.recruit.external.api.service.WechatMpSubscribeMessageTemplateService;
-import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-import org.thymeleaf.util.ObjectUtils;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -44,12 +38,12 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
     public void saveWechatMpSubscribeMessageTemplate() {
         System.out.println(wechatMpSubscribeMessageTemplateService.saveWechatMpSubscribeMessageTemplate(
                 new WechatMpSubscribeMessageTemplateDTO.Builder()
-                        .app(App.SCAU_RECRUIT_INTERVIEWEE_MP)
+                        .app(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP)
                         .templateId("PwgUsyL54zBnWyB1bHDuOP6Oc8EAG5GvQplx8E2kU")
                         .title("面试结果通知")
                         .type("预约/报名")
                         .description("招新面试结果通知")
-                        .status(TriStatus.AVAILABLE)
+                        .status(TriStatusEnum.AVAILABLE)
                         .build()));
     }
 
@@ -61,7 +55,7 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
     @Test
     public void testGetWechatMpSubscribeMessageTemplate() {
         System.out.println(wechatMpSubscribeMessageTemplateService.getWechatMpSubscribeMessageTemplate(
-                new WechatMpSubscribeMessageTemplateQuery.Builder().app(App.SCAU_RECRUIT_INTERVIEWEE_MP).build()
+                new WechatMpSubscribeMessageTemplateQuery.Builder().app(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP).build()
         ));
     }
 

@@ -4,7 +4,6 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
@@ -45,17 +44,6 @@ public class AuthenticationController {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAKey key = new RSAKey.Builder(publicKey).build();
         return new JWKSet(key).toJSONObject();
-    }
-
-    /**
-     * 获得Authentication
-     *
-     * @param authentication Authentication
-     * @return Authentication
-     */
-    @GetMapping
-    public Object get(Authentication authentication) {
-        return authentication;
     }
 
     /**

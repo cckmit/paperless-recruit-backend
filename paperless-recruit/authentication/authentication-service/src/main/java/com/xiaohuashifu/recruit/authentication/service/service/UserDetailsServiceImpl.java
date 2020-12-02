@@ -36,7 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 查找用户
         Result<UserDTO> getUserResult = userService.getUserByUsernameOrPhoneOrEmail(usernameOrPhoneOrEmail);
         if (!getUserResult.isSuccess()) {
-           throw new UsernameNotFoundException("User not found.");
+           throw new UsernameNotFoundException("The user does not exist.");
         }
         UserDTO userDTO = getUserResult.getData();
 

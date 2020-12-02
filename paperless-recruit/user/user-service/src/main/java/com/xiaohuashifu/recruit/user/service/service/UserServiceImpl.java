@@ -135,8 +135,8 @@ public class UserServiceImpl implements UserService {
     /**
      * 创建用户，对外不使用该方式进行注册
      *
-     * @errorCode OperationConflict: 用户名已经存在
-     *              InvalidParameter: 用户名或密码格式错误
+     * @errorCode InvalidParameter: 用户名或密码格式错误
+     *              OperationConflict: 用户名已经存在
      *
      * @param username 用户名
      * @param password 密码
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户名是否存在
         int count = userMapper.countByUsername(username);
         if (count > 0) {
-            return Result.fail(ErrorCode.OPERATION_CONFLICT, "Username does already exist.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The username already exist.");
         }
 
         // 添加到数据库
@@ -162,11 +162,9 @@ public class UserServiceImpl implements UserService {
      * 通过短信验证码注册账号
      * 该方式会随机生成用户名和密码
      *
-     * @errorCode OperationConflict: 手机号码已经存在
-     *              InvalidParameter: 手机号码或验证码或密码格式错误
-     *              InternalError: 服务器错误，请重试
-     *              InvalidParameter.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
-     *              InvalidParameter.Incorrect: 短信验证码值不正确
+     * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
+     *              OperationConflict: 手机号码已经存在
+     *              InvalidParameter.Incorrect: 短信验证码错误
      *
      * @param phone 手机号码
      * @param authCode 短信验证码
@@ -183,10 +181,9 @@ public class UserServiceImpl implements UserService {
      * 若密码为null会随机生成密码
      * 推荐使用该方式进行注册，且密码不允许为null
      *
-     * @errorCode OperationConflict: 手机号码已经存在
-     *              InvalidParameter: 手机号码或验证码或密码格式错误
-     *              InvalidParameter.AuthCode.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
-     *              InvalidParameter.AuthCode.Incorrect: 短信验证码值不正确
+     * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
+     *              OperationConflict: 手机号码已经存在
+     *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
      *
      * @param phone 手机号码
      * @param authCode 短信验证码
@@ -218,7 +215,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
-            return Result.fail(checkEmailAuthCodeResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 如果密码为null，则随机生成密码
@@ -239,7 +236,7 @@ public class UserServiceImpl implements UserService {
      * 通过id获取用户信息
      *
      * @errorCode InvalidParameter: 编号格式错误
-     *              InvalidParameter.NotFound: 该id的用户不存在
+     *              InvalidParameter.NotFound: 该编号的用户不存在
      *
      * @param id 用户编号
      * @return 获取到的用户
@@ -332,7 +329,7 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 查询参数出错
      *
      * @param query 查询参数
-     * @return Result<PageInfo<UserDTO>> 带分页信息的查询结果用户列表
+     * @return Result<PageInfo<UserDTO>> 带分页信息的查询结果用户列表，可能返回空列表
      */
     @Override
     public Result<PageInfo<UserDTO>> getUser(UserQuery query) {
@@ -348,8 +345,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 更新用户名
      *
-     * @errorCode InvalidParameter: 用户编号或新用户名格式错误
-     *              InvalidParameter.NotFound: 该编号的用户不存在
+     * @errorCode InvalidParameter: 用户编号或新用户名格式错误 | 用户不存在
      *              OperationConflict: 新用户名已经存在
      *
      * @param id 用户编号
@@ -361,7 +357,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断用户名是否存在
@@ -378,11 +374,9 @@ public class UserServiceImpl implements UserService {
     /**
      * 更新手机号码
      *
-     * @errorCode InvalidParameter: 用户编号或新手机号码或短信验证码格式错误
-     *              InvalidParameter.NotFound: 该编号的用户不存在
+     * @errorCode InvalidParameter: 用户编号或新手机号码或短信验证码格式错误 | 用户不存在
      *              OperationConflict: 新手机号码已经存在
-     *              InvalidParameter.AuthCode.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
-     *              InvalidParameter.AuthCode.Incorrect: 短信验证码值不正确
+     *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
      *
      * @param id 用户编号
      * @param newPhone 新手机号码
@@ -394,7 +388,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断手机号码是否存在
@@ -411,7 +405,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
-            return Result.fail(checkSmsAuthCodeResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 更新手机号码
@@ -422,11 +416,9 @@ public class UserServiceImpl implements UserService {
     /**
      * 更新邮箱
      *
-     * @errorCode InvalidParameter: 用户编号或新邮箱或邮箱验证码格式错误
-     *              InvalidParameter.NotFound: 该编号的用户不存在
+     * @errorCode InvalidParameter: 用户编号或新邮箱或邮箱验证码格式错误 | 用户不存在
      *              OperationConflict: 新邮箱已经存在
-     *              InvalidParameter.AuthCode.NotFound: 找不到对应邮箱的验证码，有可能已经过期或者没有发送成功
-     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码值不正确
+     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
      *
      * @param id 用户编号
      * @param newEmail 新邮箱
@@ -438,7 +430,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断邮箱是否存在
@@ -455,7 +447,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
-            return Result.fail(checkEmailAuthCodeResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 更新邮箱
@@ -466,8 +458,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 更新密码
      *
-     * @errorCode InvalidParameter: 用户编号或新密码格式错误
-     *              InvalidParameter.NotFound: 该用户不存在
+     * @errorCode InvalidParameter: 用户编号或新密码格式错误 | 该用户不存在
      *
      * @param id 用户编号
      * @param newPassword 新密码
@@ -478,7 +469,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 更新密码
@@ -489,10 +480,8 @@ public class UserServiceImpl implements UserService {
     /**
      * 更新密码，通过邮箱验证码
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 该编号的用户不存在
-     *              InvalidParameter.AuthCode.NotFound: 找不到对应邮箱的验证码，有可能已经过期或者没有发送成功
-     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码值不正确
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该邮箱的用户不存在
+     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
      *
      * @param email 邮箱
      * @param newPassword 新密码
@@ -504,7 +493,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         int count = userMapper.countByEmail(email);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断验证码是否正确
@@ -515,7 +504,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
-            return Result.fail(checkEmailAuthCodeResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 更新密码
@@ -528,8 +517,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 手机号码或验证码或新密码格式错误
      *              InvalidParameter.NotFound: 对应手机号码的用户不存在
-     *              InvalidParameter.AuthCode.NotFound: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
-     *              InvalidParameter.AuthCode.Incorrect: 短信验证码值不正确
+     *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
      *
      * @param phone 手机号码
      * @param newPassword 新密码
@@ -552,7 +540,7 @@ public class UserServiceImpl implements UserService {
                 .delete(true)
                 .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
-            return Result.fail(checkSmsAuthCodeResult);
+            return Result.fail(ErrorCode.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
         // 更新密码
@@ -563,8 +551,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 禁用用户
      *
-     * @errorCode InvalidParameter: 用户编号格式错误
-     *              InvalidParameter.NotFound: 对应编号的用户不存在
+     * @errorCode InvalidParameter: 用户编号格式错误 | 用户不存在
      *              OperationConflict: 用户已经被禁用，无需再次禁用
      *
      * @param id 用户编号
@@ -575,7 +562,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);
         if (userDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断用户当前的状态是不是已经是禁用
@@ -591,8 +578,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 解禁用户
      *
-     * @errorCode InvalidParameter: 用户编号格式错误
-     *              InvalidParameter.NotFound: 对应编号的用户不存在
+     * @errorCode InvalidParameter: 用户编号格式错误 | 用户不存在
      *              OperationConflict: 用户没有被禁用，无需解禁
      *
      * @param id 用户编号
@@ -603,7 +589,7 @@ public class UserServiceImpl implements UserService {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);
         if (userDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断用户当前的状态是不是已经是可用

@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
 import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeUtils;
 import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.authorize.SecurityAuthorize;
@@ -70,16 +71,20 @@ public class UserController {
             if (!signUpBySmsAuthCodeResult.isSuccess()) {
                 System.out.println(signUpBySmsAuthCodeResult);
                 String message = "注册失败";
-                if (signUpBySmsAuthCodeResult.getErrorCode() == ErrorCodeEnum.OPERATION_CONFLICT) {
+                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
+                        ErrorCodeEnum.OPERATION_CONFLICT)) {
                     message = "手机号码已经存在";
                 }
-                if (signUpBySmsAuthCodeResult.getErrorCode() == ErrorCodeEnum.INVALID_PARAMETER) {
+                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
+                        ErrorCodeEnum.INVALID_PARAMETER)) {
                     message = "手机号码或验证码或密码格式错误";
                 }
-                if (signUpBySmsAuthCodeResult.getErrorCode() == ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND) {
+                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
+                        ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND)) {
                     message = "找不到对应的验证码，请重新发送";
                 }
-                if (signUpBySmsAuthCodeResult.getErrorCode() == ErrorCodeEnum.INVALID_PARAMETER_INCORRECT) {
+                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
+                        ErrorCodeEnum.INVALID_PARAMETER_INCORRECT)) {
                     message = "验证码错误";
                 }
                 return ErrorResponseUtils.instanceResponseEntity(signUpBySmsAuthCodeResult.getErrorCode(), message);
@@ -94,10 +99,10 @@ public class UserController {
             // 注册失败
             if (!signUpUserResult.isSuccess()) {
                 String message = "注册失败";
-                if (signUpUserResult.getErrorCode() == ErrorCodeEnum.INVALID_PARAMETER) {
+                if (ErrorCodeUtils.equals(signUpUserResult.getErrorCode(), ErrorCodeEnum.INVALID_PARAMETER)) {
                     message = "用户名或密码格式错误";
                 }
-                if (signUpUserResult.getErrorCode() == ErrorCodeEnum.OPERATION_CONFLICT) {
+                if (ErrorCodeUtils.equals(signUpUserResult.getErrorCode(), ErrorCodeEnum.OPERATION_CONFLICT)) {
                     message = "用户名已经存在";
                 }
                 return ErrorResponseUtils.instanceResponseEntity(signUpUserResult.getErrorCode(), message);

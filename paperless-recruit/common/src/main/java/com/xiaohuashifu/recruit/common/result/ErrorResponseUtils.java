@@ -26,6 +26,19 @@ public class ErrorResponseUtils {
      * @return ResponseEntity<ErrorResponse>
      */
     public static ResponseEntity<ErrorResponse> instanceResponseEntity(
+            String errorCode, String message) {
+        return instanceResponseEntity(errorCode, message, ErrorCodeEnum.getHttpStatus(errorCode));
+    }
+
+    /**
+     * 用于快速构建ResponseEntity<ErrorResponse>
+     *     会获取错误码里面的状态码
+     *
+     * @param errorCode 自定义错误码
+     * @param message 错误信息
+     * @return ResponseEntity<ErrorResponse>
+     */
+    public static ResponseEntity<ErrorResponse> instanceResponseEntity(
             ErrorCodeEnum errorCode, String message) {
         return instanceResponseEntity(errorCode, message, errorCode.getHttpStatus());
     }

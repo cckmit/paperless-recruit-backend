@@ -216,6 +216,21 @@ public enum ErrorCodeEnum implements Serializable {
         return httpStatus;
     }
 
+    /**
+     * 通过code获取HttpStatus
+     *
+     * @param code ErrorCodeEnum.code
+     * @return 这里若找不到对应的HttpStatus，会默认返回HttpStatus.BAD_REQUEST
+     */
+    public static HttpStatus getHttpStatus(String code) {
+        for (ErrorCodeEnum value : ErrorCodeEnum.values()) {
+            if (value.code.equals(code)) {
+                return value.httpStatus;
+            }
+        }
+        return HttpStatus.BAD_REQUEST;
+    }
+
     public String getCode() {
         return code;
     }
@@ -228,4 +243,5 @@ public enum ErrorCodeEnum implements Serializable {
     public String toString() {
         return code;
     }
+
 }

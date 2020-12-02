@@ -20,7 +20,8 @@ public interface UserProfileService {
      * 创建用户个人信息，创建的是一个空白的个人信息
      * 需要用户后续填写
      * 用户必须还没有创建个人信息
-     * @errorCode InvalidParameter.User.NotExist: 用户不存在
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 用户不存在 | 用户信息已经存在
      *
      * @param userId 用户编号
      * @return 创建结果
@@ -32,6 +33,9 @@ public interface UserProfileService {
     /**
      * 获取用户个人信息
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号的用户信息
+     *
      * @param id 用户个人信息编号
      * @return UserProfileDTO
      */
@@ -42,8 +46,10 @@ public interface UserProfileService {
     /**
      * 获取用户个人信息
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return PageInfo<UserProfileDTO> 带分页信息的查询结果
+     * @return PageInfo<UserProfileDTO> 带分页信息的查询结果，可能返回空列表
      */
     default Result<PageInfo<UserProfileDTO>> getUserProfile(@NotNull UserProfileQuery query) {
         throw new UnsupportedOperationException();
@@ -51,6 +57,9 @@ public interface UserProfileService {
 
     /**
      * 通过用户编号获取用户个人信息
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该用户编号的用户信息
      *
      * @param userId 用户编号
      * @return UserProfileDTO
@@ -62,6 +71,8 @@ public interface UserProfileService {
     /**
      * 更新姓名
      * 姓名长度必须在2-5之间
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 用户信息不存在
      *
      * @param userId 用户编号
      * @param newFullName 新姓名
@@ -79,6 +90,8 @@ public interface UserProfileService {
      * 且为纯数字
      * 会进行学号格式校验
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 用户信息不存在
+     *
      * @param userId 用户编号
      * @param newStudentNumber 新学号
      * @return 更新后的用户个人信息
@@ -94,6 +107,8 @@ public interface UserProfileService {
      * 学院专业必须是存在系统的学院专业库里的
      * 该方法会根据专业的编号去寻找学院
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 用户信息不存在 | 专业不存在
+     *
      * @param userId 用户编号
      * @param newMajorId 新专业编号
      * @return 更新后的用户个人信息
@@ -105,6 +120,8 @@ public interface UserProfileService {
 
     /**
      * 更新自我介绍
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 用户信息不存在
      *
      * @param userId 用户编号
      * @param newIntroduction 新自我介绍

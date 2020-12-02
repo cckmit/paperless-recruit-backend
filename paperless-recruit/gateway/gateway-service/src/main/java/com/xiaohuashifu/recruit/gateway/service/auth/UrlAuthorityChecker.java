@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 描述：基于Url的权限检查器
+ * 描述：基于 Url 的权限检查器
  *
  * @author xhsf
  * @create 2020/11/26 15:10
@@ -34,12 +34,17 @@ public class UrlAuthorityChecker {
     private WhiteListService whiteListService;
 
     /**
-     * 刷新permissionNameAuthorizationUrlMap的间隔
+     * 刷新 permissionNameAuthorizationUrlMap 和 whiteList 的固定间隔
      */
-    private static final int REFRESH_DELAY = 60000;
+    private static final int REFRESH_FIXED_DELAY = 60000;
 
     /**
-     * 权限名和授权URL的对应关系
+     * 刷新 permissionNameAuthorizationUrlMap 和 whiteList 的初始延迟
+     */
+    private static final int REFRESH_INITIAL_DELAY = 60000;
+
+    /**
+     * 权限名和授权 URL 的对应关系
      */
     private Map<String, String> permissionNameAuthorizationUrlMap;
 
@@ -58,7 +63,7 @@ public class UrlAuthorityChecker {
      * 通过用户拥有的权限进行鉴权
      *
      * @param authorities 权限列表
-     * @param url 请求的Url
+     * @param url 请求的 Url
      * @return 是否通过鉴权
      */
     public boolean check(Collection<? extends GrantedAuthority> authorities, String url) {
@@ -80,11 +85,11 @@ public class UrlAuthorityChecker {
     }
 
     /**
-     * 创建newPermissionNameAuthorizationUrlMap并替换旧的
-     * 这里添加定时任务，会每REFRESH_DELAY毫秒刷新一次permissionNameAuthorizationUrlMap
+     * 创建 newPermissionNameAuthorizationUrlMap 并替换旧的
+     * 这里添加定时任务，会每 REFRESH_DELAY 毫秒刷新一次 permissionNameAuthorizationUrlMap
      */
-    @Scheduled(initialDelay = 0, fixedDelay = REFRESH_DELAY)
-    private void updatePermissionNameAuthorizationUrlMap() {
+    @Scheduled(initialDelay = REFRESH_INITIAL_DELAY, fixedDelay = REFRESH_FIXED_DELAY)
+    private void refreshPermissionNameAuthorizationUrlMap() {
         List<PermissionDTO> permissionDTOList = permissionService.listAllPermissions().getData();
         Map<String, String> newPermissionNameAuthorizationUrlMap = new ConcurrentHashMap<>();
         for (PermissionDTO permissionDTO : permissionDTOList) {
@@ -96,11 +101,11 @@ public class UrlAuthorityChecker {
     }
 
     /**
-     * 创建newWhiteList并替换旧的
-     * 这里添加定时任务，会每REFRESH_DELAY毫秒刷新一次whiteList
+     * 创建 newWhiteList 并替换旧的
+     * 这里添加定时任务，会每 REFRESH_DELAY 毫秒刷新一次 whiteList
      */
-    @Scheduled(initialDelay = 0, fixedDelay = REFRESH_DELAY)
-    private void updateWhiteList() {
+    @Scheduled(initialDelay = REFRESH_INITIAL_DELAY, fixedDelay = REFRESH_FIXED_DELAY)
+    private void refreshWhiteList() {
         Result<List<String>> getWhiteListResult = whiteListService.getWhiteList();
         whiteList = getWhiteListResult.getData();
     }

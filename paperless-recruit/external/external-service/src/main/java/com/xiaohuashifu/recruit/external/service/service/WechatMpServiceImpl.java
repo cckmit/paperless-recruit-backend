@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -34,6 +35,11 @@ public class WechatMpServiceImpl implements WechatMpService {
     private final WechatMpManager wechatMpManager;
 
     private final RestTemplate restTemplate;
+
+    /**
+     * 发送微信订阅消息失败时的错误码
+     */
+    private static final int SEND_SUBSCRIBE_MESSAGE_FAILED_ERROR_CODE = 0;
 
     /**
      * 发送模板消息的 url
@@ -110,7 +116,7 @@ public class WechatMpServiceImpl implements WechatMpService {
         if (responseEntity.getBody() == null) {
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR, "Send subscribe message failed.");
         }
-        if (!responseEntity.getBody().getErrcode().equals(0)) {
+        if (!Objects.equals(responseEntity.getBody().getErrcode(), SEND_SUBSCRIBE_MESSAGE_FAILED_ERROR_CODE)) {
             return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, responseEntity.getBody().getErrmsg());
         }
         return Result.success();

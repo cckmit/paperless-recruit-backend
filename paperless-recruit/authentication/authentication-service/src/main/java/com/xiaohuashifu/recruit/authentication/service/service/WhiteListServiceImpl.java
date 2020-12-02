@@ -12,6 +12,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -141,7 +142,7 @@ public class WhiteListServiceImpl implements WhiteListService {
         }
 
         // 判断该 url 是否与原 url 相同
-        if (permittedUrlDO.getUrl().equals(newUrl)) {
+        if (Objects.equals(permittedUrlDO.getUrl(), newUrl)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The new url must not same as old url.");
         }
 

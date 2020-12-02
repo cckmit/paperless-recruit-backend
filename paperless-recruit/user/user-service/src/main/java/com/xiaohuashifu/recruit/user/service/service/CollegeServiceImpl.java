@@ -17,6 +17,7 @@ import com.xiaohuashifu.recruit.user.service.do0.MajorDO;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -274,7 +275,7 @@ public class CollegeServiceImpl implements CollegeService {
         }
 
         // 查看新学院名是否和旧学院名相同
-        if (collegeDO.getCollegeName().equals(newCollegeName)) {
+        if (Objects.equals(collegeDO.getCollegeName(), newCollegeName)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                     "The new college name can't be the same as the old college name.");
         }
@@ -309,7 +310,7 @@ public class CollegeServiceImpl implements CollegeService {
         }
 
         // 查看新专业名是否和旧专业名相同
-        if (majorDO.getMajorName().equals(newMajorName)) {
+        if (Objects.equals(majorDO.getMajorName(), newMajorName)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                     "The new major name can't be the same as the old major name.");
         }

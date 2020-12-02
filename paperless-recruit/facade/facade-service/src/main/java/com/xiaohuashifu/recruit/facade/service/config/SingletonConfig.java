@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SingletonConfig {
     /**
-     * dozer配置
+     * dozer 配置
      *
      * @return Mapper
      */

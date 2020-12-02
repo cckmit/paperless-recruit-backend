@@ -12,10 +12,7 @@ import com.xiaohuashifu.recruit.user.service.dao.RoleMapper;
 import com.xiaohuashifu.recruit.user.service.do0.PermissionDO;
 import org.apache.dubbo.config.annotation.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -62,7 +59,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Result<PermissionDTO> savePermission(PermissionDTO permissionDTO) {
         // 如果父权限编号不为0，则父权限必须存在
-        if (!permissionDTO.getParentPermissionId().equals(0L)) {
+        if (!Objects.equals(permissionDTO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
             int count = permissionMapper.count(permissionDTO.getParentPermissionId());
             if (count < 1) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
@@ -80,7 +77,7 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         // 如果父权限编号不为0，且被禁用了，则该权限也应该被禁用
-        if (!permissionDTO.getParentPermissionId().equals(NO_PARENT_PERMISSION_ID)) {
+        if (!Objects.equals(permissionDTO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
             count = permissionMapper.countByIdAndAvailable(permissionDTO.getParentPermissionId(), false);
             if (count > 0) {
                 permissionDTO.setAvailable(false);
@@ -378,7 +375,7 @@ public class PermissionServiceImpl implements PermissionService {
 
         // 如果该权限的父权限编号不为0
         // 判断该权限的父权限是否已经被禁用，如果父权限已经被禁用，则无法解禁该权限
-        if (!permissionDO.getParentPermissionId().equals(NO_PARENT_PERMISSION_ID)) {
+        if (!Objects.equals(permissionDO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
             int count = permissionMapper.countByIdAndAvailable(permissionDO.getParentPermissionId(), false);
             if (count > 0) {
                 return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
@@ -417,13 +414,13 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         // 如果原来的父权限编号和要设置的父权限编号相同，则直接返回
-        if (permissionDO.getParentPermissionId().equals(parentPermissionId)) {
+        if (Objects.equals(permissionDO.getParentPermissionId(), parentPermissionId)) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
                     "The new permission same as the old permission.");
         }
 
         // 若父权限编号不为0，则判断要设置的父权限是否存在
-        if (!parentPermissionId.equals(NO_PARENT_PERMISSION_ID)) {
+        if (!Objects.equals(parentPermissionId, NO_PARENT_PERMISSION_ID)) {
             int count = permissionMapper.count(parentPermissionId);
             if (count < 1) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent permission does not exist.");
@@ -436,7 +433,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 如果要设置的父权限编号为0（取消父权限）
         // 或者要设置的父权限的状态为可用
         // 或者要设置的父权限的状态为禁用且当前权限的状态也为禁用，则直接返回
-        if (parentPermissionId.equals(NO_PARENT_PERMISSION_ID)
+        if (Objects.equals(parentPermissionId, NO_PARENT_PERMISSION_ID)
                 || permissionMapper.countByIdAndAvailable(parentPermissionId, true) == 1
                 || !permissionDO.getAvailable()) {
             Map<String, Object> map = new HashMap<>();

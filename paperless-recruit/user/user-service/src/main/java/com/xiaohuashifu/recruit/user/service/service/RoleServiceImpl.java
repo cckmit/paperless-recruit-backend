@@ -16,6 +16,7 @@ import org.apache.dubbo.config.annotation.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -59,7 +60,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Result<RoleDTO> saveRole(RoleDTO roleDTO) {
         // 如果父角色编号不为0，则父角色必须存在
-        if (!roleDTO.getParentRoleId().equals(NO_PARENT_ROLE_ID)) {
+        if (!Objects.equals(roleDTO.getParentRoleId(), NO_PARENT_ROLE_ID)) {
             int count = roleMapper.count(roleDTO.getParentRoleId());
             if (count < 1) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent does not exist.");
@@ -76,7 +77,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 如果父角色编号不为0，且被禁用了，则该角色也应该被禁用
-        if (!roleDTO.getParentRoleId().equals(NO_PARENT_ROLE_ID)) {
+        if (!Objects.equals(roleDTO.getParentRoleId(), NO_PARENT_ROLE_ID)) {
             count = roleMapper.countByIdAndAvailable(roleDTO.getParentRoleId(), false);
             if (count > 0) {
                 roleDTO.setAvailable(false);
@@ -437,7 +438,7 @@ public class RoleServiceImpl implements RoleService {
 
         // 如果该角色的父角色编号不为0
         // 判断该角色的父角色是否已经被禁用，如果父角色已经被禁用，则无法解禁该角色
-        if (!roleDO.getParentRoleId().equals(NO_PARENT_ROLE_ID)) {
+        if (!Objects.equals(roleDO.getParentRoleId(), NO_PARENT_ROLE_ID)) {
             int count = roleMapper.countByIdAndAvailable(roleDO.getParentRoleId(), false);
             if (count > 0) {
                 return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
@@ -474,13 +475,13 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 如果原来的父角色编号和要设置的父角色编号相同，则直接返回
-        if (roleDO.getParentRoleId().equals(parentRoleId)) {
+        if (Objects.equals(roleDO.getParentRoleId(), parentRoleId)) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
                     "The new parent can't same as old parent.");
         }
 
         // 若父角色编号不为0，则判断要设置的父角色是否存在
-        if (!parentRoleId.equals(NO_PARENT_ROLE_ID)) {
+        if (!Objects.equals(parentRoleId, NO_PARENT_ROLE_ID)) {
             int count = roleMapper.count(parentRoleId);
             if (count < 1) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent role does not exist.");
@@ -493,7 +494,7 @@ public class RoleServiceImpl implements RoleService {
         // 如果要设置的父角色编号为0（取消父角色）
         // 或者要设置的父角色的状态为可用
         // 或者要设置的父角色的状态为禁用且当前角色的状态也为禁用，则直接返回
-        if (parentRoleId.equals(NO_PARENT_ROLE_ID)
+        if (Objects.equals(parentRoleId, NO_PARENT_ROLE_ID)
                 || roleMapper.countByIdAndAvailable(parentRoleId, true) == 1 || !roleDO.getAvailable()) {
             Map<String, Object> map = new HashMap<>();
             map.put("totalDisableCount", 0);

@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.common.result;
 
+import java.util.Objects;
+
 /**
  * 描述：错误码的工具类
  *
@@ -16,7 +18,7 @@ public class ErrorCodeUtils {
      * @return 是否相同
      */
     public static boolean equals(String errorCodeString, ErrorCodeEnum errorCodeEnum) {
-        return errorCodeString.equals(errorCodeEnum.getCode());
+        return Objects.equals(errorCodeString, errorCodeEnum.getCode());
     }
 
 }

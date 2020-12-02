@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -109,7 +110,7 @@ public class SmsServiceImpl implements SmsService {
         }
 
         // 验证码不正确
-        if (!authCode.equals(smsAuthCodeDTO.getAuthCode())) {
+        if (!Objects.equals(authCode, smsAuthCodeDTO.getAuthCode())) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT,
                     "Auth code is incorrect.");
         }

@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -112,7 +113,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
         redisTemplate.delete(redisKey);
 
         // 判断验证码是否相同
-        if (!authCode.equals(authCodeInRedis)) {
+        if (!Objects.equals(authCode, authCodeInRedis)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT,
                     "Auth code is incorrect.");
         }

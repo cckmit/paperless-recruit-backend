@@ -1,13 +1,5 @@
 package com.xiaohuashifu.recruit.facade.service.vo;
 
-import com.xiaohuashifu.recruit.common.validator.annotation.Password;
-import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
-import com.xiaohuashifu.recruit.common.validator.annotation.Username;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Positive;
-import java.time.LocalDateTime;
-
 /**
  * 描述：
  *

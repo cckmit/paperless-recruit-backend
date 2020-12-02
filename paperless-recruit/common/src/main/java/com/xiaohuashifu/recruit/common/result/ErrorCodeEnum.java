@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.common.result;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 描述: 错误码与错误信息的映射
@@ -223,7 +224,7 @@ public enum ErrorCodeEnum implements Serializable {
      */
     public static HttpStatus getHttpStatus(String code) {
         for (ErrorCodeEnum value : ErrorCodeEnum.values()) {
-            if (value.code.equals(code)) {
+            if (Objects.equals(value.code, code)) {
                 return value.httpStatus;
             }
         }

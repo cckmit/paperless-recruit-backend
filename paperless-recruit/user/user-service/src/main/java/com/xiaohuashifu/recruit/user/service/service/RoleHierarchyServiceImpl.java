@@ -9,6 +9,7 @@ import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +53,7 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
                 .collect(Collectors.toMap(PermissionDTO::getId, PermissionDTO::getPermissionName));
         StringBuilder roleHierarchy = new StringBuilder();
         for (PermissionDTO permissionDTO : permissionDTOList) {
-            if (permissionDTO.getParentPermissionId().equals(NO_PARENT_PERMISSION_ID)) {
+            if (Objects.equals(permissionDTO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
                 continue;
             }
             String parentPermissionName = permissionDTOMap.get(permissionDTO.getParentPermissionId());

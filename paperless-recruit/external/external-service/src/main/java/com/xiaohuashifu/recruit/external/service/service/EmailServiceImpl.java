@@ -21,6 +21,7 @@ import javax.mail.internet.MimeMessage;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -198,7 +199,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
         // 验证码不正确
-        if (!authCode.equals(emailAuthCodeDTO.getAuthCode())) {
+        if (!Objects.equals(authCode, emailAuthCodeDTO.getAuthCode())) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT,
                     "Auth code is incorrect.");
         }

@@ -11,7 +11,6 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
  * 描述：层级权限
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/11/28 14:30
  */
 @Configuration

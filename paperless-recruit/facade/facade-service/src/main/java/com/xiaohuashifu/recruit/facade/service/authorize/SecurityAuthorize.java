@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * 描述：自定义SecurityExpressionRoot,可以使用API进行鉴权
- *      如hasRole(),hasAnyAuthority()
- *      改造自SecurityExpressionRoot
+ * 描述：自定义 SecurityExpressionRoot,可以使用 API 进行鉴权
+ *      如 hasRole()，hasAnyAuthority()
+ *      改造自 SecurityExpressionRoot
  *
  * @author xhsf
  * @create 2020/11/28 21:53

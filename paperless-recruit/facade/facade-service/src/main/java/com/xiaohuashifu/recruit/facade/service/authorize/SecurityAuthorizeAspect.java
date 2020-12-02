@@ -9,9 +9,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
- * 描述：SecurityAuthorize的切面
- *      用于把SecurityAuthorize注入到需要该对象的方法里
- *      只需要在方法添加SecurityAuthorize参数即可
+ * 描述：SecurityAuthorize 的切面
+ *      用于把 SecurityAuthorize 注入到需要该对象的方法里
+ *      只需要在方法添加 SecurityAuthorize 参数即可
  *
  * @author xhsf
  * @create 2020/11/29 13:23
@@ -27,7 +27,7 @@ public class SecurityAuthorizeAspect {
 
     @Before(value = "within(com.xiaohuashifu.recruit.facade.service.controller.v1.*)")
     public void securityAuthorize(JoinPoint joinPoint) {
-        // 判断该方法参数是否带有SecurityAuthorize，有的话帮忙插入需要的参数
+        // 判断该方法参数是否带有 SecurityAuthorize，有的话帮忙插入需要的参数
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
             if (arg instanceof SecurityAuthorize) {

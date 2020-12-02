@@ -18,9 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
  * @email: 827032783@qq.com
  * @create: 2020/11/10 19:26
  */
-// 开启Spring Security
 @EnableWebSecurity
-// 开启方法级别的角色权限校验
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 

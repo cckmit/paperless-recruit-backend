@@ -14,10 +14,10 @@ import java.util.List;
 public class PermittedUrlQuery implements Serializable {
     @NotNull
     @Positive
-    private Long pageNum = 1L;
+    private Long pageNum;
     @NotNull
     @Positive
-    private Long pageSize = 10L;
+    private Long pageSize;
     private Long id;
     private List<Long> idList;
     private String url;

@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class AuthenticationExceptionHandler {
     @ExceptionHandler(InvalidGrantException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse invalidGrantExceptionExceptionHandler(InvalidGrantException e) {
         return new ErrorResponse(ErrorCodeEnum.INVALID_PARAMETER.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse badCredentialsExceptionExceptionHandler(BadCredentialsException e) {
         return new ErrorResponse(ErrorCodeEnum.INVALID_PARAMETER.getCode(), e.getMessage());
     }

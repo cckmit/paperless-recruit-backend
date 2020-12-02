@@ -20,7 +20,20 @@ import java.util.Map;
  * @create: 2020/11/12 11:16
  */
 public class SmsGranter extends AbstractTokenGranter {
+    /**
+     * 认证类型
+     */
     private static final String GRANT_TYPE = "sms";
+
+    /**
+     * sms 认证参数的键
+     */
+    private static final String SMS_PHONE_KEY = "phone";
+
+    /**
+     * sms 认证参数的键
+     */
+    private static final String SMS_AUTH_CODE_KEY = "authCode";
 
     private final AuthenticationManager authenticationManager;
 
@@ -33,9 +46,9 @@ public class SmsGranter extends AbstractTokenGranter {
     @Override
     protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
-        String phone = parameters.get("phone");
-        String authCode = parameters.get("authCode");
-        parameters.remove("authCode");
+        String phone = parameters.get(SMS_PHONE_KEY);
+        String authCode = parameters.get(SMS_AUTH_CODE_KEY);
+        parameters.remove(SMS_AUTH_CODE_KEY);
 
         Authentication userAuth = new SmsAuthenticationToken(phone, authCode);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);

@@ -21,7 +21,20 @@ import java.util.Map;
  * @create: 2020/11/21 11:16
  */
 public class OpenidGranter extends AbstractTokenGranter {
+    /**
+     * 认证类型
+     */
     private static final String GRANT_TYPE = "openid";
+
+    /**
+     * openid 认证参数的键
+     */
+    private static final String OPENID_APP_KEY = "app";
+
+    /**
+     * openid 认证参数的键
+     */
+    private static final String OPENID_CODE_KEY = "code";
 
     private final AuthenticationManager authenticationManager;
 
@@ -34,9 +47,9 @@ public class OpenidGranter extends AbstractTokenGranter {
     @Override
     protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
-        String app = parameters.get("app");
-        String code = parameters.get("code");
-        parameters.remove("code");
+        String app = parameters.get(OPENID_APP_KEY);
+        String code = parameters.get(OPENID_CODE_KEY);
+        parameters.remove(OPENID_CODE_KEY);
 
         Authentication userAuth = new OpenidAuthenticationToken(AppEnum.valueOf(app), code);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);

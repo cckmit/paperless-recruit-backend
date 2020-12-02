@@ -39,7 +39,7 @@ public class AuthenticationController {
      *
      * @return Map<String, Object>
      */
-    @GetMapping("/rsa/publicKey")
+    @GetMapping("/rsa/public-key")
     public Object getKey() {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAKey key = new RSAKey.Builder(publicKey).build();
@@ -47,7 +47,8 @@ public class AuthenticationController {
     }
 
     /**
-     * 通过access_token获取jwt
+     * 解析jwt
+     *
      * @param request HttpServletRequest
      * @return 解析后的jwt对象
      */

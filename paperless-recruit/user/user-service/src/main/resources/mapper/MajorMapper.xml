@@ -11,6 +11,11 @@
         values(#{collegeId}, #{majorName})
     </insert>
 
+    <delete id="deleteByCollegeId">
+        delete from major
+        where college_id = #{collegeId}
+    </delete>
+
     <delete id="delete">
         delete from major
         where id = #{id}

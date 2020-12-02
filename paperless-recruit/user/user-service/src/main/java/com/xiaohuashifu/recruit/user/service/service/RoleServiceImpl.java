@@ -19,11 +19,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 描述：
+ * 描述：角色服务 RPC 接口
  *
  * @author: xhsf
- * @email: 827032783@qq.com
- * @create: 2020/11/12 20:40
+ * @create: 2020/11/12 19:42
  */
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -46,6 +45,9 @@ public class RoleServiceImpl implements RoleService {
      * 角色名必须不存在
      * 如果父角色被禁用了，则该角色也会被禁用
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 父角色不存在
+     *              OperationConflict: 角色名已经存在
+     *
      * @param roleDTO 需要parentRoleId，roleName，description和available
      * @return Result<RoleDTO>
      */
@@ -55,7 +57,7 @@ public class RoleServiceImpl implements RoleService {
         if (!roleDTO.getParentRoleId().equals(0L)) {
             int count = roleMapper.count(roleDTO.getParentRoleId());
             if (count < 1) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This parent role not exists.");
+                return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent does not exist.");
             }
         }
 
@@ -65,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
         // 判断角色名存不存在，角色名必须不存在
         int count = roleMapper.countByRoleName(roleDTO.getRoleName());
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role name have been exists.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role name already exist.");
         }
 
         // 如果父角色编号不为0，且被禁用了，则该角色也应该被禁用
@@ -93,6 +95,9 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 创建用户角色，也就是给用户绑定角色
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 用户不存在 | 角色不存在
+     *              OperationConflict: 用户已经有该角色
+     *
      * @param userId 用户编号
      * @param roleId 角色编号
      * @return Result<Void>
@@ -102,19 +107,19 @@ public class RoleServiceImpl implements RoleService {
         // 判断该用户存不存在
         int count = userMapper.count(userId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This user not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断该角色存不存在
         count = roleMapper.count(roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该用户角色存不存在
         count = roleMapper.countUserRoleByUserIdAndRoleId(userId, roleId);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This user already has this role.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The user already has this role.");
         }
 
         // 绑定用户与角色
@@ -125,6 +130,9 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 创建角色权限，也就是给角色绑定权限
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在 | 权限不存在
+     *              OperationConflict: 该角色已经有该权限
+     *
      * @param roleId 角色编号
      * @param permissionId 权限编号
      * @return Result<Void>
@@ -134,19 +142,19 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         int count = roleMapper.count(roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该权限存不存在
         count = permissionMapper.count(permissionId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 判断该角色权限存不存在
         count = roleMapper.countRolePermissionByRoleIdAndPermissionId(roleId, permissionId);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role already has this permission.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role already has this permission.");
         }
 
         // 绑定角色权限
@@ -159,6 +167,9 @@ public class RoleServiceImpl implements RoleService {
      * 同时会删除此角色拥有的所有权限（Permission）的关联关系
      * 和拥有此角色的用户之间的关联关系
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在
+     *              OperationConflict: 该角色存在子角色
+     *
      * @param id 角色编号
      * @return Result<Void>
      */
@@ -167,13 +178,13 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         int count = roleMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该角色是否还拥有子角色，必须没有子角色才可以删除
         count = roleMapper.countByParentRoleId(id);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role exists children role.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role exists children.");
         }
 
         // 删除该角色所关联的权限（Permission）的关联关系
@@ -190,6 +201,8 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 删除用户绑定的角色
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 用户不存在 | 角色不存在 | 用户不存在该角色
+     *
      * @param userId 用户编号
      * @param roleId 角色编号
      * @return Result<Void>
@@ -199,13 +212,13 @@ public class RoleServiceImpl implements RoleService {
         // 判断该用户存不存在
         int count = userMapper.count(userId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This user not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The user does not exist.");
         }
 
         // 判断该角色存不存在
         count = roleMapper.count(roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该用户角色存不存在
@@ -222,6 +235,8 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 删除角色绑定的权限
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在 | 权限不存在 | 角色不存在该权限
+     *
      * @param roleId 角色编号
      * @param permissionId 权限编号
      * @return Result<Void>
@@ -231,13 +246,13 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         int count = roleMapper.count(roleId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该权限存不存在
         count = permissionMapper.count(permissionId);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission does not exist.");
         }
 
         // 判断该角色权限存不存在
@@ -253,6 +268,10 @@ public class RoleServiceImpl implements RoleService {
 
     /**
      * 获取角色
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 该编号的角色不存在
+     *
      * @param id 角色编号
      * @return Result<RoleDTO>
      */
@@ -268,8 +287,10 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 获取角色
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return Result<PageInfo<RoleDTO>> 带分页信息的角色列表
+     * @return Result<PageInfo<RoleDTO>> 带分页信息的角色列表，可能返回空列表
      */
     @Override
     public Result<PageInfo<RoleDTO>> getRole(RoleQuery query) {
@@ -286,8 +307,10 @@ public class RoleServiceImpl implements RoleService {
      * 获取用户角色服务
      * 该服务会根据用户id查询用户的角色，会返回该用户所有角色
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param userId 用户id
-     * @return 用户的角色列表
+     * @return 用户的角色列表，可能返回空列表
      */
     @Override
     public Result<List<RoleDTO>> getRoleListByUserId(Long userId) {
@@ -300,6 +323,9 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 更新角色名，新角色名必须不存在
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在
+     *              OperationConflict: 新角色名已经存在
+     *
      * @param id 角色编号
      * @param newRoleName 新角色名
      * @return Result<RoleDTO> 更新后的角色对象
@@ -309,7 +335,7 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在，该角色必须存在
         int count = roleMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 去除角色名两边空白符
@@ -318,7 +344,7 @@ public class RoleServiceImpl implements RoleService {
         // 判断新角色名存不存在，新角色名必须不存在
         count = roleMapper.countByRoleName(newRoleName);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role name have been exists.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role name already exist.");
         }
 
         // 更新角色名
@@ -329,6 +355,8 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 更新角色描述
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在
+     *
      * @param id 角色编号
      * @param newDescription 新角色描述
      * @return Result<RoleDTO> 更新后的角色对象
@@ -338,7 +366,7 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在，该角色必须存在
         int count = roleMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 去除角色描述两边空白符
@@ -352,21 +380,24 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 禁用角色（且子角色可用状态也被禁用，递归禁用）
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在
+     *              OperationConflict: 角色已经被禁用
+     *
      * @param id 角色编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
+     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的 key 为 totalDisableCount 和 newRole
      */
     @Override
     public Result<Map<String, Object>> disableRole(Long id) {
         // 判断该角色存不存在
         int count = roleMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 判断该角色是否已经被禁用
         count = roleMapper.countByIdAndAvailable(id, false);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role have bean disable.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role already disable.");
         }
 
         // 递归的禁用角色
@@ -380,6 +411,9 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 解禁角色（且子角色可用状态也被解禁，递归解禁）
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在
+     *              OperationConflict: 角色已经可用 | 父角色被禁用，无法解禁该角色
+     *
      * @param id 角色编号
      * @return Result<Map<String, Object>> 解禁的数量和解禁后的角色对象，分别对应的key为totalEnableCount和newRole
      */
@@ -388,12 +422,12 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         RoleDO roleDO = roleMapper.getRole(id);
         if (roleDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 不能解禁已经有效的角色
         if (roleDO.getAvailable()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This role is available.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The role is available.");
         }
 
         // 如果该角色的父角色编号不为0
@@ -401,7 +435,7 @@ public class RoleServiceImpl implements RoleService {
         if (!roleDO.getParentRoleId().equals(0L)) {
             int count = roleMapper.countByIdAndAvailable(roleDO.getParentRoleId(), false);
             if (count > 0) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER,
+                return Result.fail(ErrorCode.OPERATION_CONFLICT,
                         "Can't enable this role, because the parent role is disable.");
             }
         }
@@ -419,6 +453,9 @@ public class RoleServiceImpl implements RoleService {
      * 设置parentRoleId为0表示取消父角色设置
      * 如果父亲角色状态为禁用，而该角色的状态为可用，则递归更新该角色状态为禁用
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在 | 父角色不存在
+     *              OperationConflict: 新旧父角色不能相同
+     *
      * @param id 角色编号
      * @param parentRoleId 父角色编号
      * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
@@ -428,19 +465,19 @@ public class RoleServiceImpl implements RoleService {
         // 判断该角色存不存在
         RoleDO roleDO = roleMapper.getRole(id);
         if (roleDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This role not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The role does not exist.");
         }
 
         // 如果原来的父角色编号和要设置的父角色编号相同，则直接返回
         if (roleDO.getParentRoleId().equals(parentRoleId)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent role has not changed.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The new parent can't same as old parent.");
         }
 
         // 若父角色编号不为0，则判断要设置的父角色是否存在
         if (!parentRoleId.equals(0L)) {
             int count = roleMapper.count(parentRoleId);
             if (count < 1) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This parent role not exists.");
+                return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent role does not exist.");
             }
         }
 

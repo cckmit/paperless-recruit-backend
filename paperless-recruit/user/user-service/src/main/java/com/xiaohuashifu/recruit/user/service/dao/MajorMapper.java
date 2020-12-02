@@ -17,6 +17,8 @@ public interface MajorMapper {
 
     int saveMajor(MajorDO majorDO);
 
+    int deleteByCollegeId(Long collegeId);
+
     int delete(Long id);
 
     MajorDO getMajor(Long id);

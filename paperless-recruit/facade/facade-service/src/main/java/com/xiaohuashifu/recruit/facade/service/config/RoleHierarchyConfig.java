@@ -23,7 +23,7 @@ public class RoleHierarchyConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy(roleHierarchyService.createRoleHierarchy());
+        roleHierarchy.setHierarchy(roleHierarchyService.createRoleHierarchy().getData());
         return roleHierarchy;
     }
 

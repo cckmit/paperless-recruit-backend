@@ -41,12 +41,12 @@ public class CollegeServiceImplTest {
 
     @Test
     public void saveMajor() {
-        System.out.println(collegeService.saveMajor(1L, "计算机科学与技术"));
+        System.out.println(collegeService.saveMajor(3L, "海洋工程"));
     }
 
     @Test
     public void deleteCollege() {
-        System.out.println(collegeService.deleteCollege(2L));
+        System.out.println(collegeService.deleteCollege(3L));
     }
 
     @Test
@@ -87,5 +87,9 @@ public class CollegeServiceImplTest {
     @Test
     public void updateMajorName() {
         System.out.println(collegeService.updateMajorName(1L, "计算机科学与技术"));
+    }
+
+    @Test
+    public void testDeleteCollege() {
     }
 }

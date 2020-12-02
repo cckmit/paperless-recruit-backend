@@ -1,9 +1,10 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
+import com.xiaohuashifu.recruit.common.result.Result;
+
 /**
  * 描述：获取RoleHierarchy的setHierarchy方法的参数的字符串的服务
  *      用于构建带层级的关系
- * 示例：
  *
  * @author: xhsf
  * @email: 827032783@qq.com
@@ -18,5 +19,5 @@ public interface RoleHierarchyService {
      *           "user > create_user"
      * @return 权限的层级结构字符串
      */
-    String createRoleHierarchy();
+    Result<String> createRoleHierarchy();
 }

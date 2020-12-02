@@ -32,6 +32,11 @@ public class PermissionServiceImpl implements PermissionService {
     private final RoleMapper roleMapper;
     private final Mapper mapper;
 
+    /**
+     * 在角色名的前缀
+     */
+    private static final String SPRING_SECURITY_ROLE_PREFIX = "ROLE_";
+
     public PermissionServiceImpl(PermissionMapper permissionMapper, RoleMapper roleMapper, Mapper mapper) {
         this.permissionMapper = permissionMapper;
         this.roleMapper = roleMapper;
@@ -43,6 +48,9 @@ public class PermissionServiceImpl implements PermissionService {
      * 权限名必须不存在
      * 如果父权限被禁用了，则该权限也会被禁用
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 父权限不存在
+     *              OperationConflict: 权限名已经存在
+     *
      * @param permissionDTO parentPermissionId，permissionName，authorizationUrl，description和available
      * @return Result<PermissionDTO>
      */
@@ -52,8 +60,7 @@ public class PermissionServiceImpl implements PermissionService {
         if (!permissionDTO.getParentPermissionId().equals(0L)) {
             int count = permissionMapper.count(permissionDTO.getParentPermissionId());
             if (count < 1) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND,
-                        "This parent permission not exists.");
+                return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent permission does not exist.");
             }
         }
 
@@ -63,7 +70,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断权限名存不存在，权限名必须不存在
         int count = permissionMapper.countByPermissionName(permissionDTO.getPermissionName());
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission name have been exists.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The permission name already exist.");
         }
 
         // 如果父权限编号不为0，且被禁用了，则该权限也应该被禁用
@@ -92,7 +99,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     /**
      * 删除权限，只允许没有子权限的权限删除
-     * 同时会删除与此权限关联的所有角色（Role）的关联关系
+     * 同时会删除与此权限关联的所有角色 Role 的关联关系
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在 | 存在子权限 |
      *
      * @param id 权限编号
      * @return Result<Void>
@@ -102,16 +111,16 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission not exists.");
         }
 
         // 判断该权限是否还拥有子权限，必须没有子权限才可以删除
         count = permissionMapper.countByParentPermissionId(id);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission exists children permission.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission exist children.");
         }
 
-        // 删除该权限所关联的角色（Role）的关联关系
+        // 删除该权限所关联的角色 Role 的关联关系
         permissionMapper.deleteRolePermissionByPermissionId(id);
 
         // 删除该权限
@@ -121,6 +130,10 @@ public class PermissionServiceImpl implements PermissionService {
 
     /**
      * 获取权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号对应的权限
+     *
      * @param id 权限编号
      * @return Result<PermissionDTO>
      */
@@ -136,8 +149,10 @@ public class PermissionServiceImpl implements PermissionService {
     /**
      * 获取权限
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表
+     * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表，可能返回空列表
      */
     @Override
     public Result<PageInfo<PermissionDTO>> getPermission(PermissionQuery query) {
@@ -168,6 +183,8 @@ public class PermissionServiceImpl implements PermissionService {
      * 获取角色权限服务
      * 该服务会根据角色id列表查询角色的权限列表，会返回所有角色的权限列表
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param roleIdList 角色id列表
      * @return 角色的权限列表
      */
@@ -184,6 +201,8 @@ public class PermissionServiceImpl implements PermissionService {
     /**
      * 通过用户id获取用户权限列表
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param userId 用户id
      * @return 用户的权限列表
      */
@@ -197,19 +216,21 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     /**
-     * 通过用户id获取用户权限（Authority）列表
-     * 该权限代表的是权限字符串，而不是Permission对象
+     * 通过用户 id 获取用户权限 Authority 列表
+     * 该权限代表的是权限字符串，而不是 Permission 对象
      * 主要用于Spring Security框架鉴权使用
      * 包含角色和权限
      * 角色的转换格式为：ROLE_{role_name}
      * 权限的转换格式为：{permission_name}
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param userId 用户id
-     * @return 用户的权限（Authority）列表
+     * @return 用户的权限 Authority 列表，可能返回空列表
      */
     @Override
     public Result<Set<String>> getAuthorityByUserId(Long userId) {
-        // 下面将直接复用这个Set，不再构造一次浪费资源
+        // 下面将直接复用这个 Set，不再构造一次浪费资源
         Set<String> permissionNameSet = permissionMapper.getPermissionNameByUserId(userId);
         List<String> roleNameList = roleMapper.getRoleNameByUserId(userId);
         roleNameList.forEach(roleName -> permissionNameSet.add(SPRING_SECURITY_ROLE_PREFIX + roleName));
@@ -218,6 +239,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     /**
      * 更新权限名，新权限名必须不存在
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *              OperationConflict: 新权限名已经存在
      *
      * @param id 权限编号
      * @param newPermissionName 新权限名
@@ -228,7 +252,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在，该权限必须存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 去除权限名两边空白符
@@ -237,7 +261,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断新权限名存不存在，新权限名必须不存在
         count = permissionMapper.countByPermissionName(newPermissionName);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission name have been exists.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The new permission name already exist.");
         }
 
         // 更新权限名
@@ -248,6 +272,8 @@ public class PermissionServiceImpl implements PermissionService {
     /**
      * 更新授权路径
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *
      * @param id 权限编号
      * @param newAuthorizationUrl 新授权路径
      * @return Result<PermissionDTO> 更新后的权限对象
@@ -257,7 +283,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在，该权限必须存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 去除授权路径两边空白符
@@ -269,6 +295,8 @@ public class PermissionServiceImpl implements PermissionService {
     /**
      * 更新权限描述
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *
      * @param id 权限编号
      * @param newDescription 新权限描述
      * @return Result<PermissionDTO> 更新后的权限对象
@@ -278,7 +306,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在，该权限必须存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 去除权限描述两边空白符
@@ -290,21 +318,25 @@ public class PermissionServiceImpl implements PermissionService {
     /**
      * 禁用权限（且子权限可用状态也被禁用，递归禁用）
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *              OperationConflict: 该权限已经被禁用
+     *
      * @param id 权限编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，分别对应的key为totalDisableCount和newPermission
+     * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，
+     *          分别对应的 key 为 totalDisableCount 和 newPermission
      */
     @Override
     public Result<Map<String, Object>> disablePermission(Long id) {
         // 判断该权限存不存在
         int count = permissionMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 判断该权限是否已经被禁用
         count = permissionMapper.countByIdAndAvailable(id, false);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission have bean disable.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The permission already disable.");
         }
 
         // 递归的禁用权限
@@ -318,20 +350,24 @@ public class PermissionServiceImpl implements PermissionService {
     /**
      * 解禁权限（且子权限可用状态也被解禁，递归解禁）
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *              OperationConflict: 该权限已经可用 | 父权限被禁用，无法解禁该权限
+     *
      * @param id 权限编号
-     * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象，分别对应的key为totalEnableCount和newPermission
+     * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象
+     *          分别对应的 key 为 totalEnableCount 和 newPermission
      */
     @Override
     public Result<Map<String, Object>> enablePermission(Long id) {
         // 判断该权限存不存在
         PermissionDO permissionDO = permissionMapper.getPermission(id);
         if (permissionDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 不能解禁已经有效的权限
         if (permissionDO.getAvailable()) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This permission is available.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The permission is available.");
         }
 
         // 如果该权限的父权限编号不为0
@@ -339,7 +375,7 @@ public class PermissionServiceImpl implements PermissionService {
         if (!permissionDO.getParentPermissionId().equals(0L)) {
             int count = permissionMapper.countByIdAndAvailable(permissionDO.getParentPermissionId(), false);
             if (count > 0) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER,
+                return Result.fail(ErrorCode.OPERATION_CONFLICT,
                         "Can't enable this permission, because the parent permission is disable.");
             }
         }
@@ -354,8 +390,11 @@ public class PermissionServiceImpl implements PermissionService {
 
     /**
      * 设置父权限
-     * 设置parentPermissionId为0表示取消父权限设置
+     * 设置 parentPermissionId 为0表示取消父权限设置
      * 如果父权限状态为禁用，而该权限的状态为可用，则递归更新该权限状态为禁用
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 权限不存在 | 父权限不存在
+     *              OperationConflict: 新旧父权限相同
      *
      * @param id 权限编号
      * @param parentPermissionId 父权限编号
@@ -368,20 +407,20 @@ public class PermissionServiceImpl implements PermissionService {
         // 判断该权限存不存在
         PermissionDO permissionDO = permissionMapper.getPermission(id);
         if (permissionDO == null) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "This permission not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The permission does not exist.");
         }
 
         // 如果原来的父权限编号和要设置的父权限编号相同，则直接返回
         if (permissionDO.getParentPermissionId().equals(parentPermissionId)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent permission has not changed.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT,
+                    "The new permission same as the old permission.");
         }
 
         // 若父权限编号不为0，则判断要设置的父权限是否存在
         if (parentPermissionId != 0) {
             int count = permissionMapper.count(parentPermissionId);
             if (count < 1) {
-                return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND,
-                        "This parent permission not exists.");
+                return Result.fail(ErrorCode.INVALID_PARAMETER, "The parent permission does not exist.");
             }
         }
 

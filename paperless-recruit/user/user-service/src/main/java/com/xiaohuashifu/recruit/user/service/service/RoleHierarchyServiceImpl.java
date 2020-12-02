@@ -35,7 +35,7 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
      * @return 权限的层级结构字符串
      */
     @Override
-    public String createRoleHierarchy() {
+    public Result<String> createRoleHierarchy() {
         Result<List<PermissionDTO>> getAllPermissionResult = permissionService.getAllPermission();
         List<PermissionDTO> permissionDTOList = getAllPermissionResult.getData();
         Map<Long, String> permissionDTOMap = permissionDTOList.stream()
@@ -49,6 +49,6 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
             String permissionName = permissionDTO.getPermissionName();
             roleHierarchy.append(parentPermissionName).append(" > ").append(permissionName).append('\n');
         }
-        return roleHierarchy.toString();
+        return Result.success(roleHierarchy.toString());
     }
 }

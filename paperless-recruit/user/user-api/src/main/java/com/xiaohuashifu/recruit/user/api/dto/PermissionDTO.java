@@ -25,7 +25,9 @@ public class PermissionDTO implements Serializable {
     @NotBlank(groups = PermissionService.SavePermission.class)
     private String permissionName;
 
-    // TODO: 2020/11/17 目前该字段没有明确定义，后面需要明确该字段的含义及格式
+    /**
+     * 授权路径，可以是 AntPath
+     */
     @Size(min = 1, max = 255)
     @NotBlank(groups = PermissionService.SavePermission.class)
     private String authorizationUrl;

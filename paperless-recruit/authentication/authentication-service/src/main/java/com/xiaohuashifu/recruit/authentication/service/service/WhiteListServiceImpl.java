@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 描述：白名单服务，这是基于URL的白名单
+ * 描述：白名单服务，这是基于 URL 的白名单
  *
  * @author xhsf
  * @create 2020/11/27 20:23
@@ -32,17 +32,20 @@ public class WhiteListServiceImpl implements WhiteListService {
     }
 
     /**
-     * 添加被允许的Url
+     * 添加被允许的 Url
      *
-     * @param url 被允许的Url
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              OperationConflict: 该 url 已经存在
+     *
+     * @param url 被允许的 Url
      * @return PermittedUrlDTO
      */
     @Override
     public Result<PermittedUrlDTO> savePermittedUrl(String url) {
-        // 判断该url是否已经存在
+        // 判断该 url 是否已经存在
         int count = permittedUrlMapper.countByUrl(url);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The url already exist.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The url already exist.");
         }
 
         // 保存
@@ -52,14 +55,16 @@ public class WhiteListServiceImpl implements WhiteListService {
     }
 
     /**
-     * 删除被允许的Url
+     * 删除被允许的 Url
      *
-     * @param id 被允许的Url的编号
+     * @errorCode InvalidParameter: 请求参数格式错误 | 要删除的编号不存在
+     *
+     * @param id 被允许的 Url 的编号
      * @return PermittedUrlDTO
      */
     @Override
     public Result<Void> deletePermittedUrl(Long id) {
-        // 判断要删除的permittedUrl存不存在
+        // 判断要删除的 permittedUrl 存不存在
         int count = permittedUrlMapper.count(id);
         if (count < 1) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "The url does not exist.");
@@ -71,7 +76,10 @@ public class WhiteListServiceImpl implements WhiteListService {
     }
 
     /**
-     * 通过编号获得PermittedUrlDTO
+     * 通过编号获得 PermittedUrlDTO
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号的允许路径
      *
      * @param id 被允许路径的编号
      * @return PermittedUrlDTO
@@ -88,8 +96,10 @@ public class WhiteListServiceImpl implements WhiteListService {
     /**
      * 查询被允许的路径
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return PageInfo<PermittedUrlDTO>
+     * @return PageInfo<PermittedUrlDTO> 这里可能返回空列表
      */
     @Override
     public Result<PageInfo<PermittedUrlDTO>> getPermittedUrl(PermittedUrlQuery query) {
@@ -115,9 +125,12 @@ public class WhiteListServiceImpl implements WhiteListService {
     /**
      * 更新被允许的路径
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该编号的允许路径不存在 | 新 url 与原 url 相同
+     *              OperationConflict: 新 url 已经存在
+     *
      * @param id 编号
      * @param newUrl 新的被允许路径
-     * @return PermittedUrlDTO 更新后的PermittedUrlDTO
+     * @return PermittedUrlDTO 更新后的 PermittedUrlDTO
      */
     @Override
     public Result<PermittedUrlDTO> updateUrl(Long id, String newUrl) {
@@ -135,7 +148,7 @@ public class WhiteListServiceImpl implements WhiteListService {
         // 判断该url是否已经存在
         int count = permittedUrlMapper.countByUrl(newUrl);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The url already exist.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "The url already exist.");
         }
 
         // 更新url

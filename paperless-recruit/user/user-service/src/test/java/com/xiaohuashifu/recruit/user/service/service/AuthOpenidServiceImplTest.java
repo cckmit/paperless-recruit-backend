@@ -38,11 +38,11 @@ public class AuthOpenidServiceImplTest {
     @Test
     public void checkAuthOpenidForWechatMp() {
         System.out.println(authOpenidService.checkAuthOpenidForWechatMp(App.SCAU_RECRUIT_INTERVIEWEE_MP,
-                "023rkpFa11Wd1A08GnIa1eR5ze2rkpFJ"));
+                "073kJA2w36gHrV28Xb3w3gusrp1kJA2P"));
     }
 
     @Test
     public void getOpenid() {
-        System.out.println(authOpenidService.getOpenid(App.SCAU_RECRUIT_INTERVIEWEE_MP, 2L));
+        System.out.println(authOpenidService.getOpenid(App.SCAU_RECRUIT_INTERVIEWEE_MP, 1L));
     }
 }

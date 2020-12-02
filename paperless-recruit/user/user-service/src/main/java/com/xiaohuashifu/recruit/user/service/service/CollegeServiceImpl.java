@@ -50,7 +50,7 @@ public class CollegeServiceImpl implements CollegeService {
         // 判断是否已经存在这个学院
         int count = collegeMapper.countByCollegeName(collegeName);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This college name already exists.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This college name already exists.");
         }
 
         // 添加到数据库
@@ -61,6 +61,9 @@ public class CollegeServiceImpl implements CollegeService {
 
     /**
      * 保存专业
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              OperationConflict: 该学院名已经存在
      *
      * @param collegeId 学院编号
      * @param majorName 专业名
@@ -90,6 +93,8 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 删除学院，删除时会删除该学院的所有专业信息
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 对应编号的学院不存在
+     *
      * @param id 学院编号
      * @return 删除结果
      */
@@ -101,11 +106,8 @@ public class CollegeServiceImpl implements CollegeService {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "The college does not exists.");
         }
 
-        // 查看学院是否还有专业
-        int count = majorMapper.countByCollegeId(id);
-        if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The college must have no major");
-        }
+        // 删除该学院的所有专业
+        majorMapper.deleteByCollegeId(id);
 
         // 删除学院
         collegeMapper.delete(id);
@@ -114,6 +116,8 @@ public class CollegeServiceImpl implements CollegeService {
 
     /**
      * 删除专业
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 对应编号的专业不存在
      *
      * @param id 专业编号
      * @return 删除结果
@@ -134,6 +138,9 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 获取学院
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号的学院
+     *
      * @param id 学院编号
      * @return CollegeDTO
      */
@@ -149,8 +156,10 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 查询学院
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return PageInfo<CollegeDTO> 带分页信息的查询结果
+     * @return PageInfo<CollegeDTO> 带分页信息的查询结果，可能返回空列表
      */
     @Override
     public Result<PageInfo<CollegeDTO>> getCollege(CollegeQuery query) {
@@ -165,6 +174,9 @@ public class CollegeServiceImpl implements CollegeService {
 
     /**
      * 获取学院名
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号的学院名
      *
      * @param id 学院编号
      * @return String 学院名
@@ -182,8 +194,10 @@ public class CollegeServiceImpl implements CollegeService {
      * 查询学院专业
      * 查询学院时会把专业信息一起查出来
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return PageInfo<CollegeMajorDTO> 带分页信息的查询结果
+     * @return PageInfo<CollegeMajorDTO> 带分页信息的查询结果，可以返回空列表
      */
     @Override
     public Result<PageInfo<CollegeMajorDTO>> getCollegeMajor(CollegeQuery query) {
@@ -207,6 +221,9 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 获取专业
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号的专业
+     *
      * @param id 专业编号
      * @return MajorDTO
      */
@@ -222,8 +239,10 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 查询专业
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return PageInfo<MajorDTO> 带分页信息的查询结果
+     * @return PageInfo<MajorDTO> 带分页信息的查询结果，可能会返回空列表
      */
     @Override
     public Result<PageInfo<MajorDTO>> getMajor(MajorQuery query) {
@@ -238,6 +257,9 @@ public class CollegeServiceImpl implements CollegeService {
 
     /**
      * 更新学院名
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 学院编号不存在 | 新旧学院名相同
+     *              OperationConflict: 新学院名已经存在
      *
      * @param id 学院编号
      * @param newCollegeName 新学院名
@@ -260,7 +282,7 @@ public class CollegeServiceImpl implements CollegeService {
         // 查看新学院名是否存在
         int count = collegeMapper.countByCollegeName(newCollegeName);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "This college name already exists.");
+            return Result.fail(ErrorCode.OPERATION_CONFLICT, "This college name already exists.");
         }
 
         // 更新到数据库
@@ -270,6 +292,9 @@ public class CollegeServiceImpl implements CollegeService {
 
     /**
      * 更新专业名
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 专业不存在 | 新旧专业名相同
+     *              OperationConflict: 新专业名已经存在该学院
      *
      * @param id 专业编号
      * @param newMajorName 新专业名
@@ -292,7 +317,7 @@ public class CollegeServiceImpl implements CollegeService {
         // 查看该学院是否存在新专业名
         int count = majorMapper.countByCollegeIdAndMajorName(majorDO.getCollegeId(), newMajorName);
         if (count > 0) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER,
+            return Result.fail(ErrorCode.OPERATION_CONFLICT,
                     "This major name already exists in the college.");
         }
 

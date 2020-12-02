@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 描述：权限服务RPC接口
+ * 描述：权限服务 RPC 接口
  *
  * @author: xhsf
  * @email: 827032783@qq.com
@@ -19,16 +19,14 @@ import java.util.Set;
  */
 public interface PermissionService {
 
-    /**
-     * 在Spring Security中角色的前缀
-     */
-    String SPRING_SECURITY_ROLE_PREFIX = "ROLE_";
-
     @interface SavePermission{}
     /**
      * 创建权限
      * 权限名必须不存在
      * 如果父权限被禁用了，则该权限也会被禁用
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 父权限不存在
+     *              OperationConflict: 权限名已经存在
      *
      * @param permissionDTO parentPermissionId，permissionName，authorizationUrl，description和available
      * @return Result<PermissionDTO>
@@ -39,7 +37,9 @@ public interface PermissionService {
 
     /**
      * 删除权限，只允许没有子权限的权限删除
-     * 同时会删除与此权限关联的所有角色（Role）的关联关系
+     * 同时会删除与此权限关联的所有角色 Role 的关联关系
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在 | 存在子权限 |
      *
      * @param id 权限编号
      * @return Result<Void>
@@ -50,6 +50,10 @@ public interface PermissionService {
 
     /**
      * 获取权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号对应的权限
+     *
      * @param id 权限编号
      * @return Result<PermissionDTO>
      */
@@ -60,8 +64,10 @@ public interface PermissionService {
     /**
      * 获取权限
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param query 查询参数
-     * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表
+     * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表，可能返回空列表
      */
     default Result<PageInfo<PermissionDTO>> getPermission(@NotNull PermissionQuery query) {
         throw new UnsupportedOperationException();
@@ -80,8 +86,10 @@ public interface PermissionService {
      * 获取角色权限服务
      * 该服务会根据角色id列表查询角色的权限列表，会返回所有角色的权限列表
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param roleIdList 角色id列表
-     * @return 角色的权限列表
+     * @return 角色的权限列表，可能返回空列表
      */
     default Result<List<PermissionDTO>> getPermissionByRoleIdList(@NotEmpty List<Long> roleIdList) {
         throw new UnsupportedOperationException();
@@ -90,23 +98,27 @@ public interface PermissionService {
     /**
      * 通过用户id获取用户权限列表
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param userId 用户id
-     * @return 用户的权限列表
+     * @return 用户的权限列表，可能返回空列表
      */
     default Result<List<PermissionDTO>> getPermissionByUserId(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 通过用户id获取用户权限（Authority）列表
-     * 该权限代表的是权限字符串，而不是Permission对象
+     * 通过用户 id 获取用户权限 Authority 列表
+     * 该权限代表的是权限字符串，而不是 Permission 对象
      * 主要用于Spring Security框架鉴权使用
      * 包含角色和权限
      * 角色的转换格式为：ROLE_{role_name}
      * 权限的转换格式为：{permission_name}
      *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
      * @param userId 用户id
-     * @return 用户的权限（Authority）列表
+     * @return 用户的权限 Authority 列表，可能返回空列表
      */
     default Result<Set<String>> getAuthorityByUserId(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
@@ -114,6 +126,9 @@ public interface PermissionService {
 
     /**
      * 更新权限名，新权限名必须不存在
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *              OperationConflict: 新权限名已经存在
      *
      * @param id 权限编号
      * @param newPermissionName 新权限名
@@ -128,6 +143,8 @@ public interface PermissionService {
     /**
      * 更新授权路径
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *
      * @param id 权限编号
      * @param newAuthorizationUrl 新授权路径
      * @return Result<PermissionDTO> 更新后的权限对象
@@ -140,6 +157,8 @@ public interface PermissionService {
 
     /**
      * 更新权限描述
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
      *
      * @param id 权限编号
      * @param newDescription 新权限描述
@@ -154,8 +173,12 @@ public interface PermissionService {
     /**
      * 禁用权限（且子权限可用状态也被禁用，递归禁用）
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *              OperationConflict: 该权限已经被禁用
+     *
      * @param id 权限编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，分别对应的key为totalDisableCount和newPermission
+     * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，
+     *          分别对应的 key 为 totalDisableCount 和 newPermission
      */
     default Result<Map<String, Object>> disablePermission(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
@@ -164,8 +187,12 @@ public interface PermissionService {
     /**
      * 解禁权限（且子权限可用状态也被解禁，递归解禁）
      *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
+     *              OperationConflict: 该权限已经可用 | 父权限被禁用，无法解禁该权限
+     *
      * @param id 权限编号
-     * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象，分别对应的key为totalEnableCount和newPermission
+     * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象
+     *          分别对应的 key 为 totalEnableCount 和 newPermission
      */
     default Result<Map<String, Object>> enablePermission(@NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
@@ -173,8 +200,11 @@ public interface PermissionService {
 
     /**
      * 设置父权限
-     * 设置parentPermissionId为0表示取消父权限设置
+     * 设置 parentPermissionId 为0表示取消父权限设置
      * 如果父权限状态为禁用，而该权限的状态为可用，则递归更新该权限状态为禁用
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误 | 权限不存在 | 父权限不存在
+     *              OperationConflict: 新旧父权限相同
      *
      * @param id 权限编号
      * @param parentPermissionId 父权限编号

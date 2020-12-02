@@ -17,31 +17,39 @@ public class SmsAuthenticationToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-    private final Object principal;
-    private final Object credentials;
+    private final String phone;
+    private final String authCode;
 
     public SmsAuthenticationToken(String phone, String authCode) {
         super(null);
-        this.principal = phone;
-        this.credentials = authCode;
+        this.phone = phone;
+        this.authCode = authCode;
         setAuthenticated(false);
     }
 
     public SmsAuthenticationToken(String phone, String authCode, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.principal = phone;
-        this.credentials = authCode;
+        this.phone = phone;
+        this.authCode = authCode;
         super.setAuthenticated(true); // must use super, as we override
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getAuthCode() {
+        return authCode;
     }
 
     @Override
     public Object getCredentials() {
-        return credentials;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Object getPrincipal() {
-        return principal;
+        throw new UnsupportedOperationException();
     }
 
     @Override

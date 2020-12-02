@@ -43,8 +43,8 @@ public class SmsAuthenticationProvider extends AbstractAuthenticationProvider {
     @Override
     protected UserDTO check(Authentication authentication) {
         SmsAuthenticationToken smsAuthenticationToken = (SmsAuthenticationToken) authentication;
-        String phone = (String) smsAuthenticationToken.getPrincipal();
-        String authCode = (String) smsAuthenticationToken.getCredentials();
+        String phone = smsAuthenticationToken.getPhone();
+        String authCode = smsAuthenticationToken.getAuthCode();
 
         // 验证短信验证码
         Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(

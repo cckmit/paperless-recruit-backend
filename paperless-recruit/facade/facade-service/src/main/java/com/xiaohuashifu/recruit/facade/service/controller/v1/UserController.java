@@ -5,7 +5,6 @@ import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeUtils;
 import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.facade.service.authorize.SecurityAuthorize;
 import com.xiaohuashifu.recruit.facade.service.vo.UserVO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -14,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 描述：用户的门面类
@@ -22,7 +23,7 @@ import java.util.Map;
  * @create 2020/11/28 14:41
  */
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping("/users")
 public class UserController {
     @Reference
     private UserService userService;
@@ -118,10 +119,13 @@ public class UserController {
 
 
     @GetMapping
-    public Object getUser(SecurityAuthorize securityAuthorize) {
-        if (securityAuthorize.hasRole("admin")) {
-
-        }
+    public Object getUser() {
         return "user";
+    }
+
+    public static void main(String[] args) {
+        Pattern pattern = Pattern.compile(".*;? ?version=1\\.0.*");
+        Matcher matcher = pattern.matcher("*/*; version=1.0; xx=11");
+        System.out.println(matcher.matches());
     }
 }

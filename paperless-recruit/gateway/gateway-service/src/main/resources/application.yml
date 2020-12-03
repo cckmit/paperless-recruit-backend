@@ -2,6 +2,7 @@ spring:
   cloud:
     gateway:
       routes:
+        # 认证服务的路由
         - id: auth_request__route
           predicates:
             - Path=/oauth/**
@@ -14,9 +15,11 @@ spring:
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
           uri: http://127.0.0.1:8082
-        - id: request_rate_limiter_route
+        # REST API 接口 v1
+        - id: v1_rest_api_route
           predicates:
             - Path=/**
+            - Header=Accept, .*;? ?version=1\.0(|;.*)
           filters:
             - name: RequestRateLimiter
               args:

@@ -1,21 +1,13 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.aliyuncs.CommonRequest;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.http.MethodType;
-import com.aliyuncs.profile.DefaultProfile;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SmsDTO;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
+import com.xiaohuashifu.recruit.external.service.manager.SmsManager;
 import org.apache.dubbo.config.annotation.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Objects;
@@ -30,15 +22,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SmsServiceImpl implements SmsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SmsServiceImpl.class);
-
     private final StringRedisTemplate redisTemplate;
 
-    @Value("${aliyun.access-key-id}")
-    private String accessKeyId;
-
-    @Value("${aliyun.access-key-secret}")
-    private String accessKeySecret;
+    private final SmsManager smsManager;
 
     /**
      * 短信验证码的 Redis key 前缀
@@ -46,8 +32,9 @@ public class SmsServiceImpl implements SmsService {
      */
     private static final String SMS_AUTH_CODE_REDIS_PREFIX = "sms:auth-code";
 
-    public SmsServiceImpl(StringRedisTemplate redisTemplate) {
+    public SmsServiceImpl(StringRedisTemplate redisTemplate, SmsManager smsManager) {
         this.redisTemplate = redisTemplate;
+        this.smsManager = smsManager;
     }
 
     // TODO: 2020/11/19 通用短信接口未实现
@@ -70,10 +57,7 @@ public class SmsServiceImpl implements SmsService {
     public Result<Void> createAndSendSmsAuthCode(SmsAuthCodeDTO smsAuthCodeDTO) {
         // 发送短信验证码到手机
         String authCode = AuthCodeUtils.randomAuthCode();
-        try {
-            sendSmsAuthCode(smsAuthCodeDTO.getPhone(), authCode);
-        } catch (ClientException clientException) {
-            logger.warn("Send sms auth code fail");
+        if (!smsManager.sendSmsAuthCode(smsAuthCodeDTO.getPhone(), authCode)) {
             return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Send sms auth code failed.");
         }
 
@@ -121,31 +105,6 @@ public class SmsServiceImpl implements SmsService {
         }
 
         return Result.success();
-    }
-
-    /**
-     * 发送短信验证码的具体逻辑
-     *
-     * @param phone 手机号码
-     * @param authCode 验证码
-     * @throws ClientException 发送短信验证码出错
-     */
-    private void sendSmsAuthCode(String phone, String authCode) throws ClientException {
-        DefaultProfile profile = DefaultProfile.getProfile(
-                "cn-hangzhou", accessKeyId, accessKeySecret);
-        IAcsClient client = new DefaultAcsClient(profile);
-
-        CommonRequest request = new CommonRequest();
-        request.setSysMethod(MethodType.POST);
-        request.setSysDomain("dysmsapi.aliyuncs.com");
-        request.setSysVersion("2017-05-25");
-        request.setSysAction("SendSms");
-        request.putQueryParameter("RegionId", "cn-hangzhou");
-        request.putQueryParameter("PhoneNumbers", phone);
-        request.putQueryParameter("SignName", "招新小程序");
-        request.putQueryParameter("TemplateCode", "SMS_205464852");
-        request.putQueryParameter("TemplateParam", "{\"code\":\"" + authCode + "\"}");
-        client.getCommonResponse(request);
     }
 
 }

@@ -494,8 +494,10 @@ public class RoleServiceImpl implements RoleService {
         // 如果要设置的父角色编号为0（取消父角色）
         // 或者要设置的父角色的状态为可用
         // 或者要设置的父角色的状态为禁用且当前角色的状态也为禁用，则直接返回
-        if (Objects.equals(parentRoleId, NO_PARENT_ROLE_ID)
-                || roleMapper.countByIdAndAvailable(parentRoleId, true) == 1 || !roleDO.getAvailable()) {
+        boolean canReturn = Objects.equals(parentRoleId, NO_PARENT_ROLE_ID)
+                || roleMapper.countByIdAndAvailable(parentRoleId, true) == 1
+                || !roleDO.getAvailable();
+        if (canReturn) {
             Map<String, Object> map = new HashMap<>();
             map.put("totalDisableCount", 0);
             map.put("newRole", getRole(id));

@@ -433,9 +433,10 @@ public class PermissionServiceImpl implements PermissionService {
         // 如果要设置的父权限编号为0（取消父权限）
         // 或者要设置的父权限的状态为可用
         // 或者要设置的父权限的状态为禁用且当前权限的状态也为禁用，则直接返回
-        if (Objects.equals(parentPermissionId, NO_PARENT_PERMISSION_ID)
+        boolean canReturn = Objects.equals(parentPermissionId, NO_PARENT_PERMISSION_ID)
                 || permissionMapper.countByIdAndAvailable(parentPermissionId, true) == 1
-                || !permissionDO.getAvailable()) {
+                || !permissionDO.getAvailable();
+        if (canReturn) {
             Map<String, Object> map = new HashMap<>();
             map.put("totalDisableCount", 0);
             map.put("newPermission", getPermission(id));

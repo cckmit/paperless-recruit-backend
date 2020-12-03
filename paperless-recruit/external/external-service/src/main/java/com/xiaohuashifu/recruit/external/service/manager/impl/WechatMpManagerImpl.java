@@ -118,7 +118,6 @@ public class WechatMpManagerImpl implements WechatMpManager {
         String url = MessageFormat.format("{0}?grant_type=client_credential&appid={1}&secret={2}",
                 accessTokenUrl, wechatMpDetails.getAppId(app), wechatMpDetails.getSecret(app));
         ResponseEntity<AccessTokenDTO> entity = restTemplate.getForEntity(url, AccessTokenDTO.class);
-        System.out.println(entity);
         if (entity.getBody() == null || entity.getBody().getAccess_token() == null) {
             logger.warn("Get access token fail.");
             return false;

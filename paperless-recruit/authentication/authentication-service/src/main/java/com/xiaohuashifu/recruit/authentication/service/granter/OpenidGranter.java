@@ -49,6 +49,9 @@ public class OpenidGranter extends AbstractTokenGranter {
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
         String app = parameters.get(OPENID_APP_KEY);
         String code = parameters.get(OPENID_CODE_KEY);
+        if (app == null || code == null) {
+            throw new InvalidGrantException("App and code can't be null.");
+        }
         parameters.remove(OPENID_CODE_KEY);
 
         Authentication userAuth = new OpenidAuthenticationToken(AppEnum.valueOf(app), code);

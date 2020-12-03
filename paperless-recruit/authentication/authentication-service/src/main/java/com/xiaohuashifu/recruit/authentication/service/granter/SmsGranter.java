@@ -47,6 +47,9 @@ public class SmsGranter extends AbstractTokenGranter {
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
         String phone = parameters.get(SMS_PHONE_KEY);
         String authCode = parameters.get(SMS_AUTH_CODE_KEY);
+        if (phone == null || authCode == null) {
+            throw new InvalidGrantException("Phone and authCode can't be null.");
+        }
         parameters.remove(SMS_AUTH_CODE_KEY);
 
         Authentication userAuth = new SmsAuthenticationToken(phone, authCode);

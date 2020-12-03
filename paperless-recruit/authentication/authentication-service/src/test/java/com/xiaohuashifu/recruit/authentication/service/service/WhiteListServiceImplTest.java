@@ -41,12 +41,13 @@ public class WhiteListServiceImplTest {
 
     @Test
     public void getPermittedUrl() {
-        System.out.println(whiteListService.getPermittedUrl(2L));
+        System.out.println(whiteListService.getPermittedUrl(1L));
     }
 
     @Test
     public void testGetPermittedUrl() {
-        System.out.println(whiteListService.listPermittedUrls(new PermittedUrlQuery.Builder().url("/oaut2h").build()));
+        System.out.println(whiteListService.listPermittedUrls(
+                new PermittedUrlQuery.Builder().pageNum(1L).pageSize(50L).build()));
     }
 
     @Test

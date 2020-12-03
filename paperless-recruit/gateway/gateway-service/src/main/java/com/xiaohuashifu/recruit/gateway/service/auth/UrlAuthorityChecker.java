@@ -41,7 +41,7 @@ public class UrlAuthorityChecker {
     /**
      * 刷新 permissionNameAuthorizationUrlMap 和 whiteList 的初始延迟
      */
-    private static final int REFRESH_INITIAL_DELAY = 60000;
+    private static final int REFRESH_INITIAL_DELAY = 0;
 
     /**
      * 权限名和授权 URL 的对应关系

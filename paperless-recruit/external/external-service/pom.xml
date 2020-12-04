@@ -134,6 +134,13 @@
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
         </dependency>
+
+        <!--   解密微信小程序encryptedData的库     -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.59</version>
+        </dependency>
     </dependencies>
 
 </project>

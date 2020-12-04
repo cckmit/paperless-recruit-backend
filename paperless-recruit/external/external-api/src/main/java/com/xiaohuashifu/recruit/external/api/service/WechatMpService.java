@@ -30,6 +30,10 @@ public interface WechatMpService {
         throw new UnsupportedOperationException();
     }
 
+    default void getUserInfo(String encryptedData, String iv, String code) {
+        throw new UnsupportedOperationException();
+    }
+
     @interface SendSubscribeMessage{}
     /**
      * 发送订阅消息
@@ -47,5 +51,6 @@ public interface WechatMpService {
                                               @NotNull SubscribeMessageDTO subscribeMessageDTO) {
         throw new UnsupportedOperationException();
     }
+
 
 }

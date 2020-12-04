@@ -54,4 +54,13 @@ public class WechatMpServiceImplTest {
         System.out.println(wechatMpService.sendSubscribeMessage(
                 AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP, 1L, subscribeMessageDTO));
     }
+
+    @Test
+    public void getUserInfo() {
+        String encryptedData =
+                "MvWCTWz4aWiF8KOVoN8qHQt24Bh5byY/jZb/brUuFFSEKIUu4aLf7z8Ko8PrEBMG8s4Da1fc5UpO3469gffDC8DdUA0rr/6Z1gKokayX/DyAUAtPclkouvO26TcmYtSMrHfreOW7D8yc8dnUndKdzVm6Xqcmn6eaHFjsv/2bKTRHULJ73REEgZlFI+doJI4CjCzZk9d40QCsTXQAUnpxuaD1EjRqJHgtm+mpXkdZvOBi6uOf84dlTNbXLcC8tK1npK/i6NL1nU0155eJBz7rnuY05+6RItpAJnETUoSluCU1+Re4WV2tF683g1zBEb3IP4oMEmxQvOzzs5yY3BlN/2mKURJEa4AwB4AuXE8hL4CQTAbGyFwBltuMUz8to0t8FhsmLuY5T5izsoSiDPpC5IKCD0aOgLuk98iGW0TaKnRtBpLHVb7bcIhlb9OLHky54Vxc4VuDY2DITKmHzJLX/s56JQde3GVVROctAgDt3CE=";
+        String iv = "0oKdWTo11NZ4Lm/JeL5YYg==";
+        String code = "073H2oHa16SQ6A00h3Ia1VE5cM1H2oHS";
+        wechatMpService.getUserInfo(encryptedData, iv, code);
+    }
 }

@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.external.service.manager;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
+import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpUserInfoDTO;
 
 import java.util.Optional;
 
@@ -28,6 +29,17 @@ public interface WechatMpManager {
      * @return access-token
      */
     Optional<String> getAccessToken(AppEnum app);
+
+    /**
+     * 解密 encryptedData 获取用户信息
+     *
+     * @param encryptedData wx.getUserInfo() 返回值
+     * @param iv wx.getUserInfo() 返回值
+     * @param code wx.login() 的返回值
+     * @param app 具体的微信小程序类型
+     * @return 若获取失败则返回 null
+     */
+    Optional<WeChatMpUserInfoDTO> getUserInfo(String encryptedData, String iv, String code, AppEnum app);
 
     /**
      * 获取新的 access-token

@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
@@ -10,13 +11,26 @@ import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpResponseDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
+import org.apache.axis.encoding.Base64;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.spec.InvalidParameterSpecException;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -121,5 +135,10 @@ public class WechatMpServiceImpl implements WechatMpService {
         }
         return Result.success();
     }
+
+    public void getUserInfo(String encryptedData, String iv, String code) {
+        System.out.println(wechatMpManager.getUserInfo(encryptedData, iv, code, AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP));
+    }
+
 
 }

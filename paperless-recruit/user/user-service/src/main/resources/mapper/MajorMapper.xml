@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.MajorMapper">
+
+    <resultMap id="major" type="major">
+        <id property="id" column="id"/>
+        <result property="collegeId" column="college_id"/>
+        <result property="majorName" column="major_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
     <sql id="major">
         id, college_id, major_name, create_time, update_time
     </sql>
@@ -21,19 +30,19 @@
         where id = #{id}
     </delete>
 
-    <select id="getMajor" resultType="major">
+    <select id="getMajor" resultMap="major">
         select <include refid="major"/>
         from major
         where id = #{id}
     </select>
 
-    <select id="listMajorsByCollegeId" resultType="major">
+    <select id="listMajorsByCollegeId" resultMap="major">
         select <include refid="major"/>
         from major
         where college_id = #{collegeId}
     </select>
 
-    <select id="listMajors" resultType="major">
+    <select id="listMajors" resultMap="major">
         select <include refid="major"/>
         from major
         <where>
@@ -75,10 +84,10 @@
         and major_name = #{majorName}
     </select>
 
-
     <update id="updateMajorName">
         update major
         set major_name = #{majorName}
         where id = #{id}
     </update>
+
 </mapper>

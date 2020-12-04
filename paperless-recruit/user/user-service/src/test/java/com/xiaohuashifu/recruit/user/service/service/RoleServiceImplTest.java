@@ -58,7 +58,7 @@ public class RoleServiceImplTest {
 
     @Test
     public void getRole() {
-        System.out.println(roleService.listRoles(new RoleQuery()));
+        System.out.println(roleService.listRoles(new RoleQuery.Builder().pageNum(1L).pageSize(10L).build()));
     }
 
     @Test

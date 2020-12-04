@@ -36,8 +36,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUser() {
-        Long a = null;
-        final Result<UserDTO> user = userService.getUser(a);
+        final Result<UserDTO> user = userService.getUser(1L);
         System.out.println(user);
 //        System.out.println(userService.getUser(new UserQuery.Builder().phone("159923").build()));
     }

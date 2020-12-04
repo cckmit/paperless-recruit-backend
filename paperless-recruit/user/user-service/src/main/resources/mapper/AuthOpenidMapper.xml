@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.AuthOpenidMapper">
+
+    <resultMap id="authOpenid" type="authOpenid">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="appName" column="app_name"/>
+        <result property="openid" column="openid"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
     <sql id="auth_openid">
-        id, user_id, app_name , openid, create_time, update_time
+        id, user_id, app_name, openid, create_time, update_time
     </sql>
+
     <insert id="insertAuthOpenid" keyProperty="id">
         insert into auth_openid(user_id, app_name, openid)
         values(#{userId}, #{appName}, #{openid})
     </insert>
 
-    <select id="getAuthOpenid" resultType="authOpenid">
+    <select id="getAuthOpenid" resultMap="authOpenid">
         select <include refid="auth_openid"/>
         from auth_openid
         where id = #{id}

@@ -68,7 +68,7 @@ public class CollegeServiceImplTest {
 
     @Test
     public void getMajor() {
-        System.out.println(collegeService.getMajor(1L));
+        System.out.println(collegeService.getMajor(2L));
     }
 
     @Test

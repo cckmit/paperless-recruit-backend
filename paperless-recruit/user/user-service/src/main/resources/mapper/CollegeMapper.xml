@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.CollegeMapper">
+
+    <resultMap id="college" type="college">
+        <id property="id" column="id"/>
+        <result property="collegeName" column="college_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
     <sql id="college">
         id, college_name, create_time, update_time
     </sql>
@@ -16,13 +24,13 @@
         where id = #{id}
     </delete>
 
-    <select id="getCollege" resultType="college">
+    <select id="getCollege" resultMap="college">
         select <include refid="college"/>
         from college
         where id = #{id}
     </select>
 
-    <select id="listColleges" resultType="college">
+    <select id="listColleges" resultMap="college">
         select <include refid="college"/>
         from college
         <where>
@@ -60,10 +68,10 @@
         where college_name = #{collegeName}
     </select>
 
-
     <update id="updateCollegeName">
         update college
         set college_name = #{collegeName}
         where id = #{id}
     </update>
+
 </mapper>

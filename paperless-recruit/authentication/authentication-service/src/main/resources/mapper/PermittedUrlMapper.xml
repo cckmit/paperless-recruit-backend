@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.authentication.service.dao.PermittedUrlMapper">
-    <resultMap id="permittedUrlResultMap" type="permittedUrl">
+
+    <resultMap id="permittedUrl" type="permittedUrl">
         <id property="id" column="id"/>
         <result property="url" column="url"/>
         <result property="createTime" column="create_time"/>
@@ -22,13 +23,13 @@
         where id = #{id}
     </delete>
 
-    <select id="getPermittedUrl" resultMap="permittedUrlResultMap">
+    <select id="getPermittedUrl" resultMap="permittedUrl">
         select <include refid="permittedUrl"/>
         from permitted_url
         where id = #{id}
     </select>
 
-    <select id="listPermittedUrls" resultMap="permittedUrlResultMap">
+    <select id="listPermittedUrls" resultMap="permittedUrl">
         select <include refid="permittedUrl"/>
         from permitted_url
         <where>
@@ -71,4 +72,5 @@
         set url = #{url}
         where id = #{id}
     </update>
+
 </mapper>

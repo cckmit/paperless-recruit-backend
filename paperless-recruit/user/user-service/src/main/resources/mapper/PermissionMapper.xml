@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.PermissionMapper">
+
+    <resultMap id="permission" type="permission">
+        <id property="id" column="id"/>
+        <result property="parentPermissionId" column="parent_permission_id"/>
+        <result property="permissionName" column="permission_name"/>
+        <result property="authorizationUrl" column="authorization_url"/>
+        <result property="description" column="description"/>
+        <result property="available" column="is_available"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
     <sql id="permission">
-        id, parent_permission_id, permission_name, authorization_url, description, is_available as available,
+        id, parent_permission_id, permission_name, authorization_url, description, is_available,
         create_time, update_time
     </sql>
 
     <sql id="p_permission">
-        p.id, p.parent_permission_id, p.permission_name, p.authorization_url, p.description, p.is_available as available,
+        p.id, p.parent_permission_id, p.permission_name, p.authorization_url, p.description, p.is_available,
         p.create_time, p.update_time
     </sql>
 
@@ -26,15 +38,13 @@
         where permission_id = #{permissionId}
     </delete>
 
-
-    <select id="getPermission" resultType="permission">
+    <select id="getPermission" resultMap="permission">
         select <include refid="permission"/>
         from permission
         where id = #{id}
     </select>
 
-
-    <select id="listPermissionsByRoleIds" resultType="permission">
+    <select id="listPermissionsByRoleIds" resultMap="permission">
         select
         <include refid="p_permission"/>
         from role_permission rp inner join permission p on rp.permission_id = p.id
@@ -44,7 +54,7 @@
         </foreach>
     </select>
 
-    <select id="listPermissionsByUserId" resultType="permission">
+    <select id="listPermissionsByUserId" resultMap="permission">
         select
             <include refid="p_permission"/>
         from user u
@@ -53,11 +63,9 @@
             inner join role_permission rp on r.id = rp.role_id
             inner join permission p on rp.permission_id = p.id
         where u.id = #{userId}
---         这个条件是因为如果这个用户没有任何权限，不应该返回
---         and p.id is not null
     </select>
 
-    <select id="listPermissions" resultType="permission">
+    <select id="listPermissions" resultMap="permission">
         select
             <include refid="permission"/>
         from permission
@@ -87,7 +95,7 @@
         </where>
     </select>
 
-    <select id="listAllPermissions" resultType="permission">
+    <select id="listAllPermissions" resultMap="permission">
         select <include refid="permission"/>
         from permission
     </select>
@@ -107,7 +115,6 @@
         from permission
         where parent_permission_id = #{parentPermissionId}
     </select>
-
 
     <select id="listIdsByParentPermissionIdAndAvailable" resultType="long">
         select id

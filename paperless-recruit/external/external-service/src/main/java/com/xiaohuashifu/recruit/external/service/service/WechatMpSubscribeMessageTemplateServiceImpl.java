@@ -83,8 +83,10 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
         if (wechatMpSubscribeMessageTemplateDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
-        return Result.success(
-                mapper.map(wechatMpSubscribeMessageTemplateDO, WechatMpSubscribeMessageTemplateDTO.class));
+        WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO =
+                mapper.map(wechatMpSubscribeMessageTemplateDO, WechatMpSubscribeMessageTemplateDTO.class);
+        wechatMpSubscribeMessageTemplateDTO.setApp(wechatMpSubscribeMessageTemplateDO.getAppName());
+        return Result.success(wechatMpSubscribeMessageTemplateDTO);
     }
 
     /**
@@ -106,8 +108,12 @@ public class WechatMpSubscribeMessageTemplateServiceImpl implements WechatMpSubs
         List<WechatMpSubscribeMessageTemplateDTO> wechatMpSubscribeMessageTemplateDTOList =
                 wechatMpSubscribeMessageTemplateDOList
                 .stream()
-                .map(wechatMpSubscribeMessageTemplateDO ->
-                        mapper.map(wechatMpSubscribeMessageTemplateDO, WechatMpSubscribeMessageTemplateDTO.class))
+                .map(wechatMpSubscribeMessageTemplateDO -> {
+                            WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO =
+                                    mapper.map(wechatMpSubscribeMessageTemplateDO, WechatMpSubscribeMessageTemplateDTO.class);
+                            wechatMpSubscribeMessageTemplateDTO.setApp(wechatMpSubscribeMessageTemplateDO.getAppName());
+                            return wechatMpSubscribeMessageTemplateDTO;
+                })
                 .collect(Collectors.toList());
 
         // 包装 PageInfo

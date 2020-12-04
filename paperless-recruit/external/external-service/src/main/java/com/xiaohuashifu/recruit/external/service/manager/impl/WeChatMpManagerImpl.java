@@ -3,8 +3,8 @@ package com.xiaohuashifu.recruit.external.service.manager.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.GenderEnum;
-import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
-import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WechatMpDetails;
+import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
+import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WeChatMpDetails;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.AccessTokenDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpUserInfoDTO;
@@ -43,9 +43,9 @@ import java.util.concurrent.TimeUnit;
  * @create: 2020/11/20 15:53
  */
 @Component
-public class WechatMpManagerImpl implements WechatMpManager {
+public class WeChatMpManagerImpl implements WeChatMpManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(WechatMpManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(WeChatMpManagerImpl.class);
 
     /**
      * 请求 code2Session 的 url
@@ -65,15 +65,15 @@ public class WechatMpManagerImpl implements WechatMpManager {
      */
     public static final String ACCESS_TOKEN_REDIS_KEY_PREFIX = "wechat-mp:access-token";
 
-    private final WechatMpDetails wechatMpDetails;
+    private final WeChatMpDetails weChatMpDetails;
 
     private final RestTemplate restTemplate;
 
     private final StringRedisTemplate redisTemplate;
 
-    public WechatMpManagerImpl(WechatMpDetails wechatMpDetails, RestTemplate restTemplate,
+    public WeChatMpManagerImpl(WeChatMpDetails weChatMpDetails, RestTemplate restTemplate,
                                StringRedisTemplate redisTemplate) {
-        this.wechatMpDetails = wechatMpDetails;
+        this.weChatMpDetails = weChatMpDetails;
         this.restTemplate = restTemplate;
         this.redisTemplate = redisTemplate;
     }
@@ -89,7 +89,7 @@ public class WechatMpManagerImpl implements WechatMpManager {
     public Optional<Code2SessionDTO> getCode2Session(String code, AppEnum app) {
         // 获取 Code2SessionDTO
         String url = MessageFormat.format("{0}?appid={1}&secret={2}&js_code={3}&grant_type=authorization_code",
-                code2SessionUrl, wechatMpDetails.getAppId(app), wechatMpDetails.getSecret(app), code);
+                code2SessionUrl, weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app), code);
         ResponseEntity<Code2SessionDTO> responseEntity = restTemplate.getForEntity(url, Code2SessionDTO.class);
         return Optional.ofNullable(responseEntity.getBody());
     }
@@ -149,7 +149,7 @@ public class WechatMpManagerImpl implements WechatMpManager {
     public boolean refreshAccessToken(AppEnum app) {
         // 获取 access-token
         String url = MessageFormat.format("{0}?grant_type=client_credential&appid={1}&secret={2}",
-                accessTokenUrl, wechatMpDetails.getAppId(app), wechatMpDetails.getSecret(app));
+                accessTokenUrl, weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app));
         ResponseEntity<AccessTokenDTO> entity = restTemplate.getForEntity(url, AccessTokenDTO.class);
         if (entity.getBody() == null || entity.getBody().getAccess_token() == null) {
             logger.warn("Get access token fail.");

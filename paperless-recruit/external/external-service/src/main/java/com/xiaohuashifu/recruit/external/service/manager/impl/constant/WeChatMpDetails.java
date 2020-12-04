@@ -8,13 +8,13 @@ import java.util.List;
 
 /**
  * 描述: 微信小程序相关信息
- *
+ *x
  * @author xhsf
  * @create 2019-08-13 19:23
  */
 @Component
 @ConfigurationProperties("wechat.mp.details")
-public class WechatMpDetails {
+public class WeChatMpDetails {
 
     /**
      * 微信小程序名字
@@ -44,13 +44,13 @@ public class WechatMpDetails {
     }
 
     /**
-     * 通过 WechatMp 类型获取 appId
+     * 通过 WeChatMp 类型获取 appId
      *
-     * @param wechatMp 具体的微信小程序
+     * @param weChatMp 具体的微信小程序
      * @return appId
      */
-    public String getAppId(AppEnum wechatMp) {
-        int index = names.indexOf(wechatMp.name());
+    public String getAppId(AppEnum weChatMp) {
+        int index = names.indexOf(weChatMp.name());
         if (index == -1) {
             return null;
         }
@@ -66,13 +66,13 @@ public class WechatMpDetails {
     }
 
     /**
-     * 通过 WechatMp 类型获取 secret
+     * 通过 WeChatMp 类型获取 secret
      *
-     * @param wechatMp 具体的微信小程序
+     * @param weChatMp 具体的微信小程序
      * @return secret
      */
-    public String getSecret(AppEnum wechatMp) {
-        int index = names.indexOf(wechatMp.name());
+    public String getSecret(AppEnum weChatMp) {
+        int index = names.indexOf(weChatMp.name());
         if (index == -1) {
             return null;
         }

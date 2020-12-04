@@ -15,7 +15,7 @@ import java.util.List;
  * @author: xhsf
  * @create: 2020/10/29 23:48
  */
-public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
+public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
 
     @NotNull
     @Positive
@@ -200,20 +200,20 @@ public class WechatMpSubscribeMessageTemplateQuery implements Serializable {
             return this;
         }
 
-        public WechatMpSubscribeMessageTemplateQuery build() {
-            WechatMpSubscribeMessageTemplateQuery wechatMpSubscribeMessageTemplateQuery
-                    = new WechatMpSubscribeMessageTemplateQuery();
-            wechatMpSubscribeMessageTemplateQuery.setPageNum(pageNum);
-            wechatMpSubscribeMessageTemplateQuery.setPageSize(pageSize);
-            wechatMpSubscribeMessageTemplateQuery.setId(id);
-            wechatMpSubscribeMessageTemplateQuery.setIdList(idList);
-            wechatMpSubscribeMessageTemplateQuery.setApp(app);
-            wechatMpSubscribeMessageTemplateQuery.setTemplateId(templateId);
-            wechatMpSubscribeMessageTemplateQuery.setTitle(title);
-            wechatMpSubscribeMessageTemplateQuery.setType(type);
-            wechatMpSubscribeMessageTemplateQuery.setDescription(description);
-            wechatMpSubscribeMessageTemplateQuery.setStatus(status);
-            return wechatMpSubscribeMessageTemplateQuery;
+        public WeChatMpSubscribeMessageTemplateQuery build() {
+            WeChatMpSubscribeMessageTemplateQuery weChatMpSubscribeMessageTemplateQuery
+                    = new WeChatMpSubscribeMessageTemplateQuery();
+            weChatMpSubscribeMessageTemplateQuery.setPageNum(pageNum);
+            weChatMpSubscribeMessageTemplateQuery.setPageSize(pageSize);
+            weChatMpSubscribeMessageTemplateQuery.setId(id);
+            weChatMpSubscribeMessageTemplateQuery.setIdList(idList);
+            weChatMpSubscribeMessageTemplateQuery.setApp(app);
+            weChatMpSubscribeMessageTemplateQuery.setTemplateId(templateId);
+            weChatMpSubscribeMessageTemplateQuery.setTitle(title);
+            weChatMpSubscribeMessageTemplateQuery.setType(type);
+            weChatMpSubscribeMessageTemplateQuery.setDescription(description);
+            weChatMpSubscribeMessageTemplateQuery.setStatus(status);
+            return weChatMpSubscribeMessageTemplateQuery;
         }
     }
 }

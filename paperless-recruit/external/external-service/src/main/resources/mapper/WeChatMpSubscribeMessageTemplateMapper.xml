@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaohuashifu.recruit.external.service.dao.WechatMpSubscribeMessageTemplateMapper">
+<mapper namespace="com.xiaohuashifu.recruit.external.service.dao.WeChatMpSubscribeMessageTemplateMapper">
 
-    <resultMap id="wechatMpSubscribeMessageTemplate" type="wechatMpSubscribeMessageTemplate">
+    <resultMap id="weChatMpSubscribeMessageTemplate"
+               type="com.xiaohuashifu.recruit.external.service.pojo.do0.WeChatMpSubscribeMessageTemplateDO">
         <id property="id" column="id"/>
         <result property="appName" column="app_name"/>
         <result property="templateId" column="template_id"/>
@@ -14,24 +15,24 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-    <sql id="wechatMpSubscribeMessageTemplate">
+    <sql id="weChatMpSubscribeMessageTemplate">
         id, app_name, template_id, title, type, description, status, create_time, update_time
     </sql>
 
-    <insert id="insertWechatMpSubscribeMessageTemplate" keyProperty="id">
+    <insert id="insertWeChatMpSubscribeMessageTemplate" keyProperty="id">
         insert into wechat_mp_subscribe_message_template
         (app_name, template_id, title, type, description, status)
         values(#{appName}, #{templateId}, #{title}, #{type}, #{description}, #{status})
     </insert>
 
-    <select id="getWechatMpSubscribeMessageTemplate" resultMap="wechatMpSubscribeMessageTemplate">
-        select <include refid="wechatMpSubscribeMessageTemplate"/>
+    <select id="getWeChatMpSubscribeMessageTemplate" resultMap="weChatMpSubscribeMessageTemplate">
+        select <include refid="weChatMpSubscribeMessageTemplate"/>
         from wechat_mp_subscribe_message_template
         where id = #{id}
     </select>
 
-    <select id="listWechatMpSubscribeMessageTemplates" resultMap="wechatMpSubscribeMessageTemplate">
-        select <include refid="wechatMpSubscribeMessageTemplate"/>
+    <select id="listWeChatMpSubscribeMessageTemplates" resultMap="weChatMpSubscribeMessageTemplate">
+        select <include refid="weChatMpSubscribeMessageTemplate"/>
         from wechat_mp_subscribe_message_template
         <where>
             <if test="id != null">
@@ -77,7 +78,7 @@
         where template_id = #{templateId}
     </select>
 
-    <update id="updateWechatMpSubscribeMessageTemplate">
+    <update id="updateWeChatMpSubscribeMessageTemplate">
         update wechat_mp_subscribe_message_template
         <set>
             <if test="appName != null">

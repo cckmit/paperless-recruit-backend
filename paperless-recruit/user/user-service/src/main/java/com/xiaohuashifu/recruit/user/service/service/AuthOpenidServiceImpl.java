@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.DesUtils;
-import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
+import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class AuthOpenidServiceImpl implements AuthOpenidService {
 
     @Reference
-    private WechatMpService wechatMpService;
+    private WeChatMpService wechatMpService;
 
     @Reference
     private UserService userService;

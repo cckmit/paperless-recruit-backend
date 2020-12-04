@@ -2,9 +2,9 @@ package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
-import com.xiaohuashifu.recruit.external.api.dto.WechatMpSubscribeMessageTemplateDTO;
-import com.xiaohuashifu.recruit.external.api.query.WechatMpSubscribeMessageTemplateQuery;
-import com.xiaohuashifu.recruit.external.api.service.WechatMpSubscribeMessageTemplateService;
+import com.xiaohuashifu.recruit.external.api.dto.WeChatMpSubscribeMessageTemplateDTO;
+import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
+import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTemplateService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
@@ -19,25 +19,25 @@ import org.junit.Test;
  */
 public class WechatMpSubscribeMessageTemplateServiceImplTest {
 
-    private WechatMpSubscribeMessageTemplateService wechatMpSubscribeMessageTemplateService;
+    private WeChatMpSubscribeMessageTemplateService wechatMpSubscribeMessageTemplateService;
 
     @Before
     public void setUp() throws Exception {
         ApplicationConfig application = new ApplicationConfig();
         application.setName("wechatMpSubscribeMessageTemplateServiceTest");
-        ReferenceConfig<WechatMpSubscribeMessageTemplateService> reference = new ReferenceConfig<>();
+        ReferenceConfig<WeChatMpSubscribeMessageTemplateService> reference = new ReferenceConfig<>();
         reference.setUrl("dubbo://127.0.0.1:20883/com.xiaohuashifu.recruit.external.api.service." +
                 "WechatMpSubscribeMessageTemplateService");
         reference.setApplication(application);
-        reference.setInterface(WechatMpSubscribeMessageTemplateService.class);
+        reference.setInterface(WeChatMpSubscribeMessageTemplateService.class);
         reference.setTimeout(10000000);
         wechatMpSubscribeMessageTemplateService = reference.get();
     }
 
     @Test
     public void saveWechatMpSubscribeMessageTemplate() {
-        System.out.println(wechatMpSubscribeMessageTemplateService.saveWechatMpSubscribeMessageTemplate(
-                new WechatMpSubscribeMessageTemplateDTO.Builder()
+        System.out.println(wechatMpSubscribeMessageTemplateService.saveWeChatMpSubscribeMessageTemplate(
+                new WeChatMpSubscribeMessageTemplateDTO.Builder()
                         .app(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP)
                         .templateId("PwgUsyL54zBnWyB1bHDuOP6Oc8EAG5GvQplx8E2kU")
                         .title("面试结果通知")
@@ -49,20 +49,20 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
 
     @Test
     public void getWechatMpSubscribeMessageTemplate() {
-        System.out.println(wechatMpSubscribeMessageTemplateService.getWechatMpSubscribeMessageTemplate(1L));
+        System.out.println(wechatMpSubscribeMessageTemplateService.getWeChatMpSubscribeMessageTemplate(1L));
     }
 
     @Test
     public void testGetWechatMpSubscribeMessageTemplate() {
-        System.out.println(wechatMpSubscribeMessageTemplateService.listWechatMpSubscribeMessageTemplates(
-                new WechatMpSubscribeMessageTemplateQuery.Builder().pageNum(1L).pageSize(50L).build()
+        System.out.println(wechatMpSubscribeMessageTemplateService.listWeChatMpSubscribeMessageTemplates(
+                new WeChatMpSubscribeMessageTemplateQuery.Builder().pageNum(1L).pageSize(50L).build()
         ));
     }
 
     @Test
     public void updateWechatMpSubscribeMessageTemplate() {
-        System.out.println(wechatMpSubscribeMessageTemplateService.updateWechatMpSubscribeMessageTemplate(
-                new WechatMpSubscribeMessageTemplateDTO.Builder()
+        System.out.println(wechatMpSubscribeMessageTemplateService.updateWeChatMpSubscribeMessageTemplate(
+                new WeChatMpSubscribeMessageTemplateDTO.Builder()
 //                        .id(1L)
 //                        .status(TriStatus.DEPRECATED)
                         .build()));

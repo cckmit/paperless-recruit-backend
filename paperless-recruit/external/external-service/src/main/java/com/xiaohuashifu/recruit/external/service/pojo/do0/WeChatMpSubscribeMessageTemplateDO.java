@@ -12,8 +12,7 @@ import java.time.LocalDateTime;
  * @author: xhsf
  * @create: 2020/11/22 00:33
  */
-@Alias("wechatMpSubscribeMessageTemplate")
-public class WechatMpSubscribeMessageTemplateDO {
+public class WeChatMpSubscribeMessageTemplateDO {
     private Long id;
     /**
      * 模板编号
@@ -122,7 +121,7 @@ public class WechatMpSubscribeMessageTemplateDO {
 
     @Override
     public String toString() {
-        return "WechatMpSubscribeMessageTemplateDO{" +
+        return "WeChatMpSubscribeMessageTemplateDO{" +
                 "id=" + id +
                 ", templateId='" + templateId + '\'' +
                 ", appName=" + appName +
@@ -191,18 +190,18 @@ public class WechatMpSubscribeMessageTemplateDO {
             return this;
         }
 
-        public WechatMpSubscribeMessageTemplateDO build() {
-            WechatMpSubscribeMessageTemplateDO wechatMpSubscribeMessageTemplateDO = new WechatMpSubscribeMessageTemplateDO();
-            wechatMpSubscribeMessageTemplateDO.setId(id);
-            wechatMpSubscribeMessageTemplateDO.setTemplateId(templateId);
-            wechatMpSubscribeMessageTemplateDO.setAppName(appName);
-            wechatMpSubscribeMessageTemplateDO.setTitle(title);
-            wechatMpSubscribeMessageTemplateDO.setType(type);
-            wechatMpSubscribeMessageTemplateDO.setDescription(description);
-            wechatMpSubscribeMessageTemplateDO.setStatus(status);
-            wechatMpSubscribeMessageTemplateDO.setCreateTime(createTime);
-            wechatMpSubscribeMessageTemplateDO.setUpdateTime(updateTime);
-            return wechatMpSubscribeMessageTemplateDO;
+        public WeChatMpSubscribeMessageTemplateDO build() {
+            WeChatMpSubscribeMessageTemplateDO weChatMpSubscribeMessageTemplateDO = new WeChatMpSubscribeMessageTemplateDO();
+            weChatMpSubscribeMessageTemplateDO.setId(id);
+            weChatMpSubscribeMessageTemplateDO.setTemplateId(templateId);
+            weChatMpSubscribeMessageTemplateDO.setAppName(appName);
+            weChatMpSubscribeMessageTemplateDO.setTitle(title);
+            weChatMpSubscribeMessageTemplateDO.setType(type);
+            weChatMpSubscribeMessageTemplateDO.setDescription(description);
+            weChatMpSubscribeMessageTemplateDO.setStatus(status);
+            weChatMpSubscribeMessageTemplateDO.setCreateTime(createTime);
+            weChatMpSubscribeMessageTemplateDO.setUpdateTime(updateTime);
+            return weChatMpSubscribeMessageTemplateDO;
         }
     }
 }

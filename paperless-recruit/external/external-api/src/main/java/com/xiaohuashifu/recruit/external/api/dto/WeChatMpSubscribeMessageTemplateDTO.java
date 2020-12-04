@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.external.api.dto;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
-import com.xiaohuashifu.recruit.external.api.service.WechatMpSubscribeMessageTemplateService;
+import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTemplateService;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,42 +15,42 @@ import java.time.LocalDateTime;
  * @author: xhsf
  * @create: 2020/11/22 00:33
  */
-public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
+public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
 
-    @NotNull(groups = WechatMpSubscribeMessageTemplateService.UpdateWechatMpSubscribeMessageTemplate.class)
+    @NotNull(groups = WeChatMpSubscribeMessageTemplateService.UpdateWeChatMpSubscribeMessageTemplate.class)
     private Long id;
 
-    @NotNull(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
+    @NotNull(groups = WeChatMpSubscribeMessageTemplateService.SaveWeChatMpSubscribeMessageTemplate.class)
     private AppEnum app;
 
     /**
      * 模板编号
      */
-    @NotBlank(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
+    @NotBlank(groups = WeChatMpSubscribeMessageTemplateService.SaveWeChatMpSubscribeMessageTemplate.class)
     private String templateId;
 
     /**
      * 模板标题
      */
-    @NotBlank(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
+    @NotBlank(groups = WeChatMpSubscribeMessageTemplateService.SaveWeChatMpSubscribeMessageTemplate.class)
     private String title;
 
     /**
      * 类目
      */
-    @NotBlank(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
+    @NotBlank(groups = WeChatMpSubscribeMessageTemplateService.SaveWeChatMpSubscribeMessageTemplate.class)
     private String type;
 
     /**
      * 描述
      */
-    @NotBlank(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
+    @NotBlank(groups = WeChatMpSubscribeMessageTemplateService.SaveWeChatMpSubscribeMessageTemplate.class)
     private String description;
 
     /**
      * 模板的状态
      */
-    @NotNull(groups = WechatMpSubscribeMessageTemplateService.SaveWechatMpSubscribeMessageTemplate.class)
+    @NotNull(groups = WeChatMpSubscribeMessageTemplateService.SaveWeChatMpSubscribeMessageTemplate.class)
     private TriStatusEnum status;
 
     private LocalDateTime createTime;
@@ -200,19 +200,19 @@ public class WechatMpSubscribeMessageTemplateDTO implements Serializable {
             return this;
         }
 
-        public WechatMpSubscribeMessageTemplateDTO build() {
-            WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO
-                    = new WechatMpSubscribeMessageTemplateDTO();
-            wechatMpSubscribeMessageTemplateDTO.setId(id);
-            wechatMpSubscribeMessageTemplateDTO.setApp(app);
-            wechatMpSubscribeMessageTemplateDTO.setTemplateId(templateId);
-            wechatMpSubscribeMessageTemplateDTO.setTitle(title);
-            wechatMpSubscribeMessageTemplateDTO.setType(type);
-            wechatMpSubscribeMessageTemplateDTO.setDescription(description);
-            wechatMpSubscribeMessageTemplateDTO.setStatus(status);
-            wechatMpSubscribeMessageTemplateDTO.setCreateTime(createTime);
-            wechatMpSubscribeMessageTemplateDTO.setUpdateTime(updateTime);
-            return wechatMpSubscribeMessageTemplateDTO;
+        public WeChatMpSubscribeMessageTemplateDTO build() {
+            WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO
+                    = new WeChatMpSubscribeMessageTemplateDTO();
+            weChatMpSubscribeMessageTemplateDTO.setId(id);
+            weChatMpSubscribeMessageTemplateDTO.setApp(app);
+            weChatMpSubscribeMessageTemplateDTO.setTemplateId(templateId);
+            weChatMpSubscribeMessageTemplateDTO.setTitle(title);
+            weChatMpSubscribeMessageTemplateDTO.setType(type);
+            weChatMpSubscribeMessageTemplateDTO.setDescription(description);
+            weChatMpSubscribeMessageTemplateDTO.setStatus(status);
+            weChatMpSubscribeMessageTemplateDTO.setCreateTime(createTime);
+            weChatMpSubscribeMessageTemplateDTO.setUpdateTime(updateTime);
+            return weChatMpSubscribeMessageTemplateDTO;
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.api.dto;
 
-import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
+import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -23,7 +23,7 @@ public class SubscribeMessageDTO implements Serializable {
     /**
      * 所需下发的模板消息的 id
      */
-    @NotBlank(groups = WechatMpService.SendSubscribeMessage.class)
+    @NotBlank(groups = WeChatMpService.SendSubscribeMessage.class)
     private String template_id;
 
     /**
@@ -34,7 +34,7 @@ public class SubscribeMessageDTO implements Serializable {
     /**
      * 模板内容，格式形如 { "key1": { "value": any }, "key2": { "value": any } }
      */
-    @NotEmpty(groups = WechatMpService.SendSubscribeMessage.class)
+    @NotEmpty(groups = WeChatMpService.SendSubscribeMessage.class)
     private Map<String, SubscribeTemplateDataDTO> data;
 
     /**

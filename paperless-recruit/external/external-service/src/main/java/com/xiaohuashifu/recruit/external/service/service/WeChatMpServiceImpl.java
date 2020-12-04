@@ -1,36 +1,22 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
-import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
-import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
+import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
+import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpResponseDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
-import org.apache.axis.encoding.Base64;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.security.spec.InvalidParameterSpecException;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -41,12 +27,12 @@ import java.util.Optional;
  * @create: 2020/11/20 14:14
  */
 @Service
-public class WechatMpServiceImpl implements WechatMpService {
+public class WeChatMpServiceImpl implements WeChatMpService {
 
     @Reference
     private AuthOpenidService authOpenidService;
 
-    private final WechatMpManager wechatMpManager;
+    private final WeChatMpManager weChatMpManager;
 
     private final RestTemplate restTemplate;
 
@@ -61,8 +47,8 @@ public class WechatMpServiceImpl implements WechatMpService {
     @Value("${wechat.mp.subscribe-message-url}")
     private String subscribeMessageUrl;
 
-    public WechatMpServiceImpl(WechatMpManager wechatMpManager, RestTemplate restTemplate) {
-        this.wechatMpManager = wechatMpManager;
+    public WeChatMpServiceImpl(WeChatMpManager weChatMpManager, RestTemplate restTemplate) {
+        this.weChatMpManager = weChatMpManager;
         this.restTemplate = restTemplate;
     }
 
@@ -83,7 +69,7 @@ public class WechatMpServiceImpl implements WechatMpService {
         }
 
         // 获取 openid
-        Optional<Code2SessionDTO> code2SessionDTOOptional = wechatMpManager.getCode2Session(code, app);
+        Optional<Code2SessionDTO> code2SessionDTOOptional = weChatMpManager.getCode2Session(code, app);
         if (code2SessionDTOOptional.isEmpty()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The code is invalid.");
         }
@@ -118,7 +104,7 @@ public class WechatMpServiceImpl implements WechatMpService {
         subscribeMessageDTO.setTouser(getOpenidResult.getData());
 
         // 获取 access-token
-        Optional<String> accessToken = wechatMpManager.getAccessToken(app);
+        Optional<String> accessToken = weChatMpManager.getAccessToken(app);
         if (accessToken.isEmpty()) {
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
         }
@@ -137,7 +123,7 @@ public class WechatMpServiceImpl implements WechatMpService {
     }
 
     public void getUserInfo(String encryptedData, String iv, String code) {
-        System.out.println(wechatMpManager.getUserInfo(encryptedData, iv, code, AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP));
+        System.out.println(weChatMpManager.getUserInfo(encryptedData, iv, code, AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP));
     }
 
 

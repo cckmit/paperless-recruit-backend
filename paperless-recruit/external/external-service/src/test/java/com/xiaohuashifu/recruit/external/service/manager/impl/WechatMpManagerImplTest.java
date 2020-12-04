@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.external.service.manager.impl;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.service.ExternalServiceApplicationTests;
-import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
+import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class WechatMpManagerImplTest extends ExternalServiceApplicationTests {
 
     @Autowired
-    private WechatMpManager wechatMpManager;
+    private WeChatMpManager wechatMpManager;
 
     @Test
     public void getCode2Session() {

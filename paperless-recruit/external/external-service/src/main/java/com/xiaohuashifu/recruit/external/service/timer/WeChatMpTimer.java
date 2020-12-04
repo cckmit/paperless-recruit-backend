@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.external.service.timer;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
-import com.xiaohuashifu.recruit.external.service.manager.WechatMpManager;
+import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +17,11 @@ import org.springframework.scheduling.annotation.Scheduled;
  */
 @Configuration
 @EnableScheduling
-public class WechatMpTimer {
+public class WeChatMpTimer {
 
-    private static final Logger logger = LoggerFactory.getLogger(WechatMpTimer.class);
+    private static final Logger logger = LoggerFactory.getLogger(WeChatMpTimer.class);
 
-    private final WechatMpManager wechatMpManager;
+    private final WeChatMpManager weChatMpManager;
 
     /**
      * 刷新 access-token 任务初始延迟
@@ -33,8 +33,8 @@ public class WechatMpTimer {
      */
     private static final long REFRESH_ACCESS_TOKEN_TASK_FIXED_DELAY = 3600000;
 
-    public WechatMpTimer(WechatMpManager wechatMpManager) {
-        this.wechatMpManager = wechatMpManager;
+    public WeChatMpTimer(WeChatMpManager weChatMpManager) {
+        this.weChatMpManager = weChatMpManager;
     }
 
     /**
@@ -49,7 +49,7 @@ public class WechatMpTimer {
         for (AppEnum app : AppEnum.values()) {
             if (app.getPlatform() == PlatformEnum.WECHAT_MINI_PROGRAM) {
                 for (int i = 0; i < 10; i++) {
-                    if (wechatMpManager.refreshAccessToken(app)) {
+                    if (weChatMpManager.refreshAccessToken(app)) {
                         break;
                     }
                     if (i == 9) {

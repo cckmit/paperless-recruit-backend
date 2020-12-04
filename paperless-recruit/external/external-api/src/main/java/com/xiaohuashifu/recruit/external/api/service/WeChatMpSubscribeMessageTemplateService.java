@@ -2,8 +2,8 @@ package com.xiaohuashifu.recruit.external.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.WechatMpSubscribeMessageTemplateDTO;
-import com.xiaohuashifu.recruit.external.api.query.WechatMpSubscribeMessageTemplateQuery;
+import com.xiaohuashifu.recruit.external.api.dto.WeChatMpSubscribeMessageTemplateDTO;
+import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -14,20 +14,20 @@ import javax.validation.constraints.Positive;
  * @author: xhsf
  * @create: 2020/11/22 00:39
  */
-public interface WechatMpSubscribeMessageTemplateService {
+public interface WeChatMpSubscribeMessageTemplateService {
 
-    @interface SaveWechatMpSubscribeMessageTemplate{}
+    @interface SaveWeChatMpSubscribeMessageTemplate {}
     /**
      * 添加模板
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *              OperationConflict: 存在相同的模板编号
      *
-     * @param wechatMpSubscribeMessageTemplateDTO WechatMpSubscribeMessageTemplateDTO
-     * @return WechatMpSubscribeMessageTemplateDTO
+     * @param weChatMpSubscribeMessageTemplateDTO WeChatMpSubscribeMessageTemplateDTO
+     * @return WeChatMpSubscribeMessageTemplateDTO
      */
-    default Result<WechatMpSubscribeMessageTemplateDTO> saveWechatMpSubscribeMessageTemplate(
-            @NotNull WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO) {
+    default Result<WeChatMpSubscribeMessageTemplateDTO> saveWeChatMpSubscribeMessageTemplate(
+            @NotNull WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO) {
         throw new UnsupportedOperationException();
     }
 
@@ -38,9 +38,9 @@ public interface WechatMpSubscribeMessageTemplateService {
      *              InvalidParameter.NotFound: 该编号的模板不存在
      *
      * @param id 模板编号
-     * @return WechatMpSubscribeMessageTemplateDTO
+     * @return WeChatMpSubscribeMessageTemplateDTO
      */
-    default Result<WechatMpSubscribeMessageTemplateDTO> getWechatMpSubscribeMessageTemplate(
+    default Result<WeChatMpSubscribeMessageTemplateDTO> getWeChatMpSubscribeMessageTemplate(
             @NotNull @Positive Long id) {
         throw new UnsupportedOperationException();
     }
@@ -51,24 +51,24 @@ public interface WechatMpSubscribeMessageTemplateService {
      * @errorCode InvalidParameter: 请求参数格式错误
      *
      * @param query 查询参数
-     * @return WechatMpSubscribeMessageTemplateDTO 可能返回空列表
+     * @return WeChatMpSubscribeMessageTemplateDTO 可能返回空列表
      */
-    default Result<PageInfo<WechatMpSubscribeMessageTemplateDTO>> listWechatMpSubscribeMessageTemplates(
-            @NotNull WechatMpSubscribeMessageTemplateQuery query) {
+    default Result<PageInfo<WeChatMpSubscribeMessageTemplateDTO>> listWeChatMpSubscribeMessageTemplates(
+            @NotNull WeChatMpSubscribeMessageTemplateQuery query) {
         throw new UnsupportedOperationException();
     }
 
-    @interface UpdateWechatMpSubscribeMessageTemplate{}
+    @interface UpdateWeChatMpSubscribeMessageTemplate {}
     /**
      * 更新模板，这是一个较广的更新接口，请小心使用
      *
      * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为 null
      *
-     * @param wechatMpSubscribeMessageTemplateDTO WechatMpSubscribeMessageTemplateDTO
-     * @return WechatMpSubscribeMessageTemplateDTO
+     * @param weChatMpSubscribeMessageTemplateDTO WeChatMpSubscribeMessageTemplateDTO
+     * @return WeChatMpSubscribeMessageTemplateDTO
      */
-    default Result<WechatMpSubscribeMessageTemplateDTO> updateWechatMpSubscribeMessageTemplate(
-            @NotNull WechatMpSubscribeMessageTemplateDTO wechatMpSubscribeMessageTemplateDTO) {
+    default Result<WeChatMpSubscribeMessageTemplateDTO> updateWeChatMpSubscribeMessageTemplate(
+            @NotNull WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO) {
         throw new UnsupportedOperationException();
     }
 

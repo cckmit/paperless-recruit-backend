@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.external.service.service;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.api.dto.SubscribeTemplateDataDTO;
 import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
-import com.xiaohuashifu.recruit.external.api.service.WechatMpService;
+import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
@@ -21,16 +21,16 @@ import java.util.Map;
  */
 public class WechatMpServiceImplTest {
 
-    private WechatMpService wechatMpService;
+    private WeChatMpService wechatMpService;
 
     @Before
     public void before() {
         ApplicationConfig application = new ApplicationConfig();
         application.setName("wechatMpServiceTest");
-        ReferenceConfig<WechatMpService> reference = new ReferenceConfig<>();
+        ReferenceConfig<WeChatMpService> reference = new ReferenceConfig<>();
         reference.setUrl("dubbo://127.0.0.1:20883/com.xiaohuashifu.recruit.external.api.service.WechatMpService");
         reference.setApplication(application);
-        reference.setInterface(WechatMpService.class);
+        reference.setInterface(WeChatMpService.class);
         reference.setTimeout(10000000);
         wechatMpService = reference.get();
     }

@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author: xhsf
  * @create: 2020/11/20 15:53
  */
-public interface WechatMpManager {
+public interface WeChatMpManager {
     /**
      * 通过 code 获取封装过的 Code2SessionDTO
      *

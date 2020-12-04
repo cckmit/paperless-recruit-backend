@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
  * @author: xhsf
  * @create: 2020/11/20 13:57
  */
-public interface WechatMpService {
+public interface WeChatMpService {
 
     /**
      * 通过 code 获得 openid

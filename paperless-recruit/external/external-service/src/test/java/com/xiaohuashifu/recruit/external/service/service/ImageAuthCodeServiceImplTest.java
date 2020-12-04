@@ -3,13 +3,10 @@ package com.xiaohuashifu.recruit.external.service.service;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.service.ImageAuthCodeService;
-import com.xiaohuashifu.recruit.external.api.service.WechatMpSubscribeMessageTemplateService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：

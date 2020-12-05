@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaohuashifu.recruit.user.service.dao.AuthOpenidMapper">
+<mapper namespace="com.xiaohuashifu.recruit.user.service.dao.AuthOpenIdMapper">
 
-    <resultMap id="authOpenid" type="authOpenid">
+    <resultMap id="authOpenId" type="com.xiaohuashifu.recruit.user.service.do0.AuthOpenIdDO">
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="appName" column="app_name"/>
-        <result property="openid" column="openid"/>
+        <result property="openId" column="openid"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
@@ -15,29 +15,29 @@
         id, user_id, app_name, openid, create_time, update_time
     </sql>
 
-    <insert id="insertAuthOpenid" keyProperty="id">
+    <insert id="insertAuthOpenId" keyProperty="id">
         insert into auth_openid(user_id, app_name, openid)
         values(#{userId}, #{appName}, #{openid})
     </insert>
 
-    <select id="getAuthOpenid" resultMap="authOpenid">
+    <select id="getAuthOpenId" resultMap="authOpenId">
         select <include refid="auth_openid"/>
         from auth_openid
         where id = #{id}
     </select>
     
-    <select id="getOpenidByAppNameAndUserId" resultType="string">
+    <select id="getOpenIdByAppNameAndUserId" resultType="string">
         select openid
         from auth_openid
         where app_name = #{appName}
         and user_id = #{userId}
     </select>
 
-    <select id="getIdByAppNameAndOpenid" resultType="long">
+    <select id="getIdByAppNameAndOpenId" resultType="long">
         select id
         from auth_openid
         where app_name = #{appName}
-        and openid = #{openid}
+        and openid = #{openId}
     </select>
 
     <select id="countByUserIdAndAppName" resultType="int">
@@ -47,7 +47,7 @@
         and app_name = #{appName}
     </select>
 
-    <select id="countByAppNameAndOpenid" resultType="int">
+    <select id="countByAppNameAndOpenId" resultType="int">
         select count(*)
         from auth_openid
         where app_name = #{appName}

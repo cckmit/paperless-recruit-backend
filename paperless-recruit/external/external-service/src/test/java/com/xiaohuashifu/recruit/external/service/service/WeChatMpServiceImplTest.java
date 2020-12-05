@@ -19,25 +19,25 @@ import java.util.Map;
  * @email: 827032783@qq.com
  * @create: 2020/11/20 14:40
  */
-public class WechatMpServiceImplTest {
+public class WeChatMpServiceImplTest {
 
-    private WeChatMpService wechatMpService;
+    private WeChatMpService weChatMpService;
 
     @Before
     public void before() {
         ApplicationConfig application = new ApplicationConfig();
-        application.setName("wechatMpServiceTest");
+        application.setName("weChatMpServiceTest");
         ReferenceConfig<WeChatMpService> reference = new ReferenceConfig<>();
-        reference.setUrl("dubbo://127.0.0.1:20883/com.xiaohuashifu.recruit.external.api.service.WechatMpService");
+        reference.setUrl("dubbo://127.0.0.1:20883/com.xiaohuashifu.recruit.external.api.service.WeChatMpService");
         reference.setApplication(application);
         reference.setInterface(WeChatMpService.class);
         reference.setTimeout(10000000);
-        wechatMpService = reference.get();
+        weChatMpService = reference.get();
     }
 
     @Test
-    public void getOpenid() {
-        System.out.println(wechatMpService.getOpenid("043WLGll2yCLZ541iKkl2lC1RC3WLGlC", AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP));
+    public void getOpenId() {
+        System.out.println(weChatMpService.getOpenId("043WLGll2yCLZ541iKkl2lC1RC3WLGlC", AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class WechatMpServiceImplTest {
         map.put("phrase4", new SubscribeTemplateDataDTO("一轮面试"));
         map.put("phrase5", new SubscribeTemplateDataDTO("通过"));
         subscribeMessageDTO.setData(map);
-        System.out.println(wechatMpService.sendSubscribeMessage(
+        System.out.println(weChatMpService.sendSubscribeMessage(
                 AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP, 1L, subscribeMessageDTO));
     }
 
@@ -61,6 +61,6 @@ public class WechatMpServiceImplTest {
                 "MvWCTWz4aWiF8KOVoN8qHQt24Bh5byY/jZb/brUuFFSEKIUu4aLf7z8Ko8PrEBMG8s4Da1fc5UpO3469gffDC8DdUA0rr/6Z1gKokayX/DyAUAtPclkouvO26TcmYtSMrHfreOW7D8yc8dnUndKdzVm6Xqcmn6eaHFjsv/2bKTRHULJ73REEgZlFI+doJI4CjCzZk9d40QCsTXQAUnpxuaD1EjRqJHgtm+mpXkdZvOBi6uOf84dlTNbXLcC8tK1npK/i6NL1nU0155eJBz7rnuY05+6RItpAJnETUoSluCU1+Re4WV2tF683g1zBEb3IP4oMEmxQvOzzs5yY3BlN/2mKURJEa4AwB4AuXE8hL4CQTAbGyFwBltuMUz8to0t8FhsmLuY5T5izsoSiDPpC5IKCD0aOgLuk98iGW0TaKnRtBpLHVb7bcIhlb9OLHky54Vxc4VuDY2DITKmHzJLX/s56JQde3GVVROctAgDt3CE=";
         String iv = "0oKdWTo11NZ4Lm/JeL5YYg==";
         String code = "073H2oHa16SQ6A00h3Ia1VE5cM1H2oHS";
-        wechatMpService.getUserInfo(encryptedData, iv, code);
+        weChatMpService.getUserInfo(encryptedData, iv, code);
     }
 }

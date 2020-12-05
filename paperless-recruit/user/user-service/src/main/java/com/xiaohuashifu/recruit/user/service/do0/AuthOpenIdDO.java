@@ -1,25 +1,23 @@
 package com.xiaohuashifu.recruit.user.service.do0;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
-import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
 
 /**
- * 描述：AuthOpenid 表映射对象
+ * 描述：AuthOpenId 表映射对象
  *
  * @author: xhsf
  * @create: 2020/10/30 15:05
  */
-@Alias("authOpenid")
-public class AuthOpenidDO {
+public class AuthOpenIdDO {
     private Long id;
 
     private Long userId;
 
     private AppEnum appName;
 
-    private String openid;
+    private String openId;
 
     private LocalDateTime createTime;
 
@@ -49,12 +47,12 @@ public class AuthOpenidDO {
         this.appName = appName;
     }
 
-    public String getOpenid() {
-        return openid;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setOpenid(String openid) {
-        this.openid = openid;
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
     public LocalDateTime getCreateTime() {
@@ -75,11 +73,11 @@ public class AuthOpenidDO {
 
     @Override
     public String toString() {
-        return "AuthOpenidDO{" +
+        return "AuthOpenIdDO{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", appName=" + appName +
-                ", openid='" + openid + '\'' +
+                ", openId='" + openId + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -89,7 +87,7 @@ public class AuthOpenidDO {
         private Long id;
         private Long userId;
         private AppEnum appName;
-        private String openid;
+        private String openId;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -108,8 +106,8 @@ public class AuthOpenidDO {
             return this;
         }
 
-        public Builder openid(String openid) {
-            this.openid = openid;
+        public Builder openId(String openId) {
+            this.openId = openId;
             return this;
         }
 
@@ -123,15 +121,15 @@ public class AuthOpenidDO {
             return this;
         }
 
-        public AuthOpenidDO build() {
-            AuthOpenidDO authOpenidDO = new AuthOpenidDO();
-            authOpenidDO.setId(id);
-            authOpenidDO.setUserId(userId);
-            authOpenidDO.setAppName(appName);
-            authOpenidDO.setOpenid(openid);
-            authOpenidDO.setCreateTime(createTime);
-            authOpenidDO.setUpdateTime(updateTime);
-            return authOpenidDO;
+        public AuthOpenIdDO build() {
+            AuthOpenIdDO authOpenIdDO = new AuthOpenIdDO();
+            authOpenIdDO.setId(id);
+            authOpenIdDO.setUserId(userId);
+            authOpenIdDO.setAppName(appName);
+            authOpenIdDO.setOpenId(openId);
+            authOpenIdDO.setCreateTime(createTime);
+            authOpenIdDO.setUpdateTime(updateTime);
+            return authOpenIdDO;
         }
     }
 }

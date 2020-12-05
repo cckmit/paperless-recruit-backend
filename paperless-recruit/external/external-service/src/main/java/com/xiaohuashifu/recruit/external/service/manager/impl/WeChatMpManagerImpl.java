@@ -3,17 +3,18 @@ package com.xiaohuashifu.recruit.external.service.manager.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.GenderEnum;
+import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WeChatMpDetails;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.AccessTokenDTO;
-import com.xiaohuashifu.recruit.external.service.pojo.dto.Code2SessionDTO;
+import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpUserInfoDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpWatermarkDTO;
 import org.apache.axis.encoding.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -48,19 +50,31 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     private static final Logger logger = LoggerFactory.getLogger(WeChatMpManagerImpl.class);
 
     /**
-     * 请求 code2Session 的 url
+     * 发送微信订阅消息失败时的错误码
      */
-    @Value("${wechat.mp.code-2-session-url}")
-    private String code2SessionUrl;
+    private static final int SEND_SUBSCRIBE_MESSAGE_FAILED_ERROR_CODE = 0;
 
     /**
-     * 获取 access_token 的 url
+     * 发送模板消息的 url
      */
-    @Value("${wechat.mp.access-token-url}")
-    private String accessTokenUrl;
+    private static final String SUBSCRIBE_MESSAGE_URL =
+            "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={0}";
 
     /**
-     * 微信小程序 access-token 的 redis key 前缀名
+     * 请求 Session 的 url
+     */
+    private static final String CODE_TO_SESSION_URL =
+            "https://api.weixin.qq.com/sns/jscode2session" +
+                    "?appid={0}&secret={1}&js_code={2}&grant_type=authorization_code";
+
+    /**
+     * 获取 AccessToken 的 url
+     */
+    private static final String ACCESS_TOKEN_URL =
+            "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}";
+
+    /**
+     * 微信小程序 AccessToken 的 Redis Key 前缀名
      * 推荐格式为REDIS_KEY:{app}
      */
     public static final String ACCESS_TOKEN_REDIS_KEY_PREFIX = "wechat-mp:access-token";
@@ -79,19 +93,31 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     }
 
     /**
-     * 通过 code 获取封装过的 Code2SessionDTO
+     * 通过 code 获取封装过的 WeChatMpSessionDTO
      *
      * @param code String
      * @param app 微信小程序类别
-     * @return Code2SessionDTO
+     * @return WeChatMpSessionDTO
      */
     @Override
-    public Optional<Code2SessionDTO> getCode2Session(String code, AppEnum app) {
-        // 获取 Code2SessionDTO
-        String url = MessageFormat.format("{0}?appid={1}&secret={2}&js_code={3}&grant_type=authorization_code",
-                code2SessionUrl, weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app), code);
-        ResponseEntity<Code2SessionDTO> responseEntity = restTemplate.getForEntity(url, Code2SessionDTO.class);
-        return Optional.ofNullable(responseEntity.getBody());
+    public Optional<WeChatMpSessionDTO> getSessionByCode(String code, AppEnum app) {
+        // 获取 Session
+        String url = MessageFormat.format(CODE_TO_SESSION_URL,
+                weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app), code);
+        String sessionString = restTemplate.getForObject(url, String.class);
+        if (StringUtils.isBlank(sessionString)) {
+            return Optional.empty();
+        }
+
+        // 封装成 WeChatMpSessionDTO
+        JSONObject sessionJsonObject = JSONObject.parseObject(sessionString);
+        String openId = sessionJsonObject.getString("openid");
+        String sessionKey = sessionJsonObject.getString("session_key");
+        String unionId = sessionJsonObject.getString("unionid");
+        Integer errorCode = sessionJsonObject.getInteger("errcode");
+        String errorMessage = sessionJsonObject.getString("errmsg");
+        WeChatMpSessionDTO code2SessionDTO = new WeChatMpSessionDTO(openId, sessionKey, unionId, errorCode, errorMessage);
+        return Optional.of(code2SessionDTO);
     }
 
     /**
@@ -119,11 +145,11 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     @Override
     public Optional<WeChatMpUserInfoDTO> getUserInfo(String encryptedData, String iv, String code, AppEnum app) {
         // 通过 code 换取 sessionKey
-        Optional<Code2SessionDTO> code2SessionDTO = getCode2Session(code, app);
+        Optional<WeChatMpSessionDTO> code2SessionDTO = getSessionByCode(code, app);
         if (code2SessionDTO.isEmpty()) {
             return Optional.empty();
         }
-        String sessionKey = code2SessionDTO.get().getSession_key();
+        String sessionKey = code2SessionDTO.get().getSessionKey();
 
         // 解析 encryptedData
         try {
@@ -138,6 +164,45 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     }
 
     /**
+     * 发送模板消息
+     *
+     * @param app 具体的微信小程序类型
+     * @param subscribeMessageDTO 模板消息
+     * @return 发送结果
+     */
+    @Override
+    public boolean sendSubscribeMessage(AppEnum app, SubscribeMessageDTO subscribeMessageDTO) {
+        // 获取 access-token
+        Optional<String> accessToken = getAccessToken(app);
+        if (accessToken.isEmpty()) {
+            logger.error("Can't get access token. app={}", app);
+            return false;
+        }
+
+        // 发送消息
+        String url = MessageFormat.format(SUBSCRIBE_MESSAGE_URL, accessToken.get());
+        String responseString = restTemplate.postForObject(url, subscribeMessageDTO, String.class);
+        if (StringUtils.isBlank(responseString)) {
+            logger.error("Send subscribe message failed, response body is blank. app={}, subscribeMessageDTO={}",
+                    app, subscribeMessageDTO);
+            return false;
+        }
+
+        // 解析响应信息
+        JSONObject responseJsonObject = JSONObject.parseObject(responseString);
+        Integer errorCode = responseJsonObject.getInteger("errcode");
+        if (!Objects.equals(errorCode, SEND_SUBSCRIBE_MESSAGE_FAILED_ERROR_CODE)) {
+            logger.warn("Send subscribe message failed. " +
+                            "errorCode={}, errorMessage={}, app={}, subscribeMessageDTO={}",
+                    errorCode, responseJsonObject.getString("errmsg"), app, subscribeMessageDTO);
+            return false;
+        }
+
+        // 发送成功
+        return true;
+    }
+
+    /**
      * 获取新的 access-token
      * 并添加到 redis
      * 并设置过期时间
@@ -148,8 +213,8 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     @Override
     public boolean refreshAccessToken(AppEnum app) {
         // 获取 access-token
-        String url = MessageFormat.format("{0}?grant_type=client_credential&appid={1}&secret={2}",
-                accessTokenUrl, weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app));
+        String url = MessageFormat.format(ACCESS_TOKEN_URL,
+                weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app));
         ResponseEntity<AccessTokenDTO> entity = restTemplate.getForEntity(url, AccessTokenDTO.class);
         if (entity.getBody() == null || entity.getBody().getAccess_token() == null) {
             logger.warn("Get access token fail.");
@@ -205,7 +270,6 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         cipher.init(Cipher.DECRYPT_MODE, spec, parameters);
         byte[] resultByte = cipher.doFinal(dataByte);
         String result = new String(resultByte, StandardCharsets.UTF_8);
-        System.out.println(result);
 
         // 封装成 WeChatMpUserInfoDTO
         JSONObject userInfoJsonObject = JSONObject.parseObject(result);

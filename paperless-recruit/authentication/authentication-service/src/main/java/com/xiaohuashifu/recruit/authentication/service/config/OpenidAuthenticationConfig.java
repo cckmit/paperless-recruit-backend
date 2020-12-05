@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import com.xiaohuashifu.recruit.authentication.service.provider.OpenidAuthenticationProvider;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OpenidAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     @Reference
-    private AuthOpenidService authOpenidService;
+    private AuthOpenIdService authOpenidService;
     @Reference
     private UserService userService;
     @Reference

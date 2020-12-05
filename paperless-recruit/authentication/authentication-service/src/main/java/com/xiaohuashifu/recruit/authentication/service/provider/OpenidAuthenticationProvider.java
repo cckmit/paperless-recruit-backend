@@ -3,9 +3,9 @@ package com.xiaohuashifu.recruit.authentication.service.provider;
 import com.xiaohuashifu.recruit.authentication.service.token.OpenidAuthenticationToken;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.user.api.dto.AuthOpenidDTO;
+import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
-import com.xiaohuashifu.recruit.user.api.service.AuthOpenidService;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,11 +20,11 @@ import org.springframework.security.core.Authentication;
  */
 public class OpenidAuthenticationProvider extends AbstractAuthenticationProvider {
 
-    private final AuthOpenidService authOpenidService;
+    private final AuthOpenIdService authOpenidService;
 
     private final UserService userService;
 
-    public OpenidAuthenticationProvider(AuthOpenidService authOpenidService, UserService userService,
+    public OpenidAuthenticationProvider(AuthOpenIdService authOpenidService, UserService userService,
                                         PermissionService permissionService) {
         super(permissionService);
         this.authOpenidService = authOpenidService;
@@ -42,12 +42,12 @@ public class OpenidAuthenticationProvider extends AbstractAuthenticationProvider
         String code = openidAuthenticationToken.getCode();
 
         // 验证短信验证码
-        Result<AuthOpenidDTO> checkAuthOpenidForWechatMpResult =
-                authOpenidService.checkAuthOpenidForWechatMp(app, code);
+        Result<AuthOpenIdDTO> checkAuthOpenidForWechatMpResult =
+                authOpenidService.checkAuthOpenIdForWeChatMp(app, code);
         if (!checkAuthOpenidForWechatMpResult.isSuccess()) {
             throw new BadCredentialsException("Auth failed.");
         }
-        AuthOpenidDTO authOpenidDTO = checkAuthOpenidForWechatMpResult.getData();
+        AuthOpenIdDTO authOpenidDTO = checkAuthOpenidForWechatMpResult.getData();
 
         // 获取用户对象
         return userService.getUser(authOpenidDTO.getUserId()).getData();

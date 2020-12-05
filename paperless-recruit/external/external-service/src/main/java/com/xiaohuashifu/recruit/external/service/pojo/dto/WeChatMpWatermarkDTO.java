@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.external.service.pojo.dto;
 import java.time.LocalDateTime;
 
 /**
- * 描述：WeChatMpUserInfoDTO 里的 watermark
+ * 描述：WeChatMpUserInfoDTO 里的 Watermark
  *
  * @author xhsf
  * @create 2020/12/4 20:46

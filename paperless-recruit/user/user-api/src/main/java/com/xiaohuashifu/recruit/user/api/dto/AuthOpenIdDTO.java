@@ -8,12 +8,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 描述：AuthOpenid 的传输对象
+ * 描述：AuthOpenId 的传输对象
  *
  * @author: xhsf
  * @create: 2020/11/20 19:40
  */
-public class AuthOpenidDTO implements Serializable {
+public class AuthOpenIdDTO implements Serializable {
 
     private Long id;
 
@@ -23,7 +23,7 @@ public class AuthOpenidDTO implements Serializable {
     private AppEnum app;
 
     @Size(min = 28, max = 28)
-    private String openid;
+    private String openId;
 
     private LocalDateTime createTime;
 
@@ -53,12 +53,12 @@ public class AuthOpenidDTO implements Serializable {
         this.app = app;
     }
 
-    public String getOpenid() {
-        return openid;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setOpenid(String openid) {
-        this.openid = openid;
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
     public LocalDateTime getCreateTime() {
@@ -79,11 +79,11 @@ public class AuthOpenidDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "AuthOpenidDTO{" +
+        return "AuthOpenIdDTO{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", app=" + app +
-                ", openid='" + openid + '\'' +
+                ", openId='" + openId + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -93,7 +93,7 @@ public class AuthOpenidDTO implements Serializable {
         private Long id;
         private Long userId;
         private AppEnum app;
-        private String openid;
+        private String openId;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -112,8 +112,8 @@ public class AuthOpenidDTO implements Serializable {
             return this;
         }
 
-        public Builder openid(String openid) {
-            this.openid = openid;
+        public Builder openId(String openId) {
+            this.openId = openId;
             return this;
         }
 
@@ -127,15 +127,15 @@ public class AuthOpenidDTO implements Serializable {
             return this;
         }
 
-        public AuthOpenidDTO build() {
-            AuthOpenidDTO authOpenidDTO = new AuthOpenidDTO();
-            authOpenidDTO.setId(id);
-            authOpenidDTO.setUserId(userId);
-            authOpenidDTO.setApp(app);
-            authOpenidDTO.setOpenid(openid);
-            authOpenidDTO.setCreateTime(createTime);
-            authOpenidDTO.setUpdateTime(updateTime);
-            return authOpenidDTO;
+        public AuthOpenIdDTO build() {
+            AuthOpenIdDTO authOpenIdDTO = new AuthOpenIdDTO();
+            authOpenIdDTO.setId(id);
+            authOpenIdDTO.setUserId(userId);
+            authOpenIdDTO.setApp(app);
+            authOpenIdDTO.setOpenId(openId);
+            authOpenIdDTO.setCreateTime(createTime);
+            authOpenIdDTO.setUpdateTime(updateTime);
+            return authOpenIdDTO;
         }
     }
 }

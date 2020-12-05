@@ -6,7 +6,6 @@ import com.xiaohuashifu.recruit.common.constant.GenderEnum;
 import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WeChatMpDetails;
-import com.xiaohuashifu.recruit.external.service.pojo.dto.AccessTokenDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpUserInfoDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpWatermarkDTO;
@@ -16,7 +15,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,9 +48,9 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     private static final Logger logger = LoggerFactory.getLogger(WeChatMpManagerImpl.class);
 
     /**
-     * 发送微信订阅消息失败时的错误码
+     * 微信开放平台请求成功时的错误码
      */
-    private static final int SEND_SUBSCRIBE_MESSAGE_FAILED_ERROR_CODE = 0;
+    private static final int WECHAT_OPEN_PLATFORM_REQUEST_SUCCESS_ERROR_CODE = 0;
 
     /**
      * 发送模板消息的 url
@@ -191,10 +189,12 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         // 解析响应信息
         JSONObject responseJsonObject = JSONObject.parseObject(responseString);
         Integer errorCode = responseJsonObject.getInteger("errcode");
-        if (!Objects.equals(errorCode, SEND_SUBSCRIBE_MESSAGE_FAILED_ERROR_CODE)) {
+        // 发送失败
+        if (!Objects.equals(errorCode, WECHAT_OPEN_PLATFORM_REQUEST_SUCCESS_ERROR_CODE)) {
+            String errorMessage = responseJsonObject.getString("errmsg");
             logger.warn("Send subscribe message failed. " +
                             "errorCode={}, errorMessage={}, app={}, subscribeMessageDTO={}",
-                    errorCode, responseJsonObject.getString("errmsg"), app, subscribeMessageDTO);
+                    errorCode, errorMessage, app, subscribeMessageDTO);
             return false;
         }
 
@@ -203,7 +203,7 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     }
 
     /**
-     * 获取新的 access-token
+     * 获取新的 AccessToken
      * 并添加到 redis
      * 并设置过期时间
      *
@@ -212,21 +212,35 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
      */
     @Override
     public boolean refreshAccessToken(AppEnum app) {
-        // 获取 access-token
+        // 获取 AccessToken
         String url = MessageFormat.format(ACCESS_TOKEN_URL,
                 weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app));
-        ResponseEntity<AccessTokenDTO> entity = restTemplate.getForEntity(url, AccessTokenDTO.class);
-        if (entity.getBody() == null || entity.getBody().getAccess_token() == null) {
-            logger.warn("Get access token fail.");
+        String accessTokenString = restTemplate.getForObject(url, String.class);
+        if (StringUtils.isBlank(accessTokenString)) {
+            logger.error("Get access token fail, response is blank. app={}", app);
             return false;
         }
 
-        // 添加到 redis
-        String redisKey = ACCESS_TOKEN_REDIS_KEY_PREFIX + ":" + app.name();
-        redisTemplate.opsForValue().set(redisKey, entity.getBody().getAccess_token());
+        // 解析响应
+        JSONObject accessTokenJsonObject = JSONObject.parseObject(accessTokenString);
+        Integer errorCode = accessTokenJsonObject.getInteger("errcode");
+        // 请求出错
+        if (errorCode != null && !Objects.equals(errorCode, WECHAT_OPEN_PLATFORM_REQUEST_SUCCESS_ERROR_CODE)) {
+            String errorMessage = accessTokenJsonObject.getString("errmsg");
+            logger.warn("Refresh access token failed. app={}, errorCode={}, errorMessage={}",
+                    app, errorCode, errorMessage);
+            return false;
+        }
+        // 请求成功
+        String accessToken = accessTokenJsonObject.getString("access_token");
+        long expireTime = accessTokenJsonObject.getLongValue("expires_in");
 
-        // 设置 access-token 在 redis 的过期时间
-        redisTemplate.expire(redisKey, entity.getBody().getExpires_in(), TimeUnit.SECONDS);
+        // 添加到 Redis
+        String redisKey = ACCESS_TOKEN_REDIS_KEY_PREFIX + ":" + app.name();
+        redisTemplate.opsForValue().set(redisKey, accessToken);
+
+        // 设置 AccessToken 在 Redis 的过期时间
+        redisTemplate.expire(redisKey, expireTime, TimeUnit.SECONDS);
         return true;
     }
 

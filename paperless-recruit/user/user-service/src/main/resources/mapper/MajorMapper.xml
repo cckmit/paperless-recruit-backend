@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.MajorMapper">
 
-    <resultMap id="major" type="major">
+    <resultMap id="major" type="com.xiaohuashifu.recruit.user.service.do0.MajorDO">
         <id property="id" column="id"/>
         <result property="collegeId" column="college_id"/>
         <result property="majorName" column="major_name"/>

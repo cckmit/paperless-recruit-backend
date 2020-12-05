@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.UserProfileMapper">
 
-    <resultMap id="userProfile" type="userProfile">
+    <resultMap id="userProfile" type="com.xiaohuashifu.recruit.user.service.do0.UserProfileDO">
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="fullName" column="full_name"/>

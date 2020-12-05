@@ -1,7 +1,5 @@
 package com.xiaohuashifu.recruit.authentication.service.do0;
 
-import org.apache.ibatis.type.Alias;
-
 import java.time.LocalDateTime;
 
 /**
@@ -10,7 +8,6 @@ import java.time.LocalDateTime;
  * @author xhsf
  * @create 2020/11/27 17:27
  */
-@Alias("permittedUrl")
 public class PermittedUrlDO {
     private Long id;
 

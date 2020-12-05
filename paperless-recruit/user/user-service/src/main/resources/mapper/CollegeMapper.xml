@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.CollegeMapper">
 
-    <resultMap id="college" type="college">
+    <resultMap id="college" type="com.xiaohuashifu.recruit.user.service.do0.CollegeDO">
         <id property="id" column="id"/>
         <result property="collegeName" column="college_name"/>
         <result property="createTime" column="create_time"/>

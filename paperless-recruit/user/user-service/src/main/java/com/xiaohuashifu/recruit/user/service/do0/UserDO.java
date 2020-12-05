@@ -1,7 +1,5 @@
 package com.xiaohuashifu.recruit.user.service.do0;
 
-import org.apache.ibatis.type.Alias;
-
 import java.time.LocalDateTime;
 
 /**
@@ -10,7 +8,6 @@ import java.time.LocalDateTime;
  * @author: xhsf
  * @create: 2020/10/30 15:05
  */
-@Alias("user")
 public class UserDO {
     private Long id;
 

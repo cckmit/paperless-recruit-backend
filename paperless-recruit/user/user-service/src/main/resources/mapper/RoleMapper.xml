@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.user.service.dao.RoleMapper">
 
-    <resultMap id="role" type="role">
+    <resultMap id="role" type="com.xiaohuashifu.recruit.user.service.do0.RoleDO">
         <id property="id" column="id"/>
         <result property="parentRoleId" column="parent_role_id"/>
         <result property="roleName" column="role_name"/>

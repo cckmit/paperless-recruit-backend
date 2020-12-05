@@ -8,12 +8,12 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 import java.util.Collection;
 
 /**
- * 描述：Openid 登录的 Token
+ * 描述：OpenId 登录的 Token
  *
  * @author: xhsf
  * @create: 2020/11/11 17:47
  */
-public class OpenidAuthenticationToken extends AbstractAuthenticationToken {
+public class OpenIdAuthenticationToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
@@ -27,14 +27,14 @@ public class OpenidAuthenticationToken extends AbstractAuthenticationToken {
      */
     private final String code;
 
-    public OpenidAuthenticationToken(AppEnum app, String code) {
+    public OpenIdAuthenticationToken(AppEnum app, String code) {
         super(null);
         this.app = app;
         this.code = code;
         setAuthenticated(false);
     }
 
-    public OpenidAuthenticationToken(AppEnum app, String code, Collection<? extends GrantedAuthority> authorities) {
+    public OpenIdAuthenticationToken(AppEnum app, String code, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.app = app;
         this.code = code;

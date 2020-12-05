@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
-import com.xiaohuashifu.recruit.authentication.service.provider.OpenidAuthenticationProvider;
+import com.xiaohuashifu.recruit.authentication.service.provider.OpenIdAuthenticationProvider;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -11,15 +11,15 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.stereotype.Component;
 
 /**
- * 描述：Openid 认证的配置器
+ * 描述：OpenId 认证的配置器
  *
  * @author: xhsf
  * @create: 2020/11/21 20:28
  */
 @Component
-public class OpenidAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+public class OpenIdAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     @Reference
-    private AuthOpenIdService authOpenidService;
+    private AuthOpenIdService authOpenIdService;
     @Reference
     private UserService userService;
     @Reference
@@ -28,7 +28,7 @@ public class OpenidAuthenticationConfig extends SecurityConfigurerAdapter<Defaul
     @Override
     public void configure(HttpSecurity http) {
         // 添加 provider
-        http.authenticationProvider(new OpenidAuthenticationProvider(authOpenidService, userService, permissionService));
+        http.authenticationProvider(new OpenIdAuthenticationProvider(authOpenIdService, userService, permissionService));
     }
 
 }

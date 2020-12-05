@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.authentication.service.granter;
 
-import com.xiaohuashifu.recruit.authentication.service.token.OpenidAuthenticationToken;
+import com.xiaohuashifu.recruit.authentication.service.token.OpenIdAuthenticationToken;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,31 +14,31 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 描述：处理 grant_type=openid 类型的认证请求，并封装成类型 OpenidAuthenticationToken，
- *          交给 OpenidAuthenticationProvider 处理
+ * 描述：处理 grant_type=openId 类型的认证请求，并封装成类型 OpenIdAuthenticationToken，
+ *          交给 OpenIdAuthenticationProvider 处理
  *
  * @author: xhsf
  * @create: 2020/11/21 11:16
  */
-public class OpenidGranter extends AbstractTokenGranter {
+public class OpenIdGranter extends AbstractTokenGranter {
     /**
      * 认证类型
      */
-    private static final String GRANT_TYPE = "openid";
+    private static final String GRANT_TYPE = "openId";
 
     /**
-     * openid 认证参数的键
+     * openId 认证参数的键
      */
     private static final String OPENID_APP_KEY = "app";
 
     /**
-     * openid 认证参数的键
+     * openId 认证参数的键
      */
     private static final String OPENID_CODE_KEY = "code";
 
     private final AuthenticationManager authenticationManager;
 
-    public OpenidGranter(AuthenticationManager authenticationManager, AuthorizationServerTokenServices tokenServices
+    public OpenIdGranter(AuthenticationManager authenticationManager, AuthorizationServerTokenServices tokenServices
             , ClientDetailsService clientDetailsService, OAuth2RequestFactory requestFactory) {
         super(tokenServices, clientDetailsService, requestFactory, GRANT_TYPE);
         this.authenticationManager = authenticationManager;
@@ -54,7 +54,7 @@ public class OpenidGranter extends AbstractTokenGranter {
         }
         parameters.remove(OPENID_CODE_KEY);
 
-        Authentication userAuth = new OpenidAuthenticationToken(AppEnum.valueOf(app), code);
+        Authentication userAuth = new OpenIdAuthenticationToken(AppEnum.valueOf(app), code);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);
         userAuth = authenticationManager.authenticate(userAuth);
         if (userAuth == null || !userAuth.isAuthenticated()) {

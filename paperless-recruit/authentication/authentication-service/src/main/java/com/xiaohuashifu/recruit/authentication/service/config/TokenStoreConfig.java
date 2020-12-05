@@ -48,7 +48,7 @@ public class TokenStoreConfig {
     }
 
     /**
-     * 用于把默认 token 转换成 jwt 类型
+     * 用于把默认 Token 转换成 JWT 类型
      *
      * @return JwtAccessTokenConverter
      */

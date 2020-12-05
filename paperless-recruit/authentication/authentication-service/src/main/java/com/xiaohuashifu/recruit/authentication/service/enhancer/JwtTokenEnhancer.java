@@ -27,9 +27,9 @@ public class JwtTokenEnhancer implements TokenEnhancer {
     private UserService userService;
 
     /**
-     * JWT 中用户信息在 map 中的 key
+     * JWT 中用户信息在 Map 中的 Key
      */
-    private static final String JWT_USER_INFO_KEY = "user_info";
+    private static final String JWT_USER_INFO_KEY = "userInfo";
 
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken oAuth2AccessToken, OAuth2Authentication oAuth2Authentication) {

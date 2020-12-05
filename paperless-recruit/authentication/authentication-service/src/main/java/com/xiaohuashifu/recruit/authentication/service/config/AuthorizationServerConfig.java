@@ -56,7 +56,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        // 使用自定义的TokenGranter
+        // 使用自定义的 TokenGranter
         // 这样会使得认证基本上自定义
         // 灵活性较高
         endpoints.tokenGranter(tokenGranter);

@@ -34,7 +34,7 @@ public class AuthenticationController {
     }
 
     /**
-     * 获得解析 jwt 的公钥
+     * 获得解析 JWT 的公钥
      *
      * @return Map<String, Object>
      */
@@ -46,10 +46,10 @@ public class AuthenticationController {
     }
 
     /**
-     * 解析 jwt
+     * 解析 JWT
      *
      * @param request HttpServletRequest
-     * @return 解析后的 jwt 对象
+     * @return 解析后的 JWT 对象
      */
     @GetMapping("/jwt")
     public Object getJwt(HttpServletRequest request) {

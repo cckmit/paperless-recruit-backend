@@ -24,12 +24,12 @@ public class WeChatMpTimer {
     private final WeChatMpManager weChatMpManager;
 
     /**
-     * 刷新 access-token 任务初始延迟
+     * 刷新 AccessToken 任务初始延迟
      */
     private static final long REFRESH_ACCESS_TOKEN_TASK_INITIAL_DELAY = 10000;
 
     /**
-     * 刷新 access-token 任务固定延迟
+     * 刷新 AccessToken 任务固定延迟
      */
     private static final long REFRESH_ACCESS_TOKEN_TASK_FIXED_DELAY = 3600000;
 
@@ -39,7 +39,7 @@ public class WeChatMpTimer {
 
     /**
      * 刷新微信小程序 AccessToken 定时任务
-     * 每小时刷新一次 access-token
+     * 每小时刷新一次 AccessToken
      * 如果刷新失败则重复获取10次
      * 如果还失败则报警处理
      */
@@ -53,7 +53,7 @@ public class WeChatMpTimer {
                         break;
                     }
                     if (i == 9) {
-                        logger.warn("Refresh wechat mp access token fail. mp=" + app);
+                        logger.error("Refresh wechat mp access token failed. app{}", app);
                     }
                 }
             }

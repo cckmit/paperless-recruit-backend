@@ -17,12 +17,12 @@ import org.springframework.scripting.support.ResourceScriptSource;
 public class RedisConfig {
 
     /**
-     * 自增 id lua 脚本 classpath 路径
+     * 自增 ID Lua 脚本 classpath 路径
      */
     private static final String INCREMENT_ID_REDIS_LUA_SCRIPT_CLASS_PATH = "/redis/lua/IncrementId.lua";
 
     /**
-     * 自增 id Redis 脚本
+     * 自增 ID Redis 脚本
      * @return 自增 id 值
      */
     @Bean("incrementIdRedisScript")

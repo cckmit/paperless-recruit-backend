@@ -6,52 +6,52 @@
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="appName" column="app_name"/>
-        <result property="openId" column="openid"/>
+        <result property="openId" column="open_id"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-    <sql id="auth_openid">
-        id, user_id, app_name, openid, create_time, update_time
+    <sql id="auth_open_id">
+        id, user_id, app_name, open_id, create_time, update_time
     </sql>
 
     <insert id="insertAuthOpenId" keyProperty="id">
-        insert into auth_openid(user_id, app_name, openid)
-        values(#{userId}, #{appName}, #{openid})
+        insert into auth_open_id(user_id, app_name, open_id)
+        values(#{userId}, #{appName}, #{openId})
     </insert>
 
     <select id="getAuthOpenId" resultMap="authOpenId">
-        select <include refid="auth_openid"/>
-        from auth_openid
+        select <include refid="auth_open_id"/>
+        from auth_open_id
         where id = #{id}
     </select>
     
     <select id="getOpenIdByAppNameAndUserId" resultType="string">
-        select openid
-        from auth_openid
+        select open_id
+        from auth_open_id
         where app_name = #{appName}
         and user_id = #{userId}
     </select>
 
     <select id="getIdByAppNameAndOpenId" resultType="long">
         select id
-        from auth_openid
+        from auth_open_id
         where app_name = #{appName}
-        and openid = #{openId}
+        and open_id = #{openId}
     </select>
 
     <select id="countByUserIdAndAppName" resultType="int">
         select count(*)
-        from auth_openid
+        from auth_open_id
         where user_id = #{userId}
         and app_name = #{appName}
     </select>
 
     <select id="countByAppNameAndOpenId" resultType="int">
         select count(*)
-        from auth_openid
+        from auth_open_id
         where app_name = #{appName}
-        and openid = #{openid}
+        and open_id = #{openId}
     </select>
 
 </mapper>

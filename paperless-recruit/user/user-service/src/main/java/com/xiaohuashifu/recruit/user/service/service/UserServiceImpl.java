@@ -19,7 +19,6 @@ import com.xiaohuashifu.recruit.user.service.do0.UserDO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
  * 描述：用户服务的rpc实现
  *
  * @author: xhsf
- * @email: 827032783@qq.com
  * @create: 2020/10/30 15:05
  */
 @Service
@@ -61,8 +59,10 @@ public class UserServiceImpl implements UserService {
 
     private final RedisScript<Long> incrementIdRedisScript;
 
-    @Value("${service.user.default-role-id}")
-    private Long defaultUserRoleId;
+    /**
+     * 用户默认角色编号，即所有用户都拥有的角色
+     */
+    private static final long USER_DEFAULT_ROLE_ID = 1;
 
     /**
      * 短信验证码过期时间5分钟
@@ -765,7 +765,7 @@ public class UserServiceImpl implements UserService {
         userMapper.insertUser(userDO);
 
         // 为新账号赋予最基本的权限
-        roleService.saveUserRole(userDO.getId(), defaultUserRoleId);
+        roleService.saveUserRole(userDO.getId(), USER_DEFAULT_ROLE_ID);
 
         // 为账号初始化个人信息
         userProfileService.createUserProfile(userDO.getId());

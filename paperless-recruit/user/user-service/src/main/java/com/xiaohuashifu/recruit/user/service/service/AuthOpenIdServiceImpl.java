@@ -40,21 +40,19 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
     private final Mapper mapper;
 
     /**
-     * 华农招新面试者端微信小程序绑定后默认添加的角色
+     * 华农招新面试者默认角色编号
      */
-    @Value("${service.auth-openid.scau-recruit-interviewee-mp.default-role-id}")
-    private Long scauRecruitIntervieweeMpDefaultRoleId;
+    private static final long INTERVIEWEE_DEFAULT_ROLE_ID = 2;
 
     /**
-     * 华农招新面试官端微信小程序绑定后默认添加的角色
+     * 华农招新面试官默认角色编号
      */
-    @Value("${service.auth-openid.scau-recruit-interviewer-mp.default-role-id}")
-    private Long scauRecruitInterviewerMpDefaultRoleId;
+    private static final long INTERVIEWER_DEFAULT_ROLE_ID = 3L;
 
     /**
      * openId 加密时使用的密钥
      */
-    @Value("${service.auth-openid.secret}")
+    @Value("${service.auth-open-id.secret}")
     private String secretKey;
 
     public AuthOpenIdServiceImpl(AuthOpenIdMapper authOpenIdMapper, Mapper mapper) {
@@ -119,10 +117,10 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
 
         // 给用户添加微信小程序基本权限
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP) {
-            roleService.saveUserRole(userId, scauRecruitIntervieweeMpDefaultRoleId);
+            roleService.saveUserRole(userId, INTERVIEWEE_DEFAULT_ROLE_ID);
         }
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWER_MP) {
-            roleService.saveUserRole(userId, scauRecruitInterviewerMpDefaultRoleId);
+            roleService.saveUserRole(userId, INTERVIEWER_DEFAULT_ROLE_ID);
         }
         return getAuthOpenId(authOpenIdDO.getId());
     }

@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.user.service;
+package com.xiaohuashifu.recruit.organization.service;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
@@ -9,11 +9,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableDubbo
-@MapperScan("com.xiaohuashifu.recruit.user.service.dao")
-public class UserServiceApplication {
+@MapperScan("com.xiaohuashifu.recruit.organization.service.dao")
+public class OrganizationServiceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(OrganizationServiceApplication.class, args);
+	}
 
 }

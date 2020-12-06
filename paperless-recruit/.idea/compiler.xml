@@ -6,17 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="facade-service" />
+        <module name="external-api" />
+        <module name="gateway-api" />
+        <module name="user-service" />
+        <module name="organization-api" />
+        <module name="facade-api" />
         <module name="external-service" />
         <module name="authentication-api" />
         <module name="authentication-service" />
         <module name="user-api" />
         <module name="common" />
-        <module name="facade-service" />
         <module name="gateway-service" />
-        <module name="external-api" />
-        <module name="gateway-api" />
-        <module name="user-service" />
-        <module name="facade-api" />
+        <module name="organization-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -38,6 +40,7 @@
       <module name="external-service" options="" />
       <module name="gateway-service" options="" />
       <module name="login" options="" />
+      <module name="organization-service" options="" />
       <module name="user" options="" />
       <module name="user-api" options="" />
       <module name="user-service" options="" />

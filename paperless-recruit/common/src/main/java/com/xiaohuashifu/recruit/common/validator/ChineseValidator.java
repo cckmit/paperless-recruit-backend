@@ -27,9 +27,12 @@ public class ChineseValidator implements ConstraintValidator<Chinese, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if (s == null) {
+        // 不检查空的情况
+        if (s == null || s.length() == 0) {
             return true;
         }
+
+        // 格式校验
         Matcher matcher = p.matcher(s);
         return matcher.matches();
     }

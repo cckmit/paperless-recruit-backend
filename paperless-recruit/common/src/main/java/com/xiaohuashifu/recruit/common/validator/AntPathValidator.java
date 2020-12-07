@@ -18,9 +18,12 @@ public class AntPathValidator implements ConstraintValidator<AntPath, String> {
 
     @Override
     public boolean isValid(String path, ConstraintValidatorContext constraintValidatorContext) {
-        if (path == null) {
+        // 不检查空的情况
+        if (path == null || path.length() == 0) {
             return true;
         }
+
+        // 格式校验
         return antPathMatcher.isPattern(path);
     }
 

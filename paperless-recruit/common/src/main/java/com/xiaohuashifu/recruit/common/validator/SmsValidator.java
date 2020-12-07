@@ -17,10 +17,12 @@ public class SmsValidator implements ConstraintValidator<Sms, String> {
 
     @Override
     public boolean isValid(String sms, ConstraintValidatorContext constraintValidatorContext) {
-        if (sms == null) {
+        // 不检查空的情况
+        if (sms == null || sms.length() == 0) {
             return true;
         }
 
-        return sms.length() >= 1 && sms.length() <= SmsConstants.SMS_CONTENT_MAX_LENGTH;
+        // 长度校验
+        return sms.length() <= SmsConstants.SMS_CONTENT_MAX_LENGTH;
     }
 }

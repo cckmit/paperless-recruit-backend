@@ -18,10 +18,12 @@ public class AuthCodeValidator implements ConstraintValidator<AuthCode, String> 
 
     @Override
     public boolean isValid(String authCode, ConstraintValidatorContext constraintValidatorContext) {
-        if (authCode == null) {
+        // 不检查空的情况
+        if (authCode == null || authCode.length() == 0) {
             return true;
         }
 
+        // 长度必须为6，且由数字组成
         return authCode.length() == AuthCodeConstants.AUTH_CODE_LENGTH && StringUtils.isNumeric(authCode);
     }
 }

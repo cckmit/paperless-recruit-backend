@@ -17,9 +17,12 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext constraintValidatorContext) {
-        if (password == null) {
+        // 不检查空的情况
+        if (password == null || password.length() == 0) {
             return true;
         }
+
+        // 格式校验
         return password.length() >= PasswordConstants.PASSWORD_MIN_LENGTH
                 && password.length() <= PasswordConstants.PASSWORD_MAX_LENGTH;
     }

@@ -33,13 +33,13 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-        <!--    redis    -->
+        <!--    Redis    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!--   html模板     -->
+        <!--   HTML 模板     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -69,13 +69,13 @@
             <artifactId>spring-cloud-starter-dubbo</artifactId>
         </dependency>
 
-        <!-- MySQL-connector -->
+        <!-- MySQL Connector -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!--   druid连接池     -->
+        <!--   Druid 连接池     -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
@@ -87,25 +87,25 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- dozer对象属性拷贝 -->
+        <!-- Dozer 对象属性拷贝 -->
         <dependency>
             <groupId>com.github.dozermapper</groupId>
             <artifactId>dozer-spring-boot-starter</artifactId>
         </dependency>
 
-        <!--    user-api接口    -->
+        <!--    user-api 接口    -->
         <dependency>
             <groupId>com.xiaohuashifu.recruit</groupId>
             <artifactId>user-api</artifactId>
         </dependency>
 
-        <!--    authentication-api接口    -->
+        <!--    authentication-api 接口    -->
         <dependency>
             <groupId>com.xiaohuashifu.recruit</groupId>
             <artifactId>authentication-api</artifactId>
         </dependency>
 
-        <!--    external-api接口    -->
+        <!--    external-api 接口    -->
         <dependency>
             <groupId>com.xiaohuashifu.recruit</groupId>
             <artifactId>external-api</artifactId>
@@ -123,7 +123,7 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!--     fastjson工具类       -->
+        <!--     fastjson 工具类       -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -135,12 +135,41 @@
             <artifactId>aliyun-java-sdk-core</artifactId>
         </dependency>
 
-        <!--   解密微信小程序encryptedData的库     -->
+        <!--   解密微信小程序 encryptedData 的库     -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.59</version>
         </dependency>
+
+        <!--   阿里云 OSS 依赖库     -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.10.2</version>
+        </dependency>
+
+        <!--    JDK9 以上缺少的依赖，为了阿里云 OSS   -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+        <!--    JDK9 以上缺少的依赖，为了阿里云 OSS    -->
+
+
     </dependencies>
 
 </project>

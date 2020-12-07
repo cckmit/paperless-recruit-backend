@@ -34,7 +34,8 @@ public class UsernameValidator implements ConstraintValidator<Username, String> 
 
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-        if (username == null) {
+        // 不检查空的情况
+        if (username == null || username.length() == 0) {
             return true;
         }
 
@@ -48,6 +49,7 @@ public class UsernameValidator implements ConstraintValidator<Username, String> 
             return false;
         }
 
+        // 格式校验
         Matcher matcher = p.matcher(username);
         return matcher.matches();
     }

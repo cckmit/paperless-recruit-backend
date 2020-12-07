@@ -78,6 +78,6 @@ public class EmailServiceImplTest {
     @Test
     public void checkEmailAuthCode() {
         System.out.println(emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
-                .email("827032783@qq.com").subject("email-update").authCode("401034").delete(true).build()));
+                .email("").subject("email-update").authCode("401034").delete(true).build()));
     }
 }

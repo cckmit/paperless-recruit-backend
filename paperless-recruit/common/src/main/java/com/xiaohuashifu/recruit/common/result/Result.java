@@ -31,6 +31,9 @@ public class Result<T> implements Serializable {
      */
     private final String errorMessage;
 
+    /**
+     * 默认成功的对象
+     */
     private static final Result<Void> SUCCESS = new Result<>(true, null, null, null);
 
     private Result(Boolean success, T data, String errorCode, String errorMessage) {
@@ -45,8 +48,10 @@ public class Result<T> implements Serializable {
      *
      * @return Result
      */
-    public static Result<Void> success() {
-        return SUCCESS;
+    public static <T> Result<T> success() {
+        @SuppressWarnings("unchecked")
+        Result<T> result = (Result<T>) SUCCESS;
+        return result;
     }
 
     /**

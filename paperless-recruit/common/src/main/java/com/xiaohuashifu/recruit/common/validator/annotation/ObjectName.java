@@ -7,8 +7,8 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 描述: 对象名校验器校验，对象名类似于 /users/avatars/321.jpg
- *          在使用 UTF-8 编码后长度必须在 1-1023 字节之间，同时不能以 '\' 开头。
+ * 描述: 对象名校验器校验，对象名类似于 users/avatars/321.jpg
+ *          在使用 UTF-8 编码后长度必须在 1-1023 字节之间，同时不能以 '/' 开头。
  *
  * @author xhsf
  * @create 2020-12-07
@@ -21,7 +21,7 @@ import java.lang.annotation.*;
 @Repeatable(ObjectName.List.class)
 public @interface ObjectName {
 
-    String message() default "The length of object name must be between 1 and 1023, and can't start with \\.";
+    String message() default "The length of object name must be between 1 and 1023, and can't start with /.";
 
     Class<?>[] groups() default {};
 

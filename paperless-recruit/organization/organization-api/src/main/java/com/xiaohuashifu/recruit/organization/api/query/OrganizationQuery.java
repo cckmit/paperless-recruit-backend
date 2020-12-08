@@ -16,12 +16,10 @@ public class OrganizationQuery implements Serializable {
     @NotNull
     @Positive
     private Long pageNum;
-
     @NotNull
     @Positive
     @Max(50)
     private Long pageSize;
-
     private Long id;
     private List<Long> ids;
     private Long userId;

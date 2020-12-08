@@ -17,6 +17,7 @@ import org.junit.Test;
 public class AuthOpenIdServiceImplTest {
 
     private AuthOpenIdService authOpenIdService;
+
     @Before
     public void before() {
         ApplicationConfig application = new ApplicationConfig();

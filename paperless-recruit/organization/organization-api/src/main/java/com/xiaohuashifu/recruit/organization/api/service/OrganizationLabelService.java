@@ -7,8 +7,9 @@ import com.xiaohuashifu.recruit.organization.api.query.OrganizationLabelQuery;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Map;
 
 /**
  * 描述：组织标签服务
@@ -17,26 +18,28 @@ import java.util.List;
  * @create 2020/12/7 13:22
  */
 public interface OrganizationLabelService {
+
     /**
-     * 保存组织标签
+     * 保存组织标签，初始引用数0
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              OperationConflict: 标签名已经存在
      *
      * @param labelName 标签名
      * @return OrganizationLabelDTO
      */
-    default Result<OrganizationLabelDTO> saveOrganizationLabel(@NotBlank @Size(min = 1, max = 4) String labelName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<OrganizationLabelDTO> saveOrganizationLabel(@NotBlank @Size(min = 1, max = 4) String labelName);
 
     /**
-     * 增加标签引用数量，若标签不存在则保存标签
+     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              InvalidParameter.NotAvailable: 该标签已经被禁用，不可用增加引用
      *
      * @param labelName 标签名
-     * @return 操作是否成功
+     * @return 增加引用数量后的组织标签对象
      */
-    default Result<Void> increaseReferenceNumberOrSaveOrganizationLabel(
-            @NotBlank @Size(min = 1, max = 4) String labelName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(@NotBlank @Size(min = 1, max = 4) String labelName);
 
     /**
      * 查询组织标签
@@ -44,8 +47,22 @@ public interface OrganizationLabelService {
      * @param query 查询参数
      * @return PageInfo<OrganizationLabelDTO> 若查询不到返回空列表
      */
-    default Result<PageInfo<OrganizationLabelDTO>> listOrganizationLabels(@NotNull OrganizationLabelQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<OrganizationLabelDTO>> listOrganizationLabels(@NotNull OrganizationLabelQuery query);
 
+    /**
+     * 禁用一个组织标签，会把所有拥有这个标签的社团的这个标签给删了
+     *
+     * @param id 社团标签编号
+     * @return 禁用后的组织标签对象和被删除标签的社团数量；
+     *          Map 的 key 分别为 organizationLabel 和 deletedNumber，类型分别为 OrganizationLabelDTO 和 Integer
+     */
+    Result<Map<String, Object>> disableOrganizationLabel(@NotNull @Positive Long id);
+
+    /**
+     * 解禁标签
+     *
+     * @param id 社团标签编号
+     * @return 解禁后的组织标签对象
+     */
+    Result<OrganizationLabelDTO> enableOrganizationLabel(@NotNull @Positive Long id);
 }

@@ -17,30 +17,12 @@ import java.util.List;
 public class OrganizationDTO implements Serializable {
     private Long id;
     private Long userId;
-
-    @NotBlank(groups = OrganizationService.CreateOrganization.class)
-    @Size(min = 2, max = 20, groups = OrganizationService.CreateOrganization.class)
     private String organizationName;
-
-    @NotBlank(groups = OrganizationService.CreateOrganization.class)
-    @Size(min = 2, max = 5, groups = OrganizationService.CreateOrganization.class)
     private String abbreviationOrganizationName;
-
-    @NotBlank(groups = OrganizationService.CreateOrganization.class)
-    @Size(min = 1, max = 400, groups = OrganizationService.CreateOrganization.class)
     private String introduction;
-
-
     private String logoUrl;
-
     private String memberNumber;
-
-    /**
-     * 组织标签列表
-     */
-    @NotEmpty(groups = OrganizationService.CreateOrganization.class)
     private List<String> labels;
-
     private Boolean available;
 
     public Long getId() {

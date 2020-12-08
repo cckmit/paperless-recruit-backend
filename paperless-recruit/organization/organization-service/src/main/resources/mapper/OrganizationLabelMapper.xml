@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.organization.service.dao.OrganizationLabelMapper">
+
+    <resultMap id="organizationLabel" type="com.xiaohuashifu.recruit.organization.service.do0.OrganizationLabelDO">
+        <id property="id" column="id"/>
+        <result property="labelName" column="label_name"/>
+        <result property="referenceNumber" column="reference_number"/>
+        <result property="available" column="is_available"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="organizationLabel">
+        id, label_name, reference_number, is_available, create_time, update_time
+    </sql>
+
+    <insert id="insertOrganizationLabel" keyProperty="id">
+        insert into organization_label(label_name)
+        values(#{labelName})
+    </insert>
+
+    <select id="getOrganizationLabel" resultMap="organizationLabel">
+        select <include refid="organizationLabel"/>
+        from organization_label
+        where id = #{id}
+    </select>
+
+    <select id="getOrganizationLabelByLabelName" resultMap="organizationLabel">
+        select <include refid="organizationLabel"/>
+        from organization_label
+        where label_name = #{labelName}
+    </select>
+
+    <select id="listOrganizationLabels" resultMap="organizationLabel">
+        select <include refid="organizationLabel"/>
+        from organization_label
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="ids != null">
+                and id in (
+                <foreach collection="ids"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="labelName != null">
+                and label_name like "%"#{labelName}"%"
+            </if>
+            <if test="available != null">
+                and is_available = #{available}
+            </if>
+        </where>
+        <if test="orderByAvailable || orderByAvailableDesc || orderByReferenceNumber || orderByReferenceNumberDesc
+         || orderByLabelName || orderByLabelNameDesc || orderByCreateTime || orderByCreateTimeDesc
+         || orderByUpdateTime || orderByUpdateTimeDesc">
+            order by
+            <trim suffixOverrides=",">
+                <if test="orderByAvailable">
+                    is_available,
+                </if>
+                <if test="orderByAvailableDesc">
+                    is_available desc,
+                </if>
+                <if test="orderByReferenceNumber">
+                    reference_number,
+                </if>
+                <if test="orderByReferenceNumberDesc">
+                    reference_number desc,
+                </if>
+                <if test="orderByLabelName">
+                    label_name,
+                </if>
+                <if test="orderByLabelNameDesc">
+                    label_name desc,
+                </if>
+                <if test="orderByCreateTime">
+                    create_time,
+                </if>
+                <if test="orderByCreateTimeDesc">
+                    create_time desc,
+                </if>
+                <if test="orderByUpdateTime">
+                    update_time,
+                </if>
+                <if test="orderByUpdateTimeDesc">
+                    update_time desc,
+                </if>
+            </trim>
+        </if>
+    </select>
+
+    <select id="countByLabelName" resultType="int">
+        select count(*)
+        from organization_label
+        where label_name = #{labelName}
+    </select>
+
+
+    <update id="increaseReferenceNumber">
+        update organization_label
+        set reference_number = reference_number + 1
+        where id = #{id}
+    </update>
+</mapper>

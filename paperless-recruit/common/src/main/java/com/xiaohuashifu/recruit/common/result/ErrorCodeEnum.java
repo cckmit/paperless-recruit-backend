@@ -38,7 +38,6 @@ public enum ErrorCodeEnum implements Serializable {
     INVALID_PARAMETER_APP_UNSUPPORTED(HttpStatus.BAD_REQUEST,
             "InvalidParameter.App.Unsupported", "Unsupported app."),
 
-
     /**
      * 非法参数，值不正确
      */
@@ -104,6 +103,12 @@ public enum ErrorCodeEnum implements Serializable {
      */
     INVALID_PARAMETER_USER_NOT_EXIST(HttpStatus.BAD_REQUEST,
             "InvalidParameter.User.NotExist", "The user does not exist."),
+
+    /**
+     * 非法参数，不可用
+     */
+    INVALID_PARAMETER_NOT_AVAILABLE(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.NotAvailable", "The resource of this parameter is not available."),
 
     /**
      * 未知错误

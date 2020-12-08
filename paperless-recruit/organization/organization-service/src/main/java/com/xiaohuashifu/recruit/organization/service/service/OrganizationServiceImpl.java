@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.po.CreateOrganizationPO;
@@ -25,15 +26,27 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Reference
     private OrganizationLabelService organizationLabelService;
 
+    /**
+     * 创建组织，需要没有使用过的邮箱，用于注册组织的主体账号
+     *
+     * @errorCode InvalidParameter: 创建参数格式错误 | 包含非法标签 |
+     *
+     * @param createOrganizationPO 创建组织的参数对象
+     * @return OrganizationDTO
+     */
     @Override
     public Result<OrganizationDTO> createOrganization(CreateOrganizationPO createOrganizationPO) {
+        // 判断是否包含非法标签
         List<String> labels = createOrganizationPO.getLabels();
         if (labels != null) {
             for (String label : labels) {
-                organizationLabelService.isValidOrganizationLabel(label);
+                if (!organizationLabelService.isValidOrganizationLabel(label).isSuccess()) {
+                    return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Contains invalid labels.");
+                }
             }
         }
 
+        //
         return null;
     }
 

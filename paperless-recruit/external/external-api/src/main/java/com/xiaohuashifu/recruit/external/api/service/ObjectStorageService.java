@@ -3,9 +3,11 @@ package com.xiaohuashifu.recruit.external.api.service;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.ObjectName;
 import com.xiaohuashifu.recruit.external.api.dto.ObjectInfoListDTO;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 /**
  * 描述：对象存储服务

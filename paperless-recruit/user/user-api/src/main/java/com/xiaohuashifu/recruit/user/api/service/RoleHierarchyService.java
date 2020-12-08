@@ -10,6 +10,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
  * @create: 2020/11/14 20:24
  */
 public interface RoleHierarchyService {
+
     /**
      * 这个服务会返回当前权限的层级结构，用于构建 RoleHierarchy
      * 例如：    "root > user\n" +
@@ -19,4 +20,5 @@ public interface RoleHierarchyService {
      * @return 权限的层级结构字符串
      */
     Result<String> createRoleHierarchy();
+
 }

@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.external.service.manager.impl;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObject;
@@ -33,16 +32,16 @@ public class ObjectStorageManagerImpl implements ObjectStorageManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectStorageManagerImpl.class);
 
-    private OSS oss;
+    private final OSS oss;
 
     /**
      * 存储空间名
      */
     private static final String BUCKET_NAME = "scau-recruit";
 
-//    public ObjectStorageManagerImpl(OSS oss) {
-//        this.oss = oss;
-//    }
+    public ObjectStorageManagerImpl(OSS oss) {
+        this.oss = oss;
+    }
 
     /**
      * 上传对象
@@ -54,10 +53,7 @@ public class ObjectStorageManagerImpl implements ObjectStorageManager {
     @Override
     public boolean putObject(String objectName, byte[] object) {
         try {
-            OSS oss = new OSSClientBuilder().build("https://oss-cn-guangzhou.aliyuncs.com",
-                    "LTAI4GHw6M37rPWbiJWRJtcU", "Oi9UNj1M6OrYSVmSGezu0MJeD8x7Ze");
             oss.putObject(BUCKET_NAME, objectName, new ByteArrayInputStream(object));
-            oss.shutdown();
             return true;
         } catch (OSSException | ClientException e) {
             logger.error("Put object failed. objectName={}, objectSize={}, exception={}", objectName, object.length, e);

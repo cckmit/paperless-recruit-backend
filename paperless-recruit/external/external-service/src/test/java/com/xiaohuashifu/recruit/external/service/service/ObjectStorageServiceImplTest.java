@@ -6,8 +6,12 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.redis.util.ByteUtils;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 描述：
@@ -33,23 +37,28 @@ public class ObjectStorageServiceImplTest {
 
     @Test
     public void putObject() {
-        System.out.println(objectStorageService.putObject("    ", "新华社发新华社发顺丰"));
+        byte[] bytes = "新华社发新华社发顺丰".getBytes();
+        List<Byte> object = new ArrayList<>(bytes.length);
+        for (byte aByte : bytes) {
+            object.add(aByte);
+        }
+        System.out.println(objectStorageService.putObject("    ", "dassd31".getBytes()));
     }
 
     @Test
     public void deleteObject() {
-
+        System.out.println(objectStorageService.deleteObject("31231"));
     }
 
     @Test
     public void getObject() {
-        Result<byte[]> object = objectStorageService.getObject("");
-        System.out.println(object);
+        Result<byte[]> object = objectStorageService.getObject("xxxx");
         byte[] data = object.getData();
         System.out.println(new String(data, StandardCharsets.UTF_8));
     }
 
     @Test
     public void listObjectInfos() {
+        System.out.println(objectStorageService.listObjectInfos("", "test&\"<>/te.txt", 50));
     }
 }

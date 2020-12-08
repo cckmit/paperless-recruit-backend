@@ -16,6 +16,11 @@ import javax.validation.constraints.Positive;
  * @create 2020/12/7 17:36
  */
 public interface ObjectStorageService {
+
+    /**
+     * 对象的最大大小，10MB
+     */
+    int MAX_OBJECT_SIZE = 10240;
     
     /**
      * 上传对象
@@ -24,7 +29,7 @@ public interface ObjectStorageService {
      * @param object 对象
      * @return 上传结果
      */
-    default Result<Void> putObject(@NotBlank @ObjectName String objectName, String object) {
+    default Result<Void> putObject(String objectName, byte[] object) {
         throw new UnsupportedOperationException();
     }
 

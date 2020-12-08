@@ -2,13 +2,12 @@ package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.validator.ObjectNameValidator;
 import com.xiaohuashifu.recruit.external.api.dto.ObjectInfoListDTO;
 import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.external.service.manager.ObjectStorageManager;
-import javassist.bytecode.ByteArray;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
-
-import java.util.Arrays;
 
 /**
  * 描述：对象存储服务
@@ -20,6 +19,8 @@ import java.util.Arrays;
 public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     private final ObjectStorageManager objectStorageManager;
+
+    private static final ObjectNameValidator objectNameValidator = new ObjectNameValidator();
 
     public ObjectStorageServiceImpl(ObjectStorageManager objectStorageManager) {
         this.objectStorageManager = objectStorageManager;
@@ -33,8 +34,26 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
      * @return 上传结果
      */
     @Override
-    public Result<Void> putObject(String objectName, String object) {
-        if (!objectStorageManager.putObject(objectName, object.getBytes())) {
+    public Result<Void> putObject(String objectName, byte[] object) {
+        // 对象名不能为空
+        if (StringUtils.isBlank(objectName)) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The object name can't be blank.");
+        }
+
+        // 必须符合格式
+        if (objectNameValidator.isValid(objectName, null)) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
+                    "The length of object name must be between 1 and 1023, and can't start with /.");
+        }
+
+        // 对象长度必须小于 10MB
+        if (object != null && object.length > MAX_OBJECT_SIZE) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
+                    "The object length must be less then 10240.");
+        }
+
+        // 上传对象
+        if (!objectStorageManager.putObject(objectName, object)) {
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR, "Put object failed.");
         }
         return Result.success();

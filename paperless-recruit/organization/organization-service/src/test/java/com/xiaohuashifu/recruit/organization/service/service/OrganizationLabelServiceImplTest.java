@@ -2,13 +2,10 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationLabelQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
-import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：

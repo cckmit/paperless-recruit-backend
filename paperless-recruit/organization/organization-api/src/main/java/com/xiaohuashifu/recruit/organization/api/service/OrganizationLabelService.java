@@ -39,7 +39,8 @@ public interface OrganizationLabelService {
      * @param labelName 标签名
      * @return 增加引用数量后的组织标签对象
      */
-    Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(@NotBlank @Size(min = 1, max = 4) String labelName);
+    Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(
+            @NotBlank @Size(min = 1, max = 4) String labelName);
 
     /**
      * 查询组织标签

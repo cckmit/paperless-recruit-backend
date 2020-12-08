@@ -32,6 +32,12 @@
         where label_name = #{labelName}
     </select>
 
+    <select id="getAvailableByLabelName" resultType="boolean">
+        select is_available
+        from organization_label
+        where label_name = #{labelName}
+    </select>
+
     <select id="listOrganizationLabels" resultMap="organizationLabel">
         select <include refid="organizationLabel"/>
         from organization_label
@@ -98,10 +104,10 @@
         where label_name = #{labelName}
     </select>
 
-
     <update id="increaseReferenceNumber">
         update organization_label
         set reference_number = reference_number + 1
         where id = #{id}
     </update>
+
 </mapper>

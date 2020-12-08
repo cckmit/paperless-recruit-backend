@@ -19,6 +19,8 @@ public interface OrganizationLabelMapper {
 
     OrganizationLabelDO getOrganizationLabelByLabelName(String labelName);
 
+    Boolean getAvailableByLabelName(String labelName);
+
     List<OrganizationLabelDO> listOrganizationLabels(OrganizationLabelQuery query);
 
     int countByLabelName(String labelName);

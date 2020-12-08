@@ -45,6 +45,8 @@ public interface OrganizationLabelService {
     /**
      * 查询组织标签
      *
+     * @errorCode InvalidParameter: 查询参数格式错误
+     *
      * @param query 查询参数
      * @return PageInfo<OrganizationLabelDTO> 若查询不到返回空列表
      */
@@ -66,4 +68,15 @@ public interface OrganizationLabelService {
      * @return 解禁后的组织标签对象
      */
     Result<OrganizationLabelDTO> enableOrganizationLabel(@NotNull @Positive Long id);
+
+    /**
+     * 判断一个标签是否合法
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              InvalidParameter.NotAvailable: 该标签名已经被禁用
+     *
+     * @param labelName 标签名
+     * @return 标签是否合法
+     */
+    Result<Void> isValidOrganizationLabel(@NotBlank @Size(min = 1, max = 4) String labelName);
 }

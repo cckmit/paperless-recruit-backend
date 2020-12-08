@@ -59,4 +59,9 @@ public class OrganizationLabelServiceImplTest {
     @Test
     public void enableOrganizationLabel() {
     }
+
+    @Test
+    public void isValidOrganizationLabel() {
+        System.out.println(organizationLabelService.isValidOrganizationLabel("创业"));
+    }
 }

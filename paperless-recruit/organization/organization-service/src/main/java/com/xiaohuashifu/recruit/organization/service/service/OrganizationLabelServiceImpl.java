@@ -119,6 +119,27 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     }
 
     /**
+     * 判断一个标签是否合法
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              InvalidParameter.NotAvailable: 该标签名已经被禁用
+     *
+     * @param labelName 标签名
+     * @return 标签是否合法
+     */
+    @Override
+    public Result<Void> isValidOrganizationLabel(String labelName) {
+        // 若该标签名存在，且被禁用，则不合法
+        Boolean available = organizationLabelMapper.getAvailableByLabelName(labelName);
+        if (available != null && !available) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_AVAILABLE,
+                    "This organization label is not available.");
+        }
+
+        return Result.success();
+    }
+
+    /**
      * 获取组织标签
      *
      * @errorCode InvalidParameter.NotFound: 该编号的组织标签不存在

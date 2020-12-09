@@ -20,6 +20,7 @@ public class OrganizationQuery implements Serializable {
     @Positive
     @Max(50)
     private Long pageSize;
+
     private Long id;
     private List<Long> ids;
     private Long userId;

@@ -25,7 +25,7 @@ public class PermittedUrlQuery implements Serializable {
 
     private Long id;
 
-    private List<Long> idList;
+    private List<Long> ids;
 
     private String url;
 
@@ -53,12 +53,12 @@ public class PermittedUrlQuery implements Serializable {
         this.id = id;
     }
 
-    public List<Long> getIdList() {
-        return idList;
+    public List<Long> getIds() {
+        return ids;
     }
 
-    public void setIdList(List<Long> idList) {
-        this.idList = idList;
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
     }
 
     public String getUrl() {
@@ -75,7 +75,7 @@ public class PermittedUrlQuery implements Serializable {
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", id=" + id +
-                ", idList=" + idList +
+                ", ids=" + ids +
                 ", url='" + url + '\'' +
                 '}';
     }
@@ -84,7 +84,7 @@ public class PermittedUrlQuery implements Serializable {
         private Long pageNum;
         private Long pageSize;
         private Long id;
-        private List<Long> idList;
+        private List<Long> ids;
         private String url;
 
         public Builder pageNum(Long pageNum) {
@@ -102,8 +102,8 @@ public class PermittedUrlQuery implements Serializable {
             return this;
         }
 
-        public Builder idList(List<Long> idList) {
-            this.idList = idList;
+        public Builder ids(List<Long> ids) {
+            this.ids = ids;
             return this;
         }
 
@@ -117,7 +117,7 @@ public class PermittedUrlQuery implements Serializable {
             permittedUrlQuery.setPageNum(pageNum);
             permittedUrlQuery.setPageSize(pageSize);
             permittedUrlQuery.setId(id);
-            permittedUrlQuery.setIdList(idList);
+            permittedUrlQuery.setIds(ids);
             permittedUrlQuery.setUrl(url);
             return permittedUrlQuery;
         }

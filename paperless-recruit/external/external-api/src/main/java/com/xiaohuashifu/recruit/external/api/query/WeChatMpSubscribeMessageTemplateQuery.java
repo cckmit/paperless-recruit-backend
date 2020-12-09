@@ -28,7 +28,7 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
 
     private Long id;
 
-    private List<Long> idList;
+    private List<Long> ids;
 
     private AppEnum app;
 
@@ -66,12 +66,12 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
         this.id = id;
     }
 
-    public List<Long> getIdList() {
-        return idList;
+    public List<Long> getIds() {
+        return ids;
     }
 
-    public void setIdList(List<Long> idList) {
-        this.idList = idList;
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
     }
 
     public AppEnum getApp() {
@@ -128,7 +128,7 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", id=" + id +
-                ", idList=" + idList +
+                ", ids=" + ids +
                 ", app=" + app +
                 ", templateId='" + templateId + '\'' +
                 ", title='" + title + '\'' +
@@ -142,7 +142,7 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
         private Long pageNum;
         private Long pageSize;
         private Long id;
-        private List<Long> idList;
+        private List<Long> ids;
         private AppEnum app;
         private String templateId;
         private String title;
@@ -165,8 +165,8 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
             return this;
         }
 
-        public Builder idList(List<Long> idList) {
-            this.idList = idList;
+        public Builder ids(List<Long> ids) {
+            this.ids = ids;
             return this;
         }
 
@@ -206,7 +206,7 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
             weChatMpSubscribeMessageTemplateQuery.setPageNum(pageNum);
             weChatMpSubscribeMessageTemplateQuery.setPageSize(pageSize);
             weChatMpSubscribeMessageTemplateQuery.setId(id);
-            weChatMpSubscribeMessageTemplateQuery.setIdList(idList);
+            weChatMpSubscribeMessageTemplateQuery.setIds(ids);
             weChatMpSubscribeMessageTemplateQuery.setApp(app);
             weChatMpSubscribeMessageTemplateQuery.setTemplateId(templateId);
             weChatMpSubscribeMessageTemplateQuery.setTitle(title);

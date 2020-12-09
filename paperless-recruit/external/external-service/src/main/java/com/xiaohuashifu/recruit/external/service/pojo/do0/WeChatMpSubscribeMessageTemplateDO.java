@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.pojo.do0;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
-import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
+import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
 
 import java.time.LocalDateTime;
 
@@ -42,7 +42,7 @@ public class WeChatMpSubscribeMessageTemplateDO {
     /**
      * 状态
      */
-    private TriStatusEnum templateStatus;
+    private WeChatMpSubscribeMessageTemplateStatusEnum templateStatus;
 
     private LocalDateTime createTime;
 
@@ -96,11 +96,11 @@ public class WeChatMpSubscribeMessageTemplateDO {
         this.description = description;
     }
 
-    public TriStatusEnum getTemplateStatus() {
+    public WeChatMpSubscribeMessageTemplateStatusEnum getTemplateStatus() {
         return templateStatus;
     }
 
-    public void setTemplateStatus(TriStatusEnum templateStatus) {
+    public void setTemplateStatus(WeChatMpSubscribeMessageTemplateStatusEnum templateStatus) {
         this.templateStatus = templateStatus;
     }
 
@@ -142,7 +142,7 @@ public class WeChatMpSubscribeMessageTemplateDO {
         private String title;
         private String templateType;
         private String description;
-        private TriStatusEnum templateStatus;
+        private WeChatMpSubscribeMessageTemplateStatusEnum templateStatus;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -176,7 +176,7 @@ public class WeChatMpSubscribeMessageTemplateDO {
             return this;
         }
 
-        public Builder templateStatus(TriStatusEnum templateStatus) {
+        public Builder templateStatus(WeChatMpSubscribeMessageTemplateStatusEnum templateStatus) {
             this.templateStatus = templateStatus;
             return this;
         }

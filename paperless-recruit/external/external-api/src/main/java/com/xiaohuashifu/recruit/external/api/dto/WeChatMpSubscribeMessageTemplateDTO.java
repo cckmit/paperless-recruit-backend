@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.dto;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
-import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
+import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTemplateService;
 
 import javax.validation.constraints.NotBlank;
@@ -50,7 +50,7 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
      * 模板的状态
      */
     @NotNull(groups = WeChatMpSubscribeMessageTemplateService.SaveWeChatMpSubscribeMessageTemplate.class)
-    private TriStatusEnum status;
+    private WeChatMpSubscribeMessageTemplateStatusEnum status;
 
     public Long getId() {
         return id;
@@ -96,11 +96,11 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
         return description;
     }
 
-    public TriStatusEnum getStatus() {
+    public WeChatMpSubscribeMessageTemplateStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(TriStatusEnum status) {
+    public void setStatus(WeChatMpSubscribeMessageTemplateStatusEnum status) {
         this.status = status;
     }
 
@@ -128,7 +128,7 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
         private String title;
         private String type;
         private String description;
-        private TriStatusEnum status;
+        private WeChatMpSubscribeMessageTemplateStatusEnum status;
 
         public Builder id(Long id) {
             this.id = id;
@@ -160,7 +160,7 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
             return this;
         }
 
-        public Builder status(TriStatusEnum status) {
+        public Builder status(WeChatMpSubscribeMessageTemplateStatusEnum status) {
             this.status = status;
             return this;
         }

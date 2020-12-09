@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.query;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
-import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
+import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
@@ -40,7 +40,7 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
 
     private String description;
 
-    private TriStatusEnum status;
+    private WeChatMpSubscribeMessageTemplateStatusEnum status;
 
     public Long getPageNum() {
         return pageNum;
@@ -114,11 +114,11 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
         this.description = description;
     }
 
-    public TriStatusEnum getStatus() {
+    public WeChatMpSubscribeMessageTemplateStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(TriStatusEnum status) {
+    public void setStatus(WeChatMpSubscribeMessageTemplateStatusEnum status) {
         this.status = status;
     }
 
@@ -148,7 +148,7 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
         private String title;
         private String type;
         private String description;
-        private TriStatusEnum status;
+        private WeChatMpSubscribeMessageTemplateStatusEnum status;
 
         public Builder pageNum(Long pageNum) {
             this.pageNum = pageNum;
@@ -195,7 +195,7 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
             return this;
         }
 
-        public Builder status(TriStatusEnum status) {
+        public Builder status(WeChatMpSubscribeMessageTemplateStatusEnum status) {
             this.status = status;
             return this;
         }

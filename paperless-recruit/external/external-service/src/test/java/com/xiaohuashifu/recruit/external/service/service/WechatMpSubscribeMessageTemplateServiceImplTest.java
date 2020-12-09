@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
-import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
+import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
 import com.xiaohuashifu.recruit.external.api.dto.WeChatMpSubscribeMessageTemplateDTO;
 import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTemplateService;
@@ -43,7 +43,7 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
                         .title("面试结果通知")
                         .type("预约/报名")
                         .description("招新面试结果通知")
-                        .status(TriStatusEnum.AVAILABLE)
+                        .status(WeChatMpSubscribeMessageTemplateStatusEnum.AVAILABLE)
                         .build()));
     }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="paperless_recruit@49.233.30.197" uuid="0f5566c2-a891-471f-a527-c18889a4213f">
+    <data-source source="LOCAL" name="MySQL - paperless_recruit@49.233.30.197" uuid="9d9fc22b-3b52-4556-bff0-6f1d39674419">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>

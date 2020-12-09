@@ -9,10 +9,7 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 
 /**
  * 描述：用户 RPC 服务公开接口
@@ -32,27 +29,13 @@ public interface UserService {
      * @param password 密码
      * @return 新创建的用户
      */
-    Result<UserDTO> signUpUser(@NotBlank @Username String username, @NotNull @Password String password);
-
-    /**
-     * 通过短信验证码注册账号
-     * 该方式会随机生成用户名和密码
-     *
-     * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
-     *              OperationConflict: 手机号码已经存在
-     *              InvalidParameter.Incorrect: 短信验证码错误
-     *
-     * @param phone 手机号码
-     * @param authCode 短信验证码
-     * @return 新创建的用户
-     */
-    Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone, @NotBlank @AuthCode String authCode);
+    Result<UserDTO> signUpUser(@NotBlank(message = "The username can't be blank.") @Username String username,
+                               @NotEmpty(message = "The password can't be empty.") @Password String password);
 
     /**
      * 通过短信验证码注册账号
      * 该方式会随机生成用户名
-     * 若密码为 null 会随机生成密码
-     * 推荐使用该方式进行注册，且密码不允许为 null
+     * 推荐使用该方式进行注册
      *
      * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
      *              OperationConflict: 手机号码已经存在
@@ -63,8 +46,9 @@ public interface UserService {
      * @param password 密码
      * @return 新创建的用户
      */
-    Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone, @NotBlank @AuthCode String authCode,
-                                        @Password String password);
+    Result<UserDTO> signUpBySmsAuthCode(@NotBlank(message = "The phone can't be blank.") @Phone String phone,
+                                        @NotBlank(message = "The authCode can't be blank.") @AuthCode String authCode,
+                                        @NotEmpty(message = "The password can't be empty.") @Password String password);
 
     /**
      * 通过id获取用户信息
@@ -75,7 +59,8 @@ public interface UserService {
      * @param id 用户编号
      * @return 获取到的用户
      */
-    Result<UserDTO> getUser(@NotNull @Positive Long id);
+    Result<UserDTO> getUser(@NotNull(message = "The id can't be null.")
+                            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 通过用户名获取用户对象
@@ -86,7 +71,8 @@ public interface UserService {
      * @param username 用户名
      * @return 获取到的用户
      */
-    Result<UserDTO> getUserByUsername(@NotBlank @Username String username);
+    Result<UserDTO> getUserByUsername(@NotBlank(message = "The username can't be blank.")
+                                      @Username String username);
 
     /**
      * 通过用户名或者手机或者邮箱获取用户对象
@@ -98,7 +84,8 @@ public interface UserService {
      * @param usernameOrPhoneOrEmail 用户名或者手机或者邮箱
      * @return 获取到的用户
      */
-    Result<UserDTO> getUserByUsernameOrPhoneOrEmail(@NotBlank String usernameOrPhoneOrEmail);
+    Result<UserDTO> getUserByUsernameOrPhoneOrEmail(
+            @NotBlank(message = "The usernameOrPhoneOrEmail can't be blank.")  String usernameOrPhoneOrEmail);
 
     /**
      * 通过手机号码获取用户对象
@@ -120,7 +107,8 @@ public interface UserService {
      * @param email 邮箱
      * @return 获取到的用户
      */
-    Result<UserDTO> getUserByEmail(@NotBlank @Email String email);
+    Result<UserDTO> getUserByEmail(@NotBlank(message = "The email can't be blank.")
+                                   @Email(message = "The email format error.") String email);
 
     /**
      * 多参数查询用户信息
@@ -130,7 +118,7 @@ public interface UserService {
      * @param query 查询参数
      * @return Result<PageInfo<UserDTO>> 带分页信息的查询结果用户列表，可能返回空列表
      */
-    Result<PageInfo<UserDTO>> listUsers(@NotNull UserQuery query);
+    Result<PageInfo<UserDTO>> listUsers(@NotNull(message = "The query can't be null.") UserQuery query);
 
     /**
      * 更新用户名
@@ -142,7 +130,9 @@ public interface UserService {
      * @param newUsername 新用户名
      * @return 更新后的用户
      */
-    Result<UserDTO> updateUsername(@NotNull @Positive Long id, @NotBlank @Username String newUsername);
+    Result<UserDTO> updateUsername(@NotNull(message = "The id can't be null.")
+                                   @Positive(message = "The id must be greater than 0.") Long id,
+                                   @NotBlank(message = "The newUsername can't be blank.") @Username String newUsername);
 
     /**
      * 更新手机号码
@@ -156,8 +146,10 @@ public interface UserService {
      * @param authCode 短信验证码
      * @return 更新后的用户
      */
-    Result<UserDTO> updatePhone(@NotNull @Positive Long id, @NotBlank @Phone String newPhone,
-                                @NotBlank @AuthCode String authCode);
+    Result<UserDTO> updatePhone(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newPhone can't be blank.") @Phone String newPhone,
+            @NotBlank(message = "The authCode can't be blank.") @AuthCode String authCode);
 
     /**
      * 更新邮箱
@@ -171,8 +163,12 @@ public interface UserService {
      * @param authCode 邮箱认证码
      * @return 更新后的用户
      */
-    Result<UserDTO> updateEmail(@NotNull @Positive Long id, @NotBlank @Email String newEmail,
-                                @NotBlank @AuthCode String authCode);
+    Result<UserDTO> updateEmail(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newEmail can't be blank.")
+            @Email(message = "The newEmail format error.") String newEmail,
+            @NotBlank(message = "The authCode can't be blank.") @AuthCode String authCode);
 
     /**
      * 更新密码
@@ -183,7 +179,10 @@ public interface UserService {
      * @param newPassword 新密码
      * @return 更新后的用户
      */
-    Result<UserDTO> updatePassword(@NotNull @Positive Long id, @NotNull @Password String newPassword);
+    Result<UserDTO> updatePassword(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotEmpty(message = "The newPassword can't be empty.") @Password String newPassword);
 
     /**
      * 更新密码，通过邮箱验证码
@@ -196,8 +195,11 @@ public interface UserService {
      * @param authCode 邮箱验证码
      * @return 更新后的用户
      */
-    Result<UserDTO> updatePasswordByEmailAuthCode(@NotBlank @Email String email, @NotNull @Password String newPassword,
-                                                  @NotBlank @AuthCode String authCode);
+    Result<UserDTO> updatePasswordByEmailAuthCode(
+            @NotBlank(message = "The email can't be blank.")
+            @Email(message = "The email format error.") String email,
+            @NotEmpty(message = "The newPassword can't be empty.") @Password String newPassword,
+            @NotBlank(message = "The authCode can't be blank.") @AuthCode String authCode);
 
     /**
      * 更新密码，通过短信验证码
@@ -211,8 +213,10 @@ public interface UserService {
      * @param authCode 短信验证码
      * @return 更新后的用户
      */
-    Result<UserDTO> updatePasswordBySmsAuthCode(@NotBlank @Phone String phone, @NotNull @Password String newPassword,
-                                                @NotBlank @AuthCode String authCode);
+    Result<UserDTO> updatePasswordBySmsAuthCode(
+            @NotBlank(message = "The phone can't be blank.") @Phone String phone,
+            @NotEmpty(message = "The newPassword can't be empty.") @Password String newPassword,
+            @NotBlank(message = "The authCode can't be blank.") @AuthCode String authCode);
 
     /**
      * 禁用用户
@@ -223,7 +227,8 @@ public interface UserService {
      * @param id 用户编号
      * @return 禁用后的用户
      */
-    Result<UserDTO> disableUser(@NotNull @Positive Long id);
+    Result<UserDTO> disableUser(@NotNull(message = "The id can't be null.")
+                                @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 解禁用户
@@ -234,7 +239,8 @@ public interface UserService {
      * @param id 用户编号
      * @return 解禁后的用户
      */
-    Result<UserDTO> enableUser(@NotNull @Positive Long id);
+    Result<UserDTO> enableUser(@NotNull(message = "The id can't be null.")
+                               @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 判断用户是否存在
@@ -245,7 +251,8 @@ public interface UserService {
      * @param id 用户编号
      * @return 是否存在，Result.success=true表示用户存在
      */
-    Result<Void> userExists(@NotNull @Positive Long id);
+    Result<Void> userExists(@NotNull(message = "The id can't be null.")
+                            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 发送注册账号时使用的短信验证码
@@ -257,7 +264,7 @@ public interface UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    Result<Void> sendSmsAuthCodeForSignUp(@NotBlank @Phone String phone);
+    Result<Void> sendSmsAuthCodeForSignUp(@NotBlank(message = "The phone can't be blank.") @Phone String phone);
 
     /**
      * 发送更新手机号码时使用的短信验证码
@@ -269,7 +276,7 @@ public interface UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    Result<Void> sendSmsAuthCodeForUpdatePhone(@NotBlank @Phone String phone);
+    Result<Void> sendSmsAuthCodeForUpdatePhone(@NotBlank(message = "The phone can't be blank.") @Phone String phone);
 
     /**
      * 发送更新密码时使用的短信验证码
@@ -281,7 +288,7 @@ public interface UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    Result<Void> sendSmsAuthCodeForUpdatePassword(@NotBlank @Phone String phone);
+    Result<Void> sendSmsAuthCodeForUpdatePassword(@NotBlank(message = "The phone can't be blank.") @Phone String phone);
 
     /**
      * 发送更新邮箱时使用的邮箱验证码
@@ -293,7 +300,7 @@ public interface UserService {
      * @param email 邮箱
      * @return 发送结果
      */
-    Result<Void> sendEmailAuthCodeForUpdateEmail(@NotBlank @Email String email);
+    Result<Void> sendEmailAuthCodeForUpdateEmail(@NotBlank(message = "The email can't be blank.") @Email String email);
 
     /**
      * 发送更新密码时使用的邮箱验证码
@@ -305,6 +312,7 @@ public interface UserService {
      * @param email 邮箱
      * @return 发送结果
      */
-    Result<Void> sendEmailAuthCodeForUpdatePassword(@NotBlank @Email String email);
+    Result<Void> sendEmailAuthCodeForUpdatePassword(
+            @NotBlank(message = "The email can't be blank.") @Email String email);
 
 }

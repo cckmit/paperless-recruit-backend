@@ -1,10 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
-import com.xiaohuashifu.recruit.user.api.service.RoleService;
-
-import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 描述：角色传输对象
@@ -13,41 +9,31 @@ import java.time.LocalDateTime;
  * @create: 2020/11/12 19:42
  */
 public class RoleDTO implements Serializable {
-    @Positive
+
+    /**
+     * 角色编号
+     */
     private Long id;
 
-    @PositiveOrZero
-    @NotNull(groups = RoleService.SaveRole.class)
+    /**
+     * 父角色编号，若为0表示没有父亲
+     */
     private Long parentRoleId;
 
-    @Size(min = 1, max = 64)
-    @NotBlank(groups = RoleService.SaveRole.class)
+    /**
+     * 角色名
+     */
     private String roleName;
 
-    @Size(min = 1, max = 200)
-    @NotBlank(groups = RoleService.SaveRole.class)
+    /**
+     * 对角色的描述
+     */
     private String description;
 
-    @NotNull(groups = RoleService.SaveRole.class)
+    /**
+     * 角色是否可用
+     */
     private Boolean available;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
-
-    public RoleDTO() {
-    }
-
-    public RoleDTO(Long id, Long parentRoleId, String roleName, String description, Boolean available,
-                   LocalDateTime createTime, LocalDateTime updateTime) {
-        this.id = id;
-        this.parentRoleId = parentRoleId;
-        this.roleName = roleName;
-        this.description = description;
-        this.available = available;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
 
     public Long getId() {
         return id;
@@ -89,22 +75,6 @@ public class RoleDTO implements Serializable {
         this.available = available;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
         return "RoleDTO{" +
@@ -113,8 +83,6 @@ public class RoleDTO implements Serializable {
                 ", roleName='" + roleName + '\'' +
                 ", description='" + description + '\'' +
                 ", available=" + available +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -124,11 +92,6 @@ public class RoleDTO implements Serializable {
         private String roleName;
         private String description;
         private Boolean available;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;
@@ -155,16 +118,6 @@ public class RoleDTO implements Serializable {
             return this;
         }
 
-        public Builder createTime(LocalDateTime createTime) {
-            this.createTime = createTime;
-            return this;
-        }
-
-        public Builder updateTime(LocalDateTime updateTime) {
-            this.updateTime = updateTime;
-            return this;
-        }
-
         public RoleDTO build() {
             RoleDTO roleDTO = new RoleDTO();
             roleDTO.setId(id);
@@ -172,8 +125,6 @@ public class RoleDTO implements Serializable {
             roleDTO.setRoleName(roleName);
             roleDTO.setDescription(description);
             roleDTO.setAvailable(available);
-            roleDTO.setCreateTime(createTime);
-            roleDTO.setUpdateTime(updateTime);
             return roleDTO;
         }
     }

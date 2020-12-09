@@ -14,16 +14,34 @@ import java.util.List;
  */
 public class CollegeQuery implements Serializable {
 
-    @NotNull
-    @Positive
+    /**
+     * 页码
+     */
+    @NotNull(message = "The pageNum can't be null.")
+    @Positive(message = "The pageNum must be greater than 0.")
     private Long pageNum;
-    @NotNull
-    @Positive
-    @Max(50)
+
+    /**
+     * 页条数
+     */
+    @NotNull(message = "The pageSize can't be null.")
+    @Positive(message = "The pageSize must be greater than 0.")
+    @Max(value = 50, message = "The pageSize must be less than or equal to 50.")
     private Long pageSize;
 
+    /**
+     * 学院编号
+     */
     private Long id;
+
+    /**
+     * 学院编号列表
+     */
     private List<Long> ids;
+
+    /**
+     * 学院名，可模糊
+     */
     private String collegeName;
 
     public Long getPageNum() {

@@ -14,18 +14,49 @@ import java.util.List;
  */
 public class PermissionQuery implements Serializable {
 
-    @NotNull
-    @Positive
+    /**
+     * 页码
+     */
+    @NotNull(message = "The pageNum can't be null.")
+    @Positive(message = "The pageNum must be greater than 0.")
     private Long pageNum;
-    @NotNull
-    @Positive
-    @Max(50)
+
+    /**
+     * 页条数
+     */
+    @NotNull(message = "The pageSize can't be null.")
+    @Positive(message = "The pageSize must be greater than 0.")
+    @Max(value = 50, message = "The pageSize must be less than or equal to 50.")
     private Long pageSize;
+
+    /**
+     * 权限编号
+     */
     private Long id;
+
+    /**
+     * 权限编号列表
+     */
     private List<Long> ids;
+
+    /**
+     * 父权限编号
+     */
     private Long parentPermissionId;
+
+    /**
+     * 权限名，可模糊
+     */
     private String permissionName;
+
+    /**
+     * 授权路径，可模糊
+     */
     private String authorizationUrl;
+
+    /**
+     * 权限是否可用
+     */
     private Boolean available;
 
     public PermissionQuery() {

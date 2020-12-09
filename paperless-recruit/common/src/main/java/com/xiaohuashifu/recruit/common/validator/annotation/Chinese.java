@@ -20,7 +20,7 @@ import java.lang.annotation.*;
 @Repeatable(Chinese.List.class)
 public @interface Chinese {
 
-    String message() default "The string must be composed of Chinese.";
+    String message() default "The parameter must be composed of Chinese.";
 
     Class<?>[] groups() default {};
 

@@ -161,23 +161,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 通过短信验证码注册账号
-     * 该方式会随机生成用户名和密码
-     *
-     * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
-     *              OperationConflict: 手机号码已经存在
-     *              InvalidParameter.Incorrect: 短信验证码错误
-     *
-     * @param phone 手机号码
-     * @param authCode 短信验证码
-     * @return 新创建的用户
-     */
-    @Override
-    public Result<UserDTO> signUpBySmsAuthCode(String phone, String authCode) {
-        return signUpBySmsAuthCode(phone, authCode, null);
-    }
-
-    /**
-     * 通过短信验证码注册账号
      * 该方式会随机生成用户名
      * 若密码为 null 会随机生成密码
      * 推荐使用该方式进行注册，且密码不允许为 null

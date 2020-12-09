@@ -18,7 +18,6 @@ import java.util.Map;
  */
 public interface RoleService {
 
-    @interface SaveRole{}
     /**
      * 创建角色
      * 角色名必须不存在
@@ -30,7 +29,7 @@ public interface RoleService {
      * @param saveRolePO 保存 Role 需要的参数对象
      * @return Result<RoleDTO>
      */
-    Result<RoleDTO> saveRole(@NotNull SaveRolePO saveRolePO);
+    Result<RoleDTO> saveRole(@NotNull(message = "The saveRolePO can't be null.") SaveRolePO saveRolePO);
 
     /**
      * 创建用户角色，也就是给用户绑定角色
@@ -42,7 +41,11 @@ public interface RoleService {
      * @param roleId 角色编号
      * @return Result<Void>
      */
-    Result<Void> saveUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId);
+    Result<Void> saveUserRole(
+            @NotNull(message = "The userId can't be null.")
+            @Positive(message = "The userId must be greater than 0.") Long userId,
+            @NotNull(message = "The roleId can't be null.")
+            @Positive(message = "The roleId must be greater than 0.") Long roleId);
 
     /**
      * 创建角色权限，也就是给角色绑定权限
@@ -54,7 +57,11 @@ public interface RoleService {
      * @param permissionId 权限编号
      * @return Result<Void>
      */
-    Result<Void> saveRolePermission(@NotNull @Positive Long roleId, @NotNull @Positive Long permissionId);
+    Result<Void> saveRolePermission(
+            @NotNull(message = "The roleId can't be null.")
+            @Positive(message = "The roleId must be greater than 0.") Long roleId,
+            @NotNull(message = "The permissionId can't be null.")
+            @Positive(message = "The permissionId must be greater than 0.") Long permissionId);
 
     /**
      * 删除角色，只允许没有子角色的角色删除
@@ -67,7 +74,8 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<Void>
      */
-    Result<Void> removeRole(@NotNull @Positive Long id);
+    Result<Void> removeRole(@NotNull(message = "The id can't be null.")
+                            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 删除用户绑定的角色
@@ -78,7 +86,11 @@ public interface RoleService {
      * @param roleId 角色编号
      * @return Result<Void>
      */
-    Result<Void> removeUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId);
+    Result<Void> removeUserRole(
+            @NotNull(message = "The userId can't be null.")
+            @Positive(message = "The userId must be greater than 0.") Long userId,
+            @NotNull(message = "The roleId can't be null.")
+            @Positive(message = "The roleId must be greater than 0.") Long roleId);
 
     /**
      * 删除角色绑定的权限
@@ -89,7 +101,11 @@ public interface RoleService {
      * @param permissionId 权限编号
      * @return Result<Void>
      */
-    Result<Void> removeRolePermission(@NotNull @Positive Long roleId, @NotNull @Positive Long permissionId);
+    Result<Void> removeRolePermission(
+            @NotNull(message = "The roleId can't be null.")
+            @Positive(message = "The roleId must be greater than 0.") Long roleId,
+            @NotNull(message = "The permissionId can't be null.")
+            @Positive(message = "The permissionId must be greater than 0.") Long permissionId);
 
     /**
      * 获取角色
@@ -100,7 +116,8 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<RoleDTO>
      */
-    Result<RoleDTO> getRole(@NotNull @Positive Long id);
+    Result<RoleDTO> getRole(@NotNull(message = "The id can't be null.")
+                            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 获取角色
@@ -110,7 +127,7 @@ public interface RoleService {
      * @param query 查询参数
      * @return Result<PageInfo<RoleDTO>> 带分页信息的角色列表，可能返回空列表
      */
-    Result<PageInfo<RoleDTO>> listRoles(@NotNull RoleQuery query);
+    Result<PageInfo<RoleDTO>> listRoles(@NotNull(message = "The query can't be null.") RoleQuery query);
 
     /**
      * 获取用户角色服务
@@ -121,7 +138,8 @@ public interface RoleService {
      * @param userId 用户id
      * @return 用户的角色列表，可能返回空列表
      */
-    Result<List<RoleDTO>> getRoleListByUserId(@NotNull @Positive Long userId);
+    Result<List<RoleDTO>> getRoleListByUserId(@NotNull(message = "The userId can't be null.")
+                                              @Positive(message = "The userId must be greater than 0.") Long userId);
 
     /**
      * 更新角色名，新角色名必须不存在
@@ -133,7 +151,12 @@ public interface RoleService {
      * @param newRoleName 新角色名
      * @return Result<RoleDTO> 更新后的角色对象
      */
-    Result<RoleDTO> updateRoleName(@NotNull @Positive Long id, @NotBlank @Size(min = 1, max = 64) String newRoleName);
+    Result<RoleDTO> updateRoleName(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newRoleName can't be blank.")
+            @Size(min = 1, max = 64, message = "The length of newRoleName must be between 1 and 64.")
+                    String newRoleName);
 
     /**
      * 更新角色描述
@@ -144,8 +167,12 @@ public interface RoleService {
      * @param newDescription 新角色描述
      * @return Result<RoleDTO> 更新后的角色对象
      */
-    Result<RoleDTO> updateDescription(@NotNull @Positive Long id,
-                                      @NotBlank @Size(min = 1, max = 200) String newDescription);
+    Result<RoleDTO> updateDescription(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newDescription can't be blank.")
+            @Size(min = 1, max = 200, message = "The length of newDescription must be between 1 and 200.")
+                    String newDescription);
 
     /**
      * 禁用角色（且子角色可用状态也被禁用，递归禁用）
@@ -156,7 +183,8 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的 key 为 totalDisableCount 和 newRole
      */
-    Result<Map<String, Object>> disableRole(@NotNull @Positive Long id);
+    Result<Map<String, Object>> disableRole(@NotNull(message = "The id can't be null.")
+                                            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 解禁角色（且子角色可用状态也被解禁，递归解禁）
@@ -167,7 +195,8 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<Map<String, Object>> 解禁的数量和解禁后的角色对象，分别对应的key为totalEnableCount和newRole
      */
-    Result<Map<String, Object>> enableRole(@NotNull @Positive Long id);
+    Result<Map<String, Object>> enableRole(@NotNull(message = "The id can't be null.")
+                                           @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 设置父角色
@@ -181,6 +210,10 @@ public interface RoleService {
      * @param parentRoleId 父角色编号
      * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
      */
-    Result<Map<String, Object>> setParentRole(@NotNull @Positive Long id, @NotNull @PositiveOrZero Long parentRoleId);
+    Result<Map<String, Object>> setParentRole(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The parentRoleId can't be null.")
+            @PositiveOrZero(message = "The parentRoleId must be greater than or equal to 0.") Long parentRoleId);
 
 }

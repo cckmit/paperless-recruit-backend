@@ -30,8 +30,12 @@ public interface AuthOpenIdService {
      * @param code 微信小程序 wx.login() 接口的返回结果
      * @return AuthOpenIdDTO
      */
-    Result<AuthOpenIdDTO> bindAuthOpenIdForWeChatMp(@NotNull @Positive Long userId, @NotNull AppEnum app,
-                                                    @NotBlank @Size(min = 32, max = 32) String code);
+    Result<AuthOpenIdDTO> bindAuthOpenIdForWeChatMp(
+            @NotNull(message = "The userId can't be null.")
+            @Positive(message = "The userId must be greater than 0.") Long userId,
+            @NotNull(message = "The app can't be null.") AppEnum app,
+            @NotBlank(message = "The code can't be blank.")
+            @Size(min = 32, max = 32, message = "The length of code must be equal to 32.") String code);
 
     /**
      * 用于微信小程序用户检查 AuthOpenId
@@ -46,8 +50,10 @@ public interface AuthOpenIdService {
      * @param code 微信小程序 wx.login() 接口的返回结果
      * @return AuthOpenIdDTOauthOpenId
      */
-    Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMp(@NotNull AppEnum app,
-                                                     @NotBlank @Size(min = 32, max = 32) String code);
+    Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMp(
+            @NotNull(message = "The app can't be null.") AppEnum app,
+            @NotBlank(message = "The code can't be blank.")
+            @Size(min = 32, max = 32, message = "The length of code must be equal to 32.") String code);
 
     /**
      * 获取 openId
@@ -59,6 +65,8 @@ public interface AuthOpenIdService {
      * @param app 具体的微信小程序
      * @return openId 若参数错误的情况下，返回 null
      */
-    Result<String> getOpenId(@NotNull AppEnum app, @NotNull @Positive Long userId);
+    Result<String> getOpenId(@NotNull(message = "The app can't be null.") AppEnum app,
+                             @NotNull(message = "The userId can't be null.")
+                             @Positive(message = "The userId must be greater than 0.")  Long userId);
 
 }

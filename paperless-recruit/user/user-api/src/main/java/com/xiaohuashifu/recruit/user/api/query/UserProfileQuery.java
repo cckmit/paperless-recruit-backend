@@ -14,20 +14,59 @@ import java.util.List;
  */
 public class UserProfileQuery implements Serializable {
 
-    @NotNull
-    @Positive
+    /**
+     * 页码
+     */
+    @NotNull(message = "The pageNum can't be null.")
+    @Positive(message = "The pageNum must be greater than 0.")
     private Long pageNum;
-    @NotNull
-    @Positive
-    @Max(50)
+
+    /**
+     * 页条数
+     */
+    @NotNull(message = "The pageSize can't be null.")
+    @Positive(message = "The pageSize must be greater than 0.")
+    @Max(value = 50, message = "The pageSize must be less than or equal to 50.")
     private Long pageSize;
+
+    /**
+     * 用户个人信息编号
+     */
     private Long id;
+
+    /**
+     * 用户个人信息编号列表
+     */
     private List<Long> ids;
+
+    /**
+     * 用户编号
+     */
     private Long userId;
+
+    /**
+     * 姓名，可模糊
+     */
     private String fullName;
+
+    /**
+     * 学号，可模糊
+     */
     private String studentNumber;
+
+    /**
+     * 学院，可模糊
+     */
     private String college;
+
+    /**
+     * 专业，可模糊
+     */
     private String major;
+
+    /**
+     * 自我介绍，可模糊
+     */
     private String introduction;
 
     public Long getPageNum() {

@@ -2,10 +2,7 @@ package com.xiaohuashifu.recruit.user.api.dto;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 描述：AuthOpenId 的传输对象
@@ -15,19 +12,25 @@ import java.time.LocalDateTime;
  */
 public class AuthOpenIdDTO implements Serializable {
 
+    /**
+     * AuthOpenId 的编号
+     */
     private Long id;
 
-    @Positive
+    /**
+     * 对应该 AuthOpenId 的用户的编号
+     */
     private Long userId;
 
+    /**
+     * 该 OpenId 所属应用
+     */
     private AppEnum app;
 
-    @Size(min = 28, max = 28)
+    /**
+     * OpenId
+     */
     private String openId;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
 
     public Long getId() {
         return id;
@@ -61,22 +64,6 @@ public class AuthOpenIdDTO implements Serializable {
         this.openId = openId;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
         return "AuthOpenIdDTO{" +
@@ -84,8 +71,6 @@ public class AuthOpenIdDTO implements Serializable {
                 ", userId=" + userId +
                 ", app=" + app +
                 ", openId='" + openId + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -94,8 +79,6 @@ public class AuthOpenIdDTO implements Serializable {
         private Long userId;
         private AppEnum app;
         private String openId;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
 
         public Builder id(Long id) {
             this.id = id;
@@ -117,24 +100,12 @@ public class AuthOpenIdDTO implements Serializable {
             return this;
         }
 
-        public Builder createTime(LocalDateTime createTime) {
-            this.createTime = createTime;
-            return this;
-        }
-
-        public Builder updateTime(LocalDateTime updateTime) {
-            this.updateTime = updateTime;
-            return this;
-        }
-
         public AuthOpenIdDTO build() {
             AuthOpenIdDTO authOpenIdDTO = new AuthOpenIdDTO();
             authOpenIdDTO.setId(id);
             authOpenIdDTO.setUserId(userId);
             authOpenIdDTO.setApp(app);
             authOpenIdDTO.setOpenId(openId);
-            authOpenIdDTO.setCreateTime(createTime);
-            authOpenIdDTO.setUpdateTime(updateTime);
             return authOpenIdDTO;
         }
     }

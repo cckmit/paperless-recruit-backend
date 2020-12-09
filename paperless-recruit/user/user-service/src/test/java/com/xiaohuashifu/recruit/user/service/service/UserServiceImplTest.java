@@ -55,12 +55,6 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void signUpBySmsAuthCode() {
-        System.out.println(userService.signUpBySmsAuthCode("15992321303", "797607"));
-    }
-
-
-    @Test
     public void testSignUpBySmsAuthCode() {
         System.out.println(userService.signUpBySmsAuthCode(
                 "15992321303", "989575", "123456"));
@@ -94,7 +88,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUserByEmail() {
-        System.out.println(userService.getUserByEmail("827032782@qq.com"));
+        System.out.println(userService.getUserByEmail("827032782"));
     }
 
     @Test

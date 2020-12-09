@@ -14,19 +14,19 @@ import java.io.Serializable;
  */
 public class SaveRolePO implements Serializable {
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "The parentRoleId can't be null.")
+    @PositiveOrZero(message = "The parentRoleId must be greater than or equal to 0.")
     private Long parentRoleId;
 
-    @NotBlank
-    @Size(min = 1, max = 64)
+    @NotBlank(message = "The roleName can't be blank.")
+    @Size(min = 1, max = 64, message = "The length of roleName must be between 1 and 64.")
     private String roleName;
 
-    @NotBlank
-    @Size(min = 1, max = 200)
+    @NotBlank(message = "The description can't be blank.")
+    @Size(min = 1, max = 200, message = "The length of description must be between 1 and 200.")
     private String description;
 
-    @NotNull
+    @NotNull(message = "The available can't be null.")
     private Boolean available;
 
     public Long getParentRoleId() {

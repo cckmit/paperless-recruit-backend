@@ -200,7 +200,7 @@ public class PermissionServiceImpl implements PermissionService {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role id must not be null.");
             }
             if (roleId.compareTo(0L) < 1) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role id must be greater then 0.");
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role id must be greater than 0.");
             }
         }
 

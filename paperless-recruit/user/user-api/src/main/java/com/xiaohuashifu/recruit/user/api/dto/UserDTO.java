@@ -1,13 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
-import com.xiaohuashifu.recruit.common.validator.annotation.Password;
-import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
-import com.xiaohuashifu.recruit.common.validator.annotation.Username;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Positive;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 描述：用户传输对象
@@ -17,41 +10,35 @@ import java.time.LocalDateTime;
  */
 public class UserDTO implements Serializable {
 
-    @Positive
+    /**
+     * 用户编号
+     */
     private Long id;
 
-    @Username
+    /**
+     * 用户名
+     */
     private String username;
 
-    @Password
+    /**
+     * 密码
+     */
     private String password;
 
-    @Phone
+    /**
+     * 手机号码
+     */
     private String phone;
 
-    @Email
+    /**
+     * 邮箱
+     */
     private String email;
 
+    /**
+     * 用户是否可用
+     */
     private Boolean available;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
-
-    public UserDTO() {
-    }
-
-    public UserDTO(Long id, String username, String password, String phone, String email, Boolean available,
-                   LocalDateTime createTime, LocalDateTime updateTime) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.phone = phone;
-        this.email = email;
-        this.available = available;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
 
     public Long getId() {
         return id;
@@ -101,22 +88,6 @@ public class UserDTO implements Serializable {
         this.available = available;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -126,8 +97,6 @@ public class UserDTO implements Serializable {
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", available=" + available +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -138,11 +107,6 @@ public class UserDTO implements Serializable {
         private String phone;
         private String email;
         private Boolean available;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;
@@ -174,16 +138,6 @@ public class UserDTO implements Serializable {
             return this;
         }
 
-        public Builder createTime(LocalDateTime createTime) {
-            this.createTime = createTime;
-            return this;
-        }
-
-        public Builder updateTime(LocalDateTime updateTime) {
-            this.updateTime = updateTime;
-            return this;
-        }
-
         public UserDTO build() {
             UserDTO userDTO = new UserDTO();
             userDTO.setId(id);
@@ -192,8 +146,6 @@ public class UserDTO implements Serializable {
             userDTO.setPhone(phone);
             userDTO.setEmail(email);
             userDTO.setAvailable(available);
-            userDTO.setCreateTime(createTime);
-            userDTO.setUpdateTime(updateTime);
             return userDTO;
         }
     }

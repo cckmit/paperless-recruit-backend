@@ -14,26 +14,38 @@ import java.io.Serializable;
  */
 public class SavePermissionPO implements Serializable {
 
-    @NotNull
-    @PositiveOrZero
+    /**
+     * 父权限编号，若0标识没有父亲
+     */
+    @NotNull(message = "The parentPermissionId can't be null.")
+    @PositiveOrZero(message = "The parentPermissionId must be greater than or equal to 0.")
     private Long parentPermissionId;
 
-    @NotBlank
-    @Size(min = 1, max = 64)
+    /**
+     * 权限名
+     */
+    @NotBlank(message = "The permissionName can't be blank.")
+    @Size(min = 1, max = 64, message = "The length of permissionName must be between 1 and 64.")
     private String permissionName;
 
     /**
      * 授权路径，可以是 AntPath
      */
-    @NotBlank
-    @Size(min = 1, max = 255)
+    @NotBlank(message = "The authorizationUrl can't be blank.")
+    @Size(min = 1, max = 255, message = "The length of authorizationUrl must be between 1 and 255.")
     private String authorizationUrl;
 
-    @NotBlank
-    @Size(min = 1, max = 200)
+    /**
+     * 对权限的描述
+     */
+    @NotBlank(message = "The description can't be blank.")
+    @Size(min = 1, max = 200, message = "The length of description must be between 1 and 200.")
     private String description;
 
-    @NotNull
+    /**
+     * 权限是否可用
+     */
+    @NotNull(message = "The available can't be null.")
     private Boolean available;
 
     public Long getParentPermissionId() {

@@ -20,7 +20,7 @@ import java.lang.annotation.*;
 @Repeatable(AuthCode.List.class)
 public @interface AuthCode {
 
-    String message() default "The auth code length is 6 and made up of digits.";
+    String message() default "The length of authCode must be equal to 6 and made up of digits.";
 
     Class<?>[] groups() default {};
 

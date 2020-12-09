@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 描述：权限传输对象
@@ -10,36 +9,36 @@ import java.time.LocalDateTime;
  * @create: 2020/11/12 19:42
  */
 public class PermissionDTO implements Serializable {
+
+    /**
+     * 权限编号
+     */
     private Long id;
 
+    /**
+     * 父权限编号，若为0表示没有父亲
+     */
     private Long parentPermissionId;
 
+    /**
+     * 权限名
+     */
     private String permissionName;
 
+    /**
+     * 授权路径
+     */
     private String authorizationUrl;
 
+    /**
+     * 对权限的描述
+     */
     private String description;
 
+    /**
+     * 权限是否可用
+     */
     private Boolean available;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
-
-    public PermissionDTO() {
-    }
-
-    public PermissionDTO(Long id, Long parentPermissionId, String permissionName, String authorizationUrl,
-                         String description, Boolean available, LocalDateTime createTime, LocalDateTime updateTime) {
-        this.id = id;
-        this.parentPermissionId = parentPermissionId;
-        this.permissionName = permissionName;
-        this.authorizationUrl = authorizationUrl;
-        this.description = description;
-        this.available = available;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
 
     public Long getId() {
         return id;
@@ -89,22 +88,6 @@ public class PermissionDTO implements Serializable {
         this.available = available;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
         return "PermissionDTO{" +
@@ -114,8 +97,6 @@ public class PermissionDTO implements Serializable {
                 ", authorizationUrl='" + authorizationUrl + '\'' +
                 ", description='" + description + '\'' +
                 ", available=" + available +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -126,11 +107,6 @@ public class PermissionDTO implements Serializable {
         private String authorizationUrl;
         private String description;
         private Boolean available;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;
@@ -162,16 +138,6 @@ public class PermissionDTO implements Serializable {
             return this;
         }
 
-        public Builder createTime(LocalDateTime createTime) {
-            this.createTime = createTime;
-            return this;
-        }
-
-        public Builder updateTime(LocalDateTime updateTime) {
-            this.updateTime = updateTime;
-            return this;
-        }
-
         public PermissionDTO build() {
             PermissionDTO permissionDTO = new PermissionDTO();
             permissionDTO.setId(id);
@@ -180,8 +146,6 @@ public class PermissionDTO implements Serializable {
             permissionDTO.setAuthorizationUrl(authorizationUrl);
             permissionDTO.setDescription(description);
             permissionDTO.setAvailable(available);
-            permissionDTO.setCreateTime(createTime);
-            permissionDTO.setUpdateTime(updateTime);
             return permissionDTO;
         }
     }

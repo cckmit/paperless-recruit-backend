@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 描述：专业传输对象
@@ -10,15 +9,21 @@ import java.time.LocalDateTime;
  * @create: 2020/10/30 15:05
  */
 public class MajorDTO implements Serializable {
+
+    /**
+     * 专业编号
+     */
     private Long id;
 
+    /**
+     * 专业所属学院编号
+     */
     private Long collegeId;
 
+    /**
+     * 专业名
+     */
     private String majorName;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
 
     public Long getId() {
         return id;
@@ -44,30 +49,12 @@ public class MajorDTO implements Serializable {
         this.majorName = majorName;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
         return "MajorDTO{" +
                 "id=" + id +
                 ", collegeId=" + collegeId +
                 ", majorName='" + majorName + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -75,8 +62,6 @@ public class MajorDTO implements Serializable {
         private Long id;
         private Long collegeId;
         private String majorName;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
 
         public Builder id(Long id) {
             this.id = id;
@@ -93,23 +78,11 @@ public class MajorDTO implements Serializable {
             return this;
         }
 
-        public Builder createTime(LocalDateTime createTime) {
-            this.createTime = createTime;
-            return this;
-        }
-
-        public Builder updateTime(LocalDateTime updateTime) {
-            this.updateTime = updateTime;
-            return this;
-        }
-
         public MajorDTO build() {
             MajorDTO majorDTO = new MajorDTO();
             majorDTO.setId(id);
             majorDTO.setCollegeId(collegeId);
             majorDTO.setMajorName(majorName);
-            majorDTO.setCreateTime(createTime);
-            majorDTO.setUpdateTime(updateTime);
             return majorDTO;
         }
     }

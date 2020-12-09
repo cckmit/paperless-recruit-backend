@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 描述：用户个人信息传输对象
@@ -10,23 +9,41 @@ import java.time.LocalDateTime;
  * @create: 2020/10/30 15:05
  */
 public class UserProfileDTO implements Serializable {
+
+    /**
+     * 用户个人信息编号
+     */
     private Long id;
 
+    /**
+     * 该用户信息所属用户的编号
+     */
     private Long userId;
 
+    /**
+     * 姓名
+     */
     private String fullName;
 
+    /**
+     * 学号
+     */
     private String studentNumber;
 
+    /**
+     * 学院
+     */
     private String college;
 
+    /**
+     * 专业
+     */
     private String major;
 
+    /**
+     * 自我介绍
+     */
     private String introduction;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
 
     public Long getId() {
         return id;
@@ -84,22 +101,6 @@ public class UserProfileDTO implements Serializable {
         this.introduction = introduction;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
         return "UserProfileDTO{" +
@@ -110,8 +111,6 @@ public class UserProfileDTO implements Serializable {
                 ", college='" + college + '\'' +
                 ", major='" + major + '\'' +
                 ", introduction='" + introduction + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -123,11 +122,6 @@ public class UserProfileDTO implements Serializable {
         private String college;
         private String major;
         private String introduction;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
-
-        public Builder() {
-        }
 
         public Builder id(Long id) {
             this.id = id;
@@ -164,16 +158,6 @@ public class UserProfileDTO implements Serializable {
             return this;
         }
 
-        public Builder createTime(LocalDateTime createTime) {
-            this.createTime = createTime;
-            return this;
-        }
-
-        public Builder updateTime(LocalDateTime updateTime) {
-            this.updateTime = updateTime;
-            return this;
-        }
-
         public UserProfileDTO build() {
             UserProfileDTO userProfileDTO = new UserProfileDTO();
             userProfileDTO.setId(id);
@@ -183,8 +167,6 @@ public class UserProfileDTO implements Serializable {
             userProfileDTO.setCollege(college);
             userProfileDTO.setMajor(major);
             userProfileDTO.setIntroduction(introduction);
-            userProfileDTO.setCreateTime(createTime);
-            userProfileDTO.setUpdateTime(updateTime);
             return userProfileDTO;
         }
     }

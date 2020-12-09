@@ -24,7 +24,10 @@ public interface CollegeService {
      * @param collegeName 学院名
      * @return CollegeDTO
      */
-    Result<CollegeDTO> saveCollege(@NotBlank @Size(min = 1, max = 50) String collegeName);
+    Result<CollegeDTO> saveCollege(
+            @NotBlank(message = "The collegeName can't be blank.")
+            @Size(min = 1, max = 50, message = "The length of collegeName must be between 1 and 50.")
+                    String collegeName);
 
     /**
      * 保存专业
@@ -36,7 +39,11 @@ public interface CollegeService {
      * @param majorName 专业名
      * @return CollegeDTO
      */
-    Result<MajorDTO> saveMajor(@NotNull @Positive Long collegeId, @NotBlank @Size(min = 1, max = 50) String majorName);
+    Result<MajorDTO> saveMajor(
+            @NotNull(message = "The collegeId can't be null.")
+            @Positive(message = "The collegeId must be greater than 0.") Long collegeId,
+            @NotBlank(message = "The majorName can't be blank.")
+            @Size(min = 1, max = 50, message = "The length of majorName must be between 1 and 50.") String majorName);
 
     /**
      * 删除学院，删除时会删除该学院的所有专业信息
@@ -46,7 +53,8 @@ public interface CollegeService {
      * @param id 学院编号
      * @return 删除结果
      */
-    Result<Void> deleteCollege(@NotNull @Positive Long id);
+    Result<Void> deleteCollege(@NotNull(message = "The id can't be null.")
+                               @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 删除专业
@@ -56,7 +64,8 @@ public interface CollegeService {
      * @param id 专业编号
      * @return 删除结果
      */
-    Result<Void> deleteMajor(@NotNull @Positive Long id);
+    Result<Void> deleteMajor(@NotNull(message = "The id can't be null.")
+                             @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 获取学院
@@ -67,7 +76,8 @@ public interface CollegeService {
      * @param id 学院编号
      * @return CollegeDTO
      */
-    Result<CollegeDTO> getCollege(@NotNull @Positive Long id);
+    Result<CollegeDTO> getCollege(@NotNull(message = "The id can't be null.")
+                                  @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 查询学院
@@ -77,7 +87,7 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<CollegeDTO> 带分页信息的查询结果，可能返回空列表
      */
-    Result<PageInfo<CollegeDTO>> listColleges(@NotNull CollegeQuery query);
+    Result<PageInfo<CollegeDTO>> listColleges(@NotNull(message = "The query can't be null.") CollegeQuery query);
 
     /**
      * 获取学院名
@@ -88,7 +98,8 @@ public interface CollegeService {
      * @param id 学院编号
      * @return String 学院名
      */
-    Result<String> getCollegeName(@NotNull @Positive Long id);
+    Result<String> getCollegeName(@NotNull(message = "The id can't be null.")
+                                  @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 查询学院专业
@@ -99,7 +110,8 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<CollegeMajorDTO> 带分页信息的查询结果，可以返回空列表
      */
-    Result<PageInfo<CollegeMajorDTO>> listCollegeMajors(@NotNull CollegeQuery query);
+    Result<PageInfo<CollegeMajorDTO>> listCollegeMajors(
+            @NotNull(message = "The query can't be null.") CollegeQuery query);
 
     /**
      * 获取专业
@@ -110,7 +122,8 @@ public interface CollegeService {
      * @param id 专业编号
      * @return MajorDTO
      */
-    Result<MajorDTO> getMajor(@NotNull @Positive Long id);
+    Result<MajorDTO> getMajor(@NotNull(message = "The id can't be null.")
+                              @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 查询专业
@@ -120,7 +133,7 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<MajorDTO> 带分页信息的查询结果，可能会返回空列表
      */
-    Result<PageInfo<MajorDTO>> listMajors(@NotNull MajorQuery query);
+    Result<PageInfo<MajorDTO>> listMajors(@NotNull(message = "The query can't be null.") MajorQuery query);
 
     /**
      * 更新学院名
@@ -132,8 +145,12 @@ public interface CollegeService {
      * @param newCollegeName 新学院名
      * @return CollegeDTO 更新后的学院
      */
-    Result<CollegeDTO> updateCollegeName(@NotNull @Positive Long id,
-                                         @NotBlank @Size(min = 1, max = 50) String newCollegeName);
+    Result<CollegeDTO> updateCollegeName(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newCollegeName can't be blank.")
+            @Size(min = 1, max = 50, message = "The length of newCollegeName must be between 1 and 50.")
+                    String newCollegeName);
 
     /**
      * 更新专业名
@@ -145,6 +162,11 @@ public interface CollegeService {
      * @param newMajorName 新专业名
      * @return MajorDTO 更新后的专业
      */
-    Result<MajorDTO> updateMajorName(@NotNull @Positive Long id,
-                                     @NotBlank @Size(min = 1, max = 50) String newMajorName);
+    Result<MajorDTO> updateMajorName(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newMajorName can't be blank.")
+            @Size(min = 1, max = 50, message = "The length of newMajorName must be between 1 and 50.")
+                    String newMajorName);
+
 }

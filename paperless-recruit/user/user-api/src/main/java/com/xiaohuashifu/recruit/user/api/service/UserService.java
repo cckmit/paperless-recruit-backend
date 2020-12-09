@@ -109,7 +109,7 @@ public interface UserService {
      * @param phone 手机号
      * @return 获取到的用户
      */
-    Result<UserDTO> getUserByPhone(@NotBlank @Phone String phone);
+    Result<UserDTO> getUserByPhone(@NotBlank(message = "The phone can't be blank.") @Phone String phone);
 
     /**
      * 通过邮箱获取用户对象

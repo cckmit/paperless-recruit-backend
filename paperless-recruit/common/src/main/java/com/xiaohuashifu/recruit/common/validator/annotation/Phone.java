@@ -20,7 +20,7 @@ import java.lang.annotation.*;
 @Repeatable(Phone.List.class)
 public @interface Phone {
 
-    String message() default "The phone is invalid.";
+    String message() default "Invalid phone format.";
 
     Class<?>[] groups() default {};
 

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
+import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
@@ -53,14 +54,14 @@ public class PermissionServiceImpl implements PermissionService {
      * @errorCode InvalidParameter: 请求参数格式错误 | 父权限不存在
      *              OperationConflict: 权限名已经存在
      *
-     * @param permissionDTO parentPermissionId，permissionName，authorizationUrl，description和available
+     * @param savePermissionPO 保存 Permission 需要的参数
      * @return Result<PermissionDTO>
      */
     @Override
-    public Result<PermissionDTO> savePermission(PermissionDTO permissionDTO) {
+    public Result<PermissionDTO> savePermission(SavePermissionPO savePermissionPO) {
         // 如果父权限编号不为0，则父权限必须存在
-        if (!Objects.equals(permissionDTO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
-            int count = permissionMapper.count(permissionDTO.getParentPermissionId());
+        if (!Objects.equals(savePermissionPO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
+            int count = permissionMapper.count(savePermissionPO.getParentPermissionId());
             if (count < 1) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                         "The parent permission does not exist.");
@@ -68,33 +69,33 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         // 去掉权限名两边的空白符
-        permissionDTO.setPermissionName(permissionDTO.getPermissionName().trim());
+        savePermissionPO.setPermissionName(savePermissionPO.getPermissionName().trim());
 
         // 判断权限名存不存在，权限名必须不存在
-        int count = permissionMapper.countByPermissionName(permissionDTO.getPermissionName());
+        int count = permissionMapper.countByPermissionName(savePermissionPO.getPermissionName());
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The permission name already exist.");
         }
 
         // 如果父权限编号不为0，且被禁用了，则该权限也应该被禁用
-        if (!Objects.equals(permissionDTO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
-            count = permissionMapper.countByIdAndAvailable(permissionDTO.getParentPermissionId(), false);
+        if (!Objects.equals(savePermissionPO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
+            count = permissionMapper.countByIdAndAvailable(savePermissionPO.getParentPermissionId(), false);
             if (count > 0) {
-                permissionDTO.setAvailable(false);
+                savePermissionPO.setAvailable(false);
             }
         }
 
         // 去掉权限描述和授权路径两边的空白符
-        permissionDTO.setDescription(permissionDTO.getDescription().trim());
-        permissionDTO.setAuthorizationUrl(permissionDTO.getAuthorizationUrl().trim());
+        savePermissionPO.setDescription(savePermissionPO.getDescription().trim());
+        savePermissionPO.setAuthorizationUrl(savePermissionPO.getAuthorizationUrl().trim());
 
         // 保存权限
         PermissionDO permissionDO = new PermissionDO.Builder()
-                .parentPermissionId(permissionDTO.getParentPermissionId())
-                .permissionName(permissionDTO.getPermissionName())
-                .authorizationUrl(permissionDTO.getAuthorizationUrl())
-                .description(permissionDTO.getDescription())
-                .available(permissionDTO.getAvailable())
+                .parentPermissionId(savePermissionPO.getParentPermissionId())
+                .permissionName(savePermissionPO.getPermissionName())
+                .authorizationUrl(savePermissionPO.getAuthorizationUrl())
+                .description(savePermissionPO.getDescription())
+                .available(savePermissionPO.getAvailable())
                 .build();
         permissionMapper.insertPermission(permissionDO);
         return getPermission(permissionDO.getId());
@@ -193,6 +194,17 @@ public class PermissionServiceImpl implements PermissionService {
      */
     @Override
     public Result<List<PermissionDTO>> listPermissionsByRoleIds(List<Long> roleIds) {
+        // 判断是否有小于 0 或为 null 的 roleId
+        for (Long roleId : roleIds) {
+            if (roleId == null) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role id must not be null.");
+            }
+            if (roleId.compareTo(0L) < 1) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role id must be greater then 0.");
+            }
+        }
+
+        // 查询
         return Result.success(
                 permissionMapper
                         .listPermissionsByRoleIds(roleIds)

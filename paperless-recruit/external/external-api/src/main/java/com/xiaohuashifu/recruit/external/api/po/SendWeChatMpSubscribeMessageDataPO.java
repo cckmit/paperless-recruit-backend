@@ -1,18 +1,19 @@
-package com.xiaohuashifu.recruit.external.api.dto;
+package com.xiaohuashifu.recruit.external.api.po;
 
 import java.io.Serializable;
 
 /**
- * 描述: 封装订阅消息 Data
+ * 描述：封装订阅消息 Data
  *
  * @author xhsf
- * @create 2019-09-01 1:42
+ * @create 2020/12/9 19:15
  */
-public class SubscribeTemplateDataDTO implements Serializable {
-
+public class SendWeChatMpSubscribeMessageDataPO implements Serializable {
     private String value;
 
-    public SubscribeTemplateDataDTO(String value) {
+    public SendWeChatMpSubscribeMessageDataPO() {}
+
+    public SendWeChatMpSubscribeMessageDataPO(String value) {
         this.value = value;
     }
 
@@ -26,9 +27,8 @@ public class SubscribeTemplateDataDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "SubscribeTemplateDataDTO{" +
+        return "SendWeChatMpSubscribeMessageDataPO{" +
                 "value='" + value + '\'' +
                 '}';
     }
-
 }

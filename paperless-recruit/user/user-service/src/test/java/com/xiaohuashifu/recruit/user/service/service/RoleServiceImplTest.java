@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -38,12 +39,12 @@ public class RoleServiceImplTest {
 
     @Test
     public void saveRole() {
-        final RoleDTO roleDTO = new RoleDTO.Builder()
+        final SaveRolePO saveRolePO = new SaveRolePO.Builder()
                 .parentRoleId(12L)
                 .roleName("   test7   ")
                 .description("  测试用户7  \n")
                 .available(true).build();
-        System.out.println(roleService.saveRole(roleDTO));
+        System.out.println(roleService.saveRole(saveRolePO));
     }
 
     @Test
@@ -57,7 +58,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void getRole() {
+    public void listRoles() {
         System.out.println(roleService.listRoles(new RoleQuery.Builder().pageNum(1L).pageSize(10L).build()));
     }
 

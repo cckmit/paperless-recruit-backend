@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
@@ -54,45 +55,45 @@ public class RoleServiceImpl implements RoleService {
      * @errorCode InvalidParameter: 请求参数格式错误 | 父角色不存在
      *              OperationConflict: 角色名已经存在
      *
-     * @param roleDTO 需要parentRoleId，roleName，description和available
+     * @param saveRolePO 保存 Role 需要的参数对象
      * @return Result<RoleDTO>
      */
     @Override
-    public Result<RoleDTO> saveRole(RoleDTO roleDTO) {
+    public Result<RoleDTO> saveRole(SaveRolePO saveRolePO) {
         // 如果父角色编号不为0，则父角色必须存在
-        if (!Objects.equals(roleDTO.getParentRoleId(), NO_PARENT_ROLE_ID)) {
-            int count = roleMapper.count(roleDTO.getParentRoleId());
+        if (!Objects.equals(saveRolePO.getParentRoleId(), NO_PARENT_ROLE_ID)) {
+            int count = roleMapper.count(saveRolePO.getParentRoleId());
             if (count < 1) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent does not exist.");
             }
         }
 
         // 去掉角色名两边的空白符
-        roleDTO.setRoleName(roleDTO.getRoleName().trim());
+        saveRolePO.setRoleName(saveRolePO.getRoleName().trim());
 
         // 判断角色名存不存在，角色名必须不存在
-        int count = roleMapper.countByRoleName(roleDTO.getRoleName());
+        int count = roleMapper.countByRoleName(saveRolePO.getRoleName());
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The role name already exist.");
         }
 
         // 如果父角色编号不为0，且被禁用了，则该角色也应该被禁用
-        if (!Objects.equals(roleDTO.getParentRoleId(), NO_PARENT_ROLE_ID)) {
-            count = roleMapper.countByIdAndAvailable(roleDTO.getParentRoleId(), false);
+        if (!Objects.equals(saveRolePO.getParentRoleId(), NO_PARENT_ROLE_ID)) {
+            count = roleMapper.countByIdAndAvailable(saveRolePO.getParentRoleId(), false);
             if (count > 0) {
-                roleDTO.setAvailable(false);
+                saveRolePO.setAvailable(false);
             }
         }
 
         // 去掉角色描述两边的空白符
-        roleDTO.setDescription(roleDTO.getDescription().trim());
+        saveRolePO.setDescription(saveRolePO.getDescription().trim());
 
         // 保存角色
         RoleDO roleDO = new RoleDO.Builder()
-                .parentRoleId(roleDTO.getParentRoleId())
-                .roleName(roleDTO.getRoleName())
-                .description(roleDTO.getDescription())
-                .available(roleDTO.getAvailable())
+                .parentRoleId(saveRolePO.getParentRoleId())
+                .roleName(saveRolePO.getRoleName())
+                .description(saveRolePO.getDescription())
+                .available(saveRolePO.getAvailable())
                 .build();
         roleMapper.insertRole(roleDO);
         return getRole(roleDO.getId());

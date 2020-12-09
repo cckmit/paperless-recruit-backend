@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.user.api.service;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
+import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 
 import javax.validation.constraints.*;
@@ -18,7 +19,6 @@ import java.util.Set;
  */
 public interface PermissionService {
 
-    @interface SavePermission{}
     /**
      * 创建权限
      * 权限名必须不存在
@@ -27,10 +27,10 @@ public interface PermissionService {
      * @errorCode InvalidParameter: 请求参数格式错误 | 父权限不存在
      *              OperationConflict: 权限名已经存在
      *
-     * @param permissionDTO parentPermissionId，permissionName，authorizationUrl，description和available
+     * @param savePermissionPO 保存 Permission 需要的参数
      * @return Result<PermissionDTO>
      */
-    Result<PermissionDTO> savePermission(@NotNull PermissionDTO permissionDTO);
+    Result<PermissionDTO> savePermission(@NotNull SavePermissionPO savePermissionPO);
 
     /**
      * 删除权限，只允许没有子权限的权限删除

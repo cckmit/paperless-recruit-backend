@@ -1,18 +1,23 @@
-package com.xiaohuashifu.recruit.external.api.dto;
+package com.xiaohuashifu.recruit.external.api.po;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
- * 描述：微信订阅消息模板的传输对象
+ * 描述：更新 WeChatMpSubscribeMessageTemplate 的参数对象
  *
- * @author: xhsf
- * @create: 2020/11/22 00:33
+ * @author xhsf
+ * @create 2020/12/9 17:34
  */
-public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
+public class UpdateWeChatMpSubscribeMessageTemplatePO implements Serializable {
 
+    @NotNull
+    @Positive
     private Long id;
 
     private AppEnum app;
@@ -20,21 +25,25 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
     /**
      * 模板编号
      */
+    @Size(max = 255)
     private String templateId;
 
     /**
      * 模板标题
      */
+    @Size(max = 255)
     private String title;
 
     /**
      * 类目
      */
+    @Size(max = 255)
     private String type;
 
     /**
      * 描述
      */
+    @Size(max = 255)
     private String description;
 
     /**
@@ -86,6 +95,10 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public WeChatMpSubscribeMessageTemplateStatusEnum getStatus() {
         return status;
     }
@@ -94,13 +107,9 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
         this.status = status;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public String toString() {
-        return "WechatMpSubscribeMessageTemplateDTO{" +
+        return "UpdateWeChatMpSubscribeMessageTemplatePO{" +
                 "id=" + id +
                 ", app=" + app +
                 ", templateId='" + templateId + '\'' +
@@ -110,6 +119,7 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
                 ", status=" + status +
                 '}';
     }
+
 
     public static final class Builder {
         private Long id;
@@ -155,17 +165,16 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
             return this;
         }
 
-        public WeChatMpSubscribeMessageTemplateDTO build() {
-            WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO
-                    = new WeChatMpSubscribeMessageTemplateDTO();
-            weChatMpSubscribeMessageTemplateDTO.setId(id);
-            weChatMpSubscribeMessageTemplateDTO.setApp(app);
-            weChatMpSubscribeMessageTemplateDTO.setTemplateId(templateId);
-            weChatMpSubscribeMessageTemplateDTO.setTitle(title);
-            weChatMpSubscribeMessageTemplateDTO.setType(type);
-            weChatMpSubscribeMessageTemplateDTO.setDescription(description);
-            weChatMpSubscribeMessageTemplateDTO.setStatus(status);
-            return weChatMpSubscribeMessageTemplateDTO;
+        public UpdateWeChatMpSubscribeMessageTemplatePO build() {
+            UpdateWeChatMpSubscribeMessageTemplatePO updateWeChatMpSubscribeMessageTemplatePO = new UpdateWeChatMpSubscribeMessageTemplatePO();
+            updateWeChatMpSubscribeMessageTemplatePO.setId(id);
+            updateWeChatMpSubscribeMessageTemplatePO.setApp(app);
+            updateWeChatMpSubscribeMessageTemplatePO.setTemplateId(templateId);
+            updateWeChatMpSubscribeMessageTemplatePO.setTitle(title);
+            updateWeChatMpSubscribeMessageTemplatePO.setType(type);
+            updateWeChatMpSubscribeMessageTemplatePO.setDescription(description);
+            updateWeChatMpSubscribeMessageTemplatePO.setStatus(status);
+            return updateWeChatMpSubscribeMessageTemplatePO;
         }
     }
 }

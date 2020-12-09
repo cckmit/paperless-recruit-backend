@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
-import com.xiaohuashifu.recruit.external.api.dto.SubscribeTemplateDataDTO;
-import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
+import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessageDataPO;
+import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -42,17 +42,18 @@ public class WeChatMpServiceImplTest {
 
     @Test
     public void sendSubscribeMessage() {
-        SubscribeMessageDTO subscribeMessageDTO = new SubscribeMessageDTO();
-        subscribeMessageDTO.setTemplate_id("PwgUsyL54zBnWyB1bHDuOP6Oc8EAG5GvQplx8E2kU-s");
-        Map<String, SubscribeTemplateDataDTO> map = new HashMap<>();
-        map.put("thing1", new SubscribeTemplateDataDTO("吴嘉贤"));
-        map.put("thing2", new SubscribeTemplateDataDTO("华农科联"));
-        map.put("thing3", new SubscribeTemplateDataDTO("自科部"));
-        map.put("phrase4", new SubscribeTemplateDataDTO("一轮面试"));
-        map.put("phrase5", new SubscribeTemplateDataDTO("通过"));
-        subscribeMessageDTO.setData(map);
-        System.out.println(weChatMpService.sendSubscribeMessage(
-                AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP, 1L, subscribeMessageDTO));
+        SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO = new SendWeChatMpSubscribeMessagePO();
+        sendWeChatMpSubscribeMessagePO.setTemplateId("PwgUsyL54zBnWyB1bHDuOP6Oc8EAG5GvQplx8E2kU-s");
+        Map<String, SendWeChatMpSubscribeMessageDataPO> map = new HashMap<>();
+        map.put("thing1", new SendWeChatMpSubscribeMessageDataPO("吴嘉贤"));
+        map.put("thing2", new SendWeChatMpSubscribeMessageDataPO("华农科联"));
+        map.put("thing3", new SendWeChatMpSubscribeMessageDataPO("自科部"));
+        map.put("phrase4", new SendWeChatMpSubscribeMessageDataPO("一轮面试"));
+        map.put("phrase5", new SendWeChatMpSubscribeMessageDataPO("通过"));
+        sendWeChatMpSubscribeMessagePO.setTemplateData(map);
+        sendWeChatMpSubscribeMessagePO.setApp(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP);
+        sendWeChatMpSubscribeMessagePO.setUserId(1L);
+        System.out.println(weChatMpService.sendSubscribeMessage(sendWeChatMpSubscribeMessagePO));
     }
 
     @Test

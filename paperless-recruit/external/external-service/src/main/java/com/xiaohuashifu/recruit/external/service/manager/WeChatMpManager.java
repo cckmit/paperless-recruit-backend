@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.manager;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
-import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
+import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpUserInfoDTO;
 
@@ -46,10 +46,12 @@ public interface WeChatMpManager {
      * 发送模板消息
      *
      * @param app 具体的微信小程序类型
-     * @param subscribeMessageDTO 模板消息
+     * @param openId 目标用户 openId
+     * @param sendWeChatMpSubscribeMessagePO 发送模板消息的参数对象
      * @return 发送结果
      */
-    boolean sendSubscribeMessage(AppEnum app, SubscribeMessageDTO subscribeMessageDTO);
+    boolean sendSubscribeMessage(AppEnum app, String openId,
+                                 SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO);
 
     /**
      * 获取新的 access-token

@@ -1,8 +1,5 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
-import com.xiaohuashifu.recruit.user.api.service.PermissionService;
-
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -13,29 +10,16 @@ import java.time.LocalDateTime;
  * @create: 2020/11/12 19:42
  */
 public class PermissionDTO implements Serializable {
-    @Positive
     private Long id;
 
-    @PositiveOrZero
-    @NotNull(groups = PermissionService.SavePermission.class)
     private Long parentPermissionId;
 
-    @Size(min = 1, max = 64)
-    @NotBlank(groups = PermissionService.SavePermission.class)
     private String permissionName;
 
-    /**
-     * 授权路径，可以是 AntPath
-     */
-    @Size(min = 1, max = 255)
-    @NotBlank(groups = PermissionService.SavePermission.class)
     private String authorizationUrl;
 
-    @Size(min = 1, max = 200)
-    @NotBlank(groups = PermissionService.SavePermission.class)
     private String description;
 
-    @NotNull(groups = PermissionService.SavePermission.class)
     private Boolean available;
 
     private LocalDateTime createTime;

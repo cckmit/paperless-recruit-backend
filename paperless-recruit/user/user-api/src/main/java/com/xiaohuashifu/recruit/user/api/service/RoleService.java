@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.user.api.service;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 
 import javax.validation.constraints.*;
@@ -26,10 +27,10 @@ public interface RoleService {
      * @errorCode InvalidParameter: 请求参数格式错误 | 父角色不存在
      *              OperationConflict: 角色名已经存在
      *
-     * @param roleDTO 需要parentRoleId，roleName，description和available
+     * @param saveRolePO 保存 Role 需要的参数对象
      * @return Result<RoleDTO>
      */
-    Result<RoleDTO> saveRole(@NotNull RoleDTO roleDTO);
+    Result<RoleDTO> saveRole(@NotNull SaveRolePO saveRolePO);
 
     /**
      * 创建用户角色，也就是给用户绑定角色

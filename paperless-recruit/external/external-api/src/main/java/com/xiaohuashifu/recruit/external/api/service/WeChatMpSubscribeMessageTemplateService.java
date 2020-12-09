@@ -3,6 +3,8 @@ package com.xiaohuashifu.recruit.external.api.service;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.WeChatMpSubscribeMessageTemplateDTO;
+import com.xiaohuashifu.recruit.external.api.po.SaveWeChatMpSubscribeMessageTemplatePO;
+import com.xiaohuashifu.recruit.external.api.po.UpdateWeChatMpSubscribeMessageTemplatePO;
 import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 
 import javax.validation.constraints.NotNull;
@@ -16,18 +18,17 @@ import javax.validation.constraints.Positive;
  */
 public interface WeChatMpSubscribeMessageTemplateService {
 
-    @interface SaveWeChatMpSubscribeMessageTemplate {}
     /**
      * 添加模板
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *              OperationConflict: 存在相同的模板编号
      *
-     * @param weChatMpSubscribeMessageTemplateDTO WeChatMpSubscribeMessageTemplateDTO
+     * @param saveWeChatMpSubscribeMessageTemplatePO 保存的参数对象
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
     default Result<WeChatMpSubscribeMessageTemplateDTO> saveWeChatMpSubscribeMessageTemplate(
-            @NotNull WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO) {
+            @NotNull SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO) {
         throw new UnsupportedOperationException();
     }
 
@@ -53,16 +54,15 @@ public interface WeChatMpSubscribeMessageTemplateService {
     Result<PageInfo<WeChatMpSubscribeMessageTemplateDTO>> listWeChatMpSubscribeMessageTemplates(
             @NotNull WeChatMpSubscribeMessageTemplateQuery query);
 
-    @interface UpdateWeChatMpSubscribeMessageTemplate {}
     /**
      * 更新模板，这是一个较广的更新接口，请小心使用
      *
      * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为 null
      *
-     * @param weChatMpSubscribeMessageTemplateDTO WeChatMpSubscribeMessageTemplateDTO
+     * @param updateWeChatMpSubscribeMessageTemplatePO 更新的参数对象
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
     Result<WeChatMpSubscribeMessageTemplateDTO> updateWeChatMpSubscribeMessageTemplate(
-            @NotNull WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO);
+            @NotNull UpdateWeChatMpSubscribeMessageTemplatePO updateWeChatMpSubscribeMessageTemplatePO);
 
 }

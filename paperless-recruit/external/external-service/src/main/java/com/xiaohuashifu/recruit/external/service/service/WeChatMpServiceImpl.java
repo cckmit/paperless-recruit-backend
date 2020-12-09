@@ -4,7 +4,7 @@ import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
+import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
@@ -64,27 +64,26 @@ public class WeChatMpServiceImpl implements WeChatMpService {
      *              InternalError: 服务器错误 | access-token 获取失败 | 发送订阅消息出错
      *              UnknownError: 未知错误 | 发送订阅消息时微信小程序报的错误，具体查看错误消息
      *
-     * @param app 微信小程序类型
-     * @param userId 用于获取 openId
-     * @param subscribeMessageDTO 订阅消息
+     * @param sendWeChatMpSubscribeMessagePO 发送订阅消息的参数对象
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendSubscribeMessage(AppEnum app, Long userId, SubscribeMessageDTO subscribeMessageDTO) {
+    public Result<Void> sendSubscribeMessage(SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO) {
+        AppEnum app = sendWeChatMpSubscribeMessagePO.getApp();
         // 平台必须是微信小程序
         if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The platform must be wechat mp.");
         }
 
         // 获取 openId
-        Result<String> getOpenIdResult = authOpenIdService.getOpenId(app, userId);
+        Result<String> getOpenIdResult = authOpenIdService.getOpenId(app, sendWeChatMpSubscribeMessagePO.getUserId());
         if (!getOpenIdResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user has not been bound this app.");
         }
-        subscribeMessageDTO.setTouser(getOpenIdResult.getData());
 
         // 发送订阅消息
-        boolean sendResult = weChatMpManager.sendSubscribeMessage(app, subscribeMessageDTO);
+        boolean sendResult = weChatMpManager.sendSubscribeMessage(
+                app, getOpenIdResult.getData(), sendWeChatMpSubscribeMessagePO);
         if (!sendResult) {
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR, "Send subscribe message failed.");
         }

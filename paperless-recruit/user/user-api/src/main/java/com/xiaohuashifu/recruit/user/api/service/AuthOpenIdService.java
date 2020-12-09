@@ -31,7 +31,7 @@ public interface AuthOpenIdService {
      * @return AuthOpenIdDTO
      */
     Result<AuthOpenIdDTO> bindAuthOpenIdForWeChatMp(@NotNull @Positive Long userId, @NotNull AppEnum app,
-                                                            @NotBlank @Size(min = 32, max = 32) String code);
+                                                    @NotBlank @Size(min = 32, max = 32) String code);
 
     /**
      * 用于微信小程序用户检查 AuthOpenId
@@ -47,7 +47,7 @@ public interface AuthOpenIdService {
      * @return AuthOpenIdDTOauthOpenId
      */
     Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMp(@NotNull AppEnum app,
-                                                             @NotBlank @Size(min = 32, max = 32) String code);
+                                                     @NotBlank @Size(min = 32, max = 32) String code);
 
     /**
      * 获取 openId

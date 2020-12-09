@@ -21,6 +21,7 @@ public class CollegeQuery implements Serializable {
     @Positive
     @Max(50)
     private Long pageSize;
+
     private Long id;
     private List<Long> ids;
     private String collegeName;

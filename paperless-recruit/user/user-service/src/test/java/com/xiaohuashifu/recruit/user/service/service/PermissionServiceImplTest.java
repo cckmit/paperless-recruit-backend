@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.user.service.service;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
+import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
@@ -50,9 +51,9 @@ public class PermissionServiceImplTest {
 
     @Test
     public void savePermission() {
-        System.out.println(permissionService.savePermission(new PermissionDTO.Builder()
-                .parentPermissionId(-1L)
-        .permissionName("  test3  ")
+        System.out.println(permissionService.savePermission(new SavePermissionPO.Builder()
+                .parentPermissionId(1L)
+        .permissionName("  test4  ")
         .authorizationUrl("  /tests/test3  ")
         .description("  测试3  ")
         .available(true).build()));
@@ -82,12 +83,12 @@ public class PermissionServiceImplTest {
     }
 
     @Test
-    public void getPermissionListByRoleIdList() {
+    public void listPermissionsByRoleIds() {
         final Result<List<RoleDTO>> getRoleResult = roleService.getRoleListByUserId(1L);
         final List<Long> roleIdList = getRoleResult.getData().stream()
                 .map(RoleDTO::getId)
                 .collect(Collectors.toList());
-
+        roleIdList.add(null);
         System.out.println(permissionService.listPermissionsByRoleIds(roleIdList));
     }
 

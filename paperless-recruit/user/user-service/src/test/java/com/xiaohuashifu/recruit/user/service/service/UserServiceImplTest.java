@@ -89,7 +89,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUserByPhone() {
-        System.out.println(userService.getUserByPhone("15992321303"));
+        System.out.println(userService.getUserByPhone(null));
     }
 
     @Test

@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.external.service.manager.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.GenderEnum;
-import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
+import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WeChatMpDetails;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
@@ -165,11 +165,13 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
      * 发送模板消息
      *
      * @param app 具体的微信小程序类型
-     * @param subscribeMessageDTO 模板消息
+     * @param openId 目标用户 openId
+     * @param sendWeChatMpSubscribeMessagePO 发送模板消息的参数对象
      * @return 发送结果
      */
     @Override
-    public boolean sendSubscribeMessage(AppEnum app, SubscribeMessageDTO subscribeMessageDTO) {
+    public boolean sendSubscribeMessage(AppEnum app, String openId,
+                                        SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO) {
         // 获取 access-token
         Optional<String> accessToken = getAccessToken(app);
         if (accessToken.isEmpty()) {
@@ -178,11 +180,18 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         }
 
         // 发送消息
+        JSONObject subscribeMessage = new JSONObject();
+        subscribeMessage.put("touser", openId);
+        subscribeMessage.put("template_id", sendWeChatMpSubscribeMessagePO.getTemplateId());
+        subscribeMessage.put("page", sendWeChatMpSubscribeMessagePO.getPage());
+        subscribeMessage.put("data", sendWeChatMpSubscribeMessagePO.getTemplateData());
+        subscribeMessage.put("miniprogram_state", sendWeChatMpSubscribeMessagePO.getMpType());
+        subscribeMessage.put("lang", sendWeChatMpSubscribeMessagePO.getLanguage());
         String url = MessageFormat.format(SUBSCRIBE_MESSAGE_URL, accessToken.get());
-        String responseString = restTemplate.postForObject(url, subscribeMessageDTO, String.class);
+        String responseString = restTemplate.postForObject(url, subscribeMessage, String.class);
         if (StringUtils.isBlank(responseString)) {
-            logger.error("Send subscribe message failed, response body is blank. app={}, subscribeMessageDTO={}",
-                    app, subscribeMessageDTO);
+            logger.error("Send subscribe message failed, response body is blank. app={}, subscribeMessage={}",
+                    app, subscribeMessage);
             return false;
         }
 
@@ -193,8 +202,8 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         if (!Objects.equals(errorCode, WECHAT_OPEN_PLATFORM_REQUEST_SUCCESS_ERROR_CODE)) {
             String errorMessage = responseJsonObject.getString("errmsg");
             logger.warn("Send subscribe message failed. " +
-                            "errorCode={}, errorMessage={}, app={}, subscribeMessageDTO={}",
-                    errorCode, errorMessage, app, subscribeMessageDTO);
+                            "errorCode={}, errorMessage={}, app={}, subscribeMessage={}",
+                    errorCode, errorMessage, app, subscribeMessage);
             return false;
         }
 

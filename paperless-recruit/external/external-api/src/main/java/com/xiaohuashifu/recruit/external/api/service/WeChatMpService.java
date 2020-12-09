@@ -2,11 +2,10 @@ package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.SubscribeMessageDTO;
+import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 /**
@@ -30,7 +29,6 @@ public interface WeChatMpService {
 
     void getUserInfo(String encryptedData, String iv, String code);
 
-    @interface SendSubscribeMessage{}
     /**
      * 发送订阅消息
      *
@@ -38,13 +36,10 @@ public interface WeChatMpService {
      *              InternalError: 服务器错误 | access-token 获取失败 | 发送订阅消息出错
      *              UnknownError: 未知错误 | 发送订阅消息时微信小程序报的错误，具体查看错误消息
      *
-     * @param app 微信小程序类型
-     * @param userId 用于获取 openId
-     * @param subscribeMessageDTO 订阅消息
+     * @param sendWeChatMpSubscribeMessagePO 发送订阅消息的参数对象
      * @return 发送结果
      */
-    Result<Void> sendSubscribeMessage(@NotNull AppEnum app, @NotNull @Positive Long userId,
-                                      @NotNull SubscribeMessageDTO subscribeMessageDTO);
+    Result<Void> sendSubscribeMessage(@NotNull SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO);
 
 
 }

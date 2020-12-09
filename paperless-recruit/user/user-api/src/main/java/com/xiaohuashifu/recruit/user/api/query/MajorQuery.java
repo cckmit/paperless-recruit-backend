@@ -22,7 +22,7 @@ public class MajorQuery implements Serializable {
     @Max(50)
     private Long pageSize;
     private Long id;
-    private List<Long> idList;
+    private List<Long> ids;
     private Long collegeId;
     private String majorName;
 
@@ -50,12 +50,12 @@ public class MajorQuery implements Serializable {
         this.id = id;
     }
 
-    public List<Long> getIdList() {
-        return idList;
+    public List<Long> getIds() {
+        return ids;
     }
 
-    public void setIdList(List<Long> idList) {
-        this.idList = idList;
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
     }
 
     public Long getCollegeId() {
@@ -80,7 +80,7 @@ public class MajorQuery implements Serializable {
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", id=" + id +
-                ", idList=" + idList +
+                ", ids=" + ids +
                 ", collegeId=" + collegeId +
                 ", majorName='" + majorName + '\'' +
                 '}';
@@ -91,7 +91,7 @@ public class MajorQuery implements Serializable {
         private Long pageNum;
         private Long pageSize;
         private Long id;
-        private List<Long> idList;
+        private List<Long> ids;
         private Long collegeId;
         private String majorName;
 
@@ -113,8 +113,8 @@ public class MajorQuery implements Serializable {
             return this;
         }
 
-        public Builder idList(List<Long> idList) {
-            this.idList = idList;
+        public Builder ids(List<Long> ids) {
+            this.ids = ids;
             return this;
         }
 
@@ -133,7 +133,7 @@ public class MajorQuery implements Serializable {
             majorQuery.setPageNum(pageNum);
             majorQuery.setPageSize(pageSize);
             majorQuery.setId(id);
-            majorQuery.setIdList(idList);
+            majorQuery.setIds(ids);
             majorQuery.setCollegeId(collegeId);
             majorQuery.setMajorName(majorName);
             return majorQuery;

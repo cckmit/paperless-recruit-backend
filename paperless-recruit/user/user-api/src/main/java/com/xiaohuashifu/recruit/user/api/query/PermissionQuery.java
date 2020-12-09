@@ -22,7 +22,7 @@ public class PermissionQuery implements Serializable {
     @Max(50)
     private Long pageSize;
     private Long id;
-    private List<Long> idList;
+    private List<Long> ids;
     private Long parentPermissionId;
     private String permissionName;
     private String authorizationUrl;
@@ -55,12 +55,12 @@ public class PermissionQuery implements Serializable {
         this.id = id;
     }
 
-    public List<Long> getIdList() {
-        return idList;
+    public List<Long> getIds() {
+        return ids;
     }
 
-    public void setIdList(List<Long> idList) {
-        this.idList = idList;
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
     }
 
     public Long getParentPermissionId() {
@@ -100,7 +100,7 @@ public class PermissionQuery implements Serializable {
         return "PermissionQuery{" +
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
-                ", idList=" + idList +
+                ", ids=" + ids +
                 ", id=" + id +
                 ", parentPermissionId=" + parentPermissionId +
                 ", permissionName='" + permissionName + '\'' +
@@ -112,7 +112,7 @@ public class PermissionQuery implements Serializable {
     public static final class Builder {
         private Long pageNum;
         private Long pageSize;
-        private List<Long> idList;
+        private List<Long> ids;
         private Long id;
         private Long parentPermissionId;
         private String permissionName;
@@ -132,8 +132,8 @@ public class PermissionQuery implements Serializable {
             return this;
         }
 
-        public Builder idList(List<Long> idList) {
-            this.idList = idList;
+        public Builder ids(List<Long> ids) {
+            this.ids = ids;
             return this;
         }
 
@@ -166,7 +166,7 @@ public class PermissionQuery implements Serializable {
             PermissionQuery permissionQuery = new PermissionQuery();
             permissionQuery.setPageNum(pageNum);
             permissionQuery.setPageSize(pageSize);
-            permissionQuery.setIdList(idList);
+            permissionQuery.setIds(ids);
             permissionQuery.setId(id);
             permissionQuery.setParentPermissionId(parentPermissionId);
             permissionQuery.setPermissionName(permissionName);

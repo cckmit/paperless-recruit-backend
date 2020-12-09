@@ -22,7 +22,7 @@ public class CollegeQuery implements Serializable {
     @Max(50)
     private Long pageSize;
     private Long id;
-    private List<Long> idList;
+    private List<Long> ids;
     private String collegeName;
 
     public Long getPageNum() {
@@ -49,12 +49,12 @@ public class CollegeQuery implements Serializable {
         this.id = id;
     }
 
-    public List<Long> getIdList() {
-        return idList;
+    public List<Long> getIds() {
+        return ids;
     }
 
-    public void setIdList(List<Long> idList) {
-        this.idList = idList;
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
     }
 
     public String getCollegeName() {
@@ -71,7 +71,7 @@ public class CollegeQuery implements Serializable {
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", id=" + id +
-                ", idList=" + idList +
+                ", ids=" + ids +
                 ", collegeName='" + collegeName + '\'' +
                 '}';
     }
@@ -80,7 +80,7 @@ public class CollegeQuery implements Serializable {
         private Long pageNum;
         private Long pageSize;
         private Long id;
-        private List<Long> idList;
+        private List<Long> ids;
         private String collegeName;
 
         public Builder() {
@@ -101,8 +101,8 @@ public class CollegeQuery implements Serializable {
             return this;
         }
 
-        public Builder idList(List<Long> idList) {
-            this.idList = idList;
+        public Builder ids(List<Long> ids) {
+            this.ids = ids;
             return this;
         }
 
@@ -116,7 +116,7 @@ public class CollegeQuery implements Serializable {
             collegeQuery.setPageNum(pageNum);
             collegeQuery.setPageSize(pageSize);
             collegeQuery.setId(id);
-            collegeQuery.setIdList(idList);
+            collegeQuery.setIds(ids);
             collegeQuery.setCollegeName(collegeName);
             return collegeQuery;
         }

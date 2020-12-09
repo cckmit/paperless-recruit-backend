@@ -36,9 +36,9 @@
             <if test="id != null">
                 and id = #{id}
             </if>
-            <if test="idList != null">
+            <if test="ids != null">
                 and id in (
-                <foreach collection="idList"  item="item" index="index" separator=",">
+                <foreach collection="ids" item="item" index="index" separator=",">
                     #{item}
                 </foreach>
                 )

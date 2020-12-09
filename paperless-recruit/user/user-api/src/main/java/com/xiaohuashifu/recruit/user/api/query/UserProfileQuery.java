@@ -22,7 +22,7 @@ public class UserProfileQuery implements Serializable {
     @Max(50)
     private Long pageSize;
     private Long id;
-    private List<Long> idList;
+    private List<Long> ids;
     private Long userId;
     private String fullName;
     private String studentNumber;
@@ -54,12 +54,12 @@ public class UserProfileQuery implements Serializable {
         this.id = id;
     }
 
-    public List<Long> getIdList() {
-        return idList;
+    public List<Long> getIds() {
+        return ids;
     }
 
-    public void setIdList(List<Long> idList) {
-        this.idList = idList;
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
     }
 
     public Long getUserId() {
@@ -116,7 +116,7 @@ public class UserProfileQuery implements Serializable {
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", id=" + id +
-                ", idList=" + idList +
+                ", ids=" + ids +
                 ", userId=" + userId +
                 ", fullName='" + fullName + '\'' +
                 ", studentNumber='" + studentNumber + '\'' +
@@ -130,7 +130,7 @@ public class UserProfileQuery implements Serializable {
         private Long pageNum;
         private Long pageSize;
         private Long id;
-        private List<Long> idList;
+        private List<Long> ids;
         private Long userId;
         private String fullName;
         private String studentNumber;
@@ -156,8 +156,8 @@ public class UserProfileQuery implements Serializable {
             return this;
         }
 
-        public Builder idList(List<Long> idList) {
-            this.idList = idList;
+        public Builder ids(List<Long> ids) {
+            this.ids = ids;
             return this;
         }
 
@@ -196,7 +196,7 @@ public class UserProfileQuery implements Serializable {
             userProfileQuery.setPageNum(pageNum);
             userProfileQuery.setPageSize(pageSize);
             userProfileQuery.setId(id);
-            userProfileQuery.setIdList(idList);
+            userProfileQuery.setIds(ids);
             userProfileQuery.setUserId(userId);
             userProfileQuery.setFullName(fullName);
             userProfileQuery.setStudentNumber(studentNumber);

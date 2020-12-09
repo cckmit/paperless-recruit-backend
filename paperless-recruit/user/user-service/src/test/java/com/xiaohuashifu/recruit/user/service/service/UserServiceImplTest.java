@@ -2,11 +2,14 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
+import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -35,9 +38,13 @@ public class UserServiceImplTest {
 
     @Test
     public void getUser() {
-        final Result<UserDTO> user = userService.getUser(1L);
-        System.out.println(user);
-//        System.out.println(userService.getUser(new UserQuery.Builder().phone("159923").build()));
+//        final Result<UserDTO> user = userService.getUser(1L);
+//        System.out.println(user);
+        ArrayList<Long> ids = new ArrayList<>();
+        ids.add(1L);
+        ids.add(3L);
+        ids.add(6L);
+        System.out.println(userService.listUsers(new UserQuery.Builder().pageNum(1L).pageSize(50L).ids(ids).build()));
     }
 
     @Test
@@ -93,7 +100,6 @@ public class UserServiceImplTest {
     @Test
     public void updateUsername() {
         Result<UserDTO> updateUsernameResult = userService.updateUsername(-3L, "xhsfnew");
-        assertTrue(updateUsernameResult.isSuccess());
     }
 
     @Test

@@ -24,9 +24,7 @@ public interface CollegeService {
      * @param collegeName 学院名
      * @return CollegeDTO
      */
-    default Result<CollegeDTO> saveCollege(@NotBlank @Size(min = 1, max = 50) String collegeName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<CollegeDTO> saveCollege(@NotBlank @Size(min = 1, max = 50) String collegeName);
 
     /**
      * 保存专业
@@ -38,11 +36,7 @@ public interface CollegeService {
      * @param majorName 专业名
      * @return CollegeDTO
      */
-    default Result<MajorDTO> saveMajor(
-            @NotNull @Positive Long collegeId,
-            @NotBlank @Size(min = 1, max = 50) String majorName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<MajorDTO> saveMajor(@NotNull @Positive Long collegeId, @NotBlank @Size(min = 1, max = 50) String majorName);
 
     /**
      * 删除学院，删除时会删除该学院的所有专业信息
@@ -52,9 +46,7 @@ public interface CollegeService {
      * @param id 学院编号
      * @return 删除结果
      */
-    default Result<Void> deleteCollege(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> deleteCollege(@NotNull @Positive Long id);
 
     /**
      * 删除专业
@@ -64,9 +56,7 @@ public interface CollegeService {
      * @param id 专业编号
      * @return 删除结果
      */
-    default Result<Void> deleteMajor(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> deleteMajor(@NotNull @Positive Long id);
 
     /**
      * 获取学院
@@ -77,9 +67,7 @@ public interface CollegeService {
      * @param id 学院编号
      * @return CollegeDTO
      */
-    default Result<CollegeDTO> getCollege(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<CollegeDTO> getCollege(@NotNull @Positive Long id);
 
     /**
      * 查询学院
@@ -89,9 +77,7 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<CollegeDTO> 带分页信息的查询结果，可能返回空列表
      */
-    default Result<PageInfo<CollegeDTO>> listColleges(@NotNull CollegeQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<CollegeDTO>> listColleges(@NotNull CollegeQuery query);
 
     /**
      * 获取学院名
@@ -102,9 +88,7 @@ public interface CollegeService {
      * @param id 学院编号
      * @return String 学院名
      */
-    default Result<String> getCollegeName(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<String> getCollegeName(@NotNull @Positive Long id);
 
     /**
      * 查询学院专业
@@ -115,9 +99,7 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<CollegeMajorDTO> 带分页信息的查询结果，可以返回空列表
      */
-    default Result<PageInfo<CollegeMajorDTO>> listCollegeMajors(@NotNull CollegeQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<CollegeMajorDTO>> listCollegeMajors(@NotNull CollegeQuery query);
 
     /**
      * 获取专业
@@ -128,9 +110,7 @@ public interface CollegeService {
      * @param id 专业编号
      * @return MajorDTO
      */
-    default Result<MajorDTO> getMajor(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<MajorDTO> getMajor(@NotNull @Positive Long id);
 
     /**
      * 查询专业
@@ -140,9 +120,7 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<MajorDTO> 带分页信息的查询结果，可能会返回空列表
      */
-    default Result<PageInfo<MajorDTO>> listMajors(@NotNull MajorQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<MajorDTO>> listMajors(@NotNull MajorQuery query);
 
     /**
      * 更新学院名
@@ -154,10 +132,8 @@ public interface CollegeService {
      * @param newCollegeName 新学院名
      * @return CollegeDTO 更新后的学院
      */
-    default Result<CollegeDTO> updateCollegeName(@NotNull @Positive Long id,
-                                         @NotBlank @Size(min = 1, max = 50) String newCollegeName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<CollegeDTO> updateCollegeName(@NotNull @Positive Long id,
+                                         @NotBlank @Size(min = 1, max = 50) String newCollegeName);
 
     /**
      * 更新专业名
@@ -169,8 +145,6 @@ public interface CollegeService {
      * @param newMajorName 新专业名
      * @return MajorDTO 更新后的专业
      */
-    default Result<MajorDTO> updateMajorName(@NotNull @Positive Long id,
-                                         @NotBlank @Size(min = 1, max = 50) String newMajorName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<MajorDTO> updateMajorName(@NotNull @Positive Long id,
+                                     @NotBlank @Size(min = 1, max = 50) String newMajorName);
 }

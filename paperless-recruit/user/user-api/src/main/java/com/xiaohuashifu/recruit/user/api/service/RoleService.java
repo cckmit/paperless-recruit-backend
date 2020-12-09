@@ -29,9 +29,7 @@ public interface RoleService {
      * @param roleDTO 需要parentRoleId，roleName，description和available
      * @return Result<RoleDTO>
      */
-    default Result<RoleDTO> saveRole(@NotNull RoleDTO roleDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<RoleDTO> saveRole(@NotNull RoleDTO roleDTO);
 
     /**
      * 创建用户角色，也就是给用户绑定角色
@@ -43,9 +41,7 @@ public interface RoleService {
      * @param roleId 角色编号
      * @return Result<Void>
      */
-    default Result<Void> saveUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> saveUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId);
 
     /**
      * 创建角色权限，也就是给角色绑定权限
@@ -57,9 +53,7 @@ public interface RoleService {
      * @param permissionId 权限编号
      * @return Result<Void>
      */
-    default Result<Void> saveRolePermission(@NotNull @Positive Long roleId, @NotNull @Positive Long permissionId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> saveRolePermission(@NotNull @Positive Long roleId, @NotNull @Positive Long permissionId);
 
     /**
      * 删除角色，只允许没有子角色的角色删除
@@ -72,9 +66,7 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<Void>
      */
-    default Result<Void> removeRole(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> removeRole(@NotNull @Positive Long id);
 
     /**
      * 删除用户绑定的角色
@@ -85,9 +77,7 @@ public interface RoleService {
      * @param roleId 角色编号
      * @return Result<Void>
      */
-    default Result<Void> removeUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> removeUserRole(@NotNull @Positive Long userId, @NotNull @Positive Long roleId);
 
     /**
      * 删除角色绑定的权限
@@ -98,9 +88,7 @@ public interface RoleService {
      * @param permissionId 权限编号
      * @return Result<Void>
      */
-    default Result<Void> removeRolePermission(@NotNull @Positive Long roleId, @NotNull @Positive Long permissionId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> removeRolePermission(@NotNull @Positive Long roleId, @NotNull @Positive Long permissionId);
 
     /**
      * 获取角色
@@ -111,9 +99,7 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<RoleDTO>
      */
-    default Result<RoleDTO> getRole(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<RoleDTO> getRole(@NotNull @Positive Long id);
 
     /**
      * 获取角色
@@ -123,9 +109,7 @@ public interface RoleService {
      * @param query 查询参数
      * @return Result<PageInfo<RoleDTO>> 带分页信息的角色列表，可能返回空列表
      */
-    default Result<PageInfo<RoleDTO>> listRoles(@NotNull RoleQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<RoleDTO>> listRoles(@NotNull RoleQuery query);
 
     /**
      * 获取用户角色服务
@@ -136,9 +120,7 @@ public interface RoleService {
      * @param userId 用户id
      * @return 用户的角色列表，可能返回空列表
      */
-    default Result<List<RoleDTO>> getRoleListByUserId(@NotNull @Positive Long userId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<List<RoleDTO>> getRoleListByUserId(@NotNull @Positive Long userId);
 
     /**
      * 更新角色名，新角色名必须不存在
@@ -150,10 +132,7 @@ public interface RoleService {
      * @param newRoleName 新角色名
      * @return Result<RoleDTO> 更新后的角色对象
      */
-    default Result<RoleDTO> updateRoleName(@NotNull @Positive Long id,
-                                           @NotBlank @Size(min = 1, max = 64) String newRoleName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<RoleDTO> updateRoleName(@NotNull @Positive Long id, @NotBlank @Size(min = 1, max = 64) String newRoleName);
 
     /**
      * 更新角色描述
@@ -164,10 +143,8 @@ public interface RoleService {
      * @param newDescription 新角色描述
      * @return Result<RoleDTO> 更新后的角色对象
      */
-    default Result<RoleDTO> updateDescription(@NotNull @Positive Long id,
-                                              @NotBlank @Size(min = 1, max = 200) String newDescription) {
-        throw new UnsupportedOperationException();
-    }
+    Result<RoleDTO> updateDescription(@NotNull @Positive Long id,
+                                      @NotBlank @Size(min = 1, max = 200) String newDescription);
 
     /**
      * 禁用角色（且子角色可用状态也被禁用，递归禁用）
@@ -178,9 +155,7 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的 key 为 totalDisableCount 和 newRole
      */
-    default Result<Map<String, Object>> disableRole(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Map<String, Object>> disableRole(@NotNull @Positive Long id);
 
     /**
      * 解禁角色（且子角色可用状态也被解禁，递归解禁）
@@ -191,9 +166,7 @@ public interface RoleService {
      * @param id 角色编号
      * @return Result<Map<String, Object>> 解禁的数量和解禁后的角色对象，分别对应的key为totalEnableCount和newRole
      */
-    default Result<Map<String, Object>> enableRole(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Map<String, Object>> enableRole(@NotNull @Positive Long id);
 
     /**
      * 设置父角色
@@ -207,9 +180,6 @@ public interface RoleService {
      * @param parentRoleId 父角色编号
      * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
      */
-    default Result<Map<String, Object>> setParentRole(@NotNull @Positive Long id,
-                                                      @NotNull @PositiveOrZero Long parentRoleId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Map<String, Object>> setParentRole(@NotNull @Positive Long id, @NotNull @PositiveOrZero Long parentRoleId);
 
 }

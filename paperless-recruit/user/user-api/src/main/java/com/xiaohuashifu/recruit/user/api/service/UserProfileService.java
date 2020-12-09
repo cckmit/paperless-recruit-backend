@@ -26,9 +26,7 @@ public interface UserProfileService {
      * @param userId 用户编号
      * @return UserProfileDTO 创建的用户对象
      */
-    default Result<UserProfileDTO> createUserProfile(@NotNull @Positive Long userId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserProfileDTO> createUserProfile(@NotNull @Positive Long userId);
 
     /**
      * 获取用户个人信息
@@ -39,9 +37,7 @@ public interface UserProfileService {
      * @param id 用户个人信息编号
      * @return UserProfileDTO
      */
-    default Result<UserProfileDTO> getUserProfile(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserProfileDTO> getUserProfile(@NotNull @Positive Long id);
 
     /**
      * 获取用户个人信息
@@ -51,9 +47,7 @@ public interface UserProfileService {
      * @param query 查询参数
      * @return PageInfo<UserProfileDTO> 带分页信息的查询结果，可能返回空列表
      */
-    default Result<PageInfo<UserProfileDTO>> listUserProfiles(@NotNull UserProfileQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<UserProfileDTO>> listUserProfiles(@NotNull UserProfileQuery query);
 
     /**
      * 通过用户编号获取用户个人信息
@@ -64,9 +58,7 @@ public interface UserProfileService {
      * @param userId 用户编号
      * @return UserProfileDTO
      */
-    default Result<UserProfileDTO> getUserProfileByUserId(@NotNull @Positive Long userId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserProfileDTO> getUserProfileByUserId(@NotNull @Positive Long userId);
 
     /**
      * 更新姓名
@@ -78,11 +70,8 @@ public interface UserProfileService {
      * @param newFullName 新姓名
      * @return 更新后的用户个人信息
      */
-    default Result<UserProfileDTO> updateFullName(
-            @NotNull @Positive Long userId,
-            @NotBlank @Size(min = 2, max = 5) @Chinese String newFullName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserProfileDTO> updateFullName(@NotNull @Positive Long userId,
+                                          @NotBlank @Size(min = 2, max = 5) @Chinese String newFullName);
 
     /**
      * 更新学号
@@ -96,11 +85,8 @@ public interface UserProfileService {
      * @param newStudentNumber 新学号
      * @return 更新后的用户个人信息
      */
-    default Result<UserProfileDTO> updateStudentNumber(
-            @NotNull @Positive Long userId,
-            @NotBlank @Pattern(regexp = "^20\\d{10}$") String newStudentNumber) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserProfileDTO> updateStudentNumber(@NotNull @Positive Long userId,
+                                               @NotBlank @Pattern(regexp = "^20\\d{10}$") String newStudentNumber);
 
     /**
      * 更新学院专业通过专业的编号
@@ -113,10 +99,8 @@ public interface UserProfileService {
      * @param newMajorId 新专业编号
      * @return 更新后的用户个人信息
      */
-    default Result<UserProfileDTO> updateCollegeAndMajorByMajorId(
-            @NotNull @Positive Long userId, @NotNull @Positive Long newMajorId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserProfileDTO> updateCollegeAndMajorByMajorId(@NotNull @Positive Long userId,
+                                                          @NotNull @Positive Long newMajorId);
 
     /**
      * 更新自我介绍
@@ -127,10 +111,7 @@ public interface UserProfileService {
      * @param newIntroduction 新自我介绍
      * @return 更新后的用户个人信息
      */
-    default Result<UserProfileDTO> updateIntroduction(
-            @NotNull @Positive Long userId,
-            @NotBlank @Size(min = 1, max = 400) String newIntroduction) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserProfileDTO> updateIntroduction(@NotNull @Positive Long userId,
+                                              @NotBlank @Size(min = 1, max = 400) String newIntroduction);
 
 }

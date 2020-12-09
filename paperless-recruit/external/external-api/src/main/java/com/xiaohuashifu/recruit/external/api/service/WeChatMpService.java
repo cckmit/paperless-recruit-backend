@@ -26,13 +26,9 @@ public interface WeChatMpService {
      * @param app 具体的微信小程序
      * @return openId
      */
-    default Result<String> getOpenId(@NotBlank @Size(max = 32, min = 32) String code, @NotNull AppEnum app) {
-        throw new UnsupportedOperationException();
-    }
+    Result<String> getOpenId(@NotBlank @Size(max = 32, min = 32) String code, @NotNull AppEnum app);
 
-    default void getUserInfo(String encryptedData, String iv, String code) {
-        throw new UnsupportedOperationException();
-    }
+    void getUserInfo(String encryptedData, String iv, String code);
 
     @interface SendSubscribeMessage{}
     /**
@@ -47,10 +43,8 @@ public interface WeChatMpService {
      * @param subscribeMessageDTO 订阅消息
      * @return 发送结果
      */
-    default Result<Void> sendSubscribeMessage(@NotNull AppEnum app, @NotNull @Positive Long userId,
-                                              @NotNull SubscribeMessageDTO subscribeMessageDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> sendSubscribeMessage(@NotNull AppEnum app, @NotNull @Positive Long userId,
+                                      @NotNull SubscribeMessageDTO subscribeMessageDTO);
 
 
 }

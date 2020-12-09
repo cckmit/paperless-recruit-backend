@@ -30,9 +30,7 @@ public interface PermissionService {
      * @param permissionDTO parentPermissionId，permissionName，authorizationUrl，description和available
      * @return Result<PermissionDTO>
      */
-    default Result<PermissionDTO> savePermission(@NotNull PermissionDTO permissionDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PermissionDTO> savePermission(@NotNull PermissionDTO permissionDTO);
 
     /**
      * 删除权限，只允许没有子权限的权限删除
@@ -43,9 +41,7 @@ public interface PermissionService {
      * @param id 权限编号
      * @return Result<Void>
      */
-    default Result<Void> removePermission(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> removePermission(@NotNull @Positive Long id);
 
     /**
      * 获取权限
@@ -56,9 +52,7 @@ public interface PermissionService {
      * @param id 权限编号
      * @return Result<PermissionDTO>
      */
-    default Result<PermissionDTO> getPermission(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PermissionDTO> getPermission(@NotNull @Positive Long id);
 
     /**
      * 获取权限
@@ -68,18 +62,14 @@ public interface PermissionService {
      * @param query 查询参数
      * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表，可能返回空列表
      */
-    default Result<PageInfo<PermissionDTO>> listPermissions(@NotNull PermissionQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<PermissionDTO>> listPermissions(@NotNull PermissionQuery query);
 
     /**
      * 获取所有权限
      *
      * @return 权限列表
      */
-    default Result<List<PermissionDTO>> listAllPermissions() {
-        throw new UnsupportedOperationException();
-    }
+    Result<List<PermissionDTO>> listAllPermissions();
 
     /**
      * 获取角色权限服务
@@ -90,9 +80,7 @@ public interface PermissionService {
      * @param roleIds 角色id列表
      * @return 角色的权限列表，可能返回空列表
      */
-    default Result<List<PermissionDTO>> listPermissionsByRoleIds(@NotEmpty List<Long> roleIds) {
-        throw new UnsupportedOperationException();
-    }
+    Result<List<PermissionDTO>> listPermissionsByRoleIds(@NotEmpty List<Long> roleIds);
 
     /**
      * 通过用户id获取用户权限列表
@@ -102,9 +90,7 @@ public interface PermissionService {
      * @param userId 用户id
      * @return 用户的权限列表，可能返回空列表
      */
-    default Result<List<PermissionDTO>> listPermissionsByUserId(@NotNull @Positive Long userId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<List<PermissionDTO>> listPermissionsByUserId(@NotNull @Positive Long userId);
 
     /**
      * 通过用户 id 获取用户权限 Authority 列表
@@ -119,9 +105,7 @@ public interface PermissionService {
      * @param userId 用户id
      * @return 用户的权限 Authority 列表，可能返回空列表
      */
-    default Result<Set<String>> listAuthoritiesByUserId(@NotNull @Positive Long userId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Set<String>> listAuthoritiesByUserId(@NotNull @Positive Long userId);
 
     /**
      * 更新权限名，新权限名必须不存在
@@ -133,11 +117,8 @@ public interface PermissionService {
      * @param newPermissionName 新权限名
      * @return Result<PermissionDTO> 更新后的权限对象
      */
-    default Result<PermissionDTO> updatePermissionName(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(min = 1, max = 64) String newPermissionName) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PermissionDTO> updatePermissionName(@NotNull @Positive Long id,
+                                               @NotBlank @Size(min = 1, max = 64) String newPermissionName);
 
     /**
      * 更新授权路径
@@ -148,11 +129,8 @@ public interface PermissionService {
      * @param newAuthorizationUrl 新授权路径
      * @return Result<PermissionDTO> 更新后的权限对象
      */
-    default Result<PermissionDTO> updateAuthorizationUrl(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(min = 1, max = 255) String newAuthorizationUrl) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PermissionDTO> updateAuthorizationUrl(@NotNull @Positive Long id,
+                                                 @NotBlank @Size(min = 1, max = 255) String newAuthorizationUrl);
 
     /**
      * 更新权限描述
@@ -163,11 +141,8 @@ public interface PermissionService {
      * @param newDescription 新权限描述
      * @return Result<PermissionDTO> 更新后的权限对象
      */
-    default Result<PermissionDTO> updateDescription(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(min = 1, max = 200) String newDescription) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PermissionDTO> updateDescription(@NotNull @Positive Long id,
+                                            @NotBlank @Size(min = 1, max = 200) String newDescription);
 
     /**
      * 禁用权限（且子权限可用状态也被禁用，递归禁用）
@@ -179,9 +154,7 @@ public interface PermissionService {
      * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，
      *          分别对应的 key 为 totalDisableCount 和 newPermission
      */
-    default Result<Map<String, Object>> disablePermission(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Map<String, Object>> disablePermission(@NotNull @Positive Long id);
 
     /**
      * 解禁权限（且子权限可用状态也被解禁，递归解禁）
@@ -193,9 +166,7 @@ public interface PermissionService {
      * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象
      *          分别对应的 key 为 totalEnableCount 和 newPermission
      */
-    default Result<Map<String, Object>> enablePermission(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Map<String, Object>> enablePermission(@NotNull @Positive Long id);
 
     /**
      * 设置父权限
@@ -211,9 +182,6 @@ public interface PermissionService {
      *          禁用的数量和设置父权限后的权限对象，分别对应的key为totalDisableCount和newPermission
      *          这里的禁用是因为如果父权限为禁用，则该权限必须也递归的禁用
      */
-    default Result<Map<String, Object>> setParentPermission(
-            @NotNull @Positive Long id,
-            @NotNull @PositiveOrZero Long parentPermissionId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Map<String, Object>> setParentPermission(@NotNull @Positive Long id,
+                                                    @NotNull @PositiveOrZero Long parentPermissionId);
 }

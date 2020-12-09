@@ -24,9 +24,7 @@ public interface ImageAuthCodeService {
      * @param imageAuthCodeDTO ImageAuthCodeDTO
      * @return ImageAuthCodeDTO
      */
-    default Result<ImageAuthCodeDTO> createImageAuthCode(@NotNull ImageAuthCodeDTO imageAuthCodeDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<ImageAuthCodeDTO> createImageAuthCode(@NotNull ImageAuthCodeDTO imageAuthCodeDTO);
 
     /**
      * 校验验证码
@@ -42,8 +40,6 @@ public interface ImageAuthCodeService {
      * @param authCode 用户输入的验证码字符串
      * @return 校验结果
      */
-    default Result<Void> checkImageAuthCode(@NotBlank String id, @NotBlank String authCode) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> checkImageAuthCode(@NotBlank String id, @NotBlank String authCode);
 
 }

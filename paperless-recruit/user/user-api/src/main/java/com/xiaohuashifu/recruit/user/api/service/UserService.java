@@ -32,9 +32,7 @@ public interface UserService {
      * @param password 密码
      * @return 新创建的用户
      */
-    default Result<UserDTO> signUpUser(@NotBlank @Username String username, @NotNull @Password String password) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> signUpUser(@NotBlank @Username String username, @NotNull @Password String password);
 
     /**
      * 通过短信验证码注册账号
@@ -48,10 +46,7 @@ public interface UserService {
      * @param authCode 短信验证码
      * @return 新创建的用户
      */
-    default Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone,
-                                                  @NotBlank @AuthCode String authCode) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone, @NotBlank @AuthCode String authCode);
 
     /**
      * 通过短信验证码注册账号
@@ -68,11 +63,8 @@ public interface UserService {
      * @param password 密码
      * @return 新创建的用户
      */
-    default Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone,
-                                                @NotBlank @AuthCode String authCode,
-                                                @Password String password) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> signUpBySmsAuthCode(@NotBlank @Phone String phone, @NotBlank @AuthCode String authCode,
+                                        @Password String password);
 
     /**
      * 通过id获取用户信息
@@ -83,9 +75,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUser(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> getUser(@NotNull @Positive Long id);
 
     /**
      * 通过用户名获取用户对象
@@ -96,9 +86,7 @@ public interface UserService {
      * @param username 用户名
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUserByUsername(@NotBlank @Username String username) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> getUserByUsername(@NotBlank @Username String username);
 
     /**
      * 通过用户名或者手机或者邮箱获取用户对象
@@ -110,9 +98,7 @@ public interface UserService {
      * @param usernameOrPhoneOrEmail 用户名或者手机或者邮箱
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUserByUsernameOrPhoneOrEmail(@NotBlank String usernameOrPhoneOrEmail) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> getUserByUsernameOrPhoneOrEmail(@NotBlank String usernameOrPhoneOrEmail);
 
     /**
      * 通过手机号码获取用户对象
@@ -123,9 +109,7 @@ public interface UserService {
      * @param phone 手机号
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUserByPhone(@NotBlank @Phone String phone) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> getUserByPhone(@NotBlank @Phone String phone);
 
     /**
      * 通过邮箱获取用户对象
@@ -136,9 +120,7 @@ public interface UserService {
      * @param email 邮箱
      * @return 获取到的用户
      */
-    default Result<UserDTO> getUserByEmail(@NotBlank @Email String email) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> getUserByEmail(@NotBlank @Email String email);
 
     /**
      * 多参数查询用户信息
@@ -148,9 +130,7 @@ public interface UserService {
      * @param query 查询参数
      * @return Result<PageInfo<UserDTO>> 带分页信息的查询结果用户列表，可能返回空列表
      */
-    default Result<PageInfo<UserDTO>> listUsers(@NotNull UserQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<UserDTO>> listUsers(@NotNull UserQuery query);
 
     /**
      * 更新用户名
@@ -162,9 +142,7 @@ public interface UserService {
      * @param newUsername 新用户名
      * @return 更新后的用户
      */
-    default Result<UserDTO> updateUsername(@NotNull @Positive Long id, @NotBlank @Username String newUsername) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> updateUsername(@NotNull @Positive Long id, @NotBlank @Username String newUsername);
 
     /**
      * 更新手机号码
@@ -178,10 +156,8 @@ public interface UserService {
      * @param authCode 短信验证码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePhone(@NotNull @Positive Long id, @NotBlank @Phone String newPhone,
-                                        @NotBlank @AuthCode String authCode) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> updatePhone(@NotNull @Positive Long id, @NotBlank @Phone String newPhone,
+                                @NotBlank @AuthCode String authCode);
 
     /**
      * 更新邮箱
@@ -195,10 +171,8 @@ public interface UserService {
      * @param authCode 邮箱认证码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updateEmail(@NotNull @Positive Long id, @NotBlank @Email String newEmail,
-                                        @NotBlank @AuthCode String authCode) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> updateEmail(@NotNull @Positive Long id, @NotBlank @Email String newEmail,
+                                @NotBlank @AuthCode String authCode);
 
     /**
      * 更新密码
@@ -209,9 +183,7 @@ public interface UserService {
      * @param newPassword 新密码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePassword(@NotNull @Positive Long id, @NotNull @Password String newPassword) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> updatePassword(@NotNull @Positive Long id, @NotNull @Password String newPassword);
 
     /**
      * 更新密码，通过邮箱验证码
@@ -224,11 +196,8 @@ public interface UserService {
      * @param authCode 邮箱验证码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePasswordByEmailAuthCode(@NotBlank @Email String email,
-                                                          @NotNull @Password String newPassword,
-                                                          @NotBlank @AuthCode String authCode) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> updatePasswordByEmailAuthCode(@NotBlank @Email String email, @NotNull @Password String newPassword,
+                                                  @NotBlank @AuthCode String authCode);
 
     /**
      * 更新密码，通过短信验证码
@@ -242,11 +211,8 @@ public interface UserService {
      * @param authCode 短信验证码
      * @return 更新后的用户
      */
-    default Result<UserDTO> updatePasswordBySmsAuthCode(@NotBlank @Phone String phone,
-                                                          @NotNull @Password String newPassword,
-                                                          @NotBlank @AuthCode String authCode) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> updatePasswordBySmsAuthCode(@NotBlank @Phone String phone, @NotNull @Password String newPassword,
+                                                @NotBlank @AuthCode String authCode);
 
     /**
      * 禁用用户
@@ -257,9 +223,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 禁用后的用户
      */
-    default Result<UserDTO> disableUser(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> disableUser(@NotNull @Positive Long id);
 
     /**
      * 解禁用户
@@ -270,9 +234,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 解禁后的用户
      */
-    default Result<UserDTO> enableUser(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<UserDTO> enableUser(@NotNull @Positive Long id);
 
     /**
      * 判断用户是否存在
@@ -283,9 +245,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 是否存在，Result.success=true表示用户存在
      */
-    default Result<Void> userExists(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> userExists(@NotNull @Positive Long id);
 
     /**
      * 发送注册账号时使用的短信验证码
@@ -297,9 +257,7 @@ public interface UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    default Result<Void> sendSmsAuthCodeForSignUp(@NotBlank @Phone String phone) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> sendSmsAuthCodeForSignUp(@NotBlank @Phone String phone);
 
     /**
      * 发送更新手机号码时使用的短信验证码
@@ -311,9 +269,7 @@ public interface UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    default Result<Void> sendSmsAuthCodeForUpdatePhone(@NotBlank @Phone String phone) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> sendSmsAuthCodeForUpdatePhone(@NotBlank @Phone String phone);
 
     /**
      * 发送更新密码时使用的短信验证码
@@ -325,9 +281,7 @@ public interface UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    default Result<Void> sendSmsAuthCodeForUpdatePassword(@NotBlank @Phone String phone) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> sendSmsAuthCodeForUpdatePassword(@NotBlank @Phone String phone);
 
     /**
      * 发送更新邮箱时使用的邮箱验证码
@@ -339,9 +293,7 @@ public interface UserService {
      * @param email 邮箱
      * @return 发送结果
      */
-    default Result<Void> sendEmailAuthCodeForUpdateEmail(@NotBlank @Email String email) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> sendEmailAuthCodeForUpdateEmail(@NotBlank @Email String email);
 
     /**
      * 发送更新密码时使用的邮箱验证码
@@ -353,8 +305,6 @@ public interface UserService {
      * @param email 邮箱
      * @return 发送结果
      */
-    default Result<Void> sendEmailAuthCodeForUpdatePassword(@NotBlank @Email String email) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> sendEmailAuthCodeForUpdatePassword(@NotBlank @Email String email);
 
 }

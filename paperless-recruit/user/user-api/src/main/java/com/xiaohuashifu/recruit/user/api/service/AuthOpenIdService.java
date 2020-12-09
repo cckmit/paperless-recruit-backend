@@ -30,10 +30,8 @@ public interface AuthOpenIdService {
      * @param code 微信小程序 wx.login() 接口的返回结果
      * @return AuthOpenIdDTO
      */
-    default Result<AuthOpenIdDTO> bindAuthOpenIdForWeChatMp(@NotNull @Positive Long userId, @NotNull AppEnum app,
-                                                            @NotBlank @Size(min = 32, max = 32) String code) {
-        throw new UnsupportedOperationException();
-    }
+    Result<AuthOpenIdDTO> bindAuthOpenIdForWeChatMp(@NotNull @Positive Long userId, @NotNull AppEnum app,
+                                                            @NotBlank @Size(min = 32, max = 32) String code);
 
     /**
      * 用于微信小程序用户检查 AuthOpenId
@@ -48,10 +46,8 @@ public interface AuthOpenIdService {
      * @param code 微信小程序 wx.login() 接口的返回结果
      * @return AuthOpenIdDTOauthOpenId
      */
-    default Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMp(@NotNull AppEnum app,
-                                                             @NotBlank @Size(min = 32, max = 32) String code) {
-        throw new UnsupportedOperationException();
-    }
+    Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMp(@NotNull AppEnum app,
+                                                             @NotBlank @Size(min = 32, max = 32) String code);
 
     /**
      * 获取 openId
@@ -63,8 +59,6 @@ public interface AuthOpenIdService {
      * @param app 具体的微信小程序
      * @return openId 若参数错误的情况下，返回 null
      */
-    default Result<String> getOpenId(@NotNull AppEnum app, @NotNull @Positive Long userId) {
-        throw new UnsupportedOperationException();
-    }
+    Result<String> getOpenId(@NotNull AppEnum app, @NotNull @Positive Long userId);
 
 }

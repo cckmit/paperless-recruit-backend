@@ -29,9 +29,7 @@ public interface ObjectStorageService {
      * @param object 对象
      * @return 上传结果
      */
-    default Result<Void> putObject(String objectName, byte[] object) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> putObject(String objectName, byte[] object);
 
     /**
      * 删除对象

@@ -40,10 +40,7 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @param id 模板编号
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
-    default Result<WeChatMpSubscribeMessageTemplateDTO> getWeChatMpSubscribeMessageTemplate(
-            @NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<WeChatMpSubscribeMessageTemplateDTO> getWeChatMpSubscribeMessageTemplate(@NotNull @Positive Long id);
 
     /**
      * 获取模板通过 query 参数
@@ -53,10 +50,8 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @param query 查询参数
      * @return WeChatMpSubscribeMessageTemplateDTO 可能返回空列表
      */
-    default Result<PageInfo<WeChatMpSubscribeMessageTemplateDTO>> listWeChatMpSubscribeMessageTemplates(
-            @NotNull WeChatMpSubscribeMessageTemplateQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<WeChatMpSubscribeMessageTemplateDTO>> listWeChatMpSubscribeMessageTemplates(
+            @NotNull WeChatMpSubscribeMessageTemplateQuery query);
 
     @interface UpdateWeChatMpSubscribeMessageTemplate {}
     /**
@@ -67,9 +62,7 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @param weChatMpSubscribeMessageTemplateDTO WeChatMpSubscribeMessageTemplateDTO
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
-    default Result<WeChatMpSubscribeMessageTemplateDTO> updateWeChatMpSubscribeMessageTemplate(
-            @NotNull WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<WeChatMpSubscribeMessageTemplateDTO> updateWeChatMpSubscribeMessageTemplate(
+            @NotNull WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO);
 
 }

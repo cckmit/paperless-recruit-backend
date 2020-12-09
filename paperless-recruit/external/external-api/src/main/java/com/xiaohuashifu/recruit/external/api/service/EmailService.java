@@ -28,9 +28,7 @@ public interface EmailService {
      * @param attachmentMap 附件Map，可以为 null
      * @return 发送结果
      */
-    default Result<Void> sendSimpleEmail(@NotNull EmailDTO emailDTO, Map<String, byte[]> attachmentMap) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> sendSimpleEmail(@NotNull EmailDTO emailDTO, Map<String, byte[]> attachmentMap);
 
     @interface SendTemplateEmail{}
     /**
@@ -46,10 +44,8 @@ public interface EmailService {
      * @return 发送结果
      */
     // TODO: 2020/12/2 这里的模板可以封装成服务，这样就可以准确判断是否有模板了
-    default Result<Void> sendTemplateEmail(@NotNull EmailDTO emailDTO, @NotBlank String templateName,
-                                             @NotEmpty Map<String, Object> model, Map<String, byte[]> attachmentMap) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> sendTemplateEmail(@NotNull EmailDTO emailDTO, @NotBlank String templateName,
+                                   @NotEmpty Map<String, Object> model, Map<String, byte[]> attachmentMap);
 
     @interface CreateAndSendEmailAuthCode{}
     /**
@@ -62,9 +58,7 @@ public interface EmailService {
      * @param emailAuthCodeDTO 邮箱验证码对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示发送成功，否则发送失败
      */
-    default Result<Void> createAndSendEmailAuthCode(@NotNull EmailAuthCodeDTO emailAuthCodeDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> createAndSendEmailAuthCode(@NotNull EmailAuthCodeDTO emailAuthCodeDTO);
 
     @interface CheckEmailAuthCode{}
     /**
@@ -78,7 +72,5 @@ public interface EmailService {
      * @param emailAuthCodeDTO 邮箱验证码对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示验证成功，否则验证失败
      */
-    default Result<Void> checkEmailAuthCode(@NotNull EmailAuthCodeDTO emailAuthCodeDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> checkEmailAuthCode(@NotNull EmailAuthCodeDTO emailAuthCodeDTO);
 }

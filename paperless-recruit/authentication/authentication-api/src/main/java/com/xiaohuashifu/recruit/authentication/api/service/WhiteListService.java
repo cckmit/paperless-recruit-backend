@@ -29,10 +29,7 @@ public interface WhiteListService {
      * @param url 被允许的 url
      * @return PermittedUrlDTO
      */
-    default Result<PermittedUrlDTO> savePermittedUrl(
-            @NotBlank @Size(min = 1, max = 255) @AntPath String url) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PermittedUrlDTO> savePermittedUrl(@NotBlank @Size(min = 1, max = 255) @AntPath String url);
 
     /**
      * 删除被允许的 url
@@ -42,9 +39,7 @@ public interface WhiteListService {
      * @param id 被允许的 url 的编号
      * @return PermittedUrlDTO
      */
-    default Result<Void> removePermittedUrl(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> removePermittedUrl(@NotNull @Positive Long id);
 
     /**
      * 通过编号获得 PermittedUrlDTO
@@ -55,9 +50,7 @@ public interface WhiteListService {
      * @param id 被允许路径的编号
      * @return PermittedUrlDTO
      */
-    default Result<PermittedUrlDTO> getPermittedUrl(@NotNull @Positive Long id) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PermittedUrlDTO> getPermittedUrl(@NotNull @Positive Long id);
 
     /**
      * 查询被允许的路径
@@ -67,18 +60,14 @@ public interface WhiteListService {
      * @param query 查询参数
      * @return PageInfo<PermittedUrlDTO> 这里可能返回空列表
      */
-    default Result<PageInfo<PermittedUrlDTO>> listPermittedUrls(@NotNull PermittedUrlQuery query) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PageInfo<PermittedUrlDTO>> listPermittedUrls(@NotNull PermittedUrlQuery query);
 
     /**
      * 获取白名单
      *
      * @return 白名单列表
      */
-    default Result<List<String>> getWhiteList() {
-        throw new UnsupportedOperationException();
-    }
+    Result<List<String>> getWhiteList();
 
     /**
      * 更新被允许的路径
@@ -90,9 +79,6 @@ public interface WhiteListService {
      * @param newUrl 新的被允许路径
      * @return PermittedUrlDTO 更新后的 PermittedUrlDTO
      */
-    default Result<PermittedUrlDTO> updateUrl(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(min = 1, max = 255) @AntPath String newUrl) {
-        throw new UnsupportedOperationException();
-    }
+    Result<PermittedUrlDTO> updateUrl(@NotNull @Positive Long id,
+                                      @NotBlank @Size(min = 1, max = 255) @AntPath String newUrl);
 }

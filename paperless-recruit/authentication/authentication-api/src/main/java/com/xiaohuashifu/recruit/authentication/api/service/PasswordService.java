@@ -13,7 +13,5 @@ public interface PasswordService {
      * @param password 原密码
      * @return 编码后的密码
      */
-    default String encodePassword(String password) {
-        throw new UnsupportedOperationException();
-    }
+    String encodePassword(String password);
 }

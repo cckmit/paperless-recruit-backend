@@ -33,9 +33,7 @@ public interface SmsService {
      * @param smsAuthCodeDTO 短信验证码对象
      * @return Result<Void> 返回结果若 Result.isSuccess()为true 表示发送成功，否则发送失败
      */
-    default Result<Void> createAndSendSmsAuthCode(@NotNull SmsAuthCodeDTO smsAuthCodeDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> createAndSendSmsAuthCode(@NotNull SmsAuthCodeDTO smsAuthCodeDTO);
 
     @interface CheckSmsAuthCode{}
     /**
@@ -49,8 +47,6 @@ public interface SmsService {
      * @param smsAuthCodeDTO 短信验证码对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示验证成功，否则验证失败
      */
-    default Result<Void> checkSmsAuthCode(@NotNull SmsAuthCodeDTO smsAuthCodeDTO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<Void> checkSmsAuthCode(@NotNull SmsAuthCodeDTO smsAuthCodeDTO);
 
 }

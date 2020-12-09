@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
-import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -44,7 +43,7 @@ public class UserServiceImplTest {
     @Test
     public void signUpUser() {
         final Result<UserDTO> saveUserResult = userService.signUpUser(
-                "-", "-");
+                "profiletest", "123456");
         System.out.println(saveUserResult);
     }
 

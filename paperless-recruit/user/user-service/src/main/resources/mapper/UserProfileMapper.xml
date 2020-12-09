@@ -18,7 +18,7 @@
         id, user_id, full_name, student_number, college, major, introduction, create_time, update_time
     </sql>
 
-    <insert id="insertUserProfile">
+    <insert id="insertUserProfile" keyProperty="id">
         insert into user_profile(user_id)
         values(#{userId})
     </insert>

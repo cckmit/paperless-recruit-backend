@@ -14,8 +14,6 @@ import com.xiaohuashifu.recruit.user.service.dao.UserProfileMapper;
 import com.xiaohuashifu.recruit.user.service.do0.UserProfileDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,8 +26,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserProfileServiceImpl.class);
 
     private final UserProfileMapper userProfileMapper;
 
@@ -54,10 +50,10 @@ public class UserProfileServiceImpl implements UserProfileService {
      * @errorCode InvalidParameter: 请求参数格式错误 | 用户不存在 | 用户信息已经存在
      *
      * @param userId 用户编号
-     * @return 创建结果
+     * @return UserProfileDTO 创建的用户对象
      */
     @Override
-    public Result<Void> createUserProfile(Long userId) {
+    public Result<UserProfileDTO> createUserProfile(Long userId) {
         // 判断该编号的用户是否存在
         Result<Void> userExistsResult = userService.userExists(userId);
         if (!userExistsResult.isSuccess()) {
@@ -71,8 +67,9 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         // 创建用户个人信息
-        userProfileMapper.insertUserProfile(userId);
-        return Result.success();
+        UserProfileDO userProfileDO = new UserProfileDO.Builder().userId(userId).build();
+        userProfileMapper.insertUserProfile(userProfileDO);
+        return getUserProfile(userProfileDO.getId());
     }
 
     /**

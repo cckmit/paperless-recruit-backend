@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface UserProfileMapper {
 
-    int insertUserProfile(Long userId);
+    int insertUserProfile(UserProfileDO userProfileDO);
 
     UserProfileDO getUserProfile(Long id);
 

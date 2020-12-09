@@ -24,9 +24,9 @@ public interface UserProfileService {
      * @errorCode InvalidParameter: 请求参数格式错误 | 用户不存在 | 用户信息已经存在
      *
      * @param userId 用户编号
-     * @return 创建结果
+     * @return UserProfileDTO 创建的用户对象
      */
-    default Result<Void> createUserProfile(@NotNull @Positive Long userId) {
+    default Result<UserProfileDTO> createUserProfile(@NotNull @Positive Long userId) {
         throw new UnsupportedOperationException();
     }
 

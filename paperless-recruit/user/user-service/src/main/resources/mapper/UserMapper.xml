@@ -5,7 +5,7 @@
     <resultMap id="user" type="com.xiaohuashifu.recruit.user.service.do0.UserDO">
         <id property="id" column="id"/>
         <result property="username" column="username"/>
-        <result property="password" column="password"/>
+        <result property="password" column="pwd"/>
         <result property="phone" column="phone"/>
         <result property="email" column="email"/>
         <result property="available" column="is_available"/>
@@ -14,13 +14,13 @@
     </resultMap>
 
     <sql id="user">
-        id, username, password, phone, email, is_available, create_time, update_time
+        id, username, pwd, phone, email, is_available, create_time, update_time
     </sql>
 
     <insert id="insertUser" keyProperty="id">
-        insert into user
+        insert into t_user
         <trim prefix="(" suffix=")" suffixOverrides="," >
-            username, password,
+            username, pwd,
             <if test="phone != null" >
                 phone,
             </if>
@@ -36,13 +36,13 @@
 
     <select id="getUser" resultMap="user">
         select <include refid="user"/>
-        from user
+        from t_user
         where id = #{id}
     </select>
 
     <select id="listUsers" resultMap="user">
         select <include refid="user"/>
-        from user
+        from t_user
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -70,101 +70,93 @@
     </select>
 
     <select id="getUserByUsername" resultMap="user">
-        select
-        <include refid="user"/>
-        from user
+        select <include refid="user"/>
+        from t_user
         where username = #{username}
     </select>
 
     <select id="getUserByUsernameOrPhoneOrEmail" resultMap="user">
-        select
-        <include refid="user"/>
-        from user
+        select <include refid="user"/>
+        from t_user
         where username = #{usernameOrPhoneOrEmail}
         or phone = #{usernameOrPhoneOrEmail}
         or email = #{usernameOrPhoneOrEmail}
     </select>
 
     <select id="getUserByPhone" resultMap="user">
-        select
-        <include refid="user"/>
-        from user
+        select <include refid="user"/>
+        from t_user
         where phone = #{phone}
     </select>
 
     <select id="getUserByEmail" resultMap="user">
-        select
-        <include refid="user"/>
-        from user
+        select <include refid="user"/>
+        from t_user
         where email = #{email}
     </select>
 
     <select id="count" resultType="int">
-        select
-        count(*)
-        from user
+        select count(*)
+        from t_user
         where id = #{id}
     </select>
 
     <select id="countByUsername" resultType="int">
-        select
-        count(*)
-        from user
+        select count(*)
+        from t_user
         where username = #{username}
     </select>
 
     <select id="countByPhone" resultType="int">
-        select
-        count(*)
-        from user
+        select count(*)
+        from t_user
         where phone = #{phone}
     </select>
 
     <select id="countByEmail" resultType="int">
-        select
-        count(*)
-        from user
+        select count(*)
+        from t_user
         where email = #{email}
     </select>
 
     <update id="updateUsername">
-        update user
+        update t_user
         set username = #{username}
         where id = #{id}
     </update>
 
     <update id="updatePhone">
-        update user
+        update t_user
         set phone = #{phone}
         where id = #{id}
     </update>
 
     <update id="updateEmail">
-        update user
+        update t_user
         set email = #{email}
         where id = #{id}
     </update>
 
     <update id="updatePassword">
-        update user
-        set password = #{password}
+        update t_user
+        set pwd = #{password}
         where id = #{id}
     </update>
 
     <update id="updatePasswordByEmail">
-        update user
-        set password = #{password}
+        update t_user
+        set pwd = #{password}
         where email = #{email}
     </update>
 
     <update id="updatePasswordByPhone">
-        update user
-        set password = #{password}
+        update t_user
+        set pwd = #{password}
         where phone = #{phone}
     </update>
 
     <update id="updateAvailable">
-        update user
+        update t_user
         set is_available = #{available}
         where id = #{id}
     </update>

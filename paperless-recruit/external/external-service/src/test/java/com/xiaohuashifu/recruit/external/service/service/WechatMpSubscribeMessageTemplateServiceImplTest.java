@@ -27,7 +27,7 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
         application.setName("wechatMpSubscribeMessageTemplateServiceTest");
         ReferenceConfig<WeChatMpSubscribeMessageTemplateService> reference = new ReferenceConfig<>();
         reference.setUrl("dubbo://127.0.0.1:20883/com.xiaohuashifu.recruit.external.api.service." +
-                "WechatMpSubscribeMessageTemplateService");
+                "WeChatMpSubscribeMessageTemplateService");
         reference.setApplication(application);
         reference.setInterface(WeChatMpSubscribeMessageTemplateService.class);
         reference.setTimeout(10000000);

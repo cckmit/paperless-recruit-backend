@@ -8,21 +8,21 @@
         <result property="appName" column="app_name"/>
         <result property="templateId" column="template_id"/>
         <result property="title" column="title"/>
-        <result property="type" column="type"/>
+        <result property="templateType" column="template_type"/>
         <result property="description" column="description"/>
-        <result property="status" column="status"/>
+        <result property="templateStatus" column="template_status"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="weChatMpSubscribeMessageTemplate">
-        id, app_name, template_id, title, type, description, status, create_time, update_time
+        id, app_name, template_id, title, template_type, description, template_status, create_time, update_time
     </sql>
 
     <insert id="insertWeChatMpSubscribeMessageTemplate" keyProperty="id">
         insert into wechat_mp_subscribe_message_template
-        (app_name, template_id, title, type, description, status)
-        values(#{appName}, #{templateId}, #{title}, #{type}, #{description}, #{status})
+        (app_name, template_id, title, template_type, description, template_status)
+        values(#{appName}, #{templateId}, #{title}, #{templateType}, #{description}, #{templateStatus})
     </insert>
 
     <select id="getWeChatMpSubscribeMessageTemplate" resultMap="weChatMpSubscribeMessageTemplate">
@@ -55,13 +55,13 @@
                 and title like "%"#{title}"%"
             </if>
             <if test="type != null">
-                and type like "%"#{type}"%"
+                and template_type like "%"#{type}"%"
             </if>
             <if test="description != null">
                 and description like "%"#{description}"%"
             </if>
             <if test="status != null">
-                and status = #{status}
+                and template_status = #{status}
             </if>
         </where>
     </select>
@@ -90,14 +90,14 @@
             <if test="title != null">
                 title = #{title},
             </if>
-            <if test="type != null">
-                type = #{type},
+            <if test="templateType != null">
+                template_type = #{templateType},
             </if>
             <if test="description != null">
                 description = #{description},
             </if>
-            <if test="status != null">
-                status = #{status},
+            <if test="templateStatus != null">
+                template_status = #{templateStatus},
             </if>
         </set>
         where id = #{id}

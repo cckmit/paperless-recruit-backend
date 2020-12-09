@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.external.service.pojo.do0;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.TriStatusEnum;
-import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
  */
 public class WeChatMpSubscribeMessageTemplateDO {
     private Long id;
+
     /**
      * 模板编号
      */
@@ -28,10 +28,11 @@ public class WeChatMpSubscribeMessageTemplateDO {
      * 模板标题
      */
     private String title;
+
     /**
      * 类目
      */
-    private String type;
+    private String templateType;
 
     /**
      * 描述
@@ -41,7 +42,7 @@ public class WeChatMpSubscribeMessageTemplateDO {
     /**
      * 状态
      */
-    private TriStatusEnum status;
+    private TriStatusEnum templateStatus;
 
     private LocalDateTime createTime;
 
@@ -79,12 +80,12 @@ public class WeChatMpSubscribeMessageTemplateDO {
         this.title = title;
     }
 
-    public String getType() {
-        return type;
+    public String getTemplateType() {
+        return templateType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTemplateType(String templateType) {
+        this.templateType = templateType;
     }
 
     public String getDescription() {
@@ -95,12 +96,12 @@ public class WeChatMpSubscribeMessageTemplateDO {
         this.description = description;
     }
 
-    public TriStatusEnum getStatus() {
-        return status;
+    public TriStatusEnum getTemplateStatus() {
+        return templateStatus;
     }
 
-    public void setStatus(TriStatusEnum status) {
-        this.status = status;
+    public void setTemplateStatus(TriStatusEnum templateStatus) {
+        this.templateStatus = templateStatus;
     }
 
     public LocalDateTime getCreateTime() {
@@ -126,9 +127,9 @@ public class WeChatMpSubscribeMessageTemplateDO {
                 ", templateId='" + templateId + '\'' +
                 ", appName=" + appName +
                 ", title='" + title + '\'' +
-                ", type='" + type + '\'' +
+                ", templateType='" + templateType + '\'' +
                 ", description='" + description + '\'' +
-                ", status=" + status +
+                ", templateStatus=" + templateStatus +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -139,9 +140,9 @@ public class WeChatMpSubscribeMessageTemplateDO {
         private String templateId;
         private AppEnum appName;
         private String title;
-        private String type;
+        private String templateType;
         private String description;
-        private TriStatusEnum status;
+        private TriStatusEnum templateStatus;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -165,8 +166,8 @@ public class WeChatMpSubscribeMessageTemplateDO {
             return this;
         }
 
-        public Builder type(String type) {
-            this.type = type;
+        public Builder templateType(String templateType) {
+            this.templateType = templateType;
             return this;
         }
 
@@ -175,8 +176,8 @@ public class WeChatMpSubscribeMessageTemplateDO {
             return this;
         }
 
-        public Builder status(TriStatusEnum status) {
-            this.status = status;
+        public Builder templateStatus(TriStatusEnum templateStatus) {
+            this.templateStatus = templateStatus;
             return this;
         }
 
@@ -196,9 +197,9 @@ public class WeChatMpSubscribeMessageTemplateDO {
             weChatMpSubscribeMessageTemplateDO.setTemplateId(templateId);
             weChatMpSubscribeMessageTemplateDO.setAppName(appName);
             weChatMpSubscribeMessageTemplateDO.setTitle(title);
-            weChatMpSubscribeMessageTemplateDO.setType(type);
+            weChatMpSubscribeMessageTemplateDO.setTemplateType(templateType);
             weChatMpSubscribeMessageTemplateDO.setDescription(description);
-            weChatMpSubscribeMessageTemplateDO.setStatus(status);
+            weChatMpSubscribeMessageTemplateDO.setTemplateStatus(templateStatus);
             weChatMpSubscribeMessageTemplateDO.setCreateTime(createTime);
             weChatMpSubscribeMessageTemplateDO.setUpdateTime(updateTime);
             return weChatMpSubscribeMessageTemplateDO;

@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
@@ -26,12 +25,9 @@ public class WeChatMpSubscribeMessageTemplateServiceImpl implements WeChatMpSubs
 
     private final WeChatMpSubscribeMessageTemplateMapper weChatMpSubscribeMessageTemplateMapper;
 
-    private final Mapper mapper;
-
     public WeChatMpSubscribeMessageTemplateServiceImpl(
-            WeChatMpSubscribeMessageTemplateMapper weChatMpSubscribeMessageTemplateMapper, Mapper mapper) {
+            WeChatMpSubscribeMessageTemplateMapper weChatMpSubscribeMessageTemplateMapper) {
         this.weChatMpSubscribeMessageTemplateMapper = weChatMpSubscribeMessageTemplateMapper;
-        this.mapper = mapper;
     }
 
     /**
@@ -59,9 +55,9 @@ public class WeChatMpSubscribeMessageTemplateServiceImpl implements WeChatMpSubs
                         .appName(weChatMpSubscribeMessageTemplateDTO.getApp())
                         .templateId(weChatMpSubscribeMessageTemplateDTO.getTemplateId())
                         .title(weChatMpSubscribeMessageTemplateDTO.getTitle())
-                        .type(weChatMpSubscribeMessageTemplateDTO.getType())
+                        .templateType(weChatMpSubscribeMessageTemplateDTO.getType())
                         .description(weChatMpSubscribeMessageTemplateDTO.getDescription())
-                        .status(weChatMpSubscribeMessageTemplateDTO.getStatus())
+                        .templateStatus(weChatMpSubscribeMessageTemplateDTO.getStatus())
                         .build();
         weChatMpSubscribeMessageTemplateMapper.insertWeChatMpSubscribeMessageTemplate(weChatMpSubscribeMessageTemplateDO);
         return getWeChatMpSubscribeMessageTemplate(weChatMpSubscribeMessageTemplateDO.getId());
@@ -78,14 +74,24 @@ public class WeChatMpSubscribeMessageTemplateServiceImpl implements WeChatMpSubs
      */
     @Override
     public Result<WeChatMpSubscribeMessageTemplateDTO> getWeChatMpSubscribeMessageTemplate(Long id) {
+        // 判断模板存不存在
         WeChatMpSubscribeMessageTemplateDO weChatMpSubscribeMessageTemplateDO =
                 weChatMpSubscribeMessageTemplateMapper.getWeChatMpSubscribeMessageTemplate(id);
         if (weChatMpSubscribeMessageTemplateDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
+
+        // 封装成 DTO
         WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO =
-                mapper.map(weChatMpSubscribeMessageTemplateDO, WeChatMpSubscribeMessageTemplateDTO.class);
-        weChatMpSubscribeMessageTemplateDTO.setApp(weChatMpSubscribeMessageTemplateDO.getAppName());
+                new WeChatMpSubscribeMessageTemplateDTO.Builder()
+                        .id(weChatMpSubscribeMessageTemplateDO.getId())
+                        .app(weChatMpSubscribeMessageTemplateDO.getAppName())
+                        .templateId(weChatMpSubscribeMessageTemplateDO.getTemplateId())
+                        .title(weChatMpSubscribeMessageTemplateDO.getTitle())
+                        .type(weChatMpSubscribeMessageTemplateDO.getTemplateType())
+                        .description(weChatMpSubscribeMessageTemplateDO.getDescription())
+                        .status(weChatMpSubscribeMessageTemplateDO.getTemplateStatus())
+                        .build();
         return Result.success(weChatMpSubscribeMessageTemplateDTO);
     }
 
@@ -108,12 +114,15 @@ public class WeChatMpSubscribeMessageTemplateServiceImpl implements WeChatMpSubs
         List<WeChatMpSubscribeMessageTemplateDTO> weChatMpSubscribeMessageTemplateDTOList =
                 weChatMpSubscribeMessageTemplateDOList
                 .stream()
-                .map(weChatMpSubscribeMessageTemplateDO -> {
-                            WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO =
-                                    mapper.map(weChatMpSubscribeMessageTemplateDO, WeChatMpSubscribeMessageTemplateDTO.class);
-                            weChatMpSubscribeMessageTemplateDTO.setApp(weChatMpSubscribeMessageTemplateDO.getAppName());
-                            return weChatMpSubscribeMessageTemplateDTO;
-                })
+                .map(weChatMpSubscribeMessageTemplateDO -> new WeChatMpSubscribeMessageTemplateDTO.Builder()
+                        .id(weChatMpSubscribeMessageTemplateDO.getId())
+                        .app(weChatMpSubscribeMessageTemplateDO.getAppName())
+                        .templateId(weChatMpSubscribeMessageTemplateDO.getTemplateId())
+                        .title(weChatMpSubscribeMessageTemplateDO.getTitle())
+                        .type(weChatMpSubscribeMessageTemplateDO.getTemplateType())
+                        .description(weChatMpSubscribeMessageTemplateDO.getDescription())
+                        .status(weChatMpSubscribeMessageTemplateDO.getTemplateStatus())
+                        .build())
                 .collect(Collectors.toList());
 
         // 包装 PageInfo
@@ -145,9 +154,9 @@ public class WeChatMpSubscribeMessageTemplateServiceImpl implements WeChatMpSubs
                         .appName(weChatMpSubscribeMessageTemplateDTO.getApp())
                         .templateId(weChatMpSubscribeMessageTemplateDTO.getTemplateId())
                         .title(weChatMpSubscribeMessageTemplateDTO.getTitle())
-                        .type(weChatMpSubscribeMessageTemplateDTO.getType())
+                        .templateType(weChatMpSubscribeMessageTemplateDTO.getType())
                         .description(weChatMpSubscribeMessageTemplateDTO.getDescription())
-                        .status(weChatMpSubscribeMessageTemplateDTO.getStatus())
+                        .templateStatus(weChatMpSubscribeMessageTemplateDTO.getStatus())
                         .build();
 
         // 检查是否每个域都为 null

@@ -7,7 +7,6 @@ import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTem
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 描述：微信订阅消息模板的传输对象
@@ -52,10 +51,6 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
      */
     @NotNull(groups = WeChatMpSubscribeMessageTemplateService.SaveWeChatMpSubscribeMessageTemplate.class)
     private TriStatusEnum status;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
 
     public Long getId() {
         return id;
@@ -113,22 +108,6 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
         this.description = description;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
         return "WechatMpSubscribeMessageTemplateDTO{" +
@@ -139,8 +118,6 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
                 ", type='" + type + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -152,8 +129,6 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
         private String type;
         private String description;
         private TriStatusEnum status;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
 
         public Builder id(Long id) {
             this.id = id;
@@ -190,16 +165,6 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
             return this;
         }
 
-        public Builder createTime(LocalDateTime createTime) {
-            this.createTime = createTime;
-            return this;
-        }
-
-        public Builder updateTime(LocalDateTime updateTime) {
-            this.updateTime = updateTime;
-            return this;
-        }
-
         public WeChatMpSubscribeMessageTemplateDTO build() {
             WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO
                     = new WeChatMpSubscribeMessageTemplateDTO();
@@ -210,8 +175,6 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
             weChatMpSubscribeMessageTemplateDTO.setType(type);
             weChatMpSubscribeMessageTemplateDTO.setDescription(description);
             weChatMpSubscribeMessageTemplateDTO.setStatus(status);
-            weChatMpSubscribeMessageTemplateDTO.setCreateTime(createTime);
-            weChatMpSubscribeMessageTemplateDTO.setUpdateTime(updateTime);
             return weChatMpSubscribeMessageTemplateDTO;
         }
     }

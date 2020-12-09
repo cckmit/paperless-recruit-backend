@@ -20,8 +20,6 @@ public class ImageAuthCodeDTO implements Serializable {
      */
     private String authCode;
 
-    public ImageAuthCodeDTO() {}
-
     public ImageAuthCodeDTO(String id, String authCode) {
         this.id = id;
         this.authCode = authCode;

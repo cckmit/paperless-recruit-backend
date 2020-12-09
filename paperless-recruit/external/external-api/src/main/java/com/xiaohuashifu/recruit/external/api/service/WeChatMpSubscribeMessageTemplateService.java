@@ -27,10 +27,8 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @param saveWeChatMpSubscribeMessageTemplatePO 保存的参数对象
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
-    default Result<WeChatMpSubscribeMessageTemplateDTO> saveWeChatMpSubscribeMessageTemplate(
-            @NotNull SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO) {
-        throw new UnsupportedOperationException();
-    }
+    Result<WeChatMpSubscribeMessageTemplateDTO> saveWeChatMpSubscribeMessageTemplate(
+            @NotNull SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO);
 
     /**
      * 获取模板

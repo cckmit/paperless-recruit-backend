@@ -1,18 +1,15 @@
-package com.xiaohuashifu.recruit.external.api.dto;
-
-import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
-import com.xiaohuashifu.recruit.external.api.service.EmailService;
+package com.xiaohuashifu.recruit.external.api.po;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
 
 /**
- * 描述：邮箱验证码，用于发送邮箱验证码时带的信息
+ * 描述：创建并发送邮件验证码的参数对象
  *
  * @author: xhsf
  * @create: 2020/11/19 13:42
  */
-public class EmailAuthCodeDTO implements Serializable {
+public class CreateAndSendEmailAuthCodePO implements Serializable {
     @NotBlank
     @Email
     private String email;
@@ -27,10 +24,10 @@ public class EmailAuthCodeDTO implements Serializable {
 
     /**
      * 标题，用于发送邮件验证码时标识该邮件验证码的目的
-     * 推荐长度不超过10个汉字
      * 如“找回密码”，“邮箱绑定”等
      */
-    @NotBlank(groups = EmailService.CreateAndSendEmailAuthCode.class)
+    @NotBlank
+    @Size(max = 10)
     private String title;
 
     /**
@@ -38,25 +35,10 @@ public class EmailAuthCodeDTO implements Serializable {
      * 推荐5或10分钟
      * 在调用 EmailService.createAndSendEmailAuthCode() 时需要带上
      */
-    @NotNull(groups = EmailService.CreateAndSendEmailAuthCode.class)
+    @NotNull
     @Positive
     @Max(10)
     private Integer expiredTime;
-
-    /**
-     * 邮箱验证码
-     * 在调用 EmailService.checkEmailAuthCode() 时需要带上
-     */
-    @NotBlank(groups = EmailService.CheckEmailAuthCode.class)
-    @AuthCode
-    private String authCode;
-
-    /**
-     * 检查成功后是否删除该键
-     * 在调用 EmailService.checkEmailAuthCode() 时需要带上
-     */
-    @NotNull(groups = EmailService.CheckEmailAuthCode.class)
-    private Boolean delete;
 
     public String getEmail() {
         return email;
@@ -90,31 +72,13 @@ public class EmailAuthCodeDTO implements Serializable {
         this.expiredTime = expiredTime;
     }
 
-    public String getAuthCode() {
-        return authCode;
-    }
-
-    public void setAuthCode(String authCode) {
-        this.authCode = authCode;
-    }
-
-    public Boolean getDelete() {
-        return delete;
-    }
-
-    public void setDelete(Boolean delete) {
-        this.delete = delete;
-    }
-
     @Override
     public String toString() {
-        return "EmailAuthCodeDTO{" +
+        return "CreateAndSendEmailAuthCodePO{" +
                 "email='" + email + '\'' +
                 ", subject='" + subject + '\'' +
                 ", title='" + title + '\'' +
                 ", expiredTime=" + expiredTime +
-                ", authCode='" + authCode + '\'' +
-                ", delete=" + delete +
                 '}';
     }
 
@@ -123,8 +87,6 @@ public class EmailAuthCodeDTO implements Serializable {
         private String subject;
         private String title;
         private Integer expiredTime;
-        private String authCode;
-        private Boolean delete;
 
         public Builder email(String email) {
             this.email = email;
@@ -146,25 +108,13 @@ public class EmailAuthCodeDTO implements Serializable {
             return this;
         }
 
-        public Builder authCode(String authCode) {
-            this.authCode = authCode;
-            return this;
-        }
-
-        public Builder delete(Boolean delete) {
-            this.delete = delete;
-            return this;
-        }
-
-        public EmailAuthCodeDTO build() {
-            EmailAuthCodeDTO emailAuthCodeDTO = new EmailAuthCodeDTO();
-            emailAuthCodeDTO.setEmail(email);
-            emailAuthCodeDTO.setSubject(subject);
-            emailAuthCodeDTO.setTitle(title);
-            emailAuthCodeDTO.setExpiredTime(expiredTime);
-            emailAuthCodeDTO.setAuthCode(authCode);
-            emailAuthCodeDTO.setDelete(delete);
-            return emailAuthCodeDTO;
+        public CreateAndSendEmailAuthCodePO build() {
+            CreateAndSendEmailAuthCodePO createAndSendEmailAuthCodePO = new CreateAndSendEmailAuthCodePO();
+            createAndSendEmailAuthCodePO.setEmail(email);
+            createAndSendEmailAuthCodePO.setSubject(subject);
+            createAndSendEmailAuthCodePO.setTitle(title);
+            createAndSendEmailAuthCodePO.setExpiredTime(expiredTime);
+            return createAndSendEmailAuthCodePO;
         }
     }
 }

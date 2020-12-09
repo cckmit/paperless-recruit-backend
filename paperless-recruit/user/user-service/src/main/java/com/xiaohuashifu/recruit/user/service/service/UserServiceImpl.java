@@ -5,8 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.po.CheckEmailAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.po.CreateAndSendEmailAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CreateAndSendSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
@@ -436,12 +437,13 @@ public class UserServiceImpl implements UserService {
         }
 
         // 判断验证码是否正确
-        Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
-                .email(newEmail)
-                .subject(EMAIL_AUTH_CODE_UPDATE_EMAIL_SUBJECT)
-                .authCode(authCode)
-                .delete(true)
-                .build());
+        Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(
+                new CheckEmailAuthCodePO.Builder()
+                        .email(newEmail)
+                        .subject(EMAIL_AUTH_CODE_UPDATE_EMAIL_SUBJECT)
+                        .authCode(authCode)
+                        .delete(true)
+                        .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
@@ -493,12 +495,13 @@ public class UserServiceImpl implements UserService {
         }
 
         // 判断验证码是否正确
-        Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(new EmailAuthCodeDTO.Builder()
-                .email(email)
-                .subject(EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
-                .authCode(authCode)
-                .delete(true)
-                .build());
+        Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(
+                new CheckEmailAuthCodePO.Builder()
+                        .email(email)
+                        .subject(EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
+                        .authCode(authCode)
+                        .delete(true)
+                        .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
@@ -732,7 +735,7 @@ public class UserServiceImpl implements UserService {
      */
     private Result<Void> sendEmailAuthCode(String email, String subject, String title) {
         // 创建发送邮件验证码
-        EmailAuthCodeDTO emailAuthCodeDTO = new EmailAuthCodeDTO.Builder()
+        CreateAndSendEmailAuthCodePO emailAuthCodeDTO = new CreateAndSendEmailAuthCodePO.Builder()
                 .email(email)
                 .subject(subject)
                 .title(title)

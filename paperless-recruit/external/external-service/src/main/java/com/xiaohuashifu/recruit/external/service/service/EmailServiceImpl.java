@@ -3,8 +3,10 @@ package com.xiaohuashifu.recruit.external.service.service;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
-import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
-import com.xiaohuashifu.recruit.external.api.dto.EmailDTO;
+import com.xiaohuashifu.recruit.external.api.po.CheckEmailAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.po.CreateAndSendEmailAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.po.SendSimpleEmailPO;
+import com.xiaohuashifu.recruit.external.api.po.SendTemplateEmailPO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +20,6 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -60,23 +61,23 @@ public class EmailServiceImpl implements EmailService {
      * @errorCode InvalidParameter: 请求参数格式错误
      *              UnknownError: 发送邮件失败 | 邮箱地址错误 | 网络延迟
      *
-     * @param emailDTO 需要 to、subject、text 三个字段
-     * @param attachmentMap 附件Map，可以为 null
+     * @param sendSimpleEmailPO 发送简单邮件的参数对象
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendSimpleEmail(EmailDTO emailDTO, Map<String, byte[]> attachmentMap) {
+    public Result<Void> sendSimpleEmail(SendSimpleEmailPO sendSimpleEmailPO) {
         MimeMessageHelper helper;
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             // 设置基本信息
             helper = new MimeMessageHelper(mimeMessage, true);
             helper.setFrom(from);
-            helper.setTo(emailDTO.getTo());
-            helper.setSubject(emailDTO.getSubject());
-            helper.setText(emailDTO.getText());
+            helper.setTo(sendSimpleEmailPO.getTo());
+            helper.setSubject(sendSimpleEmailPO.getSubject());
+            helper.setText(sendSimpleEmailPO.getText());
 
             // 如果附件不为 null，添加附件
+            Map<String, byte[]> attachmentMap = sendSimpleEmailPO.getAttachmentMap();
             if (attachmentMap != null) {
                 for (Map.Entry<String, byte[]> attachment : attachmentMap.entrySet()) {
                     helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
@@ -98,31 +99,28 @@ public class EmailServiceImpl implements EmailService {
      * @errorCode InvalidParameter: 请求参数格式错误
      *              UnknownError: 发送邮件失败 | 邮箱地址错误 | 网络延迟 | 模板不存在 | 模板参数错误等
      *
-     * @param emailDTO 需要 to、subject 两个字段
-     * @param templateName 模板名，模板需要提前创建
-     * @param model 模板内的动态绑定的变量
-     * @param attachmentMap 附件 Map，可以为 null
+     * @param sendTemplateEmailPO 发送模板消息的参数对象
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendTemplateEmail(EmailDTO emailDTO, String templateName, Map<String, Object> model,
-                                          Map<String, byte[]> attachmentMap) {
+    public Result<Void> sendTemplateEmail(SendTemplateEmailPO sendTemplateEmailPO) {
         MimeMessageHelper helper;
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             // 设置基本信息
             helper = new MimeMessageHelper(mimeMessage, true);
             helper.setFrom(from);
-            helper.setTo(emailDTO.getTo());
-            helper.setSubject(emailDTO.getSubject());
+            helper.setTo(sendTemplateEmailPO.getTo());
+            helper.setSubject(sendTemplateEmailPO.getSubject());
 
             // 设置 text
             Context context = new Context();
-            context.setVariables(model);
-            String text = templateEngine.process(templateName, context);
+            context.setVariables(sendTemplateEmailPO.getTemplateParameters());
+            String text = templateEngine.process(sendTemplateEmailPO.getTemplateName(), context);
             helper.setText(text, true);
 
             // 如果附件不为 null，添加附件
+            Map<String, byte[]> attachmentMap = sendTemplateEmailPO.getAttachmentMap();
             if (attachmentMap != null) {
                 for (Map.Entry<String, byte[]> attachment : attachmentMap.entrySet()) {
                     helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
@@ -145,31 +143,37 @@ public class EmailServiceImpl implements EmailService {
      * @errorCode InvalidParameter: 请求参数格式错误
      *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
-     * @param emailAuthCodeDTO 邮箱验证码对象
+     * @param createAndSendEmailAuthCodePO 创建并发送邮箱验证码参数对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示发送成功，否则发送失败
      */
     @Override
-    public Result<Void> createAndSendEmailAuthCode(EmailAuthCodeDTO emailAuthCodeDTO) {
-        // 发送邮件到邮箱
+    public Result<Void> createAndSendEmailAuthCode(CreateAndSendEmailAuthCodePO createAndSendEmailAuthCodePO) {
+        // 构造发送邮件的参数
         String authCode = AuthCodeUtils.randomAuthCode();
-        Map<String, Object> model = new HashMap<>();
-        model.put("authCode", authCode);
-        model.put("title", emailAuthCodeDTO.getTitle());
-        model.put("expiredTime", emailAuthCodeDTO.getExpiredTime());
-        EmailDTO emailD = new EmailDTO.Builder()
-                .to(emailAuthCodeDTO.getEmail())
-                .subject("华农招新：" + emailAuthCodeDTO.getTitle() + "验证码")
+        Map<String, Object> templateParameters = new HashMap<>();
+        templateParameters.put("authCode", authCode);
+        templateParameters.put("title", createAndSendEmailAuthCodePO.getTitle());
+        templateParameters.put("expiredTime", createAndSendEmailAuthCodePO.getExpiredTime());
+        String subject = "华农招新：" + createAndSendEmailAuthCodePO.getTitle() + "验证码";
+        SendTemplateEmailPO sendTemplateEmailPO = new SendTemplateEmailPO.Builder()
+                .to(createAndSendEmailAuthCodePO.getEmail())
+                .subject(subject)
+                .templateName("RecruitAuthCode")
+                .templateParameters(templateParameters)
+                .attachmentMap(null)
                 .build();
-        Result<Void> sendEmailAuthCodeResult = sendTemplateEmail(
-                emailD, "RecruitAuthCode", model, null);
+
+        // 发送邮件到邮箱
+        Result<Void> sendEmailAuthCodeResult = sendTemplateEmail(sendTemplateEmailPO);
         if (!sendEmailAuthCodeResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Send email auth code failed.");
         }
 
         // 添加邮箱验证码到缓存
         String redisKey = EMAIL_AUTH_CODE_REDIS_PREFIX
-                + ":" + emailAuthCodeDTO.getSubject() + ":" + emailAuthCodeDTO.getEmail();
-        redisTemplate.opsForValue().set(redisKey, authCode, emailAuthCodeDTO.getExpiredTime(), TimeUnit.MINUTES);
+                + ":" + createAndSendEmailAuthCodePO.getSubject() + ":" + createAndSendEmailAuthCodePO.getEmail();
+        redisTemplate.opsForValue().set(
+                redisKey, authCode, createAndSendEmailAuthCodePO.getExpiredTime(), TimeUnit.MINUTES);
 
         return Result.success();
     }
@@ -182,14 +186,14 @@ public class EmailServiceImpl implements EmailService {
      *              InvalidParameter.AuthCode.NotExist: 找不到对应邮箱的验证码，有可能已经过期或者没有发送成功
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码值不正确
      *
-     * @param emailAuthCodeDTO 邮箱验证码对象
+     * @param checkEmailAuthCodePO 检查邮箱验证码参数对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示验证成功，否则验证失败
      */
     @Override
-    public Result<Void> checkEmailAuthCode(@NotNull EmailAuthCodeDTO emailAuthCodeDTO) {
+    public Result<Void> checkEmailAuthCode(CheckEmailAuthCodePO checkEmailAuthCodePO) {
         // 从缓存取出验证码
         String redisKey = EMAIL_AUTH_CODE_REDIS_PREFIX
-                + ":" + emailAuthCodeDTO.getSubject() + ":" + emailAuthCodeDTO.getEmail();
+                + ":" + checkEmailAuthCodePO.getSubject() + ":" + checkEmailAuthCodePO.getEmail();
         String authCode = redisTemplate.opsForValue().get(redisKey);
 
         // 验证码不存在
@@ -199,13 +203,13 @@ public class EmailServiceImpl implements EmailService {
         }
 
         // 验证码不正确
-        if (!Objects.equals(authCode, emailAuthCodeDTO.getAuthCode())) {
+        if (!Objects.equals(authCode, checkEmailAuthCodePO.getAuthCode())) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT,
                     "Auth code is incorrect.");
         }
 
         // 验证通过，如果需要删除验证码，则删除
-        if (emailAuthCodeDTO.getDelete()) {
+        if (checkEmailAuthCodePO.getDelete()) {
             redisTemplate.delete(redisKey);
         }
 

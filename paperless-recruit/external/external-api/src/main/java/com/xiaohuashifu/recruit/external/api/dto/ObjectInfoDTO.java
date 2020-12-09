@@ -14,8 +14,7 @@ public class ObjectInfoDTO implements Serializable {
     private Long size;
     private LocalDateTime updateTime;
 
-    public ObjectInfoDTO() {
-    }
+    public ObjectInfoDTO() {}
 
     public ObjectInfoDTO(String objectName, Long size, LocalDateTime updateTime) {
         this.objectName = objectName;

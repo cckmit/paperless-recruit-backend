@@ -19,10 +19,12 @@ public interface SmsService {
 
     /**
      * 发送手机短信
+     *
      * @param phone 手机号码
      * @param message 短信内容
      * @return 发送结果
      */
+    // TODO: 2020/12/9  该方法暂不支持
     default Result<Object> sendSms(@NotBlank @Phone String phone, @NotBlank @Sms String message) {
         throw new UnsupportedOperationException();
     }

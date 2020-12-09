@@ -166,7 +166,8 @@ public class UpdateWeChatMpSubscribeMessageTemplatePO implements Serializable {
         }
 
         public UpdateWeChatMpSubscribeMessageTemplatePO build() {
-            UpdateWeChatMpSubscribeMessageTemplatePO updateWeChatMpSubscribeMessageTemplatePO = new UpdateWeChatMpSubscribeMessageTemplatePO();
+            UpdateWeChatMpSubscribeMessageTemplatePO updateWeChatMpSubscribeMessageTemplatePO =
+                    new UpdateWeChatMpSubscribeMessageTemplatePO();
             updateWeChatMpSubscribeMessageTemplatePO.setId(id);
             updateWeChatMpSubscribeMessageTemplatePO.setApp(app);
             updateWeChatMpSubscribeMessageTemplatePO.setTemplateId(templateId);

@@ -13,9 +13,6 @@ public class ObjectInfoListDTO implements Serializable {
     private String nextMarker;
     private List<ObjectInfoDTO> objectInfos;
 
-    public ObjectInfoListDTO() {
-    }
-
     public ObjectInfoListDTO(String nextMarker, List<ObjectInfoDTO> objectInfos) {
         this.nextMarker = nextMarker;
         this.objectInfos = objectInfos;

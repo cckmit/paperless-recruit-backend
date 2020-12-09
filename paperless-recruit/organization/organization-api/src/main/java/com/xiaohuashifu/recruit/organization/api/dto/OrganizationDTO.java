@@ -1,10 +1,5 @@
 package com.xiaohuashifu.recruit.organization.api.dto;
 
-import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,14 +10,50 @@ import java.util.List;
  * @create 2020/12/6 21:11
  */
 public class OrganizationDTO implements Serializable {
+
+    /**
+     * 组织编号
+     */
     private Long id;
+
+    /**
+     * 组织所属主体编号
+     */
     private Long userId;
+
+    /**
+     * 组织名
+     */
     private String organizationName;
+
+    /**
+     * 组织名缩写
+     */
     private String abbreviationOrganizationName;
+
+    /**
+     * 组织介绍
+     */
     private String introduction;
+
+    /**
+     * 组织 logo
+     */
     private String logoUrl;
+
+    /**
+     * 组织成员数
+     */
     private String memberNumber;
+
+    /**
+     * 组织标签
+     */
     private List<String> labels;
+
+    /**
+     * 组织是否有效
+     */
     private Boolean available;
 
     public Long getId() {
@@ -111,7 +142,6 @@ public class OrganizationDTO implements Serializable {
                 ", available=" + available +
                 '}';
     }
-
 
     public static final class Builder {
         private Long id;

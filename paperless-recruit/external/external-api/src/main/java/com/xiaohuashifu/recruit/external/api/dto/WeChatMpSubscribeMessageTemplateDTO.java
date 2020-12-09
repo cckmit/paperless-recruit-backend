@@ -13,12 +13,18 @@ import java.io.Serializable;
  */
 public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
 
+    /**
+     * 模板编号，项目产生的
+     */
     private Long id;
 
+    /**
+     * 模板所属微信小程序
+     */
     private AppEnum app;
 
     /**
-     * 模板编号
+     * 模板编号，微信小程序平台的
      */
     private String templateId;
 

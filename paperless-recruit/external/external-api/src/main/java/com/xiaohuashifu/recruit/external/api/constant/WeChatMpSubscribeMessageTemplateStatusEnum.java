@@ -7,6 +7,7 @@ package com.xiaohuashifu.recruit.external.api.constant;
  * @create: 2020/11/22 01:18
  */
 public enum WeChatMpSubscribeMessageTemplateStatusEnum {
+
     /**
      * 可用
      */
@@ -21,4 +22,5 @@ public enum WeChatMpSubscribeMessageTemplateStatusEnum {
      * 不可用
      */
     UNAVAILABLE
+
 }

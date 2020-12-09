@@ -32,20 +32,44 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
     @Max(value = 50, message = "The pageSize must be less than or equal to 50.")
     private Long pageSize;
 
+    /**
+     * 模板编号，项目产生的
+     */
     private Long id;
 
+    /**
+     * 模板编号列表，项目产生的
+     */
     private List<Long> ids;
 
+    /**
+     * 模板所属微信小程序
+     */
     private AppEnum app;
 
+    /**
+     * 模板编号，微信小程序平台产生的
+     */
     private String templateId;
 
+    /**
+     * 标题，可模糊
+     */
     private String title;
 
+    /**
+     * 类别，可模糊
+     */
     private String type;
 
+    /**
+     * 描述，可模糊
+     */
     private String description;
 
+    /**
+     * 模板状态
+     */
     private WeChatMpSubscribeMessageTemplateStatusEnum status;
 
     public Long getPageNum() {

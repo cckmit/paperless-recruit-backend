@@ -10,8 +10,20 @@ import java.time.LocalDateTime;
  * @create 2020/12/7 20:07
  */
 public class ObjectInfoDTO implements Serializable {
+
+    /**
+     * 对象名，如 users/avatars/1321.jpg
+     */
     private String objectName;
+
+    /**
+     * 对象尺寸，单位字节
+     */
     private Long size;
+
+    /**
+     * 对象更新时间
+     */
     private LocalDateTime updateTime;
 
     public ObjectInfoDTO() {}

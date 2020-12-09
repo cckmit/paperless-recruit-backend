@@ -10,7 +10,16 @@ import java.util.List;
  * @create 2020/12/7 20:19
  */
 public class ObjectInfoListDTO implements Serializable {
+
+    /**
+     * 下一个轮查询的标识，也就是从哪个对象名开始，是完整路径
+     * 若为 null 表示已经没有更多的对象了
+     */
     private String nextMarker;
+
+    /**
+     * 对象信息列表
+     */
     private List<ObjectInfoDTO> objectInfos;
 
     public ObjectInfoListDTO(String nextMarker, List<ObjectInfoDTO> objectInfos) {

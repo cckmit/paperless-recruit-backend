@@ -16,48 +16,48 @@ public class CreateOrganizationPO {
     /**
      * 组织名
      */
-    @NotBlank
-    @Size(min = 2, max = 20)
+    @NotBlank(message = "The organizationName can't be blank.")
+    @Size(min = 2, max = 20, message = "The length of organizationName must be between 2 and 20.")
     private String organizationName;
 
     /**
      * 组织名缩写
      */
-    @NotBlank
-    @Size(min = 2, max = 5)
+    @NotBlank(message = "The abbreviationOrganizationName can't be blank.")
+    @Size(min = 2, max = 5, message = "The length of abbreviationOrganizationName must be between 2 and 5.")
     private String abbreviationOrganizationName;
 
     /**
      * 组织介绍
      */
-    @NotBlank
-    @Size(min = 1, max = 400)
+    @NotBlank(message = "The introduction can't be blank.")
+    @Size(min = 1, max = 400, message = "The length of introduction must be between 1 and 400.")
     private String introduction;
 
     /**
      * 组织图标
      */
-    @NotEmpty
-    @Size(max = 10240)
+    @NotNull(message = "The logo can't be null.")
+    @Size(max = 10240, message = "The logo must be less than 10MB.")
     private byte[] logo;
 
     /**
      * 组织标签列表
      */
-    @Size(max = 3)
+    @Size(max = 3, message = "The number of labels must be less than 3.")
     private List<String> labels;
 
     /**
      * 组织主体的邮箱，必须在该平台没有使用过
      */
-    @NotBlank
-    @Email
+    @NotBlank(message = "The email can't be blank.")
+    @Email(message = "The email format error.")
     private String email;
 
     /**
      * 邮箱验证码
      */
-    @NotBlank
+    @NotBlank(message = "The authCode can't be blank.")
     @AuthCode
     private String authCode;
 

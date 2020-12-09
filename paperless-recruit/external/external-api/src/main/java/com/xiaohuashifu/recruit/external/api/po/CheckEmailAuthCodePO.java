@@ -14,6 +14,7 @@ import java.io.Serializable;
  * @create: 2020/11/19 13:42
  */
 public class CheckEmailAuthCodePO implements Serializable {
+
     @NotBlank
     @Email
     private String email;

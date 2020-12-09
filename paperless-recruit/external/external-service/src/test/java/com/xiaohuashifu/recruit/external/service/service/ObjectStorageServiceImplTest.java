@@ -35,12 +35,7 @@ public class ObjectStorageServiceImplTest {
 
     @Test
     public void putObject() {
-        byte[] bytes = "新华社发新华社发顺丰".getBytes();
-        List<Byte> object = new ArrayList<>(bytes.length);
-        for (byte aByte : bytes) {
-            object.add(aByte);
-        }
-        System.out.println(objectStorageService.putObject("    ", "dassd31".getBytes()));
+        System.out.println(objectStorageService.putObject("test/test4", "新华社发新华社发顺丰".getBytes()));
     }
 
     @Test
@@ -57,6 +52,7 @@ public class ObjectStorageServiceImplTest {
 
     @Test
     public void listObjectInfos() {
-        System.out.println(objectStorageService.listObjectInfos("", "test&\"<>/te.txt", 50));
+        System.out.println(objectStorageService.listObjectInfos("test/", "", 1));
     }
+
 }

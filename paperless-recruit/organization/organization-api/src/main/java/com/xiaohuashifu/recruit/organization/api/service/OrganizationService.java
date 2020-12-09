@@ -22,7 +22,8 @@ public interface OrganizationService {
      * @param createOrganizationPO 创建组织的参数对象
      * @return OrganizationDTO
      */
-    Result<OrganizationDTO> createOrganization(@NotNull CreateOrganizationPO createOrganizationPO);
+    Result<OrganizationDTO> createOrganization(
+            @NotNull(message = "The createOrganizationPO can't be null.") CreateOrganizationPO createOrganizationPO);
 
     /**
      * 添加组织的标签
@@ -31,7 +32,10 @@ public interface OrganizationService {
      * @param labelName 标签名
      * @return 添加结果
      */
-    Result<Void> addLabel(@NotNull @Positive Long id, @NotBlank @Size(min = 1, max = 4) String labelName);
+    Result<Void> addLabel(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The labelName can't be blank.")
+            @Size(min = 1, max = 4, message = "The length of labelName must be between 1 and 4.") String labelName);
 
     /**
      * 删除组织的标签
@@ -40,7 +44,10 @@ public interface OrganizationService {
      * @param labelName 标签名
      * @return 删除结果
      */
-    Result<Void> removeLabel(@NotNull @Positive Long id, @NotBlank @Size(min = 1, max = 4) String labelName);
+    Result<Void> removeLabel(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The labelName can't be blank.")
+            @Size(min = 1, max = 4, message = "The length of labelName must be between 1 and 4.") String labelName);
 
     /**
      * 获取组织
@@ -48,7 +55,8 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return OrganizationDTO
      */
-    Result<OrganizationDTO> getOrganization(@NotNull @Positive Long id);
+    Result<OrganizationDTO> getOrganization(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 查询组织
@@ -56,7 +64,8 @@ public interface OrganizationService {
      * @param query 查询参数
      * @return PageInfo<OrganizationDTO> 查询结果，可能返回空列表
      */
-    Result<PageInfo<OrganizationDTO>> listOrganizations(@NotNull OrganizationQuery query);
+    Result<PageInfo<OrganizationDTO>> listOrganizations(
+            @NotNull(message = "The query can't be null.") OrganizationQuery query);
 
     /**
      * 更新组织名
@@ -66,7 +75,10 @@ public interface OrganizationService {
      * @return 更新后的组织
      */
     Result<OrganizationDTO> updateOrganizationName(
-            @NotNull @Positive Long id, @NotBlank @Size(min = 2, max = 20) String newOrganizationName);
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newOrganizationName can't be blank.")
+            @Size(min = 2, max = 20, message = "The length of newOrganizationName must be between 2 and 20.")
+                    String newOrganizationName);
 
     /**
      * 更新组织名缩写
@@ -76,7 +88,10 @@ public interface OrganizationService {
      * @return 更新后的组织
      */
     Result<OrganizationDTO> updateAbbreviationOrganizationName(
-            @NotNull @Positive Long id, @NotBlank @Size(min = 2, max = 5) String newAbbreviationOrganizationName);
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newAbbreviationOrganizationName can't be blank.")
+            @Size(min = 2, max = 5, message = "The length of newAbbreviationOrganizationName must be between 2 and 5.")
+                    String newAbbreviationOrganizationName);
 
     /**
      * 更新组织介绍
@@ -86,7 +101,10 @@ public interface OrganizationService {
      * @return 更新后的组织
      */
     Result<OrganizationDTO> updateIntroduction(
-            @NotNull @Positive Long id, @NotBlank @Size(min = 1, max = 400) String newIntroduction);
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newIntroduction can't be blank.")
+            @Size(min = 1, max = 400, message = "The length of newIntroduction must be between 1 and 400.")
+                    String newIntroduction);
 
     /**
      * 更新组织 Logo
@@ -96,7 +114,9 @@ public interface OrganizationService {
      * @return 更新后的组织
      */
     Result<OrganizationDTO> updateLogo(
-            @NotNull @Positive Long id, @NotEmpty @Size(min = 1, max = 10240) byte[] newLogo);
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The newLogo can't be null.")
+            @Size(max = 10240, message = "The newLogo must be less than 10MB.") byte[] newLogo);
 
     /**
      * 增加成员数，+1
@@ -104,7 +124,8 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return 增加成员数结果，通过 Result.isSuccess() 判断
      */
-    Result<Void> increaseMemberNumber(@NotNull @Positive Long id);
+    Result<Void> increaseMemberNumber(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 减少成员数，-1
@@ -112,7 +133,8 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return 减少成员数结果，通过 Result.isSuccess() 判断
      */
-    Result<Void> decreaseMemberNumber(@NotNull @Positive Long id);
+    Result<Void> decreaseMemberNumber(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等
@@ -120,7 +142,8 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return 禁用后的组织
      */
-    Result<OrganizationDTO> disableOrganization(@NotNull @Positive Long id);
+    Result<OrganizationDTO> disableOrganization(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 解禁组织
@@ -128,5 +151,7 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return 解禁后的组织
      */
-    Result<OrganizationDTO> enableOrganization(@NotNull @Positive Long id);
+    Result<OrganizationDTO> enableOrganization(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+
 }

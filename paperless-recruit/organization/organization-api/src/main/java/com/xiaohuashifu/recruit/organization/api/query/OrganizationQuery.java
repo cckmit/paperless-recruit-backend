@@ -29,12 +29,39 @@ public class OrganizationQuery implements Serializable {
     @Max(value = 50, message = "The pageSize must be less than or equal to 50.")
     private Long pageSize;
 
+    /**
+     * 组织编号
+     */
     private Long id;
+
+    /**
+     * 组织编号列表
+     */
     private List<Long> ids;
+
+    /**
+     * 组织主体编号
+     */
     private Long userId;
+
+    /**
+     * 组织名，可模糊
+     */
     private String organizationName;
+
+    /**
+     * 组织名缩写，可模糊
+     */
     private String abbreviationOrganizationName;
+
+    /**
+     * 组织标签名，可模糊
+     */
     private String labelName;
+
+    /**
+     * 组织是否可用
+     */
     private Boolean available;
 
     public Long getPageNum() {

@@ -41,7 +41,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         }
 
         // 必须符合格式
-        if (objectNameValidator.isValid(objectName, null)) {
+        if (!objectNameValidator.isValid(objectName, null)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                     "The length of object name must be between 1 and 1023, and can't start with /.");
         }

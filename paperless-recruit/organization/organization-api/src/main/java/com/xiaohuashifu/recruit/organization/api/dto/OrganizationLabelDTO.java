@@ -9,9 +9,25 @@ import java.io.Serializable;
  * @create 2020/12/7 13:10
  */
 public class OrganizationLabelDTO implements Serializable {
+
+    /**
+     * 组织标签编号
+     */
     private Long id;
+
+    /**
+     * 标签名
+     */
     private String labelName;
+
+    /**
+     * 引用次数
+     */
     private Long referenceNumber;
+
+    /**
+     * 标签是否可用
+     */
     private Boolean available;
 
     public Long getId() {
@@ -55,7 +71,6 @@ public class OrganizationLabelDTO implements Serializable {
                 ", available=" + available +
                 '}';
     }
-
 
     public static final class Builder {
         private Long id;

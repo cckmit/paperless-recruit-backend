@@ -6,7 +6,8 @@ import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.EmailAuthCodeDTO;
-import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.po.CreateAndSendSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
@@ -25,7 +26,6 @@ import org.springframework.data.redis.core.script.RedisScript;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 /**
  * 描述：用户服务的rpc实现
@@ -199,12 +199,13 @@ public class UserServiceImpl implements UserService {
         }
 
         // 判断验证码是否正确
-        Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
-                .phone(phone)
-                .subject(SMS_AUTH_CODE_SIGN_UP_SUBJECT)
-                .authCode(authCode)
-                .delete(true)
-                .build());
+        Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(
+                new CheckSmsAuthCodePO.Builder()
+                        .phone(phone)
+                        .subject(SMS_AUTH_CODE_SIGN_UP_SUBJECT)
+                        .authCode(authCode)
+                        .delete(true)
+                        .build());
         if (!checkEmailAuthCodeResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
@@ -392,12 +393,13 @@ public class UserServiceImpl implements UserService {
         }
 
         // 判断验证码是否正确
-        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
-                .phone(newPhone)
-                .subject(SMS_AUTH_CODE_UPDATE_PHONE_SUBJECT)
-                .authCode(authCode)
-                .delete(true)
-                .build());
+        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(
+                new CheckSmsAuthCodePO.Builder()
+                        .phone(newPhone)
+                        .subject(SMS_AUTH_CODE_UPDATE_PHONE_SUBJECT)
+                        .authCode(authCode)
+                        .delete(true)
+                        .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
@@ -527,12 +529,13 @@ public class UserServiceImpl implements UserService {
         }
 
         // 判断验证码是否正确
-        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(new SmsAuthCodeDTO.Builder()
-                .phone(phone)
-                .subject(SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
-                .authCode(authCode)
-                .delete(true)
-                .build());
+        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(
+                new CheckSmsAuthCodePO.Builder()
+                        .phone(phone)
+                        .subject(SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
+                        .authCode(authCode)
+                        .delete(true)
+                        .build());
         if (!checkSmsAuthCodeResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
@@ -747,12 +750,13 @@ public class UserServiceImpl implements UserService {
      */
     private Result<Void> sendSmsAuthCode(String phone, String subject) {
         // 创建发送短信验证码
-        SmsAuthCodeDTO smsAuthCodeDTO = new SmsAuthCodeDTO.Builder()
+        CreateAndSendSmsAuthCodePO createAndSendSmsAuthCodePO =
+                new CreateAndSendSmsAuthCodePO.Builder()
                 .phone(phone)
                 .subject(subject)
                 .expiredTime(SMS_AUTH_CODE_EXPIRED_TIME)
                 .build();
-        return smsService.createAndSendSmsAuthCode(smsAuthCodeDTO);
+        return smsService.createAndSendSmsAuthCode(createAndSendSmsAuthCodePO);
     }
 
     /**

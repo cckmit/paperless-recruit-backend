@@ -43,15 +43,6 @@ public class CreateImageAuthCodePO implements Serializable {
     @Max(10)
     private Integer expiredTime;
 
-    public CreateImageAuthCodePO() {}
-
-    public CreateImageAuthCodePO(Integer width, Integer height, Integer length, Integer expiredTime) {
-        this.width = width;
-        this.height = height;
-        this.length = length;
-        this.expiredTime = expiredTime;
-    }
-
     public Integer getWidth() {
         return width;
     }

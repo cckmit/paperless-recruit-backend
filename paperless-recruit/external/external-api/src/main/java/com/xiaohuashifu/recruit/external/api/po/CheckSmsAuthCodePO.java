@@ -1,22 +1,20 @@
-package com.xiaohuashifu.recruit.external.api.dto;
+package com.xiaohuashifu.recruit.external.api.po;
 
 import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
-import com.xiaohuashifu.recruit.external.api.service.SmsService;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
 /**
- * 描述：短信验证码，用于发送短信验证码时带的信息
+ * 描述：检查短信验证码参数对象
  *
- * @author: xhsf
- * @create: 2020/11/19 13:42
+ * @author xhsf
+ * @create 2020/12/9 20:19
  */
-public class SmsAuthCodeDTO implements Serializable {
+public class CheckSmsAuthCodePO implements Serializable {
+
     @NotBlank
     @Phone
     private String phone;
@@ -30,28 +28,16 @@ public class SmsAuthCodeDTO implements Serializable {
     private String subject;
 
     /**
-     * 缓存键的过期时间，单位分钟
-     * 推荐5或10分钟
-     * 在调用 SmsService.createAndSendSmsAuthCode() 时需要带上
-     */
-    @NotNull(groups = SmsService.CreateAndSendSmsAuthCode.class)
-    @Positive
-    @Max(10)
-    private Integer expiredTime;
-
-    /**
      * 短信验证码
-     * 在调用 SmsService.checkSmsAuthCode() 时需要带上
      */
-    @NotBlank(groups = SmsService.CheckSmsAuthCode.class)
+    @NotBlank
     @AuthCode
     private String authCode;
 
     /**
      * 检查成功后是否删除该键
-     * 在调用 SmsService.checkSmsAuthCode() 时需要带上
      */
-    @NotNull(groups = SmsService.CheckSmsAuthCode.class)
+    @NotNull
     private Boolean delete;
 
     public String getPhone() {
@@ -68,14 +54,6 @@ public class SmsAuthCodeDTO implements Serializable {
 
     public void setSubject(String subject) {
         this.subject = subject;
-    }
-
-    public Integer getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(Integer expiredTime) {
-        this.expiredTime = expiredTime;
     }
 
     public String getAuthCode() {
@@ -96,10 +74,9 @@ public class SmsAuthCodeDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "SmsAuthCodeDTO{" +
+        return "CheckSmsAuthCodePO{" +
                 "phone='" + phone + '\'' +
                 ", subject='" + subject + '\'' +
-                ", expiredTime=" + expiredTime +
                 ", authCode='" + authCode + '\'' +
                 ", delete=" + delete +
                 '}';
@@ -108,7 +85,6 @@ public class SmsAuthCodeDTO implements Serializable {
     public static final class Builder {
         private String phone;
         private String subject;
-        private Integer expiredTime;
         private String authCode;
         private Boolean delete;
 
@@ -122,11 +98,6 @@ public class SmsAuthCodeDTO implements Serializable {
             return this;
         }
 
-        public Builder expiredTime(Integer expiredTime) {
-            this.expiredTime = expiredTime;
-            return this;
-        }
-
         public Builder authCode(String authCode) {
             this.authCode = authCode;
             return this;
@@ -137,14 +108,13 @@ public class SmsAuthCodeDTO implements Serializable {
             return this;
         }
 
-        public SmsAuthCodeDTO build() {
-            SmsAuthCodeDTO smsAuthCodeDTO = new SmsAuthCodeDTO();
-            smsAuthCodeDTO.setPhone(phone);
-            smsAuthCodeDTO.setSubject(subject);
-            smsAuthCodeDTO.setExpiredTime(expiredTime);
-            smsAuthCodeDTO.setAuthCode(authCode);
-            smsAuthCodeDTO.setDelete(delete);
-            return smsAuthCodeDTO;
+        public CheckSmsAuthCodePO build() {
+            CheckSmsAuthCodePO checkSmsAuthCodePO = new CheckSmsAuthCodePO();
+            checkSmsAuthCodePO.setPhone(phone);
+            checkSmsAuthCodePO.setSubject(subject);
+            checkSmsAuthCodePO.setAuthCode(authCode);
+            checkSmsAuthCodePO.setDelete(delete);
+            return checkSmsAuthCodePO;
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.controller;
 
-import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.po.CreateAndSendSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +22,7 @@ public class SmsController {
     private SmsService smsService;
 
     @PostMapping("/createAndSendSmsAuthCode")
-    public Object createAndSendSmsAuthCode(@RequestBody SmsAuthCodeDTO smsAuthCodeDTO) {
-        return smsService.createAndSendSmsAuthCode(smsAuthCodeDTO);
+    public Object createAndSendSmsAuthCode(@RequestBody CreateAndSendSmsAuthCodePO createAndSendSmsAuthCodePO) {
+        return smsService.createAndSendSmsAuthCode(createAndSendSmsAuthCodePO);
     }
 }

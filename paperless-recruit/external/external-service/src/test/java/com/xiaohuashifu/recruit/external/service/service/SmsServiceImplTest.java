@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
-import com.xiaohuashifu.recruit.external.api.dto.SmsDTO;
+import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.po.CreateAndSendSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -32,26 +32,19 @@ public class SmsServiceImplTest {
     }
 
     @Test
-    public void sendSms() {
-        Result<Object> sendPhoneMessage = smsService.sendSms(
-                new SmsDTO("15992321303", "zzzz"));
-        System.out.println(sendPhoneMessage);
-    }
-
-    @Test
     public void createAndSendSmsAuthCode() {
         System.out.println(smsService.createAndSendSmsAuthCode(
-                new SmsAuthCodeDTO.Builder()
+                new CreateAndSendSmsAuthCodePO.Builder()
                         .phone("13534133310").subject("sms-login").expiredTime(600).build()));
     }
 
     @Test
     public void checkSmsAuthCode() {
         System.out.println(smsService.checkSmsAuthCode(
-                new SmsAuthCodeDTO.Builder()
-                        .phone("13534133310")
-                        .subject("sms-login")
-                        .authCode("159499")
+                new CheckSmsAuthCodePO.Builder()
+                        .phone("15992321303")
+                        .subject("authentication:sms-sign-in")
+                        .authCode("864449")
                         .delete(true)
                         .build()));
     }

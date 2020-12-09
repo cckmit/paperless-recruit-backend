@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.authentication.service.provider;
 
 import com.xiaohuashifu.recruit.authentication.service.token.SmsAuthenticationToken;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.dto.SmsAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
@@ -48,7 +48,7 @@ public class SmsAuthenticationProvider extends AbstractAuthenticationProvider {
 
         // 验证短信验证码
         Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(
-                new SmsAuthCodeDTO.Builder()
+                new CheckSmsAuthCodePO.Builder()
                         .phone(phone)
                         .subject(SUBJECT)
                         .authCode(authCode)

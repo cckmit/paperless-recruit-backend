@@ -18,7 +18,7 @@
     </sql>
 
     <insert id="insertUser" keyProperty="id">
-        insert into t_user
+        insert into user_principal
         <trim prefix="(" suffix=")" suffixOverrides="," >
             username, pwd,
             <if test="phone != null" >
@@ -36,13 +36,13 @@
 
     <select id="getUser" resultMap="user">
         select <include refid="user"/>
-        from t_user
+        from user_principal
         where id = #{id}
     </select>
 
     <select id="listUsers" resultMap="user">
         select <include refid="user"/>
-        from t_user
+        from user_principal
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -71,13 +71,13 @@
 
     <select id="getUserByUsername" resultMap="user">
         select <include refid="user"/>
-        from t_user
+        from user_principal
         where username = #{username}
     </select>
 
     <select id="getUserByUsernameOrPhoneOrEmail" resultMap="user">
         select <include refid="user"/>
-        from t_user
+        from user_principal
         where username = #{usernameOrPhoneOrEmail}
         or phone = #{usernameOrPhoneOrEmail}
         or email = #{usernameOrPhoneOrEmail}
@@ -85,78 +85,78 @@
 
     <select id="getUserByPhone" resultMap="user">
         select <include refid="user"/>
-        from t_user
+        from user_principal
         where phone = #{phone}
     </select>
 
     <select id="getUserByEmail" resultMap="user">
         select <include refid="user"/>
-        from t_user
+        from user_principal
         where email = #{email}
     </select>
 
     <select id="count" resultType="int">
         select count(*)
-        from t_user
+        from user_principal
         where id = #{id}
     </select>
 
     <select id="countByUsername" resultType="int">
         select count(*)
-        from t_user
+        from user_principal
         where username = #{username}
     </select>
 
     <select id="countByPhone" resultType="int">
         select count(*)
-        from t_user
+        from user_principal
         where phone = #{phone}
     </select>
 
     <select id="countByEmail" resultType="int">
         select count(*)
-        from t_user
+        from user_principal
         where email = #{email}
     </select>
 
     <update id="updateUsername">
-        update t_user
+        update user_principal
         set username = #{username}
         where id = #{id}
     </update>
 
     <update id="updatePhone">
-        update t_user
+        update user_principal
         set phone = #{phone}
         where id = #{id}
     </update>
 
     <update id="updateEmail">
-        update t_user
+        update user_principal
         set email = #{email}
         where id = #{id}
     </update>
 
     <update id="updatePassword">
-        update t_user
+        update user_principal
         set pwd = #{password}
         where id = #{id}
     </update>
 
     <update id="updatePasswordByEmail">
-        update t_user
+        update user_principal
         set pwd = #{password}
         where email = #{email}
     </update>
 
     <update id="updatePasswordByPhone">
-        update t_user
+        update user_principal
         set pwd = #{password}
         where phone = #{phone}
     </update>
 
     <update id="updateAvailable">
-        update t_user
+        update user_principal
         set is_available = #{available}
         where id = #{id}
     </update>

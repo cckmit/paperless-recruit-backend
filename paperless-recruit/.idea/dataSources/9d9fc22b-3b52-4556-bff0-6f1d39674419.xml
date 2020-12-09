@@ -962,8 +962,8 @@ SELECT|sys.sys_config:null
     <table id="312" parent="5" name="recruit_department"/>
     <table id="313" parent="5" name="role"/>
     <table id="314" parent="5" name="role_permission"/>
-    <table id="315" parent="5" name="t_user">
-      <Comment>这里前缀t_是为了与MySQL关键字 user 区分</Comment>
+    <table id="315" parent="5" name="user_principal">
+      <Comment>这里使用 user_principal 是为了与MySQL关键字 user 区分，在其他表引用时可以使用 user_id 即可</Comment>
     </table>
     <table id="316" parent="5" name="user_profile"/>
     <table id="317" parent="5" name="user_role"/>

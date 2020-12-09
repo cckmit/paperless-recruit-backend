@@ -92,14 +92,13 @@ public class PermissionServiceImplTest {
     }
 
     @Test
-    public void getPermissionByUserId() {
-        System.out.println(permissionService.listPermissionsByUserId(7L));
+    public void listPermissionsByUserId() {
+        System.out.println(permissionService.listPermissionsByUserId(1L));
     }
 
-
     @Test
-    public void getAuthorityByUserId() {
-        System.out.println(permissionService.listAuthoritiesByUserId(4L));
+    public void listAuthoritiesByUserId() {
+        System.out.println(permissionService.listAuthoritiesByUserId(1L));
     }
 
     @Test

@@ -87,7 +87,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUserByEmail() {
-        System.out.println(userService.getUserByEmail("827032783@qq.com"));
+        System.out.println(userService.getUserByEmail("827032782@qq.com"));
     }
 
     @Test

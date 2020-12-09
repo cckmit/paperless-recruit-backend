@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Service
 public class PasswordServiceImpl implements PasswordService {
+
     private final PasswordEncoder passwordEncoder;
 
     public PasswordServiceImpl(PasswordEncoder passwordEncoder) {
@@ -28,4 +29,5 @@ public class PasswordServiceImpl implements PasswordService {
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);
     }
+
 }

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     @Reference
     private PermissionService permissionService;
 
@@ -49,4 +50,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new User(userDTO.getUsername(), userDTO.getPassword(), userDTO.getAvailable(), true,
                 true, true, authorityList);
     }
+
 }

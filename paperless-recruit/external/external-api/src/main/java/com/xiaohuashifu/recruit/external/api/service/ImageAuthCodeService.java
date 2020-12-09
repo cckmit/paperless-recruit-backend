@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.po.CreateImageAuthCodePO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,17 +15,16 @@ import javax.validation.constraints.NotNull;
  */
 public interface ImageAuthCodeService {
 
-    @interface CreateImageAuthCode {}
     /**
      * 创建图形验证码
      * 会把验证码缓存，可用通过 checkImageAuthCode 检查是否通过校验
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *
-     * @param imageAuthCodeDTO ImageAuthCodeDTO
-     * @return ImageAuthCodeDTO
+     * @param createImageAuthCodePO 创建图形验证码参数对象
+     * @return ImageAuthCodeDTO 包含验证码的唯一标识 id 和 Base64编码的验证码
      */
-    Result<ImageAuthCodeDTO> createImageAuthCode(@NotNull ImageAuthCodeDTO imageAuthCodeDTO);
+    Result<ImageAuthCodeDTO> createImageAuthCode(@NotNull CreateImageAuthCodePO createImageAuthCodePO);
 
     /**
      * 校验验证码

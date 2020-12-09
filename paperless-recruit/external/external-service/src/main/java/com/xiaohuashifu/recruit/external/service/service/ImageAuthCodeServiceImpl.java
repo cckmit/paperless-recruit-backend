@@ -4,6 +4,7 @@ import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.ImageAuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
+import com.xiaohuashifu.recruit.external.api.po.CreateImageAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.ImageAuthCodeService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -57,14 +58,15 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *
-     * @param imageAuthCodeDTO ImageAuthCodeDTO
+     * @param createImageAuthCodePO 创建图形验证码参数对象
      * @return ImageAuthCodeDTO
      */
     @Override
-    public Result<ImageAuthCodeDTO> createImageAuthCode(ImageAuthCodeDTO imageAuthCodeDTO) {
+    public Result<ImageAuthCodeDTO> createImageAuthCode(CreateImageAuthCodePO createImageAuthCodePO) {
         // 创建图形验证码
         ImageAuthCodeUtils.ImageAuthCode imageAuthCode = ImageAuthCodeUtils.createImageCode(
-                imageAuthCodeDTO.getWidth(), imageAuthCodeDTO.getHeight(), imageAuthCodeDTO.getLength());
+                createImageAuthCodePO.getWidth(), createImageAuthCodePO.getHeight(),
+                createImageAuthCodePO.getLength());
 
         // 创建图形验证码编号
         Long incrementId = redisTemplate.execute(incrementIdRedisScript,
@@ -75,13 +77,11 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
         // 添加验证码到缓存
         String redisKey = IMAGE_AUTH_CODE_REDIS_KEY_PREFIX + ":" + id;
         redisTemplate.opsForValue().set(redisKey, imageAuthCode.getAuthCode());
-        redisTemplate.expire(redisKey, imageAuthCodeDTO.getExpiredTime(), TimeUnit.MINUTES);
+        redisTemplate.expire(redisKey, createImageAuthCodePO.getExpiredTime(), TimeUnit.MINUTES);
 
         // 构造并返回
-        return Result.success(new ImageAuthCodeDTO.Builder()
-                .id(id)
-                .authCode(imageAuthCode.getBase64Image())
-                .build());
+        ImageAuthCodeDTO imageAuthCodeDTO = new ImageAuthCodeDTO(id, imageAuthCode.getBase64Image());
+        return Result.success(imageAuthCodeDTO);
     }
 
     /**

@@ -20,7 +20,7 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter", "The required parameter is not valid."),
 
     /**
-     * 非法Code
+     * 非法 Code
      */
     INVALID_PARAMETER_CODE(HttpStatus.NOT_FOUND,
             "InvalidParameter.Code", "The code is invalid."),
@@ -63,7 +63,7 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.IsNull", "The required parameter must be not null."),
 
     /**
-     * 字符串参数为 NULL 或者没有非空白字符
+     * 字符串参数为 null 或者没有非空白字符
      */
     INVALID_PARAMETER_IS_BLANK(HttpStatus.BAD_REQUEST,
             "InvalidParameter.IsBlank", "The required parameter must be not blank."),

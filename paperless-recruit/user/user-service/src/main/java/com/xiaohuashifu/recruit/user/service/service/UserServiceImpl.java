@@ -5,11 +5,11 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.external.api.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.external.api.po.CheckEmailAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CreateAndSendEmailAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CreateAndSendSmsAuthCodePO;
-import com.xiaohuashifu.recruit.external.api.service.DistributedLockService;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
@@ -22,8 +22,6 @@ import com.xiaohuashifu.recruit.user.service.do0.UserDO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 
@@ -40,8 +38,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
     @Reference
     private PasswordService passwordService;
 
@@ -56,9 +52,6 @@ public class UserServiceImpl implements UserService {
 
     @Reference
     private UserProfileService userProfileService;
-
-    @Reference
-    private DistributedLockService distributedLockService;
 
     private final UserMapper userMapper;
 
@@ -175,8 +168,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 通过短信验证码注册账号
      * 该方式会随机生成用户名
-     * 若密码为 null 会随机生成密码
-     * 推荐使用该方式进行注册，且密码不允许为 null
+     * 推荐使用该方式进行注册
      *
      * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
      *              OperationConflict: 手机号码已经存在 | 无法获取关于该手机号码的锁
@@ -188,59 +180,41 @@ public class UserServiceImpl implements UserService {
      * @return 新创建的用户
      */
     @Override
+    @DistributedLock(keyParameterName = "phone", keyPrefix = PHONE_DISTRIBUTED_LOCK_KEY_PREFIX)
     public Result<UserDTO> signUpBySmsAuthCode(String phone, String authCode, String password) {
-        // 尝试获取关于该手机号码的锁
-        String phoneLockKey = PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + phone;
-        if (!distributedLockService.getLock(phoneLockKey).isSuccess()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Failed to acquire phone lock.");
+        // 判断手机号码是否存在
+        int count = userMapper.countByPhone(phone);
+        if (count > 0) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Phone does already exist.");
         }
 
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // 判断验证码是否正确
+        Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(
+                new CheckSmsAuthCodePO.Builder()
+                        .phone(phone)
+                        .subject(SMS_AUTH_CODE_SIGN_UP_SUBJECT)
+                        .authCode(authCode)
+                        .delete(true)
+                        .build());
+        if (!checkEmailAuthCodeResult.isSuccess()) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
         }
 
-        try {
-            // 判断手机号码是否存在
-            int count = userMapper.countByPhone(phone);
-            if (count > 0) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Phone does already exist.");
-            }
-
-            // 判断验证码是否正确
-            Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(
-                    new CheckSmsAuthCodePO.Builder()
-                            .phone(phone)
-                            .subject(SMS_AUTH_CODE_SIGN_UP_SUBJECT)
-                            .authCode(authCode)
-                            .delete(true)
-                            .build());
-            if (!checkEmailAuthCodeResult.isSuccess()) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
-            }
-
-            // 如果密码为null，则随机生成密码
-            if (password == null) {
-                password = RandomStringUtils.randomNumeric(20);
-            }
-
-            // 生成用户名
-            String username = generateRandomUsername();
-
-            // 添加到数据库
-            UserDO userDO = new UserDO.Builder()
-                    .username(username)
-                    .password(passwordService.encodePassword(password))
-                    .phone(phone)
-                    .build();
-            return saveUser(userDO);
-        } finally {
-            // 释放锁关于该手机号码的锁
-            if (!distributedLockService.releaseLock(phoneLockKey).isSuccess()) {
-                logger.error("Failed to release phone lock. phoneLockKey={}", phoneLockKey);
-            }
+        // 如果密码为null，则随机生成密码
+        if (password == null) {
+            password = RandomStringUtils.randomNumeric(20);
         }
+
+        // 生成用户名
+        String username = generateRandomUsername();
+
+        // 添加到数据库
+        UserDO userDO = new UserDO.Builder()
+                .username(username)
+                .password(passwordService.encodePassword(password))
+                .phone(phone)
+                .build();
+        return saveUser(userDO);
     }
 
     /**

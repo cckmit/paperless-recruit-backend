@@ -38,7 +38,7 @@ public interface UserService {
      * 推荐使用该方式进行注册
      *
      * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
-     *              OperationConflict: 手机号码已经存在
+     *              OperationConflict: 手机号码已经存在 | 无法获取关于该手机号码的锁
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
      *
      * @param phone 手机号码

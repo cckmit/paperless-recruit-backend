@@ -52,13 +52,13 @@ public class DistributedLockServiceImpl implements DistributedLockService {
     }
 
     /**
-     * 获取分布式锁
+     * 获取分布式锁，锁到期自动释放
      *
      * @errorCode InvalidParameter: key 或 expirationTime 格式错误
      *              OperationConflict: 获取锁失败
      *
      * @param key 锁对应的唯一 key
-     * @param expirationTime 锁自动释放时间，单位秒
+     * @param expirationTime 锁自动释放时间
      * @param timeUnit 时间单位
      * @return 获取结果
      */

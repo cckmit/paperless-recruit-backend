@@ -93,7 +93,7 @@ public class UserServiceImplTest {
 
     @Test
     public void updateUsername() {
-        Result<UserDTO> updateUsernameResult = userService.updateUsername(-3L, "xhsfnew");
+        System.out.println(userService.updateUsername(11L, "xhsfnew2"));
     }
 
     @Test

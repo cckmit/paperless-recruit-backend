@@ -131,6 +131,16 @@ public class UserServiceImpl implements UserService {
      */
     private static final String PHONE_DISTRIBUTED_LOCK_KEY_PREFIX = "phone:";
 
+    /**
+     * 用户名的分布式锁的 key 的前缀
+     */
+    private static final String USERNAME_DISTRIBUTED_LOCK_KEY_PREFIX = "username:";
+
+    /**
+     * 邮箱的分布式锁的 key 的前缀
+     */
+    private static final String EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX = "email:";
+
     public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate,
                            RedisScript<Long> incrementIdRedisScript) {
         this.userMapper = userMapper;
@@ -338,6 +348,7 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
+    @DistributedLock(keyParameterName = "newUsername", keyPrefix = USERNAME_DISTRIBUTED_LOCK_KEY_PREFIX)
     public Result<UserDTO> updateUsername(Long id, String newUsername) {
         // 判断用户是否存在
         int count = userMapper.count(id);
@@ -369,6 +380,7 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
+    @DistributedLock(keyParameterName = "newPhone", keyPrefix = PHONE_DISTRIBUTED_LOCK_KEY_PREFIX)
     public Result<UserDTO> updatePhone(Long id, String newPhone, String authCode) {
         // 判断用户是否存在
         int count = userMapper.count(id);
@@ -412,6 +424,7 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
+    @DistributedLock(keyParameterName = "newEmail", keyPrefix = EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX)
     public Result<UserDTO> updateEmail(Long id, String newEmail, String authCode) {
         // 判断用户是否存在
         int count = userMapper.count(id);

@@ -68,13 +68,14 @@ public class DistributedLockAspect {
         }
 
         // 执行业务逻辑
-        Object ret = joinPoint.proceed();
-
-        // 释放锁
-        if (!distributedLockService.releaseLock(lockKey).isSuccess()) {
-            logger.error("Failed to release lock. lockKey={}", lockKey);
+        try {
+            return joinPoint.proceed();
+        } finally {
+            // 释放锁
+            if (!distributedLockService.releaseLock(lockKey).isSuccess()) {
+                logger.error("Failed to release lock. lockKey={}", lockKey);
+            }
         }
-        return ret;
     }
 
 }

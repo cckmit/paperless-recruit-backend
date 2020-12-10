@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.external.api.constant.WeChatMpServiceConstants;
 import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
 
 import javax.validation.constraints.NotBlank;
@@ -25,7 +26,13 @@ public interface WeChatMpService {
      * @param app 具体的微信小程序
      * @return openId
      */
-    Result<String> getOpenId(@NotBlank @Size(max = 32, min = 32) String code, @NotNull AppEnum app);
+    Result<String> getOpenId(
+            @NotBlank(message = "The code can't be blank.")
+            @Size(max = WeChatMpServiceConstants.WECHAT_MP_CODE_LENGTH,
+                    min = WeChatMpServiceConstants.WECHAT_MP_CODE_LENGTH,
+                    message = "The length of code must be equal to "
+                            + WeChatMpServiceConstants.WECHAT_MP_CODE_LENGTH + ".") String code,
+            @NotNull(message = "The app can't be null.") AppEnum app);
 
     void getUserInfo(String encryptedData, String iv, String code);
 
@@ -39,7 +46,8 @@ public interface WeChatMpService {
      * @param sendWeChatMpSubscribeMessagePO 发送订阅消息的参数对象
      * @return 发送结果
      */
-    Result<Void> sendSubscribeMessage(@NotNull SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO);
+    Result<Void> sendSubscribeMessage(@NotNull(message = "The sendWeChatMpSubscribeMessagePO can't be null.")
+                                              SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO);
 
 
 }

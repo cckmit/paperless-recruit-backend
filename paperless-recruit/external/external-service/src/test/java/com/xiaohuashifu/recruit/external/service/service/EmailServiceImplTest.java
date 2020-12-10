@@ -48,7 +48,7 @@ public class EmailServiceImplTest {
         byte[] bytes = fileInputStream.readAllBytes();
         attachmentMap.put("hhx.jpg", bytes);
         System.out.println(emailService.sendSimpleEmail(new SendSimpleEmailPO.Builder()
-                .to("827032783@qq.com")
+                .email("827032783@qq.com")
                 .subject("邮箱测试")
                 .text("测测测")
                 .attachmentMap(attachmentMap)
@@ -66,7 +66,7 @@ public class EmailServiceImplTest {
 
         System.out.println(emailService.sendTemplateEmail(
                 new SendTemplateEmailPO.Builder()
-                        .to("827032783@qq.com")
+                        .email("827032783@qq.com")
                         .subject("邮箱测试")
                         .templateName("RecruitAuthCode")
                         .templateParameters(templateParameters)
@@ -78,7 +78,7 @@ public class EmailServiceImplTest {
     public void createAndSendEmailAuthCode() {
         System.out.println(emailService.createAndSendEmailAuthCode(
                 new CreateAndSendEmailAuthCodePO.Builder()
-                        .email("827032783@qq.com").subject("email-update").title("邮箱绑定").expiredTime(5).build()));
+                        .email("827032783@qq.com").subject("email-update").title("邮箱绑定").expirationTime(5).build()));
     }
 
     @Test

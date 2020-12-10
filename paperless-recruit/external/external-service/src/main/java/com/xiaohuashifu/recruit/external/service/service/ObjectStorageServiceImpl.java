@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.external.service.service;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.ObjectNameValidator;
+import com.xiaohuashifu.recruit.external.api.constant.ObjectStorageServiceConstants;
 import com.xiaohuashifu.recruit.external.api.dto.ObjectInfoListDTO;
 import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.external.service.manager.ObjectStorageManager;
@@ -47,7 +48,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         }
 
         // 对象长度必须小于 10MB
-        if (object != null && object.length > MAX_OBJECT_SIZE) {
+        if (object != null && object.length > ObjectStorageServiceConstants.MAX_OBJECT_SIZE) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                     "The object length must be less then 10240.");
         }

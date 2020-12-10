@@ -48,4 +48,5 @@ public class ImageAuthCodeDTO implements Serializable {
                 ", authCode='" + authCode + '\'' +
                 '}';
     }
+
 }

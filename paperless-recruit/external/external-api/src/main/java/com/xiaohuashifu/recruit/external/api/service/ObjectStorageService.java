@@ -2,6 +2,8 @@ package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.ObjectName;
+import com.xiaohuashifu.recruit.external.api.constant.EmailServiceConstants;
+import com.xiaohuashifu.recruit.external.api.constant.ObjectStorageServiceConstants;
 import com.xiaohuashifu.recruit.external.api.dto.ObjectInfoListDTO;
 
 import javax.validation.constraints.Max;
@@ -16,11 +18,6 @@ import javax.validation.constraints.Positive;
  * @create 2020/12/7 17:36
  */
 public interface ObjectStorageService {
-
-    /**
-     * 对象的最大大小，10MB
-     */
-    int MAX_OBJECT_SIZE = 10240;
     
     /**
      * 上传对象
@@ -37,7 +34,7 @@ public interface ObjectStorageService {
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 删除结果
      */
-    Result<Void> deleteObject(@NotBlank @ObjectName String objectName);
+    Result<Void> deleteObject(@NotBlank(message = "The objectName can't be blank.") @ObjectName String objectName);
 
     /**
      * 下载对象
@@ -45,7 +42,7 @@ public interface ObjectStorageService {
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 对象
      */
-    Result<byte[]> getObject(@NotBlank @ObjectName String objectName);
+    Result<byte[]> getObject(@NotBlank(message = "The objectName can't be blank.") @ObjectName String objectName);
 
     /**
      * 获取对象信息，一次最大 50 条
@@ -55,7 +52,12 @@ public interface ObjectStorageService {
      * @param size 获取条数
      * @return 列举对象结果，可能包含空列表
      */
-    Result<ObjectInfoListDTO> listObjectInfos(@ObjectName String prefix, String startMarker,
-                                              @NotNull @Positive @Max(50) Integer size);
+    Result<ObjectInfoListDTO> listObjectInfos(
+            @ObjectName String prefix, String startMarker,
+            @NotNull(message = "The size can't be null.")
+            @Positive(message = "The size must be greater than 0.")
+            @Max(value = ObjectStorageServiceConstants.MAX_LIST_OBJECT_INFOS_SIZE,
+                    message = "The size must not be greater than "
+                            + ObjectStorageServiceConstants.MAX_LIST_OBJECT_INFOS_SIZE + ".") Integer size);
 
 }

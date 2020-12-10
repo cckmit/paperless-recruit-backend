@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.po;
 
+import com.xiaohuashifu.recruit.external.api.constant.ImageAuthCodeServiceConstants;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -16,32 +18,42 @@ public class CreateImageAuthCodePO implements Serializable {
     /**
      * 图形验证码宽度
      */
-    @NotNull
-    @Positive
+    @NotNull(message = "The width can't be null.")
+    @Positive(message = "The width must be greater than 0.")
+    @Max(value = ImageAuthCodeServiceConstants.MAX_IMAGE_AUTH_CODE_WIDTH,
+            message = "The width must not be greater than "
+                    + ImageAuthCodeServiceConstants.MAX_IMAGE_AUTH_CODE_WIDTH + ".")
     private Integer width;
 
     /**
      * 图形验证码高度
      */
-    @NotNull
-    @Positive
+    @NotNull(message = "The height can't be null.")
+    @Positive(message = "The height must be greater than 0.")
+    @Max(value = ImageAuthCodeServiceConstants.MAX_IMAGE_AUTH_CODE_HEIGHT,
+            message = "The height must not be greater than "
+                    + ImageAuthCodeServiceConstants.MAX_IMAGE_AUTH_CODE_HEIGHT + ".")
     private Integer height;
 
     /**
      * 验证码长度（位数）
      */
-    @NotNull
-    @Positive
-    @Max(10)
+    @NotNull(message = "The length can't be null.")
+    @Positive(message = "The length must be greater than 0.")
+    @Max(value = ImageAuthCodeServiceConstants.MAX_IMAGE_AUTH_CODE_LENGTH,
+            message = "The length must not be greater than "
+                    + ImageAuthCodeServiceConstants.MAX_IMAGE_AUTH_CODE_LENGTH + ".")
     private Integer length;
 
     /**
      * 图形验证码有效时间，单位分钟
      */
-    @NotNull
-    @Positive
-    @Max(10)
-    private Integer expiredTime;
+    @NotNull(message = "The expirationTime can't be null.")
+    @Positive(message = "The expirationTime must be greater than 0.")
+    @Max(value = ImageAuthCodeServiceConstants.MAX_IMAGE_AUTH_CODE_EXPIRATION_TIME,
+            message = "The expirationTime must not be greater than "
+                    + ImageAuthCodeServiceConstants.MAX_IMAGE_AUTH_CODE_EXPIRATION_TIME + ".")
+    private Integer expirationTime;
 
     public Integer getWidth() {
         return width;
@@ -67,12 +79,12 @@ public class CreateImageAuthCodePO implements Serializable {
         this.length = length;
     }
 
-    public Integer getExpiredTime() {
-        return expiredTime;
+    public Integer getExpirationTime() {
+        return expirationTime;
     }
 
-    public void setExpiredTime(Integer expiredTime) {
-        this.expiredTime = expiredTime;
+    public void setExpirationTime(Integer expirationTime) {
+        this.expirationTime = expirationTime;
     }
 
     @Override
@@ -81,7 +93,7 @@ public class CreateImageAuthCodePO implements Serializable {
                 "width=" + width +
                 ", height=" + height +
                 ", length=" + length +
-                ", expiredTime=" + expiredTime +
+                ", expirationTime=" + expirationTime +
                 '}';
     }
 
@@ -89,7 +101,7 @@ public class CreateImageAuthCodePO implements Serializable {
         private Integer width;
         private Integer height;
         private Integer length;
-        private Integer expiredTime;
+        private Integer expirationTime;
 
         public Builder width(Integer width) {
             this.width = width;
@@ -106,8 +118,8 @@ public class CreateImageAuthCodePO implements Serializable {
             return this;
         }
 
-        public Builder expiredTime(Integer expiredTime) {
-            this.expiredTime = expiredTime;
+        public Builder expirationTime(Integer expirationTime) {
+            this.expirationTime = expirationTime;
             return this;
         }
 
@@ -116,8 +128,9 @@ public class CreateImageAuthCodePO implements Serializable {
             createImageAuthCodePO.setWidth(width);
             createImageAuthCodePO.setHeight(height);
             createImageAuthCodePO.setLength(length);
-            createImageAuthCodePO.setExpiredTime(expiredTime);
+            createImageAuthCodePO.setExpirationTime(expirationTime);
             return createImageAuthCodePO;
         }
     }
+
 }

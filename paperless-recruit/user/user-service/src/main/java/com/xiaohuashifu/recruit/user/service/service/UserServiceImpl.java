@@ -722,7 +722,7 @@ public class UserServiceImpl implements UserService {
                 .email(email)
                 .subject(subject)
                 .title(title)
-                .expiredTime(EMAIL_AUTH_CODE_EXPIRED_TIME)
+                .expirationTime(EMAIL_AUTH_CODE_EXPIRED_TIME)
                 .build();
         return emailService.createAndSendEmailAuthCode(emailAuthCodeDTO);
     }
@@ -740,7 +740,7 @@ public class UserServiceImpl implements UserService {
                 new CreateAndSendSmsAuthCodePO.Builder()
                 .phone(phone)
                 .subject(subject)
-                .expiredTime(SMS_AUTH_CODE_EXPIRED_TIME)
+                .expirationTime(SMS_AUTH_CODE_EXPIRED_TIME)
                 .build();
         return smsService.createAndSendSmsAuthCode(createAndSendSmsAuthCodePO);
     }

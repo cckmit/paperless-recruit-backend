@@ -25,7 +25,8 @@ public interface EmailService {
      * @param sendSimpleEmailPO 发送简单邮件的参数对象
      * @return 发送结果
      */
-    Result<Void> sendSimpleEmail(@NotNull SendSimpleEmailPO sendSimpleEmailPO);
+    Result<Void> sendSimpleEmail(
+            @NotNull(message = "The sendSimpleEmailPO can't be null.") SendSimpleEmailPO sendSimpleEmailPO);
 
     /**
      * 发送模板邮件，使用的是 velocity 模板
@@ -37,7 +38,8 @@ public interface EmailService {
      * @return 发送结果
      */
     // TODO: 2020/12/2 这里的模板可以封装成服务，这样就可以准确判断是否有模板了
-    Result<Void> sendTemplateEmail(@NotNull SendTemplateEmailPO sendTemplateEmailPO);
+    Result<Void> sendTemplateEmail(
+            @NotNull(message = "The sendTemplateEmailPO can't be null.") SendTemplateEmailPO sendTemplateEmailPO);
 
     /**
      * 发送邮箱验证码服务
@@ -49,7 +51,8 @@ public interface EmailService {
      * @param createAndSendEmailAuthCodePO 创建并发送邮箱验证码参数对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示发送成功，否则发送失败
      */
-    Result<Void> createAndSendEmailAuthCode(@NotNull CreateAndSendEmailAuthCodePO createAndSendEmailAuthCodePO);
+    Result<Void> createAndSendEmailAuthCode(@NotNull(message = "The createAndSendEmailAuthCodePO can't be null.")
+                                                    CreateAndSendEmailAuthCodePO createAndSendEmailAuthCodePO);
 
     /**
      * 邮箱验证码检验验证码是否有效的服务
@@ -62,5 +65,6 @@ public interface EmailService {
      * @param checkEmailAuthCodePO 检查邮箱验证码参数对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示验证成功，否则验证失败
      */
-    Result<Void> checkEmailAuthCode(@NotNull CheckEmailAuthCodePO checkEmailAuthCodePO);
+    Result<Void> checkEmailAuthCode(@NotNull(message = "The checkEmailAuthCodePO can't be null.")
+                                            CheckEmailAuthCodePO checkEmailAuthCodePO);
 }

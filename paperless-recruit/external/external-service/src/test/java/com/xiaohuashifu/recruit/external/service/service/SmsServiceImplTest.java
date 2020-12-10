@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CreateAndSendSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
@@ -35,7 +34,7 @@ public class SmsServiceImplTest {
     public void createAndSendSmsAuthCode() {
         System.out.println(smsService.createAndSendSmsAuthCode(
                 new CreateAndSendSmsAuthCodePO.Builder()
-                        .phone("13534133310").subject("sms-login").expiredTime(600).build()));
+                        .phone("13534133310").subject("sms-login").expirationTime(600).build()));
     }
 
     @Test

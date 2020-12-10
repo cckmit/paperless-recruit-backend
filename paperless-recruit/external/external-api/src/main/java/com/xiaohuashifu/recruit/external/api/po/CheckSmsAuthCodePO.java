@@ -2,9 +2,11 @@ package com.xiaohuashifu.recruit.external.api.po;
 
 import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
+import com.xiaohuashifu.recruit.external.api.constant.SmsServiceConstants;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -15,7 +17,7 @@ import java.io.Serializable;
  */
 public class CheckSmsAuthCodePO implements Serializable {
 
-    @NotBlank
+    @NotBlank(message = "The phone can't be blank.")
     @Phone
     private String phone;
 
@@ -24,20 +26,23 @@ public class CheckSmsAuthCodePO implements Serializable {
      * 用来作为缓存时 key 的前缀
      * 推荐格式为{服务名}:{具体业务名}
      */
-    @NotBlank
+    @NotBlank(message = "The subject can't be blank.")
+    @Size(max = SmsServiceConstants.MAX_SMS_AUTH_CODE_SUBJECT_LENGTH,
+            message = "The length of subject must not be greater than "
+                    + SmsServiceConstants.MAX_SMS_AUTH_CODE_SUBJECT_LENGTH + ".")
     private String subject;
 
     /**
      * 短信验证码
      */
-    @NotBlank
+    @NotBlank(message = "The authCode can't be blank.")
     @AuthCode
     private String authCode;
 
     /**
      * 检查成功后是否删除该键
      */
-    @NotNull
+    @NotNull(message = "The delete can't be null.")
     private Boolean delete;
 
     public String getPhone() {
@@ -117,4 +122,5 @@ public class CheckSmsAuthCodePO implements Serializable {
             return checkSmsAuthCodePO;
         }
     }
+
 }

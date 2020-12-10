@@ -1,11 +1,9 @@
 package com.xiaohuashifu.recruit.external.api.po;
 
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
+import com.xiaohuashifu.recruit.external.api.constant.SmsServiceConstants;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 /**
@@ -16,7 +14,7 @@ import java.io.Serializable;
  */
 public class CreateAndSendSmsAuthCodePO implements Serializable {
 
-    @NotBlank
+    @NotBlank(message = "The phone can't be blank.")
     @Phone
     private String phone;
 
@@ -25,17 +23,22 @@ public class CreateAndSendSmsAuthCodePO implements Serializable {
      * 用来作为缓存时 key 的前缀
      * 推荐格式为{服务名}:{具体业务名}
      */
-    @NotBlank
+    @NotBlank(message = "The subject can't be blank.")
+    @Size(max = SmsServiceConstants.MAX_SMS_AUTH_CODE_SUBJECT_LENGTH,
+            message = "The length of subject must not be greater than "
+                    + SmsServiceConstants.MAX_SMS_AUTH_CODE_SUBJECT_LENGTH + ".")
     private String subject;
 
     /**
      * 缓存键的过期时间，单位分钟
      * 推荐5或10分钟
      */
-    @NotNull
-    @Positive
-    @Max(10)
-    private Integer expiredTime;
+    @NotNull(message = "The expirationTime can't be null.")
+    @Positive(message = "The expirationTime must be greater than 0.")
+    @Max(value = SmsServiceConstants.MAX_SMS_AUTH_CODE_EXPIRATION_TIME,
+            message = "The expirationTime must not be greater than "
+                    + SmsServiceConstants.MAX_SMS_AUTH_CODE_EXPIRATION_TIME + ".")
+    private Integer expirationTime;
 
     public String getPhone() {
         return phone;
@@ -53,12 +56,12 @@ public class CreateAndSendSmsAuthCodePO implements Serializable {
         this.subject = subject;
     }
 
-    public Integer getExpiredTime() {
-        return expiredTime;
+    public Integer getExpirationTime() {
+        return expirationTime;
     }
 
-    public void setExpiredTime(Integer expiredTime) {
-        this.expiredTime = expiredTime;
+    public void setExpirationTime(Integer expirationTime) {
+        this.expirationTime = expirationTime;
     }
 
     @Override
@@ -66,14 +69,14 @@ public class CreateAndSendSmsAuthCodePO implements Serializable {
         return "CreateAndSendSmsAuthCodePO{" +
                 "phone='" + phone + '\'' +
                 ", subject='" + subject + '\'' +
-                ", expiredTime=" + expiredTime +
+                ", expirationTime=" + expirationTime +
                 '}';
     }
 
     public static final class Builder {
         private String phone;
         private String subject;
-        private Integer expiredTime;
+        private Integer expirationTime;
 
         public Builder phone(String phone) {
             this.phone = phone;
@@ -85,8 +88,8 @@ public class CreateAndSendSmsAuthCodePO implements Serializable {
             return this;
         }
 
-        public Builder expiredTime(Integer expiredTime) {
-            this.expiredTime = expiredTime;
+        public Builder expirationTime(Integer expirationTime) {
+            this.expirationTime = expirationTime;
             return this;
         }
 
@@ -94,8 +97,9 @@ public class CreateAndSendSmsAuthCodePO implements Serializable {
             CreateAndSendSmsAuthCodePO createAndSendSmsAuthCodePO = new CreateAndSendSmsAuthCodePO();
             createAndSendSmsAuthCodePO.setPhone(phone);
             createAndSendSmsAuthCodePO.setSubject(subject);
-            createAndSendSmsAuthCodePO.setExpiredTime(expiredTime);
+            createAndSendSmsAuthCodePO.setExpirationTime(expirationTime);
             return createAndSendSmsAuthCodePO;
         }
     }
+
 }

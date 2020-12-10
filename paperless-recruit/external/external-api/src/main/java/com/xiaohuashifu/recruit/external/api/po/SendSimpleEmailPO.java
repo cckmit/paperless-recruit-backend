@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.po;
 
+import com.xiaohuashifu.recruit.external.api.constant.EmailServiceConstants;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -17,34 +19,42 @@ public class SendSimpleEmailPO implements Serializable {
     /**
      * 目标邮箱
      */
-    @NotBlank
-    @Email
-    private String to;
+    @NotBlank(message = "The email can't be blank.")
+    @Email(message = "The email format error.")
+    private String email;
 
     /**
-     * 主题
+     * 主题，也就是邮件的标题
      */
-    @NotBlank
-    @Size(max = 78)
+    @NotBlank(message = "The subject can't be blank.")
+    @Size(max = EmailServiceConstants.MAX_EMAIL_SUBJECT_LENGTH,
+            message = "The length of subject must not be greater than "
+                    + EmailServiceConstants.MAX_EMAIL_SUBJECT_LENGTH + ".")
     private String subject;
 
     /**
      * 内容
      */
-    @NotBlank
+    @NotBlank(message = "The text can't be blank.")
+    @Size(max = EmailServiceConstants.MAX_EMAIL_TEXT_LENGTH,
+            message = "The length of text must not be greater than "
+                    + EmailServiceConstants.MAX_EMAIL_TEXT_LENGTH + ".")
     private String text;
 
     /**
      * 附件
      */
+    @Size(max = EmailServiceConstants.MAX_EMAIL_ATTACHMENT_NUMBER,
+            message = "The length of attachmentMap must not be greater than "
+                    + EmailServiceConstants.MAX_EMAIL_ATTACHMENT_NUMBER + ".")
     private Map<String, byte[]> attachmentMap;
 
-    public String getTo() {
-        return to;
+    public String getEmail() {
+        return email;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getSubject() {
@@ -74,7 +84,7 @@ public class SendSimpleEmailPO implements Serializable {
     @Override
     public String toString() {
         return "SendSimpleEmailPO{" +
-                "to='" + to + '\'' +
+                "email='" + email + '\'' +
                 ", subject='" + subject + '\'' +
                 ", text='" + text + '\'' +
                 ", attachmentMap=" + attachmentMap +
@@ -82,13 +92,13 @@ public class SendSimpleEmailPO implements Serializable {
     }
 
     public static final class Builder {
-        private String to;
+        private String email;
         private String subject;
         private String text;
         private Map<String, byte[]> attachmentMap;
 
-        public Builder to(String to) {
-            this.to = to;
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 
@@ -109,7 +119,7 @@ public class SendSimpleEmailPO implements Serializable {
 
         public SendSimpleEmailPO build() {
             SendSimpleEmailPO sendSimpleEmailPO = new SendSimpleEmailPO();
-            sendSimpleEmailPO.setTo(to);
+            sendSimpleEmailPO.setEmail(email);
             sendSimpleEmailPO.setSubject(subject);
             sendSimpleEmailPO.setText(text);
             sendSimpleEmailPO.setAttachmentMap(attachmentMap);

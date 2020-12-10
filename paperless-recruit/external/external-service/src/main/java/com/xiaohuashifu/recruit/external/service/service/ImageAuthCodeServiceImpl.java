@@ -77,7 +77,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
         // 添加验证码到缓存
         String redisKey = IMAGE_AUTH_CODE_REDIS_KEY_PREFIX + ":" + id;
         redisTemplate.opsForValue().set(redisKey, imageAuthCode.getAuthCode());
-        redisTemplate.expire(redisKey, createImageAuthCodePO.getExpiredTime(), TimeUnit.MINUTES);
+        redisTemplate.expire(redisKey, createImageAuthCodePO.getExpirationTime(), TimeUnit.MINUTES);
 
         // 构造并返回
         ImageAuthCodeDTO imageAuthCodeDTO = new ImageAuthCodeDTO(id, imageAuthCode.getBase64Image());

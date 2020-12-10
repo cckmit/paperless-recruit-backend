@@ -25,7 +25,9 @@ public interface SmsService {
      * @return 发送结果
      */
     // TODO: 2020/12/9  该方法暂不支持
-    default Result<Object> sendSms(@NotBlank @Phone String phone, @NotBlank @Sms String message) {
+    default Result<Object> sendSms(
+            @NotBlank(message = "The phone can't be blank.") @Phone String phone,
+            @NotBlank(message = "The message can't be blank.") @Sms String message) {
         throw new UnsupportedOperationException();
     }
 
@@ -39,7 +41,8 @@ public interface SmsService {
      * @param createAndSendSmsAuthCodePO 创建并发送短信验证码的参数对象
      * @return Result<Void> 返回结果若 Result.isSuccess()为true 表示发送成功，否则发送失败
      */
-    Result<Void> createAndSendSmsAuthCode(@NotNull CreateAndSendSmsAuthCodePO createAndSendSmsAuthCodePO);
+    Result<Void> createAndSendSmsAuthCode(@NotNull(message = "The createAndSendSmsAuthCodePO can't be null.")
+                                                  CreateAndSendSmsAuthCodePO createAndSendSmsAuthCodePO);
 
     /**
      * 短信验证码检验验证码是否有效的服务
@@ -52,6 +55,7 @@ public interface SmsService {
      * @param checkSmsAuthCodePO 检查短信验证码的对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示验证成功，否则验证失败
      */
-    Result<Void> checkSmsAuthCode(@NotNull CheckSmsAuthCodePO checkSmsAuthCodePO);
+    Result<Void> checkSmsAuthCode(@NotNull(message = "The checkSmsAuthCodePO can't be null.")
+                                          CheckSmsAuthCodePO checkSmsAuthCodePO);
 
 }

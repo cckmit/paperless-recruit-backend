@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.external.service.service;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
+import com.xiaohuashifu.recruit.external.api.constant.EmailServiceConstants;
 import com.xiaohuashifu.recruit.external.api.po.CheckEmailAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CreateAndSendEmailAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.SendSimpleEmailPO;
@@ -72,17 +73,12 @@ public class EmailServiceImpl implements EmailService {
             // 设置基本信息
             helper = new MimeMessageHelper(mimeMessage, true);
             helper.setFrom(from);
-            helper.setTo(sendSimpleEmailPO.getTo());
+            helper.setTo(sendSimpleEmailPO.getEmail());
             helper.setSubject(sendSimpleEmailPO.getSubject());
             helper.setText(sendSimpleEmailPO.getText());
 
-            // 如果附件不为 null，添加附件
-            Map<String, byte[]> attachmentMap = sendSimpleEmailPO.getAttachmentMap();
-            if (attachmentMap != null) {
-                for (Map.Entry<String, byte[]> attachment : attachmentMap.entrySet()) {
-                    helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
-                }
-            }
+            // 添加附件
+            addAttachment(helper, sendSimpleEmailPO.getAttachmentMap());
 
             // 发送邮件
             mailSender.send(mimeMessage);
@@ -110,7 +106,7 @@ public class EmailServiceImpl implements EmailService {
             // 设置基本信息
             helper = new MimeMessageHelper(mimeMessage, true);
             helper.setFrom(from);
-            helper.setTo(sendTemplateEmailPO.getTo());
+            helper.setTo(sendTemplateEmailPO.getEmail());
             helper.setSubject(sendTemplateEmailPO.getSubject());
 
             // 设置 text
@@ -119,13 +115,8 @@ public class EmailServiceImpl implements EmailService {
             String text = templateEngine.process(sendTemplateEmailPO.getTemplateName(), context);
             helper.setText(text, true);
 
-            // 如果附件不为 null，添加附件
-            Map<String, byte[]> attachmentMap = sendTemplateEmailPO.getAttachmentMap();
-            if (attachmentMap != null) {
-                for (Map.Entry<String, byte[]> attachment : attachmentMap.entrySet()) {
-                    helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
-                }
-            }
+            // 添加附件
+            addAttachment(helper, sendTemplateEmailPO.getAttachmentMap());
 
             // 发送邮件
             mailSender.send(mimeMessage);
@@ -153,10 +144,10 @@ public class EmailServiceImpl implements EmailService {
         Map<String, Object> templateParameters = new HashMap<>();
         templateParameters.put("authCode", authCode);
         templateParameters.put("title", createAndSendEmailAuthCodePO.getTitle());
-        templateParameters.put("expiredTime", createAndSendEmailAuthCodePO.getExpiredTime());
+        templateParameters.put("expiredTime", createAndSendEmailAuthCodePO.getExpirationTime());
         String subject = "华农招新：" + createAndSendEmailAuthCodePO.getTitle() + "验证码";
         SendTemplateEmailPO sendTemplateEmailPO = new SendTemplateEmailPO.Builder()
-                .to(createAndSendEmailAuthCodePO.getEmail())
+                .email(createAndSendEmailAuthCodePO.getEmail())
                 .subject(subject)
                 .templateName("RecruitAuthCode")
                 .templateParameters(templateParameters)
@@ -173,7 +164,7 @@ public class EmailServiceImpl implements EmailService {
         String redisKey = EMAIL_AUTH_CODE_REDIS_PREFIX
                 + ":" + createAndSendEmailAuthCodePO.getSubject() + ":" + createAndSendEmailAuthCodePO.getEmail();
         redisTemplate.opsForValue().set(
-                redisKey, authCode, createAndSendEmailAuthCodePO.getExpiredTime(), TimeUnit.MINUTES);
+                redisKey, authCode, createAndSendEmailAuthCodePO.getExpirationTime(), TimeUnit.MINUTES);
 
         return Result.success();
     }
@@ -214,6 +205,34 @@ public class EmailServiceImpl implements EmailService {
         }
 
         return Result.success();
+    }
+
+    /**
+     * 添加附件
+     *
+     * @param helper MimeMessageHelper
+     * @param attachmentMap 附件
+     */
+    private void addAttachment(MimeMessageHelper helper, Map<String, byte[]> attachmentMap) throws MessagingException {
+        // 如果附件为 null，不处理
+        if (attachmentMap == null) {
+            return;
+        }
+
+        // 添加附件
+        for (Map.Entry<String, byte[]> attachment : attachmentMap.entrySet()) {
+            // 不能为 null
+            if (attachment == null) {
+                continue;
+            }
+
+            // 不能大于限定大小
+            if (attachment.getValue().length > EmailServiceConstants.MAX_EMAIL_ATTACHMENT_LENGTH) {
+                continue;
+            }
+
+            helper.addAttachment(attachment.getKey(), new ByteArrayResource(attachment.getValue()));
+        }
     }
 
 }

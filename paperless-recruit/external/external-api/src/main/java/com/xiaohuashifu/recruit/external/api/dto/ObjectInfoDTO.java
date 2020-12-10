@@ -96,4 +96,5 @@ public class ObjectInfoDTO implements Serializable {
             return objectInfo;
         }
     }
+
 }

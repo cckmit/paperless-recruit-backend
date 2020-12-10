@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.po;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateServiceConstants;
 import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
 
 import javax.validation.constraints.NotNull;
@@ -16,34 +17,48 @@ import java.io.Serializable;
  */
 public class UpdateWeChatMpSubscribeMessageTemplatePO implements Serializable {
 
-    @NotNull
-    @Positive
+    /**
+     * 模板编号，（项目数据库生成的）
+     */
+    @NotNull(message = "The id can't be null.")
+    @Positive(message = "The id must be greater than 0.")
     private Long id;
 
+    /**
+     * 微信小程序类型
+     */
     private AppEnum app;
 
     /**
      * 模板编号
      */
-    @Size(max = 255)
+    @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TEMPLATE_ID_LENGTH,
+            message = "The length of templateId must not be greater than "
+                    + WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TEMPLATE_ID_LENGTH + ".")
     private String templateId;
 
     /**
-     * 模板标题
+     * 模板标题，（微信小程序平台生成的）
      */
-    @Size(max = 255)
+    @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TITLE_LENGTH,
+            message = "The length of title must not be greater than "
+                    + WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TITLE_LENGTH + ".")
     private String title;
 
     /**
      * 类目
      */
-    @Size(max = 255)
+    @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TYPE_LENGTH,
+            message = "The length of type must not be greater than "
+                    + WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TYPE_LENGTH + ".")
     private String type;
 
     /**
      * 描述
      */
-    @Size(max = 255)
+    @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_DESCRIPTION_LENGTH,
+            message = "The length of description must not be greater than "
+                    + WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_DESCRIPTION_LENGTH + ".")
     private String description;
 
     /**

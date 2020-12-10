@@ -59,7 +59,7 @@ public class SmsServiceImpl implements SmsService {
         String redisKey = SMS_AUTH_CODE_REDIS_PREFIX
                 + ":" + createAndSendSmsAuthCodePO.getSubject() + ":" + createAndSendSmsAuthCodePO.getPhone();
         redisTemplate.opsForValue().set(
-                redisKey, authCode, createAndSendSmsAuthCodePO.getExpiredTime(), TimeUnit.MINUTES);
+                redisKey, authCode, createAndSendSmsAuthCodePO.getExpirationTime(), TimeUnit.MINUTES);
 
         return Result.success();
     }

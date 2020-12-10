@@ -50,4 +50,5 @@ public class ObjectInfoListDTO implements Serializable {
                 ", objectInfos=" + objectInfos +
                 '}';
     }
+
 }

@@ -41,7 +41,7 @@ public class ImageAuthCodeServiceImplTest {
                         .width(100)
                         .height(40)
                         .length(5)
-                        .expiredTime(5)
+                        .expirationTime(5)
                         .build());
         System.out.println(createImageAuthCodeResult.getData().getAuthCode());
         System.out.println(createImageAuthCodeResult.getData().getId());

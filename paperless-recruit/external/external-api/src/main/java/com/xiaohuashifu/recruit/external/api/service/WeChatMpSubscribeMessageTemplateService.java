@@ -28,7 +28,8 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
     Result<WeChatMpSubscribeMessageTemplateDTO> saveWeChatMpSubscribeMessageTemplate(
-            @NotNull SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO);
+            @NotNull(message = "The saveWeChatMpSubscribeMessageTemplatePO can't be null.")
+                    SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO);
 
     /**
      * 获取模板
@@ -39,7 +40,8 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @param id 模板编号
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
-    Result<WeChatMpSubscribeMessageTemplateDTO> getWeChatMpSubscribeMessageTemplate(@NotNull @Positive Long id);
+    Result<WeChatMpSubscribeMessageTemplateDTO> getWeChatMpSubscribeMessageTemplate(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 获取模板通过 query 参数
@@ -50,7 +52,7 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @return WeChatMpSubscribeMessageTemplateDTO 可能返回空列表
      */
     Result<PageInfo<WeChatMpSubscribeMessageTemplateDTO>> listWeChatMpSubscribeMessageTemplates(
-            @NotNull WeChatMpSubscribeMessageTemplateQuery query);
+            @NotNull(message = "The query can't be null.") WeChatMpSubscribeMessageTemplateQuery query);
 
     /**
      * 更新模板，这是一个较广的更新接口，请小心使用
@@ -61,6 +63,7 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
     Result<WeChatMpSubscribeMessageTemplateDTO> updateWeChatMpSubscribeMessageTemplate(
-            @NotNull UpdateWeChatMpSubscribeMessageTemplatePO updateWeChatMpSubscribeMessageTemplatePO);
+            @NotNull(message = "The updateWeChatMpSubscribeMessageTemplatePO can't be null.")
+                    UpdateWeChatMpSubscribeMessageTemplatePO updateWeChatMpSubscribeMessageTemplatePO);
 
 }

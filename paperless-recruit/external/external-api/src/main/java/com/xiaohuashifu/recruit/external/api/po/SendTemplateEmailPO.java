@@ -1,9 +1,8 @@
 package com.xiaohuashifu.recruit.external.api.po;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import com.xiaohuashifu.recruit.external.api.constant.EmailServiceConstants;
+
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -18,40 +17,44 @@ public class SendTemplateEmailPO implements Serializable {
     /**
      * 目标邮箱
      */
-    @NotBlank
-    @Email
-    private String to;
+    @NotBlank(message = "The email can't be blank.")
+    @Email(message = "The email format error.")
+    private String email;
 
     /**
-     * 主题
+     * 主题，也就是邮件的标题
      */
-    @NotBlank
-    @Size(max = 78)
+    @NotBlank(message = "The subject can't be blank.")
+    @Size(max = EmailServiceConstants.MAX_EMAIL_SUBJECT_LENGTH,
+            message = "The length of subject must not be greater than "
+                    + EmailServiceConstants.MAX_EMAIL_SUBJECT_LENGTH + ".")
     private String subject;
 
     /**
      * 模板名
      */
-    @NotBlank
+    @NotBlank(message = "The templateName can't be blank.")
     private String templateName;
 
     /**
      * 模板参数
      */
-    @NotEmpty
     private Map<String, Object> templateParameters;
 
     /**
      * 附件
      */
+    @Size(max = EmailServiceConstants.MAX_EMAIL_ATTACHMENT_NUMBER,
+            message = "The length of attachmentMap must not be greater than "
+                    + EmailServiceConstants.MAX_EMAIL_ATTACHMENT_NUMBER + ".")
     private Map<String, byte[]> attachmentMap;
 
-    public String getTo() {
-        return to;
+    public String getEmail() {
+        return email;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getSubject() {
@@ -89,7 +92,7 @@ public class SendTemplateEmailPO implements Serializable {
     @Override
     public String toString() {
         return "SendTemplateEmailPO{" +
-                "to='" + to + '\'' +
+                "email='" + email + '\'' +
                 ", subject='" + subject + '\'' +
                 ", templateName='" + templateName + '\'' +
                 ", templateParameters=" + templateParameters +
@@ -98,14 +101,14 @@ public class SendTemplateEmailPO implements Serializable {
     }
 
     public static final class Builder {
-        private String to;
+        private String email;
         private String subject;
         private String templateName;
         private Map<String, Object> templateParameters;
         private Map<String, byte[]> attachmentMap;
 
-        public Builder to(String to) {
-            this.to = to;
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 
@@ -131,7 +134,7 @@ public class SendTemplateEmailPO implements Serializable {
 
         public SendTemplateEmailPO build() {
             SendTemplateEmailPO sendTemplateEmailPO = new SendTemplateEmailPO();
-            sendTemplateEmailPO.setTo(to);
+            sendTemplateEmailPO.setEmail(email);
             sendTemplateEmailPO.setSubject(subject);
             sendTemplateEmailPO.setTemplateName(templateName);
             sendTemplateEmailPO.setTemplateParameters(templateParameters);
@@ -139,4 +142,5 @@ public class SendTemplateEmailPO implements Serializable {
             return sendTemplateEmailPO;
         }
     }
+
 }

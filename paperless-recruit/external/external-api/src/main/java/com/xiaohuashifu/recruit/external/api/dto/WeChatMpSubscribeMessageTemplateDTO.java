@@ -174,4 +174,5 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
             return weChatMpSubscribeMessageTemplateDTO;
         }
     }
+
 }

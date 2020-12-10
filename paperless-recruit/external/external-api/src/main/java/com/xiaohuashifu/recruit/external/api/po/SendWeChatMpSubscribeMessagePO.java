@@ -19,20 +19,20 @@ public class SendWeChatMpSubscribeMessagePO implements Serializable {
     /**
      * 微信小程序类型
      */
-    @NotNull
+    @NotNull(message = "The app can't be null.")
     private AppEnum app;
 
     /**
      * 接收者（用户）的用户编号
      */
-    @NotNull
-    @Positive
+    @NotNull(message = "The userId can't be null.")
+    @Positive(message = "The userId must be greater than 0.")
     private Long userId;
 
     /**
      * 所需下发的模板消息的 id
      */
-    @NotBlank
+    @NotBlank(message = "The templateId can't be blank.")
     private String templateId;
 
     /**
@@ -43,7 +43,7 @@ public class SendWeChatMpSubscribeMessagePO implements Serializable {
     /**
      * 模板内容，格式形如 { "key1": { "value": any }, "key2": { "value": any } }
      */
-    @NotEmpty
+    @NotEmpty(message = "The templateData can't be empty.")
     private Map<String, SendWeChatMpSubscribeMessageDataPO> templateData;
 
     /**
@@ -182,4 +182,5 @@ public class SendWeChatMpSubscribeMessagePO implements Serializable {
             return sendWeChatMpSubscribeMessagePO;
         }
     }
+
 }

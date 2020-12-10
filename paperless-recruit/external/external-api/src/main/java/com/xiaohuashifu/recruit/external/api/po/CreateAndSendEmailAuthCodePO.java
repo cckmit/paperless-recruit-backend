@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.po;
 
+import com.xiaohuashifu.recruit.external.api.constant.EmailServiceConstants;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 
@@ -10,8 +12,12 @@ import java.io.Serializable;
  * @create: 2020/11/19 13:42
  */
 public class CreateAndSendEmailAuthCodePO implements Serializable {
-    @NotBlank
-    @Email
+
+    /**
+     * 邮箱
+     */
+    @NotBlank(message = "The email can't be blank.")
+    @Email(message = "The email format error.")
     private String email;
 
     /**
@@ -19,26 +25,32 @@ public class CreateAndSendEmailAuthCodePO implements Serializable {
      * 用来作为缓存时 key 的前缀
      * 推荐格式为{服务名}:{具体业务名}
      */
-    @NotBlank
+    @NotBlank(message = "The subject can't be blank.")
+    @Size(max = EmailServiceConstants.MAX_EMAIL_AUTH_CODE_SUBJECT_LENGTH,
+            message = "The length of subject must not be greater than "
+                    + EmailServiceConstants.MAX_EMAIL_AUTH_CODE_SUBJECT_LENGTH + ".")
     private String subject;
 
     /**
      * 标题，用于发送邮件验证码时标识该邮件验证码的目的
      * 如“找回密码”，“邮箱绑定”等
      */
-    @NotBlank
-    @Size(max = 10)
+    @NotBlank(message = "The title can't be blank.")
+    @Size(max = EmailServiceConstants.MAX_EMAIL_AUTH_CODE_TITLE_LENGTH,
+            message = "The length of title must not be greater than "
+                    + EmailServiceConstants.MAX_EMAIL_AUTH_CODE_TITLE_LENGTH + ".")
     private String title;
 
     /**
      * 缓存键的过期时间，单位分钟
      * 推荐5或10分钟
-     * 在调用 EmailService.createAndSendEmailAuthCode() 时需要带上
      */
-    @NotNull
-    @Positive
-    @Max(10)
-    private Integer expiredTime;
+    @NotNull(message = "The expirationTime can't be null.")
+    @Positive(message = "The expirationTime must be greater than 0.")
+    @Max(value = EmailServiceConstants.MAX_EMAIL_AUTH_CODE_EXPIRATION_TIME,
+            message = "The expirationTime must not be greater than "
+                    + EmailServiceConstants.MAX_EMAIL_AUTH_CODE_EXPIRATION_TIME + ".")
+    private Integer expirationTime;
 
     public String getEmail() {
         return email;
@@ -64,12 +76,12 @@ public class CreateAndSendEmailAuthCodePO implements Serializable {
         this.title = title;
     }
 
-    public Integer getExpiredTime() {
-        return expiredTime;
+    public Integer getExpirationTime() {
+        return expirationTime;
     }
 
-    public void setExpiredTime(Integer expiredTime) {
-        this.expiredTime = expiredTime;
+    public void setExpirationTime(Integer expirationTime) {
+        this.expirationTime = expirationTime;
     }
 
     @Override
@@ -78,7 +90,7 @@ public class CreateAndSendEmailAuthCodePO implements Serializable {
                 "email='" + email + '\'' +
                 ", subject='" + subject + '\'' +
                 ", title='" + title + '\'' +
-                ", expiredTime=" + expiredTime +
+                ", expirationTime=" + expirationTime +
                 '}';
     }
 
@@ -86,7 +98,7 @@ public class CreateAndSendEmailAuthCodePO implements Serializable {
         private String email;
         private String subject;
         private String title;
-        private Integer expiredTime;
+        private Integer expirationTime;
 
         public Builder email(String email) {
             this.email = email;
@@ -103,8 +115,8 @@ public class CreateAndSendEmailAuthCodePO implements Serializable {
             return this;
         }
 
-        public Builder expiredTime(Integer expiredTime) {
-            this.expiredTime = expiredTime;
+        public Builder expirationTime(Integer expirationTime) {
+            this.expirationTime = expirationTime;
             return this;
         }
 
@@ -113,8 +125,9 @@ public class CreateAndSendEmailAuthCodePO implements Serializable {
             createAndSendEmailAuthCodePO.setEmail(email);
             createAndSendEmailAuthCodePO.setSubject(subject);
             createAndSendEmailAuthCodePO.setTitle(title);
-            createAndSendEmailAuthCodePO.setExpiredTime(expiredTime);
+            createAndSendEmailAuthCodePO.setExpirationTime(expirationTime);
             return createAndSendEmailAuthCodePO;
         }
     }
+
 }

@@ -24,7 +24,8 @@ public interface ImageAuthCodeService {
      * @param createImageAuthCodePO 创建图形验证码参数对象
      * @return ImageAuthCodeDTO 包含验证码的唯一标识 id 和 Base64编码的验证码
      */
-    Result<ImageAuthCodeDTO> createImageAuthCode(@NotNull CreateImageAuthCodePO createImageAuthCodePO);
+    Result<ImageAuthCodeDTO> createImageAuthCode(
+            @NotNull(message = "The createImageAuthCodePO can't be null.") CreateImageAuthCodePO createImageAuthCodePO);
 
     /**
      * 校验验证码
@@ -40,6 +41,7 @@ public interface ImageAuthCodeService {
      * @param authCode 用户输入的验证码字符串
      * @return 校验结果
      */
-    Result<Void> checkImageAuthCode(@NotBlank String id, @NotBlank String authCode);
+    Result<Void> checkImageAuthCode(@NotBlank(message = "The id can't be blank.") String id,
+                                    @NotBlank(message = "The authCode can't be blank.") String authCode);
 
 }

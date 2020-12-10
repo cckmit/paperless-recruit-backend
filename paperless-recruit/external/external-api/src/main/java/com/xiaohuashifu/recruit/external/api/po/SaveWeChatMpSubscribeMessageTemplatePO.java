@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.po;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateServiceConstants;
 import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
 
 import javax.validation.constraints.NotBlank;
@@ -16,41 +17,49 @@ import java.io.Serializable;
  */
 public class SaveWeChatMpSubscribeMessageTemplatePO implements Serializable {
 
-    @NotNull
+    @NotNull(message = "The app can't be null.")
     private AppEnum app;
 
     /**
      * 模板编号
      */
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "The templateId can't be blank.")
+    @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TEMPLATE_ID_LENGTH,
+            message = "The length of templateId must not be greater than "
+            + WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TEMPLATE_ID_LENGTH + ".")
     private String templateId;
 
     /**
      * 模板标题
      */
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "The title can't be blank.")
+    @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TITLE_LENGTH,
+            message = "The length of title must not be greater than "
+                    + WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TITLE_LENGTH + ".")
     private String title;
 
     /**
      * 类目
      */
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "The type can't be blank.")
+    @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TYPE_LENGTH,
+            message = "The length of type must not be greater than "
+                    + WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TYPE_LENGTH + ".")
     private String type;
 
     /**
      * 描述
      */
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "The description can't be blank.")
+    @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_DESCRIPTION_LENGTH,
+            message = "The length of description must not be greater than "
+                    + WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_DESCRIPTION_LENGTH + ".")
     private String description;
 
     /**
      * 模板的状态
      */
-    @NotNull
+    @NotNull(message = "The status can't be null.")
     private WeChatMpSubscribeMessageTemplateStatusEnum status;
 
     public AppEnum getApp() {
@@ -152,7 +161,8 @@ public class SaveWeChatMpSubscribeMessageTemplatePO implements Serializable {
         }
 
         public SaveWeChatMpSubscribeMessageTemplatePO build() {
-            SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO = new SaveWeChatMpSubscribeMessageTemplatePO();
+            SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO =
+                    new SaveWeChatMpSubscribeMessageTemplatePO();
             saveWeChatMpSubscribeMessageTemplatePO.setApp(app);
             saveWeChatMpSubscribeMessageTemplatePO.setTemplateId(templateId);
             saveWeChatMpSubscribeMessageTemplatePO.setTitle(title);
@@ -162,4 +172,5 @@ public class SaveWeChatMpSubscribeMessageTemplatePO implements Serializable {
             return saveWeChatMpSubscribeMessageTemplatePO;
         }
     }
+
 }

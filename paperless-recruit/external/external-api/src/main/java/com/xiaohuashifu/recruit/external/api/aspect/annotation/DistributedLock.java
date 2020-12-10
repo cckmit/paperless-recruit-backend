@@ -15,25 +15,9 @@ import java.util.concurrent.TimeUnit;
 public @interface DistributedLock {
 
     /**
-     * 分布式锁完整 key
+     * 分布式锁 key，支持 EL 表达式，如#{#user.phone}
      */
-    String value() default "";
-
-    /**
-     * 分布式锁完整 key
-     * @see #value() 相同
-     */
-    String key() default "";
-
-    /**
-     * 分布式锁 key 前缀
-     */
-    String keyPrefix() default "";
-
-    /**
-     * 分布式锁 key 的参数名
-     */
-    String keyParameterName() default "";
+    String value();
 
     /**
      * 过期时间

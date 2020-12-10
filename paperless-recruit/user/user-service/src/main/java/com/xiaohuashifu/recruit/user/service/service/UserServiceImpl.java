@@ -190,8 +190,15 @@ public class UserServiceImpl implements UserService {
      * @return 新创建的用户
      */
     @Override
-    @DistributedLock(keyParameterName = "phone", keyPrefix = PHONE_DISTRIBUTED_LOCK_KEY_PREFIX)
+    @DistributedLock(PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#phone}")
     public Result<UserDTO> signUpBySmsAuthCode(String phone, String authCode, String password) {
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // 判断手机号码是否存在
         int count = userMapper.countByPhone(phone);
         if (count > 0) {
@@ -348,7 +355,7 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
-    @DistributedLock(keyParameterName = "newUsername", keyPrefix = USERNAME_DISTRIBUTED_LOCK_KEY_PREFIX)
+    @DistributedLock(USERNAME_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newUsername}")
     public Result<UserDTO> updateUsername(Long id, String newUsername) {
         // 判断用户是否存在
         int count = userMapper.count(id);
@@ -380,7 +387,7 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
-    @DistributedLock(keyParameterName = "newPhone", keyPrefix = PHONE_DISTRIBUTED_LOCK_KEY_PREFIX)
+    @DistributedLock(PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newPhone}")
     public Result<UserDTO> updatePhone(Long id, String newPhone, String authCode) {
         // 判断用户是否存在
         int count = userMapper.count(id);
@@ -424,7 +431,7 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
-    @DistributedLock(keyParameterName = "newEmail", keyPrefix = EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX)
+    @DistributedLock(EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newEmail}")
     public Result<UserDTO> updateEmail(Long id, String newEmail, String authCode) {
         // 判断用户是否存在
         int count = userMapper.count(id);

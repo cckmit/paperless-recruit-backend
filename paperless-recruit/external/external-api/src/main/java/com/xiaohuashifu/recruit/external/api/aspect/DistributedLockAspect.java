@@ -11,9 +11,16 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,6 +38,11 @@ public class DistributedLockAspect {
     private DistributedLockService distributedLockService;
 
     /**
+     * EL 表达式解析器
+     */
+    private static final ExpressionParser expressionParser = new SpelExpressionParser();
+
+    /**
      * 给方法添加分布式锁
      *
      * @param joinPoint ProceedingJoinPoint
@@ -39,11 +51,11 @@ public class DistributedLockAspect {
     @Around("@annotation(com.xiaohuashifu.recruit.external.api.aspect.annotation.DistributedLock) " +
             "&& @annotation(distributedLock)")
     public Object handler(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
-        // 获得锁定键
-        String lockKey = getLockKey(joinPoint, distributedLock);
+        // 获得键
+        String key = getKey(joinPoint, distributedLock);
 
         // 尝试获取锁
-        if (!getLock(lockKey, distributedLock)) {
+        if (!getLock(key, distributedLock)) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Failed to acquire lock.");
         }
 
@@ -52,69 +64,75 @@ public class DistributedLockAspect {
             return joinPoint.proceed();
         } finally {
             // 释放锁
-            releaseLock(lockKey, joinPoint);
+            releaseLock(key, joinPoint);
         }
     }
 
     /**
-     * 获取 lockKey
+     * 获取 key
      *
      * @param joinPoint ProceedingJoinPoint
      * @param distributedLock DistributedLock
-     * @return lockKey
+     * @return key
      */
-    private String getLockKey(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) {
-        // 若 distributedLock.key() 或者 distributedLock.value() 不为空，直接返回其值
-        if (!distributedLock.key().isBlank()) {
-            return distributedLock.key();
-        }
-        if (!distributedLock.value().isBlank()) {
-            return distributedLock.value();
-        }
-
-        // 构造 lockKey
-        String keyParameterName = distributedLock.keyParameterName();
+    private String getKey(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) {
+        // 获得方法参数的 Map
         String[] parameterNames = ((CodeSignature) joinPoint.getSignature()).getParameterNames();
+        Object[] parameterValues = joinPoint.getArgs();
+        Map<String, Object> parameterMap = new HashMap<>();
         for (int i = 0; i < parameterNames.length; i++) {
-            if (Objects.equals(keyParameterName, parameterNames[i])) {
-                String keyPrefix = distributedLock.keyPrefix();
-                Object[] args = joinPoint.getArgs();
-                return keyPrefix + args[i];
-            }
+            parameterMap.put(parameterNames[i], parameterValues[i]);
         }
 
-        // 参数错误
-        throw new IllegalArgumentException("The keyParameterName " + keyParameterName + " not exist.");
+        // 解析 EL 表达式
+        String key = distributedLock.value();
+        return getExpressionValue(key, parameterMap);
     }
 
     /**
      * 获取锁
      *
-     * @param lockKey 锁定键
+     * @param key 键
      * @param distributedLock DistributedLock
      * @return 获取结果
      */
-    private boolean getLock(String lockKey, DistributedLock distributedLock) {
+    private boolean getLock(String key, DistributedLock distributedLock) {
         // 判断是否需要设置超时时间
         long expirationTime = distributedLock.expirationTime();
-        TimeUnit timeUnit = distributedLock.timeUnit();
         if (expirationTime > 0) {
-            return distributedLockService.getLock(lockKey, expirationTime, timeUnit).isSuccess();
+            TimeUnit timeUnit = distributedLock.timeUnit();
+            return distributedLockService.getLock(key, expirationTime, timeUnit).isSuccess();
         }
-        return distributedLockService.getLock(lockKey).isSuccess();
+        return distributedLockService.getLock(key).isSuccess();
     }
 
     /**
      * 释放锁
      *
-     * @param lockKey 锁定键
+     * @param key 键
      * @param joinPoint ProceedingJoinPoint
      */
-    private void releaseLock(String lockKey, ProceedingJoinPoint joinPoint) {
-        if (!distributedLockService.releaseLock(lockKey).isSuccess()) {
-            logger.error("Failed to release lock. lockKey={}, signature={}, args={}",
-                    lockKey, joinPoint.getSignature(), Arrays.toString(joinPoint.getArgs()));
+    private void releaseLock(String key, ProceedingJoinPoint joinPoint) {
+        if (!distributedLockService.releaseLock(key).isSuccess()) {
+            logger.error("Failed to release lock. key={}, signature={}, parameters={}",
+                    key, joinPoint.getSignature(), Arrays.toString(joinPoint.getArgs()));
         }
+    }
+
+    /**
+     * 获取 EL 表达式的值
+     *
+     * @param elExpression EL 表达式
+     * @param parameterMap 参数名-值 Map
+     * @return 表达式的值
+     */
+    private String getExpressionValue(String elExpression, Map<String, Object> parameterMap) {
+        Expression expression = expressionParser.parseExpression(elExpression, new TemplateParserContext());
+        EvaluationContext context = new StandardEvaluationContext();
+        for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
+            context.setVariable(entry.getKey(), entry.getValue());
+        }
+        return expression.getValue(context, String.class);
     }
 
 }

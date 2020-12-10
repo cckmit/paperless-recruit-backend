@@ -24,8 +24,8 @@ public interface ImageAuthCodeService {
      * @param createImageAuthCodePO 创建图形验证码参数对象
      * @return ImageAuthCodeDTO 包含验证码的唯一标识 id 和 Base64编码的验证码
      */
-    Result<ImageAuthCodeDTO> createImageAuthCode(
-            @NotNull(message = "The createImageAuthCodePO can't be null.") CreateImageAuthCodePO createImageAuthCodePO);
+    Result<ImageAuthCodeDTO> createImageAuthCode(@NotNull(message = "The createImageAuthCodePO can't be null.")
+                                                         CreateImageAuthCodePO createImageAuthCodePO);
 
     /**
      * 校验验证码

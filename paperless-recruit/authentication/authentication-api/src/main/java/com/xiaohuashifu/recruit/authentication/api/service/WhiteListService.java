@@ -46,7 +46,8 @@ public interface WhiteListService {
      * @return PermittedUrlDTO
      */
     Result<Void> removePermittedUrl(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 通过编号获得 PermittedUrlDTO
@@ -58,7 +59,8 @@ public interface WhiteListService {
      * @return PermittedUrlDTO
      */
     Result<PermittedUrlDTO> getPermittedUrl(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 查询被允许的路径

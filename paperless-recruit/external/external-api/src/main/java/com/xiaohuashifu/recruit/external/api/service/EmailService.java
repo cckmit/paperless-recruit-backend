@@ -25,8 +25,8 @@ public interface EmailService {
      * @param sendSimpleEmailPO 发送简单邮件的参数对象
      * @return 发送结果
      */
-    Result<Void> sendSimpleEmail(
-            @NotNull(message = "The sendSimpleEmailPO can't be null.") SendSimpleEmailPO sendSimpleEmailPO);
+    Result<Void> sendSimpleEmail(@NotNull(message = "The sendSimpleEmailPO can't be null.")
+                                         SendSimpleEmailPO sendSimpleEmailPO);
 
     /**
      * 发送模板邮件，使用的是 velocity 模板
@@ -38,8 +38,8 @@ public interface EmailService {
      * @return 发送结果
      */
     // TODO: 2020/12/2 这里的模板可以封装成服务，这样就可以准确判断是否有模板了
-    Result<Void> sendTemplateEmail(
-            @NotNull(message = "The sendTemplateEmailPO can't be null.") SendTemplateEmailPO sendTemplateEmailPO);
+    Result<Void> sendTemplateEmail(@NotNull(message = "The sendTemplateEmailPO can't be null.")
+                                           SendTemplateEmailPO sendTemplateEmailPO);
 
     /**
      * 发送邮箱验证码服务

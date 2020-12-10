@@ -41,7 +41,8 @@ public interface WeChatMpSubscribeMessageTemplateService {
      * @return WeChatMpSubscribeMessageTemplateDTO
      */
     Result<WeChatMpSubscribeMessageTemplateDTO> getWeChatMpSubscribeMessageTemplate(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 获取模板通过 query 参数

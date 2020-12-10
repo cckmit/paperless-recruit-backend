@@ -27,8 +27,8 @@ public interface OrganizationService {
      * @param createOrganizationPO 创建组织的参数对象
      * @return OrganizationDTO
      */
-    Result<OrganizationDTO> createOrganization(
-            @NotNull(message = "The createOrganizationPO can't be null.") CreateOrganizationPO createOrganizationPO);
+    Result<OrganizationDTO> createOrganization(@NotNull(message = "The createOrganizationPO can't be null.")
+                                                       CreateOrganizationPO createOrganizationPO);
 
     /**
      * 添加组织的标签

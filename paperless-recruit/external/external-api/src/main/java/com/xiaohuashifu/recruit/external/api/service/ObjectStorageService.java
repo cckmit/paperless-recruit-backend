@@ -34,7 +34,8 @@ public interface ObjectStorageService {
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 删除结果
      */
-    Result<Void> deleteObject(@NotBlank(message = "The objectName can't be blank.") @ObjectName String objectName);
+    Result<Void> deleteObject(@NotBlank(message = "The objectName can't be blank.")
+                              @ObjectName String objectName);
 
     /**
      * 下载对象
@@ -42,7 +43,8 @@ public interface ObjectStorageService {
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 对象
      */
-    Result<byte[]> getObject(@NotBlank(message = "The objectName can't be blank.") @ObjectName String objectName);
+    Result<byte[]> getObject(@NotBlank(message = "The objectName can't be blank.")
+                             @ObjectName String objectName);
 
     /**
      * 获取对象信息，一次最大 50 条

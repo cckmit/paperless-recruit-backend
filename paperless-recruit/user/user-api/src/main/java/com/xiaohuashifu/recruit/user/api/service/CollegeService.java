@@ -116,8 +116,8 @@ public interface CollegeService {
      * @param query 查询参数
      * @return PageInfo<CollegeMajorDTO> 带分页信息的查询结果，可以返回空列表
      */
-    Result<PageInfo<CollegeMajorDTO>> listCollegeMajors(
-            @NotNull(message = "The query can't be null.") CollegeQuery query);
+    Result<PageInfo<CollegeMajorDTO>> listCollegeMajors(@NotNull(message = "The query can't be null.")
+                                                                CollegeQuery query);
 
     /**
      * 获取专业

@@ -31,8 +31,8 @@ public interface PermissionService {
      * @param savePermissionPO 保存 Permission 需要的参数
      * @return Result<PermissionDTO>
      */
-    Result<PermissionDTO> savePermission(
-            @NotNull(message = "The savePermissionPO can't be null.") SavePermissionPO savePermissionPO);
+    Result<PermissionDTO> savePermission(@NotNull(message = "The savePermissionPO can't be null.")
+                                                 SavePermissionPO savePermissionPO);
 
     /**
      * 删除权限，只允许没有子权限的权限删除
@@ -66,8 +66,8 @@ public interface PermissionService {
      * @param query 查询参数
      * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表，可能返回空列表
      */
-    Result<PageInfo<PermissionDTO>> listPermissions(
-            @NotNull(message = "The query can't be null.") PermissionQuery query);
+    Result<PageInfo<PermissionDTO>> listPermissions(@NotNull(message = "The query can't be null.")
+                                                            PermissionQuery query);
 
     /**
      * 获取所有权限
@@ -85,8 +85,8 @@ public interface PermissionService {
      * @param roleIds 角色id列表
      * @return 角色的权限列表，可能返回空列表
      */
-    Result<List<PermissionDTO>> listPermissionsByRoleIds(
-            @NotEmpty(message = "The roleIds can't be empty.") List<Long> roleIds);
+    Result<List<PermissionDTO>> listPermissionsByRoleIds(@NotEmpty(message = "The roleIds can't be empty.")
+                                                                 List<Long> roleIds);
 
     /**
      * 通过用户id获取用户权限列表
@@ -113,9 +113,8 @@ public interface PermissionService {
      * @param userId 用户id
      * @return 用户的权限 Authority 列表，可能返回空列表
      */
-    Result<Set<String>> listAuthoritiesByUserId(
-            @NotNull(message = "The userId can't be null.")
-            @Positive(message = "The userId must be greater than 0.") Long userId);
+    Result<Set<String>> listAuthoritiesByUserId(@NotNull(message = "The userId can't be null.")
+                                                @Positive(message = "The userId must be greater than 0.") Long userId);
 
     /**
      * 更新权限名，新权限名必须不存在
@@ -182,9 +181,8 @@ public interface PermissionService {
      * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，
      *          分别对应的 key 为 totalDisableCount 和 newPermission
      */
-    Result<Map<String, Object>> disablePermission(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id);
+    Result<Map<String, Object>> disablePermission(@NotNull(message = "The id can't be null.")
+                                                  @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 解禁权限（且子权限可用状态也被解禁，递归解禁）
@@ -196,9 +194,8 @@ public interface PermissionService {
      * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象
      *          分别对应的 key 为 totalEnableCount 和 newPermission
      */
-    Result<Map<String, Object>> enablePermission(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id);
+    Result<Map<String, Object>> enablePermission(@NotNull(message = "The id can't be null.")
+                                                 @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 设置父权限

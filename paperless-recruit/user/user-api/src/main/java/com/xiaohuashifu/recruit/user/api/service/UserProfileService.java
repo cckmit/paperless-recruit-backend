@@ -27,9 +27,8 @@ public interface UserProfileService {
      * @param userId 用户编号
      * @return UserProfileDTO 创建的用户对象
      */
-    Result<UserProfileDTO> createUserProfile(
-            @NotNull(message = "The userId can't be null.")
-            @Positive(message = "The userId must be greater than 0.") Long userId);
+    Result<UserProfileDTO> createUserProfile(@NotNull(message = "The userId can't be null.")
+                                             @Positive(message = "The userId must be greater than 0.") Long userId);
 
     /**
      * 获取用户个人信息
@@ -51,8 +50,8 @@ public interface UserProfileService {
      * @param query 查询参数
      * @return PageInfo<UserProfileDTO> 带分页信息的查询结果，可能返回空列表
      */
-    Result<PageInfo<UserProfileDTO>> listUserProfiles(
-            @NotNull(message = "The query can't be null.") UserProfileQuery query);
+    Result<PageInfo<UserProfileDTO>> listUserProfiles(@NotNull(message = "The query can't be null.")
+                                                              UserProfileQuery query);
 
     /**
      * 通过用户编号获取用户个人信息

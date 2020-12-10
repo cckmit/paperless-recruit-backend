@@ -7,6 +7,8 @@ import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.Assert.*;
 
 /**
@@ -38,7 +40,7 @@ public class DistributedLockServiceImplTest {
 
     @Test
     public void testGetLock() {
-        System.out.println(distributedLockService.getLock("phone:15992321303", 1000L));
+        System.out.println(distributedLockService.getLock("phone:15992321303", 1000L, TimeUnit.SECONDS));
     }
 
     @Test

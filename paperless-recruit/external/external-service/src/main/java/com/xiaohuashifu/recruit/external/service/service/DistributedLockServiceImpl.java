@@ -24,6 +24,11 @@ public class DistributedLockServiceImpl implements DistributedLockService {
      */
     private static final String LOCK_KEY_REDIS_PREFIX = "distributed-lock:";
 
+    /**
+     * 锁在 Redis 里的值
+     */
+    private static final String LOCK_DEFAULT_VALUE_IN_REDIS = "";
+
     public DistributedLockServiceImpl(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
@@ -40,7 +45,7 @@ public class DistributedLockServiceImpl implements DistributedLockService {
     @Override
     public Result<Void> getLock(String key) {
         String redisKey = LOCK_KEY_REDIS_PREFIX + key;
-        if (Boolean.FALSE.equals(redisTemplate.opsForValue().setIfAbsent(redisKey, ""))) {
+        if (Boolean.FALSE.equals(redisTemplate.opsForValue().setIfAbsent(redisKey, LOCK_DEFAULT_VALUE_IN_REDIS))) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Failed to acquire lock.");
         }
         return Result.success();
@@ -54,13 +59,14 @@ public class DistributedLockServiceImpl implements DistributedLockService {
      *
      * @param key 锁对应的唯一 key
      * @param expirationTime 锁自动释放时间，单位秒
+     * @param timeUnit 时间单位
      * @return 获取结果
      */
     @Override
-    public Result<Void> getLock(String key, Long expirationTime) {
+    public Result<Void> getLock(String key, Long expirationTime, TimeUnit timeUnit) {
         String redisKey = LOCK_KEY_REDIS_PREFIX + key;
-        if (Boolean.FALSE.equals(
-                redisTemplate.opsForValue().setIfAbsent(redisKey, "", expirationTime, TimeUnit.SECONDS))) {
+        if (Boolean.FALSE.equals(redisTemplate.opsForValue().setIfAbsent(
+                redisKey, LOCK_DEFAULT_VALUE_IN_REDIS, expirationTime, timeUnit))) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Failed to acquire lock.");
         }
         return Result.success();

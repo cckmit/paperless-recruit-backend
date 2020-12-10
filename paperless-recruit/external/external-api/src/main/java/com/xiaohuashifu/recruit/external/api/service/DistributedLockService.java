@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 描述：分布式锁服务
@@ -39,6 +40,7 @@ public interface DistributedLockService {
      *
      * @param key 锁对应的唯一 key
      * @param expirationTime 锁自动释放时间，单位秒
+     * @param timeUnit 时间单位
      * @return 获取结果
      */
     Result<Void> getLock(
@@ -47,7 +49,8 @@ public interface DistributedLockService {
                     message = "The length of key must not be greater than "
                             + DistributedLockServiceConstants.MAX_KEY_LENGTH + ".") String key,
             @NotNull(message = "The expirationTime can't be null.")
-            @Positive(message = "The expirationTime must be greater than 0.") Long expirationTime);
+            @Positive(message = "The expirationTime must be greater than 0.") Long expirationTime,
+            @NotNull(message = "The timeUnit can't be null.") TimeUnit timeUnit);
 
     /**
      * 释放锁

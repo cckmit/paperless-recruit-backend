@@ -2,6 +2,8 @@ package com.xiaohuashifu.recruit.user.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.constant.CollegeConstants;
+import com.xiaohuashifu.recruit.user.api.constant.MajorConstants;
 import com.xiaohuashifu.recruit.user.api.dto.CollegeDTO;
 import com.xiaohuashifu.recruit.user.api.dto.CollegeMajorDTO;
 import com.xiaohuashifu.recruit.user.api.dto.MajorDTO;
@@ -26,7 +28,9 @@ public interface CollegeService {
      */
     Result<CollegeDTO> saveCollege(
             @NotBlank(message = "The collegeName can't be blank.")
-            @Size(min = 1, max = 50, message = "The length of collegeName must be between 1 and 50.")
+            @Size(max = CollegeConstants.MAX_COLLEGE_NAME_LENGTH,
+                    message = "The length of collegeName must not be greater than "
+                            + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".")
                     String collegeName);
 
     /**
@@ -43,7 +47,9 @@ public interface CollegeService {
             @NotNull(message = "The collegeId can't be null.")
             @Positive(message = "The collegeId must be greater than 0.") Long collegeId,
             @NotBlank(message = "The majorName can't be blank.")
-            @Size(min = 1, max = 50, message = "The length of majorName must be between 1 and 50.") String majorName);
+            @Size(max = MajorConstants.MAX_MAJOR_NAME_LENGTH,
+                    message = "The length of majorName must not be greater than "
+                            + MajorConstants.MAX_MAJOR_NAME_LENGTH + ".") String majorName);
 
     /**
      * 删除学院，删除时会删除该学院的所有专业信息
@@ -149,7 +155,9 @@ public interface CollegeService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newCollegeName can't be blank.")
-            @Size(min = 1, max = 50, message = "The length of newCollegeName must be between 1 and 50.")
+            @Size(max = CollegeConstants.MAX_COLLEGE_NAME_LENGTH,
+                    message = "The length of newCollegeName must not be greater than "
+                            + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".")
                     String newCollegeName);
 
     /**
@@ -166,7 +174,9 @@ public interface CollegeService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newMajorName can't be blank.")
-            @Size(min = 1, max = 50, message = "The length of newMajorName must be between 1 and 50.")
+            @Size(max = MajorConstants.MAX_MAJOR_NAME_LENGTH,
+                    message = "The length of newMajorName must not be greater than "
+                            + MajorConstants.MAX_MAJOR_NAME_LENGTH + ".")
                     String newMajorName);
 
 }

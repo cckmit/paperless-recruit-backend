@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.organization.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.organization.api.constant.OrganizationLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationLabelQuery;
 
@@ -30,7 +31,9 @@ public interface OrganizationLabelService {
      */
     Result<OrganizationLabelDTO> saveOrganizationLabel(
             @NotBlank(message = "The labelName can't be blank.")
-            @Size(min = 1, max = 4, message = "The length of labelName must be between 1 and 4.") String labelName);
+            @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
+                    message = "The length of labelName must not be greater than "
+                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
 
     /**
      * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
@@ -43,7 +46,9 @@ public interface OrganizationLabelService {
      */
     Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(
             @NotBlank(message = "The labelName can't be blank.")
-            @Size(min = 1, max = 4, message = "The length of labelName must be between 1 and 4.") String labelName);
+            @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
+                    message = "The length of labelName must not be greater than "
+                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
 
     /**
      * 查询组织标签
@@ -88,5 +93,7 @@ public interface OrganizationLabelService {
      */
     Result<Void> isValidOrganizationLabel(
             @NotBlank(message = "The labelName can't be blank.")
-            @Size(min = 1, max = 4, message = "The length of labelName must be between 1 and 4.") String labelName);
+            @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
+                    message = "The length of labelName must not be greater than "
+                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
 }

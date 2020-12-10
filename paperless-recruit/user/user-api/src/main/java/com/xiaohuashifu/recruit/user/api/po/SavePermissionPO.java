@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.user.api.po;
 
+import com.xiaohuashifu.recruit.user.api.constant.PermissionConstants;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -15,7 +17,7 @@ import java.io.Serializable;
 public class SavePermissionPO implements Serializable {
 
     /**
-     * 父权限编号，若0标识没有父亲
+     * 父权限编号，若 0 表示没有父亲
      */
     @NotNull(message = "The parentPermissionId can't be null.")
     @PositiveOrZero(message = "The parentPermissionId must be greater than or equal to 0.")
@@ -25,21 +27,27 @@ public class SavePermissionPO implements Serializable {
      * 权限名
      */
     @NotBlank(message = "The permissionName can't be blank.")
-    @Size(min = 1, max = 64, message = "The length of permissionName must be between 1 and 64.")
+    @Size(max = PermissionConstants.MAX_PERMISSION_NAME_LENGTH,
+            message = "The length of permissionName must not be greater than "
+                    + PermissionConstants.MAX_PERMISSION_NAME_LENGTH + ".")
     private String permissionName;
 
     /**
      * 授权路径，可以是 AntPath
      */
     @NotBlank(message = "The authorizationUrl can't be blank.")
-    @Size(min = 1, max = 255, message = "The length of authorizationUrl must be between 1 and 255.")
+    @Size(max = PermissionConstants.MAX_AUTHORIZATION_URL_LENGTH,
+            message = "The length of authorizationUrl must not be greater than"
+                    + PermissionConstants.MAX_AUTHORIZATION_URL_LENGTH + ".")
     private String authorizationUrl;
 
     /**
      * 对权限的描述
      */
     @NotBlank(message = "The description can't be blank.")
-    @Size(min = 1, max = 200, message = "The length of description must be between 1 and 200.")
+    @Size(max = PermissionConstants.MAX_DESCRIPTION_LENGTH,
+            message = "The length of description must not be greater than "
+                    + PermissionConstants.MAX_DESCRIPTION_LENGTH + ".")
     private String description;
 
     /**

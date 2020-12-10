@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.query;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.constant.QueryConstants;
 import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
 
 import javax.validation.constraints.Max;
@@ -29,7 +30,8 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
      */
     @NotNull(message = "The pageSize can't be null.")
     @Positive(message = "The pageSize must be greater than 0.")
-    @Max(value = 50, message = "The pageSize must be less than or equal to 50.")
+    @Max(value = QueryConstants.DEFAULT_PAGE_SIZE,
+            message = "The pageSize must be less than or equal to " + QueryConstants.DEFAULT_PAGE_SIZE + ".")
     private Long pageSize;
 
     /**

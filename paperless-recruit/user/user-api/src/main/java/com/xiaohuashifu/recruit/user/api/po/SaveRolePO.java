@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.user.api.po;
 
+import com.xiaohuashifu.recruit.user.api.constant.RoleConstants;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -19,11 +21,15 @@ public class SaveRolePO implements Serializable {
     private Long parentRoleId;
 
     @NotBlank(message = "The roleName can't be blank.")
-    @Size(min = 1, max = 64, message = "The length of roleName must be between 1 and 64.")
+    @Size(max = RoleConstants.MAX_ROLE_NAME_LENGTH,
+            message = "The length of roleName must not be greater than "
+                    + RoleConstants.MAX_ROLE_NAME_LENGTH + ".")
     private String roleName;
 
     @NotBlank(message = "The description can't be blank.")
-    @Size(min = 1, max = 200, message = "The length of description must be between 1 and 200.")
+    @Size(max = RoleConstants.MAX_DESCRIPTION_LENGTH,
+            message = "The length of description must not be greater than "
+                    + RoleConstants.MAX_DESCRIPTION_LENGTH + ".")
     private String description;
 
     @NotNull(message = "The available can't be null.")

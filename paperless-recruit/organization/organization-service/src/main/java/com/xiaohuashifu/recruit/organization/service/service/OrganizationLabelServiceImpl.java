@@ -160,4 +160,5 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
                 .build();
         return Result.success(organizationLabelDTO);
     }
+
 }

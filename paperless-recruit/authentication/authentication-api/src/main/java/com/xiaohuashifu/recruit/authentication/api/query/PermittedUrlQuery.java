@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.api.query;
 
+import com.xiaohuashifu.recruit.common.constant.QueryConstants;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -26,13 +28,23 @@ public class PermittedUrlQuery implements Serializable {
      */
     @NotNull(message = "The pageSize can't be null.")
     @Positive(message = "The pageSize must be greater than 0.")
-    @Max(value = 50, message = "The pageSize must be less than or equal to 50.")
+    @Max(value = QueryConstants.DEFAULT_PAGE_SIZE,
+            message = "The pageSize must be less than or equal to " + QueryConstants.DEFAULT_PAGE_SIZE + ".")
     private Long pageSize;
 
+    /**
+     * 被允许路径编号
+     */
     private Long id;
 
+    /**
+     * 被允许路径编号列表
+     */
     private List<Long> ids;
 
+    /**
+     * 被允许路径，可模糊
+     */
     private String url;
 
     public Long getPageNum() {
@@ -128,4 +140,5 @@ public class PermittedUrlQuery implements Serializable {
             return permittedUrlQuery;
         }
     }
+
 }

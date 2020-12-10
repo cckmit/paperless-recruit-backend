@@ -7,6 +7,7 @@ package com.xiaohuashifu.recruit.authentication.api.service;
  * @create: 2020/11/16 20:39
  */
 public interface PasswordService {
+
     /**
      * 对密码进行编码
      *
@@ -14,4 +15,5 @@ public interface PasswordService {
      * @return 编码后的密码
      */
     String encodePassword(String password);
+
 }

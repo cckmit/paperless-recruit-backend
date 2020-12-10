@@ -2,11 +2,16 @@ package com.xiaohuashifu.recruit.organization.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
+import com.xiaohuashifu.recruit.organization.api.constant.OrganizationLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.po.CreateOrganizationPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 /**
  * 描述：组织服务
@@ -33,9 +38,12 @@ public interface OrganizationService {
      * @return 添加结果
      */
     Result<Void> addLabel(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The labelName can't be blank.")
-            @Size(min = 1, max = 4, message = "The length of labelName must be between 1 and 4.") String labelName);
+            @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
+                    message = "The length of labelName must not be greater than "
+                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
 
     /**
      * 删除组织的标签
@@ -45,9 +53,12 @@ public interface OrganizationService {
      * @return 删除结果
      */
     Result<Void> removeLabel(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The labelName can't be blank.")
-            @Size(min = 1, max = 4, message = "The length of labelName must be between 1 and 4.") String labelName);
+            @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
+                    message = "The length of labelName must not be greater than "
+                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
 
     /**
      * 获取组织
@@ -56,7 +67,8 @@ public interface OrganizationService {
      * @return OrganizationDTO
      */
     Result<OrganizationDTO> getOrganization(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 查询组织
@@ -75,10 +87,14 @@ public interface OrganizationService {
      * @return 更新后的组织
      */
     Result<OrganizationDTO> updateOrganizationName(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newOrganizationName can't be blank.")
-            @Size(min = 2, max = 20, message = "The length of newOrganizationName must be between 2 and 20.")
-                    String newOrganizationName);
+            @Size(min = OrganizationConstants.MIN_ORGANIZATION_NAME_LENGTH,
+                    max = OrganizationConstants.MAX_ORGANIZATION_NAME_LENGTH,
+                    message = "The length of newOrganizationName must be between "
+                            + OrganizationConstants.MIN_ORGANIZATION_NAME_LENGTH + " and "
+                            + OrganizationConstants.MAX_ORGANIZATION_NAME_LENGTH + ".") String newOrganizationName);
 
     /**
      * 更新组织名缩写
@@ -88,9 +104,14 @@ public interface OrganizationService {
      * @return 更新后的组织
      */
     Result<OrganizationDTO> updateAbbreviationOrganizationName(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newAbbreviationOrganizationName can't be blank.")
-            @Size(min = 2, max = 5, message = "The length of newAbbreviationOrganizationName must be between 2 and 5.")
+            @Size(min = OrganizationConstants.MIN_ABBREVIATION_ORGANIZATION_NAME_LENGTH,
+                    max = OrganizationConstants.MAX_ABBREVIATION_ORGANIZATION_NAME_LENGTH,
+                    message = "The length of newAbbreviationOrganizationName must be between "
+                            + OrganizationConstants.MIN_ABBREVIATION_ORGANIZATION_NAME_LENGTH + " and "
+                            + OrganizationConstants.MAX_ABBREVIATION_ORGANIZATION_NAME_LENGTH + ".")
                     String newAbbreviationOrganizationName);
 
     /**
@@ -101,10 +122,12 @@ public interface OrganizationService {
      * @return 更新后的组织
      */
     Result<OrganizationDTO> updateIntroduction(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newIntroduction can't be blank.")
-            @Size(min = 1, max = 400, message = "The length of newIntroduction must be between 1 and 400.")
-                    String newIntroduction);
+            @Size(max = OrganizationConstants.MAX_ORGANIZATION_INTRODUCTION_LENGTH,
+                    message = "The length of newIntroduction must not be greater than "
+                            + OrganizationConstants.MAX_ORGANIZATION_INTRODUCTION_LENGTH + ".") String newIntroduction);
 
     /**
      * 更新组织 Logo
@@ -114,9 +137,12 @@ public interface OrganizationService {
      * @return 更新后的组织
      */
     Result<OrganizationDTO> updateLogo(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id,
             @NotNull(message = "The newLogo can't be null.")
-            @Size(max = 10240, message = "The newLogo must be less than 10MB.") byte[] newLogo);
+            @Size(max = OrganizationConstants.MAX_ORGANIZATION_LOGO_LENGTH,
+                    message = "The newLogo must not be greater than "
+                            + OrganizationConstants.MAX_ORGANIZATION_LOGO_LENGTH + ".") byte[] newLogo);
 
     /**
      * 增加成员数，+1
@@ -125,7 +151,8 @@ public interface OrganizationService {
      * @return 增加成员数结果，通过 Result.isSuccess() 判断
      */
     Result<Void> increaseMemberNumber(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 减少成员数，-1
@@ -134,7 +161,8 @@ public interface OrganizationService {
      * @return 减少成员数结果，通过 Result.isSuccess() 判断
      */
     Result<Void> decreaseMemberNumber(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等
@@ -143,7 +171,8 @@ public interface OrganizationService {
      * @return 禁用后的组织
      */
     Result<OrganizationDTO> disableOrganization(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 解禁组织
@@ -152,6 +181,7 @@ public interface OrganizationService {
      * @return 解禁后的组织
      */
     Result<OrganizationDTO> enableOrganization(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id);
 
 }

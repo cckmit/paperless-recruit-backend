@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.user.api.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.constant.AuthOpenIdServiceConstants;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
 
 import javax.validation.constraints.NotBlank;
@@ -35,7 +36,10 @@ public interface AuthOpenIdService {
             @Positive(message = "The userId must be greater than 0.") Long userId,
             @NotNull(message = "The app can't be null.") AppEnum app,
             @NotBlank(message = "The code can't be blank.")
-            @Size(min = 32, max = 32, message = "The length of code must be equal to 32.") String code);
+            @Size(max = AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH,
+                    min = AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH,
+                    message = "The length of code must be equal to "
+                            + AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH + ".") String code);
 
     /**
      * 用于微信小程序用户检查 AuthOpenId
@@ -53,7 +57,10 @@ public interface AuthOpenIdService {
     Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMp(
             @NotNull(message = "The app can't be null.") AppEnum app,
             @NotBlank(message = "The code can't be blank.")
-            @Size(min = 32, max = 32, message = "The length of code must be equal to 32.") String code);
+            @Size(max = AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH,
+                    min = AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH,
+                    message = "The length of code must be equal to "
+                            + AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH + ".") String code);
 
     /**
      * 获取 openId

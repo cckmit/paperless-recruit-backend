@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.user.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.constant.PermissionConstants;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
@@ -130,7 +131,9 @@ public interface PermissionService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newPermissionName can't be blank.")
-            @Size(min = 1, max = 64, message = "The length of newPermissionName must be between 1 and 64.")
+            @Size(max = PermissionConstants.MAX_PERMISSION_NAME_LENGTH,
+                    message = "The length of permissionName must not be greater than "
+                            + PermissionConstants.MAX_PERMISSION_NAME_LENGTH + ".")
                     String newPermissionName);
 
     /**
@@ -146,7 +149,9 @@ public interface PermissionService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newAuthorizationUrl can't be blank.")
-            @Size(min = 1, max = 255, message = "The length of newAuthorizationUrl must be between 1 and 255.")
+            @Size(max = PermissionConstants.MAX_AUTHORIZATION_URL_LENGTH,
+                    message = "The length of authorizationUrl must not be greater than"
+                            + PermissionConstants.MAX_AUTHORIZATION_URL_LENGTH + ".")
                     String newAuthorizationUrl);
 
     /**
@@ -162,7 +167,9 @@ public interface PermissionService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newDescription can't be blank.")
-            @Size(min = 1, max = 200, message = "The length of newDescription must be between 1 and 200.")
+            @Size(max = PermissionConstants.MAX_DESCRIPTION_LENGTH,
+                    message = "The length of description must not be greater than "
+                            + PermissionConstants.MAX_DESCRIPTION_LENGTH + ".")
                     String newDescription);
 
     /**

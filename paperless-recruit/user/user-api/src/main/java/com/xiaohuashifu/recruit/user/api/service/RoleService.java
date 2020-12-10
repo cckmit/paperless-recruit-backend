@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.user.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.constant.RoleConstants;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
@@ -155,7 +156,9 @@ public interface RoleService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newRoleName can't be blank.")
-            @Size(min = 1, max = 64, message = "The length of newRoleName must be between 1 and 64.")
+            @Size(max = RoleConstants.MAX_ROLE_NAME_LENGTH,
+                    message = "The length of roleName must not be greater than "
+                            + RoleConstants.MAX_ROLE_NAME_LENGTH + ".")
                     String newRoleName);
 
     /**
@@ -171,7 +174,9 @@ public interface RoleService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newDescription can't be blank.")
-            @Size(min = 1, max = 200, message = "The length of newDescription must be between 1 and 200.")
+            @Size(max = RoleConstants.MAX_DESCRIPTION_LENGTH,
+                    message = "The length of description must not be greater than "
+                            + RoleConstants.MAX_DESCRIPTION_LENGTH + ".")
                     String newDescription);
 
     /**

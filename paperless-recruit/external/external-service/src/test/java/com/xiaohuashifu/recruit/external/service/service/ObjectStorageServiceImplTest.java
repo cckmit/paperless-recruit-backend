@@ -45,14 +45,14 @@ public class ObjectStorageServiceImplTest {
 
     @Test
     public void getObject() {
-        Result<byte[]> object = objectStorageService.getObject("xxxx");
-        byte[] data = object.getData();
-        System.out.println(new String(data, StandardCharsets.UTF_8));
+        Result<byte[]> object = objectStorageService.getObject("");
+
+        System.out.println(object);
     }
 
     @Test
     public void listObjectInfos() {
-        System.out.println(objectStorageService.listObjectInfos("test/", "", 1));
+        System.out.println(objectStorageService.listObjectInfos("test/", "", 55));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.api.po;
 
 import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
+import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 
 import javax.validation.constraints.*;
 import java.util.Arrays;
@@ -13,38 +14,53 @@ import java.util.List;
  * @create 2020/12/8 17:28
  */
 public class CreateOrganizationPO {
+
     /**
      * 组织名
      */
     @NotBlank(message = "The organizationName can't be blank.")
-    @Size(min = 2, max = 20, message = "The length of organizationName must be between 2 and 20.")
+    @Size(min = OrganizationConstants.MIN_ORGANIZATION_NAME_LENGTH,
+            max = OrganizationConstants.MAX_ORGANIZATION_NAME_LENGTH,
+            message = "The length of organizationName must be between "
+                    + OrganizationConstants.MIN_ORGANIZATION_NAME_LENGTH + " and "
+                    + OrganizationConstants.MAX_ORGANIZATION_NAME_LENGTH + ".")
     private String organizationName;
 
     /**
      * 组织名缩写
      */
     @NotBlank(message = "The abbreviationOrganizationName can't be blank.")
-    @Size(min = 2, max = 5, message = "The length of abbreviationOrganizationName must be between 2 and 5.")
+    @Size(min = OrganizationConstants.MIN_ABBREVIATION_ORGANIZATION_NAME_LENGTH,
+            max = OrganizationConstants.MAX_ABBREVIATION_ORGANIZATION_NAME_LENGTH,
+            message = "The length of abbreviationOrganizationName must be between "
+                    + OrganizationConstants.MIN_ABBREVIATION_ORGANIZATION_NAME_LENGTH + " and "
+                    + OrganizationConstants.MAX_ABBREVIATION_ORGANIZATION_NAME_LENGTH + ".")
     private String abbreviationOrganizationName;
 
     /**
      * 组织介绍
      */
     @NotBlank(message = "The introduction can't be blank.")
-    @Size(min = 1, max = 400, message = "The length of introduction must be between 1 and 400.")
+    @Size(max = OrganizationConstants.MAX_ORGANIZATION_INTRODUCTION_LENGTH,
+            message = "The length of introduction must not be greater than "
+                    + OrganizationConstants.MAX_ORGANIZATION_INTRODUCTION_LENGTH + ".")
     private String introduction;
 
     /**
      * 组织图标
      */
     @NotNull(message = "The logo can't be null.")
-    @Size(max = 10240, message = "The logo must be less than 10MB.")
+    @Size(max = OrganizationConstants.MAX_ORGANIZATION_LOGO_LENGTH,
+            message = "The logo must not be greater than "
+                    + OrganizationConstants.MAX_ORGANIZATION_LOGO_LENGTH + ".")
     private byte[] logo;
 
     /**
      * 组织标签列表
      */
-    @Size(max = 3, message = "The number of labels must be less than 3.")
+    @Size(max = OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER,
+            message = "The number of labels must not be greater than "
+                    + OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER + ".")
     private List<String> labels;
 
     /**

@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.user.api.query;
 
+import com.xiaohuashifu.recruit.common.constant.QueryConstants;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -26,7 +28,8 @@ public class RoleQuery implements Serializable {
      */
     @NotNull(message = "The pageSize can't be null.")
     @Positive(message = "The pageSize must be greater than 0.")
-    @Max(value = 50, message = "The pageSize must be less than or equal to 50.")
+    @Max(value = QueryConstants.DEFAULT_PAGE_SIZE,
+            message = "The pageSize must be less than or equal to " + QueryConstants.DEFAULT_PAGE_SIZE + ".")
     private Long pageSize;
 
     /**

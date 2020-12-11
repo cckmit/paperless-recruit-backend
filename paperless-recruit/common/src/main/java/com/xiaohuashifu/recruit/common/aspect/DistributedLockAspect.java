@@ -1,8 +1,8 @@
-package com.xiaohuashifu.recruit.user.service.aspect;
+package com.xiaohuashifu.recruit.common.aspect;
 
+import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.user.service.aspect.annotation.DistributedLock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -45,7 +45,7 @@ public class DistributedLockAspect {
      * @param joinPoint ProceedingJoinPoint
      * @return Object
      */
-    @Around("@annotation(com.xiaohuashifu.recruit.user.service.aspect.annotation.DistributedLock) " +
+    @Around("@annotation(com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock) " +
             "&& @annotation(distributedLock)")
     public Object handler(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
         // 获得键

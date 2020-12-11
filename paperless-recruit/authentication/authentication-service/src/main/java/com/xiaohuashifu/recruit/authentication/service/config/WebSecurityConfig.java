@@ -24,10 +24,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final OpenIdAuthenticationConfig openIdAuthenticationConfig;
 
+    private final PasswordAuthenticationConfig passwordAuthenticationConfig;
+
     public WebSecurityConfig(SmsAuthenticationConfig smsAuthenticationConfig,
-                             OpenIdAuthenticationConfig openIdAuthenticationConfig) {
+                             OpenIdAuthenticationConfig openIdAuthenticationConfig,
+                             PasswordAuthenticationConfig passwordAuthenticationConfig) {
         this.smsAuthenticationConfig = smsAuthenticationConfig;
         this.openIdAuthenticationConfig = openIdAuthenticationConfig;
+        this.passwordAuthenticationConfig = passwordAuthenticationConfig;
     }
 
     /**
@@ -80,7 +84,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .apply(smsAuthenticationConfig)
                 .and()
                     // 添加 openId 认证配置
-                    .apply(openIdAuthenticationConfig);
+                    .apply(openIdAuthenticationConfig)
+                .and()
+                    // 添加 Password 认证配置
+                    .apply(passwordAuthenticationConfig);
         // TODO: 2020/11/14 匿名认证过滤器AnonymousAuthenticationFilter，
         //  给匿名用户填充`AnonymousAuthenticationToken`到`SecurityContextHolder`的`Authentication`
         // TODO: 2020/11/14  `AbstractSecurityInterceptor`填充URL对应的角色，和决定授权

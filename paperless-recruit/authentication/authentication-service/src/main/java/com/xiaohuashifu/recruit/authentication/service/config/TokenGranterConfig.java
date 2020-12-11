@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
 import com.xiaohuashifu.recruit.authentication.service.granter.OpenIdGranter;
+import com.xiaohuashifu.recruit.authentication.service.granter.PasswordGranter;
 import com.xiaohuashifu.recruit.authentication.service.granter.SmsGranter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,6 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeTokenG
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.RandomValueAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.implicit.ImplicitTokenGranter;
-import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
 import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.*;
@@ -106,9 +106,14 @@ public class TokenGranterConfig {
         List<TokenGranter> tokenGranters =
                 getDefaultTokenGranters(tokenServices, authorizationCodeServices, requestFactory);
         // 添加短信验证码授权模式
-        tokenGranters.add(new SmsGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
+        tokenGranters.add(new SmsGranter(authenticationManager,
+                tokenServices, clientDetailsService, requestFactory));
         // 添加OpenId授权模式
-        tokenGranters.add(new OpenIdGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
+        tokenGranters.add(new OpenIdGranter(authenticationManager,
+                tokenServices, clientDetailsService, requestFactory));
+        // 添加密码模式
+        tokenGranters.add(new PasswordGranter(authenticationManager,
+                tokenServices, clientDetailsService, requestFactory));
         return tokenGranters;
     }
 
@@ -128,9 +133,6 @@ public class TokenGranterConfig {
         tokenGranters.add(new ImplicitTokenGranter(tokenServices, clientDetailsService, requestFactory));
         // 添加客户端模式
         tokenGranters.add(new ClientCredentialsTokenGranter(tokenServices, clientDetailsService, requestFactory));
-        // 添加密码模式
-        tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager, tokenServices,
-                clientDetailsService, requestFactory));
         return tokenGranters;
     }
 

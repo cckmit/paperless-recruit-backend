@@ -35,6 +35,7 @@ public interface AuthorityService {
 
     /**
      * 创建 PermissionNameAuthorizationUrlMap，用于基于路径（URL）的鉴权
+     * 这里只会获取可用的 Permission
      *
      * @errorCode InvalidParameter: authorityPrefix 格式错误
      *
@@ -49,8 +50,9 @@ public interface AuthorityService {
      * 该权限代表的是权限字符串，而不是 Permission 对象
      * 主要用于 Spring Security 框架鉴权使用
      * 包含角色和权限
-     * 角色的转换格式为：ROLE_{role_name}
+     * 角色的转换格式为：roleNamePrefix_{role_name}
      * 权限的转换格式为：{permission_name}
+     * 这里只会返回可用的 Permission 和 Role
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *

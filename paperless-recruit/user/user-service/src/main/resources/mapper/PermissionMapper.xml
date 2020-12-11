@@ -100,13 +100,14 @@
         where is_available = true
     </select>
 
-    <select id="listPermissionNamesByUserId" resultType="string">
+    <select id="listAvailablePermissionNamesByUserId" resultType="string">
         select p.permission_name
         from user_role ur
             inner join role r on ur.role_id = r.id
             inner join role_permission rp on r.id = rp.role_id
             inner join permission p on rp.permission_id = p.id
         where ur.user_id = #{userId}
+        and p.is_available = true
     </select>
 
     <select id="listIdsByParentPermissionId" resultType="long">

@@ -37,6 +37,8 @@ public interface RoleMapper {
 
     List<RoleDO> listRolesByUserId(Long userId);
 
+    List<RoleDO> listAvailableRolesByUserId(Long userId);
+
     List<RoleDO> listAllAvailableRoles();
 
     /**
@@ -59,7 +61,7 @@ public interface RoleMapper {
     List<Long> listIdsByParentRoleIdAndAvailable(@Param("parentRoleId") Long parentRoleId,
                                                  @Param("available") Boolean available);
 
-    List<String> listRoleNamesByUserId(Long userId);
+    List<String> listAvailableRoleNamesByUserId(Long userId);
 
     /**
      * 通过角色编号获取父角色编号

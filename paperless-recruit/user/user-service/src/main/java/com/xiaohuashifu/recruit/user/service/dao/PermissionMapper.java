@@ -31,7 +31,7 @@ public interface PermissionMapper {
 
     List<PermissionDO> listAllAvailablePermissions();
 
-    Set<String> listPermissionNamesByUserId(Long userId);
+    Set<String> listAvailablePermissionNamesByUserId(Long userId);
 
     List<Long> listIdsByParentPermissionId(Long parentPermissionId);
 

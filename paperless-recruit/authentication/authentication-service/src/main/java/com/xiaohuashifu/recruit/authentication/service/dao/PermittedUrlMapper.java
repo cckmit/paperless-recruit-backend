@@ -13,6 +13,7 @@ import java.util.List;
  * @create 2020/11/27 20:22
  */
 public interface PermittedUrlMapper {
+
     int insertPermittedUrl(PermittedUrlDO permittedUrlDO);
 
     int deletePermittedUrl(Long id);
@@ -32,6 +33,6 @@ public interface PermittedUrlMapper {
 
     int countByUrl(String url);
 
-
     int updateUrl(@Param("id") Long id, @Param("url") String url);
+
 }

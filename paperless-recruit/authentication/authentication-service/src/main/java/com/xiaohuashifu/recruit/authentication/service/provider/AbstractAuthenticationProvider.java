@@ -29,6 +29,7 @@ public abstract class AbstractAuthenticationProvider implements AuthenticationPr
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        // 检查用户是否通过认证
         UserDTO userDTO = check(authentication);
 
         // 获取权限列表
@@ -49,4 +50,5 @@ public abstract class AbstractAuthenticationProvider implements AuthenticationPr
      * @return UserDTO 用户 DTO 对象，用于获取用户编号，用户名
      */
     protected abstract UserDTO check(Authentication authentication);
+
 }

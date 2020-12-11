@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
  * @create 2020/11/27 17:27
  */
 public class PermittedUrlDO {
+
     private Long id;
 
     private String url;
@@ -59,7 +60,6 @@ public class PermittedUrlDO {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private String url;
@@ -95,4 +95,5 @@ public class PermittedUrlDO {
             return permittedUrlDO;
         }
     }
+
 }

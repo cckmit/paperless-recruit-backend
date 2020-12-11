@@ -6,6 +6,7 @@ import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,7 +40,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (!getUserResult.isSuccess()) {
            throw new UsernameNotFoundException("The user does not exist.");
         }
+
+        // 判断用户是否可用
         UserDTO userDTO = getUserResult.getData();
+        if (!userDTO.getAvailable()) {
+            throw new DisabledException("The user unavailable.");
+        }
 
         // 获取权限列表
         Set<String> authoritySet = authorityService.listAuthoritiesByUserId(

@@ -8,7 +8,9 @@ import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * 描述：AuthenticationManager 之后正在处理短信验证码登录的类
@@ -46,7 +48,7 @@ public class SmsAuthenticationProvider extends AbstractAuthenticationProvider {
         String phone = smsAuthenticationToken.getPhone();
         String authCode = smsAuthenticationToken.getAuthCode();
 
-        // 验证短信验证码
+        // 通过短信验证码认证
         Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(
                 new CheckSmsAuthCodePO.Builder()
                         .phone(phone)
@@ -59,6 +61,18 @@ public class SmsAuthenticationProvider extends AbstractAuthenticationProvider {
         }
 
         // 获取用户对象
-        return userService.getUserByPhone(phone).getData();
+        Result<UserDTO> getUserResult = userService.getUserByPhone(phone);
+        if (!getUserResult.isSuccess()) {
+            throw new UsernameNotFoundException("The user does not exist.");
+        }
+
+        // 判断用户是否可用
+        UserDTO userDTO = getUserResult.getData();
+        if (!userDTO.getAvailable()) {
+            throw new DisabledException("The user unavailable.");
+        }
+
+        return userDTO;
     }
+
 }

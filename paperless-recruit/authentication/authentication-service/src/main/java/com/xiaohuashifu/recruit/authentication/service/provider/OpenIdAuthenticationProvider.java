@@ -9,7 +9,9 @@ import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * 描述：AuthenticationManager 之后正在处理 OpenId 登录的类
@@ -41,7 +43,7 @@ public class OpenIdAuthenticationProvider extends AbstractAuthenticationProvider
         AppEnum app = openIdAuthenticationToken.getApp();
         String code = openIdAuthenticationToken.getCode();
 
-        // 验证短信验证码
+        // 通过 openId 认证
         Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMpResult =
                 authOpenIdService.checkAuthOpenIdForWeChatMp(app, code);
         if (!checkAuthOpenIdForWeChatMpResult.isSuccess()) {
@@ -50,6 +52,18 @@ public class OpenIdAuthenticationProvider extends AbstractAuthenticationProvider
         AuthOpenIdDTO authOpenIdDTO = checkAuthOpenIdForWeChatMpResult.getData();
 
         // 获取用户对象
-        return userService.getUser(authOpenIdDTO.getUserId()).getData();
+        Result<UserDTO> getUserResult = userService.getUser(authOpenIdDTO.getUserId());
+        if (!getUserResult.isSuccess()) {
+            throw new UsernameNotFoundException("The user does not exist.");
+        }
+
+        // 判断用户是否可用
+        UserDTO userDTO = getUserResult.getData();
+        if (!userDTO.getAvailable()) {
+            throw new DisabledException("The user unavailable.");
+        }
+
+        return userDTO;
     }
+
 }

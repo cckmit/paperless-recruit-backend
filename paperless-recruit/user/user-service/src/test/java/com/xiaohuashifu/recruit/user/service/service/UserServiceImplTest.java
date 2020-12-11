@@ -134,7 +134,7 @@ public class UserServiceImplTest {
 
     @Test
     public void disableUser() {
-        System.out.println(userService.disableUser(12L));
+        System.out.println(userService.disableUser(2L));
     }
 
     @Test
@@ -154,7 +154,7 @@ public class UserServiceImplTest {
 
     @Test
     public void sendSmsAuthCodeForUpdatePhone() {
-        System.out.println(userService.sendSmsAuthCodeForUpdatePhone("15992321303"));
+        System.out.println(userService.sendSmsAuthCodeForUpdatePhone("15992321309"));
     }
 
     @Test

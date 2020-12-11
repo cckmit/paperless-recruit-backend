@@ -1,16 +1,13 @@
-package com.xiaohuashifu.recruit.external.api.aspect;
+package com.xiaohuashifu.recruit.user.service.aspect;
 
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.aspect.annotation.DistributedLock;
-import com.xiaohuashifu.recruit.external.api.service.DistributedLockService;
-import org.apache.dubbo.config.annotation.Reference;
+import com.xiaohuashifu.recruit.user.service.aspect.annotation.DistributedLock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.redisson.api.RedissonClient;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -18,7 +15,6 @@ import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -32,15 +28,16 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 public class DistributedLockAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(DistributedLockAspect.class);
-
-    @Reference
-    private DistributedLockService distributedLockService;
+    private final RedissonClient redissonClient;
 
     /**
      * EL 表达式解析器
      */
     private static final ExpressionParser expressionParser = new SpelExpressionParser();
+
+    public DistributedLockAspect(RedissonClient redissonClient) {
+        this.redissonClient = redissonClient;
+    }
 
     /**
      * 给方法添加分布式锁
@@ -48,14 +45,14 @@ public class DistributedLockAspect {
      * @param joinPoint ProceedingJoinPoint
      * @return Object
      */
-    @Around("@annotation(com.xiaohuashifu.recruit.external.api.aspect.annotation.DistributedLock) " +
+    @Around("@annotation(com.xiaohuashifu.recruit.user.service.aspect.annotation.DistributedLock) " +
             "&& @annotation(distributedLock)")
     public Object handler(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
         // 获得键
         String key = getKey(joinPoint, distributedLock);
 
         // 尝试获取锁
-        if (!getLock(key, distributedLock)) {
+        if (!tryLock(key, distributedLock)) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Failed to acquire lock.");
         }
 
@@ -64,7 +61,7 @@ public class DistributedLockAspect {
             return joinPoint.proceed();
         } finally {
             // 释放锁
-            releaseLock(key, joinPoint);
+            unlock(key);
         }
     }
 
@@ -96,27 +93,23 @@ public class DistributedLockAspect {
      * @param distributedLock DistributedLock
      * @return 获取结果
      */
-    private boolean getLock(String key, DistributedLock distributedLock) {
+    private boolean tryLock(String key, DistributedLock distributedLock) throws InterruptedException {
         // 判断是否需要设置超时时间
         long expirationTime = distributedLock.expirationTime();
         if (expirationTime > 0) {
             TimeUnit timeUnit = distributedLock.timeUnit();
-            return distributedLockService.getLock(key, expirationTime, timeUnit).isSuccess();
+            return redissonClient.getLock(key).tryLock(expirationTime, timeUnit);
         }
-        return distributedLockService.getLock(key).isSuccess();
+        return redissonClient.getLock(key).tryLock();
     }
 
     /**
      * 释放锁
      *
      * @param key 键
-     * @param joinPoint ProceedingJoinPoint
      */
-    private void releaseLock(String key, ProceedingJoinPoint joinPoint) {
-        if (!distributedLockService.releaseLock(key).isSuccess()) {
-            logger.error("Failed to release lock. key={}, signature={}, parameters={}",
-                    key, joinPoint.getSignature(), Arrays.toString(joinPoint.getArgs()));
-        }
+    private void unlock(String key) {
+        redissonClient.getLock(key).unlock();
     }
 
     /**

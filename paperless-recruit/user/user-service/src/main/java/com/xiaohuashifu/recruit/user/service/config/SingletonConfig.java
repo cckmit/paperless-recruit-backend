@@ -1,7 +1,8 @@
 package com.xiaohuashifu.recruit.user.service.config;
 
 import com.github.dozermapper.spring.DozerBeanMapperFactoryBean;
-import com.xiaohuashifu.recruit.external.api.aspect.DistributedLockAspect;
+import com.xiaohuashifu.recruit.user.service.aspect.DistributedLockAspect;
+import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,8 +31,8 @@ public class SingletonConfig {
      * @return DistributedLockAspect
      */
     @Bean
-    public DistributedLockAspect distributedLockAspect() {
-        return new DistributedLockAspect();
+    public DistributedLockAspect distributedLockAspect(RedissonClient redissonClient) {
+        return new DistributedLockAspect(redissonClient);
     }
 
 }

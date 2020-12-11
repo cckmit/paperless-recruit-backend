@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.external.api.po.CheckEmailAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.po.CreateAndSendEmailAuthCodePO;
@@ -17,6 +16,7 @@ import com.xiaohuashifu.recruit.user.api.query.UserQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserProfileService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
+import com.xiaohuashifu.recruit.user.service.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.service.do0.UserDO;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -192,13 +192,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @DistributedLock(PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#phone}")
     public Result<UserDTO> signUpBySmsAuthCode(String phone, String authCode, String password) {
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         // 判断手机号码是否存在
         int count = userMapper.countByPhone(phone);
         if (count > 0) {

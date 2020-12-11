@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.external.api.aspect.annotation;
+package com.xiaohuashifu.recruit.user.service.aspect.annotation;
 
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;

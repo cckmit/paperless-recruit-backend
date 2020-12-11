@@ -61,4 +61,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         // 灵活性较高
         endpoints.tokenGranter(tokenGranter);
     }
+
 }

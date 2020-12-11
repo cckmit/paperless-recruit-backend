@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import com.xiaohuashifu.recruit.authentication.service.provider.OpenIdAuthenticationProvider;
-import com.xiaohuashifu.recruit.user.api.service.PermissionService;
+import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
+import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -23,12 +23,12 @@ public class OpenIdAuthenticationConfig extends SecurityConfigurerAdapter<Defaul
     @Reference
     private UserService userService;
     @Reference
-    private PermissionService permissionService;
+    private AuthorityService authorityService;
 
     @Override
     public void configure(HttpSecurity http) {
         // 添加 provider
-        http.authenticationProvider(new OpenIdAuthenticationProvider(authOpenIdService, userService, permissionService));
+        http.authenticationProvider(new OpenIdAuthenticationProvider(authOpenIdService, userService, authorityService));
     }
 
 }

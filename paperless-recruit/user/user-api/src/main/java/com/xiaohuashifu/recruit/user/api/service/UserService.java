@@ -125,6 +125,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 用户编号或新用户名格式错误 | 用户不存在
      *              OperationConflict: 新用户名已经存在
+     *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
      * @param newUsername 新用户名
@@ -141,6 +142,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 用户编号或新手机号码或短信验证码格式错误 | 用户不存在
      *              OperationConflict: 新手机号码已经存在
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
+     *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
      * @param newPhone 新手机号码
@@ -161,6 +163,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 用户编号或新邮箱或邮箱验证码格式错误 | 用户不存在
      *              OperationConflict: 新邮箱已经存在
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
+     *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
      * @param newEmail 新邮箱
@@ -179,6 +182,7 @@ public interface UserService {
      * 更新密码
      *
      * @errorCode InvalidParameter: 用户编号或新密码格式错误 | 该用户不存在
+     *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
      * @param newPassword 新密码
@@ -195,6 +199,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 请求参数格式错误 | 该邮箱的用户不存在
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
+     *              Forbidden: 用户被禁用
      *
      * @param email 邮箱
      * @param newPassword 新密码
@@ -215,6 +220,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 手机号码或验证码或新密码格式错误
      *              InvalidParameter.NotFound: 对应手机号码的用户不存在
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
+     *              Forbidden: 用户被禁用
      *
      * @param phone 手机号码
      * @param newPassword 新密码

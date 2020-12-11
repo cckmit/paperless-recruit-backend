@@ -33,11 +33,6 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void getRoleListByUserId() {
-        System.out.println(roleService.getRoleListByUserId(1L));
-    }
-
-    @Test
     public void saveRole() {
         final SaveRolePO saveRolePO = new SaveRolePO.Builder()
                 .parentRoleId(12L)

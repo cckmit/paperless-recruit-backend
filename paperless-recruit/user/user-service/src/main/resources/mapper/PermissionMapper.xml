@@ -94,9 +94,10 @@
         </where>
     </select>
 
-    <select id="listAllPermissions" resultMap="permission">
+    <select id="listAllAvailablePermissions" resultMap="permission">
         select <include refid="permission"/>
         from permission
+        where is_available = true
     </select>
 
     <select id="listPermissionNamesByUserId" resultType="string">

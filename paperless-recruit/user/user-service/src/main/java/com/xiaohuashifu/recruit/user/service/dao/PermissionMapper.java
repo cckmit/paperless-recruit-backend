@@ -14,6 +14,7 @@ import java.util.Set;
  * @create: 2020/11/12 20:44
  */
 public interface PermissionMapper {
+
     int insertPermission(PermissionDO permissionDO);
 
     int deletePermission(Long id);
@@ -28,7 +29,7 @@ public interface PermissionMapper {
 
     List<PermissionDO> listPermissions(PermissionQuery query);
 
-    List<PermissionDO> listAllPermissions();
+    List<PermissionDO> listAllAvailablePermissions();
 
     Set<String> listPermissionNamesByUserId(Long userId);
 
@@ -56,4 +57,5 @@ public interface PermissionMapper {
     int updateAvailableIfUnavailable(Long id);
 
     int updateParentPermissionId(@Param("id") Long id, @Param("parentPermissionId") Long parentPermissionId);
+
 }

@@ -37,6 +37,8 @@ public interface RoleMapper {
 
     List<RoleDO> listRolesByUserId(Long userId);
 
+    List<RoleDO> listAllAvailableRoles();
+
     /**
      * 通过父角色编号获取角色编号列表
      * 也就是获取该编号所有的子角色

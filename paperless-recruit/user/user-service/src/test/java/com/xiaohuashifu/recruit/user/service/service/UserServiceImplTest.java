@@ -93,7 +93,7 @@ public class UserServiceImplTest {
 
     @Test
     public void updateUsername() {
-        System.out.println(userService.updateUsername(11L, "xhsfnew2"));
+        System.out.println(userService.updateUsername(12L, "xhsfnew4"));
     }
 
     @Test
@@ -134,7 +134,7 @@ public class UserServiceImplTest {
 
     @Test
     public void disableUser() {
-        System.out.println(userService.disableUser(7L));
+        System.out.println(userService.disableUser(12L));
     }
 
     @Test

@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
-import com.xiaohuashifu.recruit.user.api.service.PermissionService;
+import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -25,8 +25,8 @@ public class OpenIdAuthenticationProvider extends AbstractAuthenticationProvider
     private final UserService userService;
 
     public OpenIdAuthenticationProvider(AuthOpenIdService authOpenIdService, UserService userService,
-                                        PermissionService permissionService) {
-        super(permissionService);
+                                        AuthorityService authorityService) {
+        super(authorityService);
         this.authOpenIdService = authOpenIdService;
         this.userService = userService;
     }

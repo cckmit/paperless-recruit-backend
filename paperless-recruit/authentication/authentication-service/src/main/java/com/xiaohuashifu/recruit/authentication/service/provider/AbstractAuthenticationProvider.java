@@ -1,7 +1,8 @@
 package com.xiaohuashifu.recruit.authentication.service.provider;
 
+import com.xiaohuashifu.recruit.authentication.service.constant.AuthorityConstants;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
-import com.xiaohuashifu.recruit.user.api.service.PermissionService;
+import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,10 +21,10 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractAuthenticationProvider implements AuthenticationProvider {
 
-    private final PermissionService permissionService;
+    private final AuthorityService authorityService;
 
-    public AbstractAuthenticationProvider(PermissionService permissionService) {
-        this.permissionService = permissionService;
+    public AbstractAuthenticationProvider(AuthorityService authorityService) {
+        this.authorityService = authorityService;
     }
 
     @Override
@@ -31,7 +32,8 @@ public abstract class AbstractAuthenticationProvider implements AuthenticationPr
         UserDTO userDTO = check(authentication);
 
         // 获取权限列表
-        Set<String> authoritySet = permissionService.listAuthoritiesByUserId(userDTO.getId()).getData();
+        Set<String> authoritySet = authorityService.listAuthoritiesByUserId(
+                userDTO.getId(), AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX).getData();
         List<SimpleGrantedAuthority> authorityList = authoritySet.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());

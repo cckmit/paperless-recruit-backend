@@ -9,15 +9,17 @@ import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
-import com.xiaohuashifu.recruit.user.service.dao.RoleMapper;
 import com.xiaohuashifu.recruit.user.service.do0.PermissionDO;
 import org.apache.dubbo.config.annotation.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * 描述：
+ * 描述：权限服务 RPC 接口实现
  *
  * @author: xhsf
  * @email: 827032783@qq.com
@@ -27,22 +29,15 @@ import java.util.stream.Collectors;
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionMapper permissionMapper;
-    private final RoleMapper roleMapper;
     private final Mapper mapper;
-
-    /**
-     * 在角色名的前缀
-     */
-    private static final String SPRING_SECURITY_ROLE_PREFIX = "ROLE_";
 
     /**
      * 当权限没有父亲时的 parentPermissionId
      */
     private static final Long NO_PARENT_PERMISSION_ID = 0L;
 
-    public PermissionServiceImpl(PermissionMapper permissionMapper, RoleMapper roleMapper, Mapper mapper) {
+    public PermissionServiceImpl(PermissionMapper permissionMapper, Mapper mapper) {
         this.permissionMapper = permissionMapper;
-        this.roleMapper = roleMapper;
         this.mapper = mapper;
     }
 
@@ -167,89 +162,6 @@ public class PermissionServiceImpl implements PermissionService {
                 .collect(Collectors.toList());
         PageInfo<PermissionDTO> pageInfo = new PageInfo<>(permissionDTOList);
         return Result.success(pageInfo);
-    }
-
-    /**
-     * 获取所有权限
-     *
-     * @return 权限列表
-     */
-    @Override
-    public Result<List<PermissionDTO>> listAllPermissions() {
-        return Result.success(permissionMapper
-                .listAllPermissions()
-                .stream()
-                .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
-                .collect(Collectors.toList()));
-    }
-
-    /**
-     * 获取角色权限服务
-     * 该服务会根据角色id列表查询角色的权限列表，会返回所有角色的权限列表
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param roleIds 角色id列表
-     * @return 角色的权限列表
-     */
-    @Override
-    public Result<List<PermissionDTO>> listPermissionsByRoleIds(List<Long> roleIds) {
-        // 判断是否有小于 0 或为 null 的 roleId
-        for (Long roleId : roleIds) {
-            if (roleId == null) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role id must not be null.");
-            }
-            if (roleId.compareTo(0L) < 1) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The role id must be greater than 0.");
-            }
-        }
-
-        // 查询
-        return Result.success(
-                permissionMapper
-                        .listPermissionsByRoleIds(roleIds)
-                        .stream()
-                        .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
-                        .collect(Collectors.toList()));
-    }
-
-    /**
-     * 通过用户id获取用户权限列表
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param userId 用户id
-     * @return 用户的权限列表
-     */
-    @Override
-    public Result<List<PermissionDTO>> listPermissionsByUserId(Long userId) {
-        List<PermissionDO> permissionDOList = permissionMapper.listPermissionsByUserId(userId);
-        return Result.success(permissionDOList
-                .stream()
-                .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
-                .collect(Collectors.toList()));
-    }
-
-    /**
-     * 通过用户 id 获取用户权限 Authority 列表
-     * 该权限代表的是权限字符串，而不是 Permission 对象
-     * 主要用于Spring Security框架鉴权使用
-     * 包含角色和权限
-     * 角色的转换格式为：ROLE_{role_name}
-     * 权限的转换格式为：{permission_name}
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param userId 用户id
-     * @return 用户的权限 Authority 列表，可能返回空列表
-     */
-    @Override
-    public Result<Set<String>> listAuthoritiesByUserId(Long userId) {
-        // 下面将直接复用这个 Set，不再构造一次浪费资源
-        Set<String> permissionNameSet = permissionMapper.listPermissionNamesByUserId(userId);
-        List<String> roleNameList = roleMapper.listRoleNamesByUserId(userId);
-        roleNameList.forEach(roleName -> permissionNameSet.add(SPRING_SECURITY_ROLE_PREFIX + roleName));
-        return Result.success(permissionNameSet);
     }
 
     /**

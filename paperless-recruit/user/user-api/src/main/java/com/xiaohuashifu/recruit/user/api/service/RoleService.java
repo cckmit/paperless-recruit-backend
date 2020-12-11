@@ -131,18 +131,6 @@ public interface RoleService {
     Result<PageInfo<RoleDTO>> listRoles(@NotNull(message = "The query can't be null.") RoleQuery query);
 
     /**
-     * 获取用户角色服务
-     * 该服务会根据用户id查询用户的角色，会返回该用户所有角色
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param userId 用户id
-     * @return 用户的角色列表，可能返回空列表
-     */
-    Result<List<RoleDTO>> getRoleListByUserId(@NotNull(message = "The userId can't be null.")
-                                              @Positive(message = "The userId must be greater than 0.") Long userId);
-
-    /**
      * 更新角色名，新角色名必须不存在
      *
      * @errorCode InvalidParameter: 请求参数格式错误 | 角色不存在

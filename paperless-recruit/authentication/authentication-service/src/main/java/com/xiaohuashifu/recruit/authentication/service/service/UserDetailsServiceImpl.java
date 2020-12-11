@@ -1,8 +1,9 @@
 package com.xiaohuashifu.recruit.authentication.service.service;
 
+import com.xiaohuashifu.recruit.authentication.service.constant.AuthorityConstants;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
-import com.xiaohuashifu.recruit.user.api.service.PermissionService;
+import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Reference
-    private PermissionService permissionService;
+    private AuthorityService authorityService;
 
     @Reference
     private UserService userService;
@@ -41,7 +42,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserDTO userDTO = getUserResult.getData();
 
         // 获取权限列表
-        Set<String> authoritySet = permissionService.listAuthoritiesByUserId(userDTO.getId()).getData();
+        Set<String> authoritySet = authorityService.listAuthoritiesByUserId(
+                userDTO.getId(), AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX).getData();
         List<SimpleGrantedAuthority> authorityList = authoritySet.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());

@@ -3,9 +3,10 @@ package com.xiaohuashifu.recruit.gateway.service.auth;
 import com.xiaohuashifu.recruit.authentication.api.service.WhiteListService;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.gateway.service.constant.ResourceServerConstants;
-import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.service.PermissionService;
+import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import org.apache.dubbo.config.annotation.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +16,6 @@ import org.springframework.util.AntPathMatcher;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 描述：基于 Url 的权限检查器
@@ -27,8 +27,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @EnableScheduling
 public class UrlAuthorityChecker {
 
+    private static final Logger logger = LoggerFactory.getLogger(UrlAuthorityChecker.class);
+
     @Reference
-    private PermissionService permissionService;
+    private AuthorityService authorityService;
 
     @Reference
     private WhiteListService whiteListService;
@@ -90,14 +92,13 @@ public class UrlAuthorityChecker {
      */
     @Scheduled(initialDelay = REFRESH_INITIAL_DELAY, fixedDelay = REFRESH_FIXED_DELAY)
     private void refreshPermissionNameAuthorizationUrlMap() {
-        List<PermissionDTO> permissionDTOList = permissionService.listAllPermissions().getData();
-        Map<String, String> newPermissionNameAuthorizationUrlMap = new ConcurrentHashMap<>();
-        for (PermissionDTO permissionDTO : permissionDTOList) {
-            newPermissionNameAuthorizationUrlMap.put(
-                    ResourceServerConstants.AUTHORITY_PREFIX + permissionDTO.getPermissionName(),
-                    permissionDTO.getAuthorizationUrl());
+        Result<Map<String, String>> createPermissionNameAuthorizationUrlMapResult =
+                authorityService.createPermissionNameAuthorizationUrlMap(ResourceServerConstants.AUTHORITY_PREFIX);
+        if (!createPermissionNameAuthorizationUrlMapResult.isSuccess()) {
+            logger.error("Refresh PermissionNameAuthorizationUrlMap failed.");
+            return;
         }
-        permissionNameAuthorizationUrlMap = newPermissionNameAuthorizationUrlMap;
+        this.permissionNameAuthorizationUrlMap = createPermissionNameAuthorizationUrlMapResult.getData();
     }
 
     /**
@@ -107,6 +108,10 @@ public class UrlAuthorityChecker {
     @Scheduled(initialDelay = REFRESH_INITIAL_DELAY, fixedDelay = REFRESH_FIXED_DELAY)
     private void refreshWhiteList() {
         Result<List<String>> getWhiteListResult = whiteListService.getWhiteList();
+        if (!getWhiteListResult.isSuccess()) {
+            logger.error("Refresh refreshWhiteList failed.");
+            return;
+        }
         whiteList = getWhiteListResult.getData();
     }
 }

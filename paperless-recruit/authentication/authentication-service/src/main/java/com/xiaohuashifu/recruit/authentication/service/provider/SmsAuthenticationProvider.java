@@ -5,7 +5,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
-import com.xiaohuashifu.recruit.user.api.service.PermissionService;
+import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -29,8 +29,8 @@ public class SmsAuthenticationProvider extends AbstractAuthenticationProvider {
     private final UserService userService;
 
     public SmsAuthenticationProvider(SmsService smsService, UserService userService,
-                                     PermissionService permissionService) {
-        super(permissionService);
+                                     AuthorityService authorityService) {
+        super(authorityService);
         this.smsService = smsService;
         this.userService = userService;
     }

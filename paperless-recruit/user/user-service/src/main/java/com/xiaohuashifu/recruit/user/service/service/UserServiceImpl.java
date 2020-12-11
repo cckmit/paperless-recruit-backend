@@ -349,6 +349,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 用户编号或新用户名格式错误 | 用户不存在
      *              OperationConflict: 新用户名已经存在
+     *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
      * @param newUsername 新用户名
@@ -358,13 +359,18 @@ public class UserServiceImpl implements UserService {
     @DistributedLock(USERNAME_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newUsername}")
     public Result<UserDTO> updateUsername(Long id, String newUsername) {
         // 判断用户是否存在
-        int count = userMapper.count(id);
-        if (count < 1) {
+        UserDO userDO = userMapper.getUser(id);
+        if (userDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
+        // 判断用户是否可用
+        if (Boolean.FALSE.equals(userDO.getAvailable())) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The user unavailable.");
+        }
+
         // 判断用户名是否存在
-        count = userMapper.countByUsername(newUsername);
+        int count = userMapper.countByUsername(newUsername);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new username already exist.");
         }
@@ -380,6 +386,7 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 用户编号或新手机号码或短信验证码格式错误 | 用户不存在
      *              OperationConflict: 新手机号码已经存在
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
+     *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
      * @param newPhone 新手机号码
@@ -390,13 +397,18 @@ public class UserServiceImpl implements UserService {
     @DistributedLock(PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newPhone}")
     public Result<UserDTO> updatePhone(Long id, String newPhone, String authCode) {
         // 判断用户是否存在
-        int count = userMapper.count(id);
-        if (count < 1) {
+        UserDO userDO = userMapper.getUser(id);
+        if (userDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
+        // 判断用户是否可用
+        if (Boolean.FALSE.equals(userDO.getAvailable())) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The user unavailable.");
+        }
+
         // 判断手机号码是否存在
-        count = userMapper.countByPhone(newPhone);
+        int count = userMapper.countByPhone(newPhone);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new phone already exist.");
         }
@@ -424,6 +436,7 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 用户编号或新邮箱或邮箱验证码格式错误 | 用户不存在
      *              OperationConflict: 新邮箱已经存在
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
+     *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
      * @param newEmail 新邮箱
@@ -434,13 +447,18 @@ public class UserServiceImpl implements UserService {
     @DistributedLock(EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newEmail}")
     public Result<UserDTO> updateEmail(Long id, String newEmail, String authCode) {
         // 判断用户是否存在
-        int count = userMapper.count(id);
-        if (count < 1) {
+        UserDO userDO = userMapper.getUser(id);
+        if (userDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
         }
 
+        // 判断用户是否可用
+        if (Boolean.FALSE.equals(userDO.getAvailable())) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The user unavailable.");
+        }
+
         // 判断邮箱是否存在
-        count = userMapper.countByEmail(newEmail);
+        int count = userMapper.countByEmail(newEmail);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new email already exist.");
         }
@@ -466,6 +484,7 @@ public class UserServiceImpl implements UserService {
      * 更新密码
      *
      * @errorCode InvalidParameter: 用户编号或新密码格式错误 | 该用户不存在
+     *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
      * @param newPassword 新密码
@@ -474,9 +493,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> updatePassword(Long id, String newPassword) {
         // 判断用户是否存在
-        int count = userMapper.count(id);
-        if (count < 1) {
+        UserDO userDO = userMapper.getUser(id);
+        if (userDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
+        }
+
+        // 判断用户是否可用
+        if (Boolean.FALSE.equals(userDO.getAvailable())) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The user unavailable.");
         }
 
         // 更新密码
@@ -489,6 +513,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 请求参数格式错误 | 该邮箱的用户不存在
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
+     *              Forbidden: 用户被禁用
      *
      * @param email 邮箱
      * @param newPassword 新密码
@@ -498,9 +523,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> updatePasswordByEmailAuthCode(String email, String newPassword, String authCode) {
         // 判断用户是否存在
-        int count = userMapper.countByEmail(email);
-        if (count < 1) {
+        UserDO userDO = userMapper.getUserByEmail(email);
+        if (userDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
+        }
+
+        // 判断用户是否可用
+        if (Boolean.FALSE.equals(userDO.getAvailable())) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The user unavailable.");
         }
 
         // 判断验证码是否正确
@@ -526,6 +556,7 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 手机号码或验证码或新密码格式错误
      *              InvalidParameter.NotFound: 对应手机号码的用户不存在
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
+     *              Forbidden: 用户被禁用
      *
      * @param phone 手机号码
      * @param newPassword 新密码
@@ -535,9 +566,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDTO> updatePasswordBySmsAuthCode(String phone, String newPassword, String authCode) {
         // 判断用户是否存在
-        int count = userMapper.countByPhone(phone);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND, "The user does not exist.");
+        UserDO userDO = userMapper.getUserByPhone(phone);
+        if (userDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user does not exist.");
+        }
+
+        // 判断用户是否可用
+        if (Boolean.FALSE.equals(userDO.getAvailable())) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The user unavailable.");
         }
 
         // 判断验证码是否正确

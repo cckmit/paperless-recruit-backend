@@ -10,7 +10,6 @@ import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 描述：权限服务 RPC 接口
@@ -68,53 +67,6 @@ public interface PermissionService {
      */
     Result<PageInfo<PermissionDTO>> listPermissions(@NotNull(message = "The query can't be null.")
                                                             PermissionQuery query);
-
-    /**
-     * 获取所有权限
-     *
-     * @return 权限列表
-     */
-    Result<List<PermissionDTO>> listAllPermissions();
-
-    /**
-     * 获取角色权限服务
-     * 该服务会根据角色id列表查询角色的权限列表，会返回所有角色的权限列表
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param roleIds 角色id列表
-     * @return 角色的权限列表，可能返回空列表
-     */
-    Result<List<PermissionDTO>> listPermissionsByRoleIds(@NotEmpty(message = "The roleIds can't be empty.")
-                                                                 List<Long> roleIds);
-
-    /**
-     * 通过用户id获取用户权限列表
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param userId 用户id
-     * @return 用户的权限列表，可能返回空列表
-     */
-    Result<List<PermissionDTO>> listPermissionsByUserId(
-            @NotNull(message = "The userId can't be null.")
-            @Positive(message = "The userId must be greater than 0.") Long userId);
-
-    /**
-     * 通过用户 id 获取用户权限 Authority 列表
-     * 该权限代表的是权限字符串，而不是 Permission 对象
-     * 主要用于Spring Security框架鉴权使用
-     * 包含角色和权限
-     * 角色的转换格式为：ROLE_{role_name}
-     * 权限的转换格式为：{permission_name}
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param userId 用户id
-     * @return 用户的权限 Authority 列表，可能返回空列表
-     */
-    Result<Set<String>> listAuthoritiesByUserId(@NotNull(message = "The userId can't be null.")
-                                                @Positive(message = "The userId must be greater than 0.") Long userId);
 
     /**
      * 更新权限名，新权限名必须不存在

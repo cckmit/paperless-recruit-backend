@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.config;
 
-import com.xiaohuashifu.recruit.user.api.service.RoleHierarchyService;
+import com.xiaohuashifu.recruit.facade.service.constant.AuthorityConstants;
+import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +18,13 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 public class RoleHierarchyConfig {
 
     @Reference
-    private RoleHierarchyService roleHierarchyService;
+    private AuthorityService authorityService;
 
     @Bean
     public RoleHierarchy roleHierarchy() {
         final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy(roleHierarchyService.createRoleHierarchy().getData());
+        roleHierarchy.setHierarchy(authorityService.createRoleHierarchy(
+                AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX).getData());
         return roleHierarchy;
     }
 

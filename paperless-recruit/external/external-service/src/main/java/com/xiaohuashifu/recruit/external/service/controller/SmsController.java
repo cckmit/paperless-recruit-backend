@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/sms")
 public class SmsController {
+
     @Reference
     private SmsService smsService;
 
@@ -25,4 +26,5 @@ public class SmsController {
     public Object createAndSendSmsAuthCode(@RequestBody CreateAndSendSmsAuthCodePO createAndSendSmsAuthCodePO) {
         return smsService.createAndSendSmsAuthCode(createAndSendSmsAuthCodePO);
     }
+
 }

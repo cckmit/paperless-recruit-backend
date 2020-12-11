@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/email")
 public class EmailController {
+
     @Reference
     private EmailService emailService;
 
@@ -25,4 +26,5 @@ public class EmailController {
     public Object createAndSendEmailAuthCode(@RequestBody CreateAndSendEmailAuthCodePO emailAuthCodeDTO) {
         return emailService.createAndSendEmailAuthCode(emailAuthCodeDTO);
     }
+
 }

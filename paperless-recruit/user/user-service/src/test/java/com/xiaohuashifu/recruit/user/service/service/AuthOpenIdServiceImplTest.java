@@ -39,7 +39,7 @@ public class AuthOpenIdServiceImplTest {
     @Test
     public void checkAuthOpenIdForWeChatMp() {
         System.out.println(authOpenIdService.checkAuthOpenIdForWeChatMp(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP,
-                "073qXK0w3VdoqV2nfL1w39utrE4qXK0R"));
+                "11"));
     }
 
     @Test

@@ -87,12 +87,6 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- Dozer 对象属性拷贝 -->
-        <dependency>
-            <groupId>com.github.dozermapper</groupId>
-            <artifactId>dozer-spring-boot-starter</artifactId>
-        </dependency>
-
         <!--    user-api 接口    -->
         <dependency>
             <groupId>com.xiaohuashifu.recruit</groupId>

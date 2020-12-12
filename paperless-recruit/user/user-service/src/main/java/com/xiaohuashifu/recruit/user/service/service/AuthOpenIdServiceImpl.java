@@ -89,7 +89,7 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
         // 检查用户是否已经绑定在这个 app 上
         int count = authOpenIdMapper.countByUserIdAndAppName(userId, app);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This user Has been bind.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This user has been bind.");
         }
 
         // 获取 openId

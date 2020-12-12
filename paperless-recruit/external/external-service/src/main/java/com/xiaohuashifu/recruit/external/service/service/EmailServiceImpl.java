@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class EmailServiceImpl implements EmailService {
+
     private final JavaMailSender mailSender;
 
     private final TemplateEngine templateEngine;

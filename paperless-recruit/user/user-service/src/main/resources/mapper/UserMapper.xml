@@ -24,12 +24,18 @@
             <if test="phone != null" >
                 phone,
             </if>
+            <if test="email != null" >
+                email,
+            </if>
         </trim>
         values
         <trim prefix="(" suffix=")" suffixOverrides="," >
             #{username}, #{password},
             <if test="phone != null" >
                 #{phone},
+            </if>
+            <if test="email != null" >
+                #{email},
             </if>
         </trim>
     </insert>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.organization.service.dao.OrganizationMapper">
+
+    <resultMap id="organization" type="com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="organizationName" column="organization_name"/>
+        <result property="abbreviationOrganizationName" column="abbreviation_organization_name"/>
+        <result property="introduction" column="introduction"/>
+        <result property="logoUrl" column="logo_url"/>
+        <result property="memberNumber" column="member_number"/>
+        <result property="available" column="is_available"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="organization">
+        id, user_id, organization_name, abbreviation_organization_name, introduction, logo_url, member_number,
+            is_available, create_time, update_time
+    </sql>
+
+    <insert id="insertOrganization" keyProperty="id">
+        insert into organization(user_id)
+        values(#{userId})
+    </insert>
+
+    <select id="getOrganization" resultMap="organization">
+        select <include refid="organization"/>
+        from organization
+        where id = #{id}
+    </select>
+
+    <select id="listOrganizationLabelNamesByOrganizationId" resultType="string">
+        select label_name
+        from organization_organization_label
+        where organization_id = #{organizationId}
+    </select>
+
+    <!--    <select id="getOrganizationLabelByLabelName" resultMap="organizationLabel">-->
+<!--        select <include refid="organizationLabel"/>-->
+<!--        from organization_label-->
+<!--        where label_name = #{labelName}-->
+<!--    </select>-->
+
+<!--    <select id="getAvailableByLabelName" resultType="boolean">-->
+<!--        select is_available-->
+<!--        from organization_label-->
+<!--        where label_name = #{labelName}-->
+<!--    </select>-->
+
+<!--    <select id="listOrganizationLabels" resultMap="organizationLabel">-->
+<!--        select <include refid="organizationLabel"/>-->
+<!--        from organization_label-->
+<!--        <where>-->
+<!--            <if test="id != null">-->
+<!--                and id = #{id}-->
+<!--            </if>-->
+<!--            <if test="ids != null">-->
+<!--                and id in (-->
+<!--                <foreach collection="ids"  item="item" index="index" separator=",">-->
+<!--                    #{item}-->
+<!--                </foreach>-->
+<!--                )-->
+<!--            </if>-->
+<!--            <if test="labelName != null">-->
+<!--                and label_name like "%"#{labelName}"%"-->
+<!--            </if>-->
+<!--            <if test="available != null">-->
+<!--                and is_available = #{available}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        <if test="orderByAvailable || orderByAvailableDesc || orderByReferenceNumber || orderByReferenceNumberDesc-->
+<!--         || orderByLabelName || orderByLabelNameDesc || orderByCreateTime || orderByCreateTimeDesc-->
+<!--         || orderByUpdateTime || orderByUpdateTimeDesc">-->
+<!--            order by-->
+<!--            <trim suffixOverrides=",">-->
+<!--                <if test="orderByAvailable">-->
+<!--                    is_available,-->
+<!--                </if>-->
+<!--                <if test="orderByAvailableDesc">-->
+<!--                    is_available desc,-->
+<!--                </if>-->
+<!--                <if test="orderByReferenceNumber">-->
+<!--                    reference_number,-->
+<!--                </if>-->
+<!--                <if test="orderByReferenceNumberDesc">-->
+<!--                    reference_number desc,-->
+<!--                </if>-->
+<!--                <if test="orderByLabelName">-->
+<!--                    label_name,-->
+<!--                </if>-->
+<!--                <if test="orderByLabelNameDesc">-->
+<!--                    label_name desc,-->
+<!--                </if>-->
+<!--                <if test="orderByCreateTime">-->
+<!--                    create_time,-->
+<!--                </if>-->
+<!--                <if test="orderByCreateTimeDesc">-->
+<!--                    create_time desc,-->
+<!--                </if>-->
+<!--                <if test="orderByUpdateTime">-->
+<!--                    update_time,-->
+<!--                </if>-->
+<!--                <if test="orderByUpdateTimeDesc">-->
+<!--                    update_time desc,-->
+<!--                </if>-->
+<!--            </trim>-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--    <select id="countByLabelName" resultType="int">-->
+<!--        select count(*)-->
+<!--        from organization_label-->
+<!--        where label_name = #{labelName}-->
+<!--    </select>-->
+
+<!--    <update id="increaseReferenceNumber">-->
+<!--        update organization_label-->
+<!--        set reference_number = reference_number + 1-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
+</mapper>

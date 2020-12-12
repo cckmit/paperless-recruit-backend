@@ -2,16 +2,15 @@ package com.xiaohuashifu.recruit.organization.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
+import com.xiaohuashifu.recruit.common.validator.annotation.Password;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.po.CreateOrganizationPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * 描述：组织服务
@@ -24,9 +23,30 @@ public interface OrganizationService {
     /**
      * 创建组织，需要没有使用过的邮箱，用于注册组织的主体账号
      *
+     * @errorCode InvalidParameter: 邮箱或验证码或密码格式错误
+     *              OperationConflict: 邮箱已经存在
+     *              OperationConflict.Lock: 无法获取关于该邮箱的锁
+     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
+     *              UnknownError: 注册主体失败
+     *
+     * @param email 组织主体的邮箱
+     * @param authCode 邮箱验证码
+     * @param password 密码
+     * @return OrganizationDTO 组织对象
+     */
+    Result<OrganizationDTO> createOrganization(
+            @NotBlank(message = "The email can't be blank.") @Email(message = "The email format error.") String email,
+            @NotBlank(message = "The authCode can't be blank.") @AuthCode String authCode,
+            @NotEmpty(message = "The password can't be empty.") @Password String password);
+
+
+    /**
+     * 创建组织，需要没有使用过的邮箱，用于注册组织的主体账号
+     *
      * @param createOrganizationPO 创建组织的参数对象
      * @return OrganizationDTO
      */
+    @Deprecated
     Result<OrganizationDTO> createOrganization(@NotNull(message = "The createOrganizationPO can't be null.")
                                                        CreateOrganizationPO createOrganizationPO);
 
@@ -62,6 +82,9 @@ public interface OrganizationService {
 
     /**
      * 获取组织
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotFound: 该编号的组织不存在
      *
      * @param id 组织编号
      * @return OrganizationDTO
@@ -183,5 +206,18 @@ public interface OrganizationService {
     Result<OrganizationDTO> enableOrganization(
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 发送注册账号时使用的邮箱验证码
+     *
+     * @errorCode InvalidParameter: 邮箱或标题格式错误
+     *              OperationConflict: 该邮箱已经被注册，无法发送验证码
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *
+     * @param email 邮箱
+     * @return 发送结果
+     */
+    Result<Void> sendEmailAuthCodeForSignUp(@NotBlank(message = "The email can't be blank.")
+                                            @Email(message = "The email format error.") String email);
 
 }

@@ -15,7 +15,6 @@ import org.junit.Test;
  */
 public class OrganizationLabelServiceImplTest {
 
-
     private OrganizationLabelService organizationLabelService;
 
     @Before

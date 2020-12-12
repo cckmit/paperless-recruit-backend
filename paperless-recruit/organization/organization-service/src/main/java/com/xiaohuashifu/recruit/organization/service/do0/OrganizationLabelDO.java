@@ -76,7 +76,6 @@ public class OrganizationLabelDO {
                 '}';
     }
 
-
     public static final class Builder {
         private Long id;
         private String labelName;

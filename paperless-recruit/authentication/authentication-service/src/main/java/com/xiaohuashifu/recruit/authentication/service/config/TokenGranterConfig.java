@@ -6,7 +6,6 @@ import com.xiaohuashifu.recruit.authentication.service.granter.SmsGranter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenGranter;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
@@ -17,10 +16,8 @@ import org.springframework.security.oauth2.provider.implicit.ImplicitTokenGrante
 import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.*;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,11 +55,6 @@ public class TokenGranterConfig {
      */
     private RandomValueAuthorizationCodeServices authorizationCodeServices;
 
-//    /**
-//     * 具体实现类为 UserDetailsServiceImpl
-//     */
-//    private final UserDetailsService userDetailsService;
-
     /**
      * 是否重用 RefreshToken
      */
@@ -77,7 +69,6 @@ public class TokenGranterConfig {
         this.authenticationManager = authenticationManager;
         this.tokenStore = tokenStore;
         this.tokenEnhancer = tokenEnhancer;
-//        this.userDetailsService = userDetailsService;
     }
 
     /**
@@ -160,7 +151,6 @@ public class TokenGranterConfig {
         tokenServices.setReuseRefreshToken(reuseRefreshToken);
         tokenServices.setClientDetailsService(clientDetailsService);
         tokenServices.setTokenEnhancer(tokenEnhancer());
-        addUserDetailsService(tokenServices);
         return tokenServices;
     }
 
@@ -173,12 +163,6 @@ public class TokenGranterConfig {
         TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         tokenEnhancerChain.setTokenEnhancers(tokenEnhancer);
         return tokenEnhancerChain;
-    }
-
-    private void addUserDetailsService(DefaultTokenServices tokenServices) {
-        PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
-//        provider.setPreAuthenticatedUserDetailsService(new UserDetailsByNameServiceWrapper<>(userDetailsService));
-        tokenServices.setAuthenticationManager(new ProviderManager(Collections.singletonList(provider)));
     }
 
 }

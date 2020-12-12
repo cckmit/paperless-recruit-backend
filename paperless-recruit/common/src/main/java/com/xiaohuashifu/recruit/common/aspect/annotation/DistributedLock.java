@@ -29,4 +29,9 @@ public @interface DistributedLock {
      */
     TimeUnit timeUnit() default TimeUnit.SECONDS;
 
+    /**
+     * 当获取锁失败时的错误信息，支持 EL 表达式
+     */
+    String errorMessage() default "Failed to acquire lock.";
+
 }

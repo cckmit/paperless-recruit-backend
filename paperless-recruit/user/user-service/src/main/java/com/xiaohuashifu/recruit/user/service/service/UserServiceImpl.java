@@ -181,7 +181,8 @@ public class UserServiceImpl implements UserService {
      * 推荐使用该方式进行注册
      *
      * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
-     *              OperationConflict: 手机号码已经存在 | 无法获取关于该手机号码的锁
+     *              OperationConflict: 手机号码已经存在
+     *              OperationConflict.Lock: 无法获取关于该手机号码的锁
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
      *
      * @param phone 手机号码
@@ -190,7 +191,8 @@ public class UserServiceImpl implements UserService {
      * @return 新创建的用户
      */
     @Override
-    @DistributedLock(PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#phone}")
+    @DistributedLock(value = PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#phone}",
+            errorMessage = "Failed to acquire phone lock.")
     public Result<UserDTO> signUpBySmsAuthCode(String phone, String authCode, String password) {
         // 判断手机号码是否存在
         int count = userMapper.countByPhone(phone);
@@ -228,7 +230,8 @@ public class UserServiceImpl implements UserService {
      * 推荐使用该方式进行注册
      *
      * @errorCode InvalidParameter: 邮箱或验证码或密码格式错误
-     *              OperationConflict: 邮箱已经存在 | 无法获取关于该邮箱的锁
+     *              OperationConflict: 邮箱已经存在
+     *              OperationConflict.Lock: 无法获取关于该邮箱的锁
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
      *
      * @param email 邮箱
@@ -237,7 +240,8 @@ public class UserServiceImpl implements UserService {
      * @return 新创建的用户
      */
     @Override
-    @DistributedLock(EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#email}")
+    @DistributedLock(value = EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#email}",
+            errorMessage = "Failed to acquire email lock.")
     public Result<UserDTO> signUpByEmailAuthCode(String email, String authCode, String password) {
         // 判断邮箱是否存在
         int count = userMapper.countByEmail(email);
@@ -384,6 +388,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 用户编号或新用户名格式错误 | 用户不存在
      *              OperationConflict: 新用户名已经存在
+     *              OperationConflict.Lock: 无法获取关于该用户名的锁
      *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
@@ -391,7 +396,8 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
-    @DistributedLock(USERNAME_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newUsername}")
+    @DistributedLock(value = USERNAME_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newUsername}",
+            errorMessage = "Failed to acquire username lock.")
     public Result<UserDTO> updateUsername(Long id, String newUsername) {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);
@@ -420,6 +426,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 用户编号或新手机号码或短信验证码格式错误 | 用户不存在
      *              OperationConflict: 新手机号码已经存在
+     *              OperationConflict.Lock: 无法获取关于该手机号码的锁
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
      *              Forbidden: 用户被禁用
      *
@@ -429,7 +436,8 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
-    @DistributedLock(PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newPhone}")
+    @DistributedLock(value = PHONE_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newPhone}",
+            errorMessage = "Failed to acquire phone lock.")
     public Result<UserDTO> updatePhone(Long id, String newPhone, String authCode) {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);
@@ -470,6 +478,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 用户编号或新邮箱或邮箱验证码格式错误 | 用户不存在
      *              OperationConflict: 新邮箱已经存在
+     *              OperationConflict.Lock: 无法获取关于该邮箱的锁
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
      *              Forbidden: 用户被禁用
      *
@@ -479,7 +488,8 @@ public class UserServiceImpl implements UserService {
      * @return 更新后的用户
      */
     @Override
-    @DistributedLock(EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newEmail}")
+    @DistributedLock(value = EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#newEmail}",
+            errorMessage = "Failed to acquire email lock.")
     public Result<UserDTO> updateEmail(Long id, String newEmail, String authCode) {
         // 判断用户是否存在
         UserDO userDO = userMapper.getUser(id);

@@ -170,13 +170,18 @@ public enum ErrorCodeEnum implements Serializable {
     INVALID_PARAMETER_OPENID_NOT_FOUND(HttpStatus.NOT_FOUND,
             "InvalidParameter.NotFound", "The specified resource does not exist."),
 
-
     /**
      * 操作冲突
      */
     OPERATION_CONFLICT(HttpStatus.CONFLICT,
             "OperationConflict", "Request was denied due to conflict with a previous request."),
 
+    /**
+     * 操作冲突，获取锁失败
+     */
+    OPERATION_CONFLICT_LOCK(HttpStatus.CONFLICT,
+            "OperationConflict.Lock", "Request was denied due to acquire lock failed."),
+    
     /**
      * 由于某些未知错误、异常或失败，请求处理失败。
      */

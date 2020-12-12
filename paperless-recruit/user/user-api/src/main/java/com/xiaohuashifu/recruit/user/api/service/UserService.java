@@ -38,7 +38,8 @@ public interface UserService {
      * 推荐使用该方式进行注册
      *
      * @errorCode InvalidParameter: 手机号码或验证码或密码格式错误
-     *              OperationConflict: 手机号码已经存在 | 无法获取关于该手机号码的锁
+     *              OperationConflict: 手机号码已经存在
+     *              OperationConflict.Lock: 无法获取关于该手机号码的锁
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
      *
      * @param phone 手机号码
@@ -56,7 +57,8 @@ public interface UserService {
      * 推荐使用该方式进行注册
      *
      * @errorCode InvalidParameter: 邮箱或验证码或密码格式错误
-     *              OperationConflict: 邮箱已经存在 | 无法获取关于该邮箱的锁
+     *              OperationConflict: 邮箱已经存在
+     *              OperationConflict.Lock: 无法获取关于该邮箱的锁
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
      *
      * @param email 邮箱
@@ -144,6 +146,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 用户编号或新用户名格式错误 | 用户不存在
      *              OperationConflict: 新用户名已经存在
+     *              OperationConflict.Lock: 无法获取关于该用户名的锁
      *              Forbidden: 用户被禁用
      *
      * @param id 用户编号
@@ -160,6 +163,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 用户编号或新手机号码或短信验证码格式错误 | 用户不存在
      *              OperationConflict: 新手机号码已经存在
+     *              OperationConflict.Lock: 无法获取关于该手机号码的锁
      *              InvalidParameter.AuthCode.Incorrect: 短信验证码错误
      *              Forbidden: 用户被禁用
      *
@@ -181,6 +185,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 用户编号或新邮箱或邮箱验证码格式错误 | 用户不存在
      *              OperationConflict: 新邮箱已经存在
+     *              OperationConflict.Lock: 无法获取关于该邮箱的锁
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
      *              Forbidden: 用户被禁用
      *

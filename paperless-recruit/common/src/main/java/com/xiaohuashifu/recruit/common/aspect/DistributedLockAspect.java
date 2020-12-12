@@ -42,6 +42,8 @@ public class DistributedLockAspect {
     /**
      * 给方法添加分布式锁
      *
+     * @errorCode OperationConflict.Lock: 获取锁失败
+     *
      * @param joinPoint ProceedingJoinPoint
      * @return Object
      */
@@ -49,11 +51,14 @@ public class DistributedLockAspect {
             "&& @annotation(distributedLock)")
     public Object handler(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
         // 获得键
-        String key = getKey(joinPoint, distributedLock);
+        String keyExpression = distributedLock.value();
+        String key = getExpressionValue(keyExpression, joinPoint);
 
         // 尝试获取锁
         if (!tryLock(key, distributedLock)) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Failed to acquire lock.");
+            String errorMessageExpression = distributedLock.errorMessage();
+            String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_LOCK, errorMessage);
         }
 
         // 执行业务逻辑
@@ -66,13 +71,13 @@ public class DistributedLockAspect {
     }
 
     /**
-     * 获取 key
+     * 获取表达式的值
      *
+     * @param expression 表达式
      * @param joinPoint ProceedingJoinPoint
-     * @param distributedLock DistributedLock
-     * @return key
+     * @return value
      */
-    private String getKey(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) {
+    private String getExpressionValue(String expression, ProceedingJoinPoint joinPoint) {
         // 获得方法参数的 Map
         String[] parameterNames = ((CodeSignature) joinPoint.getSignature()).getParameterNames();
         Object[] parameterValues = joinPoint.getArgs();
@@ -82,8 +87,7 @@ public class DistributedLockAspect {
         }
 
         // 解析 EL 表达式
-        String key = distributedLock.value();
-        return getExpressionValue(key, parameterMap);
+        return getExpressionValue(expression, parameterMap);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
@@ -54,6 +55,11 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     private static final int MAX_ORGANIZATION_LABEL_NUMBER = 3;
 
+    /**
+     * 组织标签锁定键模式
+     */
+    private static final String ORGANIZATION_LABELS_LOCK_KEY_PATTERN = "organization:{0}:labels";
+
     public OrganizationServiceImpl(OrganizationMapper organizationMapper) {
         this.organizationMapper = organizationMapper;
     }
@@ -106,6 +112,8 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @return 添加后的组织对象
      */
     @Override
+    @DistributedLock(value = ORGANIZATION_LABELS_LOCK_KEY_PATTERN, parameters = "#{#organizationId}",
+            errorMessage = "Failed to acquire organization labels lock.")
     public Result<OrganizationDTO> addLabel(Long organizationId, String labelName) {
         // 判断组织存不存在
         int count = organizationMapper.count(organizationId);
@@ -215,8 +223,20 @@ public class OrganizationServiceImpl implements OrganizationService {
         return null;
     }
 
+    /**
+     * 更新组织名
+     *
+     * @errorCode InvalidParameter: 组织编号或组织名格式错误
+     *
+     * @param id 组织编号
+     * @param newOrganizationName 新组织名
+     * @return 更新后的组织
+     */
     @Override
-    public Result<OrganizationDTO> updateOrganizationName(@NotNull @Positive Long id, @NotBlank @Size(min = 2, max = 20) String newOrganizationName) {
+    @DistributedLock(value = "organization:name:#{#newOrganizationName}",
+            errorMessage = "Failed to acquire organizationName lock.")
+    public Result<OrganizationDTO> updateOrganizationName(Long id, String newOrganizationName) {
+
         return null;
     }
 

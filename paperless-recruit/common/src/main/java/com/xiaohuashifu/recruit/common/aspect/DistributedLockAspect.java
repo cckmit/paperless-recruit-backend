@@ -15,6 +15,7 @@ import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -50,9 +51,8 @@ public class DistributedLockAspect {
     @Around("@annotation(com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock) " +
             "&& @annotation(distributedLock)")
     public Object handler(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
-        // 获得键
-        String keyExpression = distributedLock.value();
-        String key = getExpressionValue(keyExpression, joinPoint);
+        // 获取键
+        String key = getKey(joinPoint, distributedLock);
 
         // 尝试获取锁
         if (!tryLock(key, distributedLock)) {
@@ -68,6 +68,28 @@ public class DistributedLockAspect {
             // 释放锁
             unlock(key);
         }
+    }
+
+    /**
+     * 获取锁定的键
+     *
+     * @param joinPoint ProceedingJoinPoint
+     * @param distributedLock DistributedLock
+     * @return 锁定键
+     */
+    private String getKey(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) {
+        // 获得键表达式模式
+        String keyExpressionPattern = distributedLock.value();
+        // 获取参数
+        Object[] parameters = distributedLock.parameters();
+        // 构造键表达式
+        String keyExpression = keyExpressionPattern;
+        // 若有参数则需要填充参数
+        if (parameters.length > 0) {
+            keyExpression = MessageFormat.format(keyExpressionPattern, parameters);
+        }
+        // 获取键
+        return getExpressionValue(keyExpression, joinPoint);
     }
 
     /**

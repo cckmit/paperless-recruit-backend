@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 描述: 分布式锁注解
+ * 描述: 分布式锁注解，由 {@link com.xiaohuashifu.recruit.common.aspect.DistributedLockAspect} 实现
  *
  * @author xhsf
  * @create 2020-12-10 21:16
@@ -16,8 +16,15 @@ public @interface DistributedLock {
 
     /**
      * 分布式锁 key，支持 EL 表达式，如#{#user.phone}
+     * @see #parameters() 配合该参数，支持占位符填充
+     *      如 value = "user:{0}:phone", parameters="#{#user.id}" 会转换成 value = "user:#{#user.id}:phone"
      */
     String value();
+
+    /**
+     * 填充到占位符的参数
+     */
+    String[] parameters() default {};
 
     /**
      * 过期时间

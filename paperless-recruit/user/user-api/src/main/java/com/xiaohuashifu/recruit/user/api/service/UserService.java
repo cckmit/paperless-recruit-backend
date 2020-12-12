@@ -300,7 +300,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 手机号码格式错误
      *              OperationConflict: 该手机号码已经被注册，无法发送验证码
-     *              InternalError: 发送短信验证码错误，需要重试
+     *              UnknownError: 发送短信验证码错误，需要重试
      *
      * @param phone 手机号码
      * @return 发送结果
@@ -311,22 +311,24 @@ public interface UserService {
     /**
      * 发送注册账号时使用的邮箱验证码
      *
-     * @errorCode InvalidParameter: 邮箱格式错误
+     * @errorCode InvalidParameter: 邮箱或标题格式错误
      *              OperationConflict: 该邮箱已经被注册，无法发送验证码
-     *              InternalError: 发送邮件验证码错误，需要重试
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
      * @param email 邮箱
+     * @param title 邮件的标题
      * @return 发送结果
      */
     Result<Void> sendEmailAuthCodeForSignUp(@NotBlank(message = "The email can't be blank.")
-                                            @Email(message = "The email format error.") String email);
+                                            @Email(message = "The email format error.") String email,
+                                            @NotBlank(message = "The title can't be blank.") String title);
 
     /**
      * 发送更新手机号码时使用的短信验证码
      *
      * @errorCode InvalidParameter: 手机号码格式错误
      *              OperationConflict: 该手机号码已经被使用，无法发送验证码
-     *              InternalError: 发送短信验证码错误，需要重试
+     *              UnknownError: 发送短信验证码错误，需要重试
      *
      * @param phone 手机号码
      * @return 发送结果
@@ -339,7 +341,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 手机号码格式错误
      *              InvalidParameter.NotFound: 手机号码不存在，不给发送验证码
-     *              InternalError: 发送短信验证码错误，需要重试
+     *              UnknownError: 发送短信验证码错误，需要重试
      *
      * @param phone 手机号码
      * @return 发送结果
@@ -352,7 +354,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 邮箱格式错误
      *              OperationConflict: 该邮箱已经被使用，无法发送验证码
-     *              InternalError: 发送邮件验证码失败，可能是邮箱地址错误，或者网络延迟
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
      * @param email 邮箱
      * @return 发送结果
@@ -365,7 +367,7 @@ public interface UserService {
      *
      * @errorCode InvalidParameter: 邮箱格式错误
      *              InvalidParameter.NotFound: 邮箱地址不存在，不给发送验证码
-     *              InternalError: 发送邮件验证码失败，可能是邮箱地址错误，或者网络延迟
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
      * @param email 邮箱
      * @return 发送结果

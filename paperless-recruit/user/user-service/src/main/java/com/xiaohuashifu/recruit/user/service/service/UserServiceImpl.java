@@ -97,11 +97,6 @@ public class UserServiceImpl implements UserService {
     private static final String AUTH_CODE_UPDATE_PASSWORD_SUBJECT = "user:update-password";
 
     /**
-     * 注册账号的的邮件标题
-     */
-    private static final String EMAIL_AUTH_CODE_SIGN_UP_TITLE = "注册账号";
-
-    /**
      * 更新邮箱的的邮件标题
      */
     private static final String EMAIL_AUTH_CODE_UPDATE_EMAIL_TITLE = "更新邮箱";
@@ -715,7 +710,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 手机号码格式错误
      *              OperationConflict: 该手机号码已经被注册，无法发送验证码
-     *              InternalError: 发送短信验证码错误，需要重试
+     *              UnknownError: 发送短信验证码错误，需要重试
      *
      * @param phone 手机号码
      * @return 发送结果
@@ -734,22 +729,23 @@ public class UserServiceImpl implements UserService {
     /**
      * 发送注册账号时使用的邮箱验证码
      *
-     * @errorCode InvalidParameter: 邮箱格式错误
+     * @errorCode InvalidParameter: 邮箱或标题格式错误
      *              OperationConflict: 该邮箱已经被注册，无法发送验证码
-     *              InternalError: 发送邮件验证码错误，需要重试
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
      * @param email 邮箱
+     * @param title 邮件的标题
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendEmailAuthCodeForSignUp(String email) {
+    public Result<Void> sendEmailAuthCodeForSignUp(String email, String title) {
         // 判断该邮箱是否存在，如果存在就不发送邮箱验证码
         int count = userMapper.countByEmail(email);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This email already exist.");
         }
 
-        return sendEmailAuthCode(email, AUTH_CODE_SIGN_UP_SUBJECT, EMAIL_AUTH_CODE_SIGN_UP_TITLE);
+        return sendEmailAuthCode(email, AUTH_CODE_SIGN_UP_SUBJECT, title);
     }
 
     /**
@@ -757,7 +753,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 手机号码格式错误
      *              OperationConflict: 该手机号码已经被使用，无法发送验证码
-     *              InternalError: 发送短信验证码错误，需要重试
+     *              UnknownError: 发送短信验证码错误，需要重试
      *
      * @param phone 手机号码
      * @return 发送结果
@@ -778,7 +774,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 手机号码格式错误
      *              InvalidParameter.NotFound: 手机号码不存在，不给发送验证码
-     *              InternalError: 发送短信验证码错误，需要重试
+     *              UnknownError: 发送短信验证码错误，需要重试
      *
      * @param phone 手机号码
      * @return 发送结果
@@ -799,7 +795,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 邮箱格式错误
      *              OperationConflict: 该邮箱已经被使用，无法发送验证码
-     *              InternalError: 发送邮件验证码失败，可能是邮箱地址错误，或者网络延迟
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
      * @param email 邮箱
      * @return 发送结果
@@ -820,7 +816,7 @@ public class UserServiceImpl implements UserService {
      *
      * @errorCode InvalidParameter: 邮箱格式错误
      *              InvalidParameter.NotFound: 邮箱地址不存在，不给发送验证码
-     *              InternalError: 发送邮件验证码失败，可能是邮箱地址错误，或者网络延迟
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
      * @param email 邮箱
      * @return 发送结果
@@ -838,6 +834,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 发送邮件验证码
+     *
+     * @errorCode UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
      *
      * @param email 邮件
      * @param subject 主题
@@ -857,6 +855,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 发送短信验证码
+     *
+     * @errorCode UnknownError: 发送短信验证码错误，需要重试
      *
      * @param phone 手机号码
      * @param subject 主题

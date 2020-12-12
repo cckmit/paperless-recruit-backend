@@ -181,6 +181,6 @@ public class UserServiceImplTest {
 
     @Test
     public void sendEmailAuthCodeForSignUp() {
-        System.out.println(userService.sendEmailAuthCodeForSignUp("827032783@qq.com"));
+        System.out.println(userService.sendEmailAuthCodeForSignUp("827032783@qq.com", "注册账号"));
     }
 }

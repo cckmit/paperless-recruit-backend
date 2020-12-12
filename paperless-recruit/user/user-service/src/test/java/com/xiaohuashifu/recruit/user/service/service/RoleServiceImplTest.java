@@ -35,9 +35,9 @@ public class RoleServiceImplTest {
     @Test
     public void saveRole() {
         final SaveRolePO saveRolePO = new SaveRolePO.Builder()
-                .parentRoleId(12L)
-                .roleName("   test7   ")
-                .description("  测试用户7  \n")
+                .parentRoleId(5L)
+                .roleName("organization")
+                .description("组织")
                 .available(true).build();
         System.out.println(roleService.saveRole(saveRolePO));
     }

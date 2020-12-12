@@ -39,10 +39,12 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void addLabel() {
+        System.out.println(organizationService.addLabel(1L, "竞赛"));
     }
 
     @Test
     public void removeLabel() {
+        System.out.println(organizationService.removeLabel(1L, "创业"));
     }
 
     @Test

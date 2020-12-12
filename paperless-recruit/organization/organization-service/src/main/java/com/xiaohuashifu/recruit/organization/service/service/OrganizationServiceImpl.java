@@ -4,12 +4,12 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
-import com.xiaohuashifu.recruit.organization.api.po.CreateOrganizationPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
+import com.xiaohuashifu.recruit.organization.service.do0.OrganizationOrganizationLabelDO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -48,6 +48,11 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 创建组织邮件验证码标题
      */
     private static final String CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE = "创建组织";
+
+    /**
+     * 组织最大的标签数
+     */
+    private static final int MAX_ORGANIZATION_LABEL_NUMBER = 3;
 
     public OrganizationServiceImpl(OrganizationMapper organizationMapper) {
         this.organizationMapper = organizationMapper;
@@ -89,38 +94,87 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 创建组织，需要没有使用过的邮箱，用于注册组织的主体账号
+     * 添加组织的标签
      *
-     * @errorCode InvalidParameter: 创建参数格式错误 | 包含非法标签 |
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              OperationConflict: 该标签已经存在
+     *              OperationConflict.OverLimit: 组织标签数量超过规定数量
      *
-     * @param createOrganizationPO 创建组织的参数对象
-     * @return OrganizationDTO
+     * @param organizationId 组织编号
+     * @param labelName 标签名
+     * @return 添加后的组织对象
      */
     @Override
-    public Result<OrganizationDTO> createOrganization(CreateOrganizationPO createOrganizationPO) {
-        // 判断是否包含非法标签
-        List<String> labels = createOrganizationPO.getLabels();
-        if (labels != null) {
-            for (String label : labels) {
-                if (!organizationLabelService.isValidOrganizationLabel(label).isSuccess()) {
-                    return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Contains invalid labels.");
-                }
-            }
+    public Result<OrganizationDTO> addLabel(Long organizationId, String labelName) {
+        // 判断组织存不存在
+        int count = organizationMapper.count(organizationId);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The organization does not exist.");
         }
 
-        // 创建组织主体账号
-//        userService.signUpUser()
-        return null;
+        // 判断该组织是否已经存在该标签
+        count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
+        if (count > 0) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
+                    "The organization already owns this label.");
+        }
+
+        // 判断标签数量是否大于 MAX_ORGANIZATION_LABEL_NUMBER
+        count = organizationMapper.countLabelByOrganizationId(organizationId);
+        if (count >= MAX_ORGANIZATION_LABEL_NUMBER) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_OVER_LIMIT,
+                    "The number of label must not be greater than "
+                            + MAX_ORGANIZATION_LABEL_NUMBER + ".");
+        }
+
+        // 组织标签的引用数增加
+        organizationLabelService.increaseReferenceNumberOrSaveOrganizationLabel(labelName);
+
+        // 添加组织的标签
+        OrganizationOrganizationLabelDO organizationOrganizationLabelDO =
+                new OrganizationOrganizationLabelDO.Builder()
+                        .organizationId(organizationId)
+                        .labelName(labelName)
+                        .build();
+        organizationMapper.insertLabel(organizationOrganizationLabelDO);
+
+        // 获取添加标签后的组织对象
+        return getOrganization(organizationId);
     }
 
+    /**
+     * 删除组织的标签
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              OperationConflict: 该标签不存在
+     *
+     * @param organizationId 组织编号
+     * @param labelName 标签名
+     * @return 删除标签后的组织
+     */
     @Override
-    public Result<Void> addLabel(@NotNull @Positive Long id, @NotBlank @Size(min = 1, max = 4) String labelName) {
-        return null;
-    }
+    public Result<OrganizationDTO> removeLabel(Long organizationId, String labelName) {
+        // 判断组织存不存在
+        int count = organizationMapper.count(organizationId);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The organization does not exist.");
+        }
 
-    @Override
-    public Result<Void> removeLabel(@NotNull @Positive Long id, @NotBlank @Size(min = 1, max = 4) String labelName) {
-        return null;
+        // 判断该组织是否拥有该标签
+        count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label does not exist.");
+        }
+
+        // 删除标签
+        organizationMapper.deleteLabelByOrganizationIdAndLabelName(organizationId, labelName);
+
+        // 获取删除标签后的组织对象
+        return getOrganization(organizationId);
     }
 
     /**

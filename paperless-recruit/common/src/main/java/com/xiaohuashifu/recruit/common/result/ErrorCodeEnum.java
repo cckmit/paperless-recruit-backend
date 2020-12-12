@@ -181,7 +181,13 @@ public enum ErrorCodeEnum implements Serializable {
      */
     OPERATION_CONFLICT_LOCK(HttpStatus.CONFLICT,
             "OperationConflict.Lock", "Request was denied due to acquire lock failed."),
-    
+
+    /**
+     * 操作冲突，超过限定额度
+     */
+    OPERATION_CONFLICT_OVER_LIMIT(HttpStatus.CONFLICT,
+            "OperationConflict.OverLimit", "Request was denied due to over limit."),
+
     /**
      * 由于某些未知错误、异常或失败，请求处理失败。
      */

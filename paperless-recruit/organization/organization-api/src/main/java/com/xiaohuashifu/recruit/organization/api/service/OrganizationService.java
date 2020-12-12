@@ -7,7 +7,6 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Password;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
-import com.xiaohuashifu.recruit.organization.api.po.CreateOrganizationPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 
 import javax.validation.constraints.*;
@@ -39,27 +38,21 @@ public interface OrganizationService {
             @NotBlank(message = "The authCode can't be blank.") @AuthCode String authCode,
             @NotEmpty(message = "The password can't be empty.") @Password String password);
 
-
-    /**
-     * 创建组织，需要没有使用过的邮箱，用于注册组织的主体账号
-     *
-     * @param createOrganizationPO 创建组织的参数对象
-     * @return OrganizationDTO
-     */
-    @Deprecated
-    Result<OrganizationDTO> createOrganization(@NotNull(message = "The createOrganizationPO can't be null.")
-                                                       CreateOrganizationPO createOrganizationPO);
-
     /**
      * 添加组织的标签
      *
-     * @param id 组织编号
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              OperationConflict: 该标签已经存在
+     *              OperationConflict.OverLimit: 组织标签数量超过规定数量
+     *
+     * @param organizationId 组织编号
      * @param labelName 标签名
-     * @return 添加结果
+     * @return 添加后的组织对象
      */
-    Result<Void> addLabel(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
+    Result<OrganizationDTO> addLabel(
+            @NotNull(message = "The organizationId can't be null.")
+            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
             @NotBlank(message = "The labelName can't be blank.")
             @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
                     message = "The length of labelName must not be greater than "
@@ -68,13 +61,17 @@ public interface OrganizationService {
     /**
      * 删除组织的标签
      *
-     * @param id 组织编号
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              OperationConflict: 该标签不存在
+     *
+     * @param organizationId 组织编号
      * @param labelName 标签名
-     * @return 删除结果
+     * @return 删除标签后的组织
      */
-    Result<Void> removeLabel(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
+    Result<OrganizationDTO> removeLabel(
+            @NotNull(message = "The organizationId can't be null.")
+            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
             @NotBlank(message = "The labelName can't be blank.")
             @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
                     message = "The length of labelName must not be greater than "

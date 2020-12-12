@@ -25,6 +25,17 @@
         values(#{userId})
     </insert>
 
+    <insert id="insertLabel">
+        insert into organization_organization_label(organization_id, label_name)
+        values(#{organizationId}, #{labelName})
+    </insert>
+
+    <delete id="deleteLabelByOrganizationIdAndLabelName">
+        delete from organization_organization_label
+        where organization_id = #{organizationId}
+        and label_name = #{labelName}
+    </delete>
+
     <select id="getOrganization" resultMap="organization">
         select <include refid="organization"/>
         from organization
@@ -35,6 +46,25 @@
         select label_name
         from organization_organization_label
         where organization_id = #{organizationId}
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*)
+        from organization
+        where id = #{id}
+    </select>
+
+    <select id="countLabelByOrganizationId" resultType="int">
+        select count(*)
+        from organization_organization_label
+        where organization_id = #{organizationId}
+    </select>
+
+    <select id="countLabelByOrganizationIdAndLabelName" resultType="int">
+        select count(*)
+        from organization_organization_label
+        where organization_id = #{organizationId}
+        and label_name = #{labelName}
     </select>
 
     <!--    <select id="getOrganizationLabelByLabelName" resultMap="organizationLabel">-->

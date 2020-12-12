@@ -318,7 +318,8 @@ public interface UserService {
      * @param email 邮箱
      * @return 发送结果
      */
-    Result<Void> sendEmailAuthCodeForSignUp(String email);
+    Result<Void> sendEmailAuthCodeForSignUp(@NotBlank(message = "The email can't be blank.")
+                                            @Email(message = "The email format error.") String email);
 
     /**
      * 发送更新手机号码时使用的短信验证码

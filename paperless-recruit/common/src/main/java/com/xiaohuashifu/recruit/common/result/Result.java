@@ -71,6 +71,17 @@ public class Result<T> implements Serializable {
      * @param errorMessage 错误简短信息
      * @return Result<T>
      */
+    public static <T> Result<T> fail(String errorCode, String errorMessage) {
+        return new Result<>(false, null, errorCode, errorMessage);
+    }
+
+    /**
+     * 失败调用时的构造方法
+     *
+     * @param errorCode 错误码
+     * @param errorMessage 错误简短信息
+     * @return Result<T>
+     */
     public static <T> Result<T> fail(ErrorCodeEnum errorCode, String errorMessage) {
         return new Result<>(false, null, errorCode.getCode(), errorMessage);
     }
@@ -109,7 +120,7 @@ public class Result<T> implements Serializable {
         return errorCode;
     }
 
-    public Object getErrorMessage() {
+    public String getErrorMessage() {
         return errorMessage;
     }
 

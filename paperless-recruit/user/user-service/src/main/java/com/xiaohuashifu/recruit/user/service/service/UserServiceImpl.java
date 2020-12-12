@@ -77,9 +77,9 @@ public class UserServiceImpl implements UserService {
     private static final int EMAIL_AUTH_CODE_EXPIRED_TIME = 5;
 
     /**
-     * 验证码注册的主题，用于调用短信验证码服务
+     * 验证码注册的主题，用于调用验证码服务
      */
-    private static final String SMS_AUTH_CODE_SIGN_UP_SUBJECT = "user:sign-up";
+    private static final String AUTH_CODE_SIGN_UP_SUBJECT = "user:sign-up";
 
     /**
      * 更新手机号码的主题，用于调用短信验证码服务
@@ -87,14 +87,19 @@ public class UserServiceImpl implements UserService {
     private static final String SMS_AUTH_CODE_UPDATE_PHONE_SUBJECT = "user:update-phone";
 
     /**
-     * 短信验证码更新密码的主题，用于调用短信验证码服务
-     */
-    private static final String SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT = "user:update-password";
-
-    /**
      * 更新邮件的主题，用于调用邮箱验证码服务
      */
     private static final String EMAIL_AUTH_CODE_UPDATE_EMAIL_SUBJECT = "user:update-email";
+
+    /**
+     * 验证码更新密码的主题，用于调用验证码服务
+     */
+    private static final String AUTH_CODE_UPDATE_PASSWORD_SUBJECT = "user:update-password";
+
+    /**
+     * 注册账号的的邮件标题
+     */
+    private static final String EMAIL_AUTH_CODE_SIGN_UP_TITLE = "注册账号";
 
     /**
      * 更新邮箱的的邮件标题
@@ -102,17 +107,12 @@ public class UserServiceImpl implements UserService {
     private static final String EMAIL_AUTH_CODE_UPDATE_EMAIL_TITLE = "更新邮箱";
 
     /**
-     * 邮箱验证码更新密码的主题，用于调用邮箱验证码服务
-     */
-    private static final String EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT = "user:update-password";
-
-    /**
      * 邮箱验证码更新密码的邮件标题
      */
     private static final String EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE = "更新密码";
 
     /**
-     * 注册时用户名的自增编号Redis Key，用于避免用户名重复
+     * 注册时用户名的自增编号 Redis Key，用于避免用户名重复
      */
     private static final String SIGN_UP_USERNAME_INCREMENT_ID_REDIS_KEY = "user:sign-up:username:increment-id";
 
@@ -195,24 +195,19 @@ public class UserServiceImpl implements UserService {
         // 判断手机号码是否存在
         int count = userMapper.countByPhone(phone);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "Phone does already exist.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The phone does already exist.");
         }
 
         // 判断验证码是否正确
-        Result<Void> checkEmailAuthCodeResult = smsService.checkSmsAuthCode(
+        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(
                 new CheckSmsAuthCodePO.Builder()
                         .phone(phone)
-                        .subject(SMS_AUTH_CODE_SIGN_UP_SUBJECT)
+                        .subject(AUTH_CODE_SIGN_UP_SUBJECT)
                         .authCode(authCode)
                         .delete(true)
                         .build());
-        if (!checkEmailAuthCodeResult.isSuccess()) {
+        if (!checkSmsAuthCodeResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
-        }
-
-        // 如果密码为null，则随机生成密码
-        if (password == null) {
-            password = RandomStringUtils.randomNumeric(20);
         }
 
         // 生成用户名
@@ -223,6 +218,53 @@ public class UserServiceImpl implements UserService {
                 .username(username)
                 .password(passwordService.encodePassword(password))
                 .phone(phone)
+                .build();
+        return saveUser(userDO);
+    }
+
+    /**
+     * 通过邮箱验证码注册账号
+     * 该方式会随机生成用户名
+     * 推荐使用该方式进行注册
+     *
+     * @errorCode InvalidParameter: 邮箱或验证码或密码格式错误
+     *              OperationConflict: 邮箱已经存在 | 无法获取关于该邮箱的锁
+     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
+     *
+     * @param email 邮箱
+     * @param authCode 邮箱验证码
+     * @param password 密码
+     * @return 新创建的用户
+     */
+    @Override
+    @DistributedLock(EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX + "#{#email}")
+    public Result<UserDTO> signUpByEmailAuthCode(String email, String authCode, String password) {
+        // 判断邮箱是否存在
+        int count = userMapper.countByEmail(email);
+        if (count > 0) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The email does already exist.");
+        }
+
+        // 判断验证码是否正确
+        Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(
+                new CheckEmailAuthCodePO.Builder()
+                        .email(email)
+                        .subject(AUTH_CODE_SIGN_UP_SUBJECT)
+                        .authCode(authCode)
+                        .delete(true)
+                        .build());
+        if (!checkEmailAuthCodeResult.isSuccess()) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT, "Invalid auth code.");
+        }
+
+        // 生成用户名
+        String username = generateRandomUsername();
+
+        // 添加到数据库
+        UserDO userDO = new UserDO.Builder()
+                .username(username)
+                .password(passwordService.encodePassword(password))
+                .email(email)
                 .build();
         return saveUser(userDO);
     }
@@ -530,7 +572,7 @@ public class UserServiceImpl implements UserService {
         Result<Void> checkEmailAuthCodeResult = emailService.checkEmailAuthCode(
                 new CheckEmailAuthCodePO.Builder()
                         .email(email)
-                        .subject(EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
+                        .subject(AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
                         .authCode(authCode)
                         .delete(true)
                         .build());
@@ -573,7 +615,7 @@ public class UserServiceImpl implements UserService {
         Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(
                 new CheckSmsAuthCodePO.Builder()
                         .phone(phone)
-                        .subject(SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
+                        .subject(AUTH_CODE_UPDATE_PASSWORD_SUBJECT)
                         .authCode(authCode)
                         .delete(true)
                         .build());
@@ -676,7 +718,28 @@ public class UserServiceImpl implements UserService {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This phone already exist.");
         }
 
-        return sendSmsAuthCode(phone, SMS_AUTH_CODE_SIGN_UP_SUBJECT);
+        return sendSmsAuthCode(phone, AUTH_CODE_SIGN_UP_SUBJECT);
+    }
+
+    /**
+     * 发送注册账号时使用的邮箱验证码
+     *
+     * @errorCode InvalidParameter: 邮箱格式错误
+     *              OperationConflict: 该邮箱已经被注册，无法发送验证码
+     *              InternalError: 发送邮件验证码错误，需要重试
+     *
+     * @param email 邮箱
+     * @return 发送结果
+     */
+    @Override
+    public Result<Void> sendEmailAuthCodeForSignUp(String email) {
+        // 判断该邮箱是否存在，如果存在就不发送邮箱验证码
+        int count = userMapper.countByEmail(email);
+        if (count > 0) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This email already exist.");
+        }
+
+        return sendEmailAuthCode(email, AUTH_CODE_SIGN_UP_SUBJECT, EMAIL_AUTH_CODE_SIGN_UP_TITLE);
     }
 
     /**
@@ -718,7 +781,7 @@ public class UserServiceImpl implements UserService {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND, "This phone does not exist.");
         }
 
-        return sendSmsAuthCode(phone, SMS_AUTH_CODE_UPDATE_PASSWORD_SUBJECT);
+        return sendSmsAuthCode(phone, AUTH_CODE_UPDATE_PASSWORD_SUBJECT);
     }
 
     /**
@@ -760,7 +823,7 @@ public class UserServiceImpl implements UserService {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This email does not exist.");
         }
 
-        return sendEmailAuthCode(email, EMAIL_AUTH_CODE_UPDATE_PASSWORD_SUBJECT, EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE);
+        return sendEmailAuthCode(email, AUTH_CODE_UPDATE_PASSWORD_SUBJECT, EMAIL_AUTH_CODE_UPDATE_PASSWORD_TITLE);
     }
 
     /**

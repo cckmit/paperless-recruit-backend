@@ -51,6 +51,25 @@ public interface UserService {
                                         @NotEmpty(message = "The password can't be empty.") @Password String password);
 
     /**
+     * 通过邮箱验证码注册账号
+     * 该方式会随机生成用户名
+     * 推荐使用该方式进行注册
+     *
+     * @errorCode InvalidParameter: 邮箱或验证码或密码格式错误
+     *              OperationConflict: 邮箱已经存在 | 无法获取关于该邮箱的锁
+     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
+     *
+     * @param email 邮箱
+     * @param authCode 邮箱验证码
+     * @param password 密码
+     * @return 新创建的用户
+     */
+    Result<UserDTO> signUpByEmailAuthCode(
+            @NotBlank(message = "The email can't be blank.") @Email String email,
+            @NotBlank(message = "The authCode can't be blank.") @AuthCode String authCode,
+            @NotEmpty(message = "The password can't be empty.") @Password String password);
+
+    /**
      * 通过id获取用户信息
      *
      * @errorCode InvalidParameter: 编号格式错误
@@ -283,6 +302,18 @@ public interface UserService {
      */
     Result<Void> sendSmsAuthCodeForSignUp(@NotBlank(message = "The phone can't be blank.")
                                           @Phone String phone);
+
+    /**
+     * 发送注册账号时使用的邮箱验证码
+     *
+     * @errorCode InvalidParameter: 邮箱格式错误
+     *              OperationConflict: 该邮箱已经被注册，无法发送验证码
+     *              InternalError: 发送邮件验证码错误，需要重试
+     *
+     * @param email 邮箱
+     * @return 发送结果
+     */
+    Result<Void> sendEmailAuthCodeForSignUp(String email);
 
     /**
      * 发送更新手机号码时使用的短信验证码

@@ -55,10 +55,17 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testSignUpBySmsAuthCode() {
+    public void signUpBySmsAuthCode() {
         System.out.println(userService.signUpBySmsAuthCode(
                 "15992321303", "989575", "123456"));
     }
+
+    @Test
+    public void signUpByEmailAuthCode() {
+        System.out.println(userService.signUpByEmailAuthCode(
+                "827032783@qq.com", "075478", "123456"));
+    }
+
 
     @Test
     public void getUserByUsername() {
@@ -170,5 +177,10 @@ public class UserServiceImplTest {
     @Test
     public void sendEmailAuthCodeForUpdatePassword() {
         System.out.println(userService.sendEmailAuthCodeForUpdatePassword("827032783@qq.com"));
+    }
+
+    @Test
+    public void sendEmailAuthCodeForSignUp() {
+        System.out.println(userService.sendEmailAuthCodeForSignUp("827032783@qq.com"));
     }
 }

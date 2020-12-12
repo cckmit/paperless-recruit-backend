@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.authentication.service.service;
 
-import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.dto.PermittedUrlDTO;
 import com.xiaohuashifu.recruit.authentication.api.query.PermittedUrlQuery;
@@ -25,11 +24,9 @@ import java.util.stream.Collectors;
 public class WhiteListServiceImpl implements WhiteListService {
 
     private final PermittedUrlMapper permittedUrlMapper;
-    private final Mapper mapper;
 
-    public WhiteListServiceImpl(PermittedUrlMapper permittedUrlMapper, Mapper mapper) {
+    public WhiteListServiceImpl(PermittedUrlMapper permittedUrlMapper) {
         this.permittedUrlMapper = permittedUrlMapper;
-        this.mapper = mapper;
     }
 
     /**
@@ -91,7 +88,7 @@ public class WhiteListServiceImpl implements WhiteListService {
         if (permittedUrlDO == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
         }
-        return Result.success(mapper.map(permittedUrlDO, PermittedUrlDTO.class));
+        return Result.success(new PermittedUrlDTO(permittedUrlDO.getId(), permittedUrlDO.getUrl()));
     }
 
     /**
@@ -106,7 +103,7 @@ public class WhiteListServiceImpl implements WhiteListService {
     public Result<PageInfo<PermittedUrlDTO>> listPermittedUrls(PermittedUrlQuery query) {
         List<PermittedUrlDO> permittedUrlDOList = permittedUrlMapper.listPermittedUrls(query);
         List<PermittedUrlDTO> permittedUrlDTOList = permittedUrlDOList.stream()
-                .map(permittedUrlDO -> mapper.map(permittedUrlDO, PermittedUrlDTO.class))
+                .map(permittedUrlDO -> new PermittedUrlDTO(permittedUrlDO.getId(), permittedUrlDO.getUrl()))
                 .collect(Collectors.toList());
         PageInfo<PermittedUrlDTO> pageInfo = new PageInfo<>(permittedUrlDTOList);
         return Result.success(pageInfo);

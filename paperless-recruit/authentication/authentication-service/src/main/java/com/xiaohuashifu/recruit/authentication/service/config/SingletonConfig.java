@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.authentication.service.config;
 
-import com.github.dozermapper.spring.DozerBeanMapperFactoryBean;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,15 +12,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class SingletonConfig {
-    /**
-     * dozer 配置
-     *
-     * @return Mapper
-     */
-    @Bean
-    public DozerBeanMapperFactoryBean dozerMapper() {
-        return new DozerBeanMapperFactoryBean();
-    }
 
     /**
      * fastjson 的 ObjectMapper 单例

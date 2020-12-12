@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.granter;
 
 import com.xiaohuashifu.recruit.authentication.service.token.SmsAuthenticationToken;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -44,14 +45,18 @@ public class SmsGranter extends AbstractTokenGranter {
 
     @Override
     protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
+        // 获取参数
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
         String phone = parameters.get(SMS_PHONE_KEY);
         String authCode = parameters.get(SMS_AUTH_CODE_KEY);
-        if (phone == null || authCode == null) {
-            throw new InvalidGrantException("Phone and authCode can't be null.");
-        }
         parameters.remove(SMS_AUTH_CODE_KEY);
 
+        // 判断手机号码和验证码是否为空
+        if (StringUtils.isBlank(phone) || StringUtils.isBlank(authCode)) {
+            throw new InvalidGrantException("Phone and authCode can't be null.");
+        }
+
+        // 认证
         Authentication userAuth = new SmsAuthenticationToken(phone, authCode);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);
         userAuth = authenticationManager.authenticate(userAuth);
@@ -62,4 +67,5 @@ public class SmsGranter extends AbstractTokenGranter {
         OAuth2Request storedOAuth2Request = getRequestFactory().createOAuth2Request(client, tokenRequest);
         return new OAuth2Authentication(storedOAuth2Request, userAuth);
     }
+
 }

@@ -46,14 +46,18 @@ public class PasswordGranter extends AbstractTokenGranter {
 
     @Override
     protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
+        // 获取参数
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
         String principal = parameters.get(PRINCIPAL_KEY);
         String password = parameters.get(PASSWORD_KEY);
+        parameters.remove(PASSWORD_KEY);
+
+        // 判断主体和密码是否为空
         if (StringUtils.isBlank(principal) || password == null) {
             throw new InvalidGrantException("Principal and password can't be null.");
         }
-        parameters.remove(PASSWORD_KEY);
 
+        // 认证
         Authentication userAuth = new PasswordAuthenticationToken(principal, password);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);
         userAuth = authenticationManager.authenticate(userAuth);
@@ -64,4 +68,5 @@ public class PasswordGranter extends AbstractTokenGranter {
         OAuth2Request storedOAuth2Request = getRequestFactory().createOAuth2Request(client, tokenRequest);
         return new OAuth2Authentication(storedOAuth2Request, userAuth);
     }
+
 }

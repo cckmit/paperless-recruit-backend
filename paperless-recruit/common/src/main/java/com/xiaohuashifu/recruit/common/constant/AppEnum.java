@@ -26,4 +26,19 @@ public enum AppEnum {
     public PlatformEnum getPlatform() {
         return platform;
     }
+
+    /**
+     * 判断是否包含该 APP
+     * @param name APP 名字
+     * @return 是否包含
+     */
+    public static boolean contains(String name) {
+        for (AppEnum value : AppEnum.values()) {
+            if (value.name().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

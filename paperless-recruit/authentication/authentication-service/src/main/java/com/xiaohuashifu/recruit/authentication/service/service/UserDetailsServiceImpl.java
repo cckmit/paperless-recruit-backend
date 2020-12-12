@@ -35,6 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrPhoneOrEmail) throws UsernameNotFoundException {
+        System.out.println("----------------------UserDetailsServiceImpl.loadUserByUsername----------------------");
         // 查找用户
         Result<UserDTO> getUserResult = userService.getUserByUsernameOrPhoneOrEmail(usernameOrPhoneOrEmail);
         if (!getUserResult.isSuccess()) {

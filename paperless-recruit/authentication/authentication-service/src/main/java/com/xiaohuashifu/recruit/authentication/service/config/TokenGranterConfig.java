@@ -60,10 +60,10 @@ public class TokenGranterConfig {
      */
     private RandomValueAuthorizationCodeServices authorizationCodeServices;
 
-    /**
-     * 具体实现类为 UserDetailsServiceImpl
-     */
-    private final UserDetailsService userDetailsService;
+//    /**
+//     * 具体实现类为 UserDetailsServiceImpl
+//     */
+//    private final UserDetailsService userDetailsService;
 
     /**
      * 是否重用 RefreshToken
@@ -74,12 +74,12 @@ public class TokenGranterConfig {
 
     public TokenGranterConfig(ClientDetailsService clientDetailsService,
                               AuthenticationManager authenticationManager, TokenStore tokenStore,
-                              List<TokenEnhancer> tokenEnhancer, UserDetailsService userDetailsService) {
+                              List<TokenEnhancer> tokenEnhancer) {
         this.clientDetailsService = clientDetailsService;
         this.authenticationManager = authenticationManager;
         this.tokenStore = tokenStore;
         this.tokenEnhancer = tokenEnhancer;
-        this.userDetailsService = userDetailsService;
+//        this.userDetailsService = userDetailsService;
     }
 
     /**
@@ -162,7 +162,7 @@ public class TokenGranterConfig {
         tokenServices.setReuseRefreshToken(reuseRefreshToken);
         tokenServices.setClientDetailsService(clientDetailsService);
         tokenServices.setTokenEnhancer(tokenEnhancer());
-        addUserDetailsService(tokenServices, userDetailsService);
+        addUserDetailsService(tokenServices);
         return tokenServices;
     }
 
@@ -177,9 +177,9 @@ public class TokenGranterConfig {
         return tokenEnhancerChain;
     }
 
-    private void addUserDetailsService(DefaultTokenServices tokenServices, UserDetailsService userDetailsService) {
+    private void addUserDetailsService(DefaultTokenServices tokenServices) {
         PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
-        provider.setPreAuthenticatedUserDetailsService(new UserDetailsByNameServiceWrapper<>(userDetailsService));
+//        provider.setPreAuthenticatedUserDetailsService(new UserDetailsByNameServiceWrapper<>(userDetailsService));
         tokenServices.setAuthenticationManager(new ProviderManager(Collections.singletonList(provider)));
     }
 

@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.authentication.service.granter;
 
 import com.xiaohuashifu.recruit.authentication.service.token.OpenIdAuthenticationToken;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -46,14 +47,23 @@ public class OpenIdGranter extends AbstractTokenGranter {
 
     @Override
     protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
+        // 获取参数
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
         String app = parameters.get(OPENID_APP_KEY);
         String code = parameters.get(OPENID_CODE_KEY);
-        if (app == null || code == null) {
-            throw new InvalidGrantException("App and code can't be null.");
-        }
         parameters.remove(OPENID_CODE_KEY);
 
+        // 判断 app 和 code 是否为空
+        if (StringUtils.isBlank(app) || StringUtils.isBlank(code)) {
+            throw new InvalidGrantException("App and code can't be null.");
+        }
+
+        // 判断是否包含该 APP
+        if (!AppEnum.contains(app)) {
+            throw new InvalidGrantException("Invalid app name.");
+        }
+
+        // 认证
         Authentication userAuth = new OpenIdAuthenticationToken(AppEnum.valueOf(app), code);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);
         userAuth = authenticationManager.authenticate(userAuth);

@@ -45,4 +45,11 @@ public interface OrganizationMapper {
 
     int updateLogoUrl(@Param("id") Long id, @Param("logoUrl") String logoUrl);
 
+    int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
+
+    int increaseMemberNumber(Long id);
+
+    int decreaseMemberNumber(Long id);
+
+
 }

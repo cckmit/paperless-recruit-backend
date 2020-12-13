@@ -21,7 +21,6 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.UUID;
 
@@ -379,24 +378,116 @@ public class OrganizationServiceImpl implements OrganizationService {
         return getOrganization(updateOrganizationLogoPO.getId());
     }
 
+    /**
+     * 增加成员数，+1
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 增加成员数结果，通过 Result.isSuccess() 判断
+     */
     @Override
-    public Result<Void> increaseMemberNumber(@NotNull @Positive Long id) {
-        return null;
+    public Result<OrganizationDTO> increaseMemberNumber(Long id) {
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
+        if (!checkResult.isSuccess()) {
+            return checkResult;
+        }
+
+        // 增加成员数
+        organizationMapper.increaseMemberNumber(id);
+
+        // 添加成员数后的组织对象
+        return getOrganization(id);
     }
 
+    /**
+     * 减少成员数，-1
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 减少成员数后的组织对象
+     */
     @Override
-    public Result<Void> decreaseMemberNumber(@NotNull @Positive Long id) {
-        return null;
+    public Result<OrganizationDTO> decreaseMemberNumber(Long id) {
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
+        if (!checkResult.isSuccess()) {
+            return checkResult;
+        }
+
+        // 减少成员数
+        organizationMapper.decreaseMemberNumber(id);
+
+        // 减少成员数后的组织对象
+        return getOrganization(id);
     }
 
+    /**
+     * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              OperationConflict: 组织已经被禁用
+     *
+     * @param id 组织编号
+     * @return 禁用后的组织
+     */
     @Override
-    public Result<OrganizationDTO> disableOrganization(@NotNull @Positive Long id) {
-        return null;
+    public Result<OrganizationDTO> disableOrganization(Long id) {
+        // 判断组织存不存在
+        OrganizationDO organizationDO = organizationMapper.getOrganization(id);
+        if (organizationDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The organization does not exist.");
+        }
+
+        // 判断组织是否已经被禁用
+        if (!organizationDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The organization already unavailable.");
+        }
+
+        // 禁用组织
+        organizationMapper.updateAvailable(id, false);
+
+        // 获取禁用后的组织对象
+        return getOrganization(id);
     }
 
+    /**
+     * 解禁组织
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              OperationConflict: 组织已经可用
+     *
+     * @param id 组织编号
+     * @return 解禁后的组织
+     */
     @Override
-    public Result<OrganizationDTO> enableOrganization(@NotNull @Positive Long id) {
-        return null;
+    public Result<OrganizationDTO> enableOrganization(Long id) {
+        // 判断组织存不存在
+        OrganizationDO organizationDO = organizationMapper.getOrganization(id);
+        if (organizationDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The organization does not exist.");
+        }
+
+        // 判断组织是否可用
+        if (organizationDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The organization already available.");
+        }
+
+        // 解禁组织
+        organizationMapper.updateAvailable(id, true);
+
+        // 获取解禁后的组织对象
+        return getOrganization(id);
     }
 
     /**
@@ -423,6 +514,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             return Result.fail(ErrorCodeEnum.FORBIDDEN, "The organization unavailable.");
         }
 
+        // 组织状态正常
         return Result.success();
     }
 

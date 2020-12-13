@@ -104,6 +104,24 @@
         where id = #{id}
     </update>
 
+    <update id="updateAvailable">
+        update organization
+        set is_available = #{available}
+        where id = #{id}
+    </update>
+
+    <update id="increaseMemberNumber">
+        update organization
+        set member_number = member_number + 1
+        where id = #{id}
+    </update>
+
+    <update id="decreaseMemberNumber">
+        update organization
+        set member_number = member_number - 1
+        where id = #{id}
+    </update>
+
     <!--    <select id="getOrganizationLabelByLabelName" resultMap="organizationLabel">-->
 <!--        select <include refid="organizationLabel"/>-->
 <!--        from organization_label-->

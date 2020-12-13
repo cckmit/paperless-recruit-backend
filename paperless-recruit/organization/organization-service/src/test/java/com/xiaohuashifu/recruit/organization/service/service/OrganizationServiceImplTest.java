@@ -86,18 +86,22 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void increaseMemberNumber() {
+        System.out.println(organizationService.increaseMemberNumber(1L));
     }
 
     @Test
     public void decreaseMemberNumber() {
+        System.out.println(organizationService.decreaseMemberNumber(1L));
     }
 
     @Test
     public void disableOrganization() {
+        System.out.println(organizationService.disableOrganization(1L));
     }
 
     @Test
     public void enableOrganization() {
+        System.out.println(organizationService.enableOrganization(1L));
     }
 
     @Test

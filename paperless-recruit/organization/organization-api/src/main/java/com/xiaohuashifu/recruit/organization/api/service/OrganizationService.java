@@ -185,10 +185,14 @@ public interface OrganizationService {
     /**
      * 增加成员数，+1
      *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *
      * @param id 组织编号
-     * @return 增加成员数结果，通过 Result.isSuccess() 判断
+     * @return 增加成员数后的组织对象
      */
-    Result<Void> increaseMemberNumber(
+    Result<OrganizationDTO> increaseMemberNumber(
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id);
 
@@ -196,14 +200,18 @@ public interface OrganizationService {
      * 减少成员数，-1
      *
      * @param id 组织编号
-     * @return 减少成员数结果，通过 Result.isSuccess() 判断
+     * @return 减少成员数后的组织对象
      */
-    Result<Void> decreaseMemberNumber(
+    Result<OrganizationDTO> decreaseMemberNumber(
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              OperationConflict: 组织已经被禁用
      *
      * @param id 组织编号
      * @return 禁用后的组织
@@ -214,6 +222,10 @@ public interface OrganizationService {
 
     /**
      * 解禁组织
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              OperationConflict: 组织已经可用
      *
      * @param id 组织编号
      * @return 解禁后的组织

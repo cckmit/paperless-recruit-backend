@@ -50,7 +50,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 组织默认角色编号
      */
-    private static final Long ORGANIZATION_DEFAULT_ROLE_ID = 13L;
+    private static final Long ORGANIZATION_DEFAULT_ROLE_ID = 14L;
 
     /**
      * 创建组织邮件验证码标题

@@ -110,4 +110,10 @@
         where id = #{id}
     </update>
 
+    <update id="updateAvailable">
+        update organization_label
+        set is_available = #{available}
+        where id = #{id}
+    </update>
+
 </mapper>

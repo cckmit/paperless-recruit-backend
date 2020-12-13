@@ -44,6 +44,7 @@ public interface OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              InvalidParameter.NotAvailable: 标签不可用
      *              Forbidden: 组织不可用
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量

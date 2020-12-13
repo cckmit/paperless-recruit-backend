@@ -48,7 +48,7 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void removeLabel() {
-        System.out.println(organizationService.removeLabel(1L, "创业"));
+        System.out.println(organizationService.removeLabel(1L, "竞赛"));
     }
 
     @Test

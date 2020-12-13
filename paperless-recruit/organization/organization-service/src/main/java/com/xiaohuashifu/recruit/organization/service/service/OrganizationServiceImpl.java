@@ -126,6 +126,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              InvalidParameter.NotAvailable: 标签不可用
      *              Forbidden: 组织不可用
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
@@ -158,6 +159,12 @@ public class OrganizationServiceImpl implements OrganizationService {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_OVER_LIMIT,
                     "The number of label must not be greater than "
                             + MAX_ORGANIZATION_LABEL_NUMBER + ".");
+        }
+
+        // 判断该标签是否可用
+        Result<Void> checkOrganizationLabelResult = organizationLabelService.isValidOrganizationLabel(labelName);
+        if (!checkOrganizationLabelResult.isSuccess()) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_AVAILABLE, "The label unavailable.");
         }
 
         // 组织标签的引用数增加

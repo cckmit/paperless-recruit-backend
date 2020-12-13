@@ -19,6 +19,8 @@ public interface OrganizationMapper {
 
     int insertLabel(OrganizationOrganizationLabelDO organizationLabelDO);
 
+    int deleteLabelsByLabelName(String labelName);
+
     int deleteLabelByOrganizationIdAndLabelName(@Param("organizationId") Long organizationId,
                                                 @Param("labelName") String labelName);
 

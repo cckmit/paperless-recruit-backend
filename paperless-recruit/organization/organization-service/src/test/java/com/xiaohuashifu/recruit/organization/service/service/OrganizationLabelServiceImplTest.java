@@ -53,10 +53,12 @@ public class OrganizationLabelServiceImplTest {
 
     @Test
     public void disableOrganizationLabel() {
+        System.out.println(organizationLabelService.disableOrganizationLabel(4L));
     }
 
     @Test
     public void enableOrganizationLabel() {
+        System.out.println(organizationLabelService.enableOrganizationLabel(4L));
     }
 
     @Test

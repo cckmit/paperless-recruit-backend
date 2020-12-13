@@ -39,10 +39,10 @@ public interface OrganizationLabelService {
      * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
      *
      * @errorCode InvalidParameter: 标签名格式错误
-     *              InvalidParameter.NotAvailable: 该标签已经被禁用，不可用增加引用
+     *              Forbidden: 该标签已经被禁用，不可用增加引用
      *
      * @param labelName 标签名
-     * @return 增加引用数量后的组织标签对象
+     * @return 操作是否成功
      */
     Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(
             @NotBlank(message = "The labelName can't be blank.")
@@ -63,6 +63,10 @@ public interface OrganizationLabelService {
 
     /**
      * 禁用一个组织标签，会把所有拥有这个标签的社团的这个标签给删了
+     *
+     * @errorCode InvalidParameter: 组织标签编号格式错误
+     *              InvalidParameter.NotExist: 组织标签不存在
+     *              OperationConflict: 组织标签已经被禁用
      *
      * @param id 社团标签编号
      * @return 禁用后的组织标签对象和被删除标签的社团数量；

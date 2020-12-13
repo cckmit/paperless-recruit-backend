@@ -400,30 +400,17 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 发送注册账号时使用的邮箱验证码
-     *
-     * @errorCode InvalidParameter: 邮箱或标题格式错误
-     *              OperationConflict: 该邮箱已经被注册，无法发送验证码
-     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
-     *
-     * @param email 邮箱
-     * @return 发送结果
-     */
-    @Override
-    public Result<Void> sendEmailAuthCodeForSignUp(String email) {
-        return userService.sendEmailAuthCodeForSignUp(email, CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE);
-    }
-
-    /**
      * 检查组织状态
      *
-     * @errorCode InvalidParameter.NotExist: 组织不存在
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
      *              Forbidden: 组织不可用
      *
      * @param organizationId 组织编号
      * @return 检查结果
      */
-    private Result<OrganizationDTO> checkOrganizationStatus(Long organizationId) {
+    @Override
+    public Result<OrganizationDTO> checkOrganizationStatus(Long organizationId) {
         // 判断组织存不存在
         OrganizationDO organizationDO = organizationMapper.getOrganization(organizationId);
         if (organizationDO == null) {
@@ -437,6 +424,21 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
 
         return Result.success();
+    }
+
+    /**
+     * 发送注册账号时使用的邮箱验证码
+     *
+     * @errorCode InvalidParameter: 邮箱或标题格式错误
+     *              OperationConflict: 该邮箱已经被注册，无法发送验证码
+     *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *
+     * @param email 邮箱
+     * @return 发送结果
+     */
+    @Override
+    public Result<Void> sendEmailAuthCodeForSignUp(String email) {
+        return userService.sendEmailAuthCodeForSignUp(email, CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE);
     }
 
 }

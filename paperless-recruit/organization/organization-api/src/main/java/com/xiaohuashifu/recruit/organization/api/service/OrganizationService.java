@@ -223,6 +223,20 @@ public interface OrganizationService {
             @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
+     * 检查组织状态
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *
+     * @param organizationId 组织编号
+     * @return 检查结果
+     */
+    Result<OrganizationDTO> checkOrganizationStatus(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long organizationId);
+
+    /**
      * 发送注册账号时使用的邮箱验证码
      *
      * @errorCode InvalidParameter: 邮箱或标题格式错误

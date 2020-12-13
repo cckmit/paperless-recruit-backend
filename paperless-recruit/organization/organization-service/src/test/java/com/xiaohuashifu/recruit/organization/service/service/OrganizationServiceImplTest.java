@@ -1,11 +1,14 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
+import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.*;
 
 import static org.junit.Assert.*;
 
@@ -58,18 +61,27 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void updateOrganizationName() {
+        System.out.println(organizationService.updateOrganizationName(1L, "华南农业大学学生科技创新与创业联合会"));
     }
 
     @Test
     public void updateAbbreviationOrganizationName() {
+        System.out.println(organizationService.updateAbbreviationOrganizationName(1L, "校科联"));
     }
 
     @Test
     public void updateIntroduction() {
+        System.out.println(organizationService.updateIntroduction(1L, "华南农业大学学生科技创新与创业联合会（以下简称校科联）是在学校团委指导下的面向华南农业大学全日制本科生和研究生的学术型组织。\n" +
+                "本会以弘扬丁颖科学精神，积极发展学生科技创新与创业能力为宗旨，秉承创新、专注、严谨、奉献、联合的精神，立足于学生学术发展和学校的科研建设。通过组织和指导学科竞赛和科研实践，推动华南农业大学科技创新建设，为构建学术型综合性大学，培养全方位、高水平的科技人才做出贡献。"));
     }
 
     @Test
-    public void updateLogo() {
+    public void updateLogo() throws IOException {
+        File file = new File("C:\\Users\\82703\\Desktop\\1601000702(1).jpg");
+        FileInputStream fis = new FileInputStream(file);
+        byte[] bytes = fis.readAllBytes();
+        System.out.println(organizationService.updateLogo(
+                new UpdateOrganizationLogoPO.Builder().id(1L).logo(bytes).logoExtensionName(".jpg").build()));
     }
 
     @Test

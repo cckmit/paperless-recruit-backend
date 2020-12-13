@@ -4,7 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
+import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
@@ -14,11 +16,14 @@ import com.xiaohuashifu.recruit.organization.service.do0.OrganizationOrganizatio
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 描述：组织服务
@@ -37,6 +42,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Reference
     private RoleService roleService;
+
+    @Reference
+    private ObjectStorageService objectStorageService;
 
     private final OrganizationMapper organizationMapper;
 
@@ -59,6 +67,21 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 组织标签锁定键模式
      */
     private static final String ORGANIZATION_LABELS_LOCK_KEY_PATTERN = "organization:{0}:labels";
+
+    /**
+     * 组织名锁定键模式
+     */
+    private static final String ORGANIZATION_NAME_LOCK_KEY_PATTERN = "organization:name:{0}";
+
+    /**
+     * 组织 logo 的锁定键模式
+     */
+    private static final String ORGANIZATION_LOGO_LOCK_KEY_PATTERN = "organization:{0}:logo";
+
+    /**
+     * 组织 logo url 的前缀
+     */
+    private static final String ORGANIZATION_LOGO_URL_PREFIX = "organization/logo/";
 
     public OrganizationServiceImpl(OrganizationMapper organizationMapper) {
         this.organizationMapper = organizationMapper;
@@ -104,8 +127,10 @@ public class OrganizationServiceImpl implements OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
+     *              OperationConflict.Lock: 获取组织标签的锁失败
      *
      * @param organizationId 组织编号
      * @param labelName 标签名
@@ -115,15 +140,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     @DistributedLock(value = ORGANIZATION_LABELS_LOCK_KEY_PATTERN, parameters = "#{#organizationId}",
             errorMessage = "Failed to acquire organization labels lock.")
     public Result<OrganizationDTO> addLabel(Long organizationId, String labelName) {
-        // 判断组织存不存在
-        int count = organizationMapper.count(organizationId);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(organizationId);
+        if (!checkResult.isSuccess()) {
+            return checkResult;
         }
 
         // 判断该组织是否已经存在该标签
-        count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
+        int count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
                     "The organization already owns this label.");
@@ -157,6 +181,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
      *              OperationConflict: 该标签不存在
      *
      * @param organizationId 组织编号
@@ -165,15 +190,14 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Result<OrganizationDTO> removeLabel(Long organizationId, String labelName) {
-        // 判断组织存不存在
-        int count = organizationMapper.count(organizationId);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(organizationId);
+        if (!checkResult.isSuccess()) {
+            return checkResult;
         }
 
         // 判断该组织是否拥有该标签
-        count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
+        int count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
         if (count < 1) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label does not exist.");
         }
@@ -227,32 +251,132 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 更新组织名
      *
      * @errorCode InvalidParameter: 组织编号或组织名格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *              OperationConflict: 新组织名已经存在
+     *              OperationConflict.Lock: 获取组织名的锁失败
      *
      * @param id 组织编号
      * @param newOrganizationName 新组织名
      * @return 更新后的组织
      */
     @Override
-    @DistributedLock(value = "organization:name:#{#newOrganizationName}",
+    @DistributedLock(value = ORGANIZATION_NAME_LOCK_KEY_PATTERN, parameters = "#{#newOrganizationName}",
             errorMessage = "Failed to acquire organizationName lock.")
     public Result<OrganizationDTO> updateOrganizationName(Long id, String newOrganizationName) {
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
+        if (!checkResult.isSuccess()) {
+            return checkResult;
+        }
 
-        return null;
+        // 判断组织名存不存在
+        int count = organizationMapper.countByOrganizationName(newOrganizationName);
+        if (count > 0) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The organization name already exist.");
+        }
+
+        // 更新组织名
+        organizationMapper.updateOrganizationName(id, newOrganizationName);
+
+        // 获取更新后的组织对象
+        return getOrganization(id);
     }
 
+    /**
+     * 更新组织名缩写
+     *
+     * @errorCode InvalidParameter: 组织编号或组织名缩写格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *
+     * @param id 组织编号
+     * @param newAbbreviationOrganizationName 新组织名缩写
+     * @return 更新后的组织
+     */
     @Override
-    public Result<OrganizationDTO> updateAbbreviationOrganizationName(@NotNull @Positive Long id, @NotBlank @Size(min = 2, max = 5) String newAbbreviationOrganizationName) {
-        return null;
+    public Result<OrganizationDTO> updateAbbreviationOrganizationName(Long id, String newAbbreviationOrganizationName) {
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
+        if (!checkResult.isSuccess()) {
+            return checkResult;
+        }
+
+        // 更新组织名缩写
+        organizationMapper.updateAbbreviationOrganizationName(id, newAbbreviationOrganizationName);
+
+        // 获取更新后的组织对象
+        return getOrganization(id);
     }
 
+    /**
+     * 更新组织介绍
+     *
+     * @errorCode InvalidParameter: 组织编号或组织介绍格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *
+     * @param id 组织编号
+     * @param newIntroduction 新组织介绍
+     * @return 更新后的组织
+     */
     @Override
-    public Result<OrganizationDTO> updateIntroduction(@NotNull @Positive Long id, @NotBlank @Size(min = 1, max = 400) String newIntroduction) {
-        return null;
+    public Result<OrganizationDTO> updateIntroduction(Long id, String newIntroduction) {
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
+        if (!checkResult.isSuccess()) {
+            return checkResult;
+        }
+
+        // 更新组织介绍
+        organizationMapper.updateIntroduction(id, newIntroduction);
+
+        // 获取更新后的组织对象
+        return getOrganization(id);
     }
 
+    /**
+     * 更新组织 Logo
+     *
+     * @errorCode InvalidParameter: 组织编号或组织 logo 格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *              InternalError: 上传文件失败
+     *              OperationConflict.Lock: 获取组织 logo 的锁失败
+     *
+     * @param updateOrganizationLogoPO 更新 logo 的参数对象
+     * @return 更新后的组织
+     */
     @Override
-    public Result<OrganizationDTO> updateLogo(@NotNull @Positive Long id, @NotEmpty @Size(min = 1, max = 10240) byte[] newLogo) {
-        return null;
+    @DistributedLock(value = ORGANIZATION_LOGO_LOCK_KEY_PATTERN, parameters = "#{#updateOrganizationLogoPO.id}",
+            errorMessage = "Failed to acquire organization logo lock.")
+    public Result<OrganizationDTO> updateLogo(UpdateOrganizationLogoPO updateOrganizationLogoPO) {
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(updateOrganizationLogoPO.getId());
+        if (!checkResult.isSuccess()) {
+            return checkResult;
+        }
+
+        // 获取组织 logoUrl
+        String logoUrl = organizationMapper.getOrganizationLogoUrlByOrganizationId(updateOrganizationLogoPO.getId());
+        // 若原来的 logoUrl 为空，则随机产生一个
+        boolean needUpdateLogoUrl = false;
+        if (StringUtils.isBlank(logoUrl)) {
+            needUpdateLogoUrl = true;
+            logoUrl = ORGANIZATION_LOGO_URL_PREFIX + UUID.randomUUID().toString()
+                    + updateOrganizationLogoPO.getId() + updateOrganizationLogoPO.getLogoExtensionName();
+        }
+
+        // 更新 logo
+        objectStorageService.putObject(logoUrl, updateOrganizationLogoPO.getLogo());
+
+        // 若需要更新 logoUrl 到数据库，则更新
+        if (needUpdateLogoUrl) {
+            organizationMapper.updateLogoUrl(updateOrganizationLogoPO.getId(), logoUrl);
+        }
+
+        // 更新后的组织信息
+        return getOrganization(updateOrganizationLogoPO.getId());
     }
 
     @Override
@@ -288,6 +412,31 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Result<Void> sendEmailAuthCodeForSignUp(String email) {
         return userService.sendEmailAuthCodeForSignUp(email, CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE);
+    }
+
+    /**
+     * 检查组织状态
+     *
+     * @errorCode InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *
+     * @param organizationId 组织编号
+     * @return 检查结果
+     */
+    private Result<OrganizationDTO> checkOrganizationStatus(Long organizationId) {
+        // 判断组织存不存在
+        OrganizationDO organizationDO = organizationMapper.getOrganization(organizationId);
+        if (organizationDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The organization does not exist.");
+        }
+
+        // 判断组织是否可用
+        if (!organizationDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The organization unavailable.");
+        }
+
+        return Result.success();
     }
 
 }

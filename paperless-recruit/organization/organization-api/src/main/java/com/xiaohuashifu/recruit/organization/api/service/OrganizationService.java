@@ -7,6 +7,7 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Password;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
+import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 
 import javax.validation.constraints.*;
@@ -43,8 +44,10 @@ public interface OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
+     *              OperationConflict.Lock: 获取组织标签的锁失败
      *
      * @param organizationId 组织编号
      * @param labelName 标签名
@@ -63,6 +66,7 @@ public interface OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
      *              OperationConflict: 该标签不存在
      *
      * @param organizationId 组织编号
@@ -102,6 +106,12 @@ public interface OrganizationService {
     /**
      * 更新组织名
      *
+     * @errorCode InvalidParameter: 组织编号或组织名格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *              OperationConflict: 新组织名已经存在
+     *              OperationConflict.Lock: 获取组织名的锁失败
+     *
      * @param id 组织编号
      * @param newOrganizationName 新组织名
      * @return 更新后的组织
@@ -118,6 +128,10 @@ public interface OrganizationService {
 
     /**
      * 更新组织名缩写
+     *
+     * @errorCode InvalidParameter: 组织编号或组织名缩写格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
      *
      * @param id 组织编号
      * @param newAbbreviationOrganizationName 新组织名缩写
@@ -137,6 +151,10 @@ public interface OrganizationService {
     /**
      * 更新组织介绍
      *
+     * @errorCode InvalidParameter: 组织编号或组织介绍格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *
      * @param id 组织编号
      * @param newIntroduction 新组织介绍
      * @return 更新后的组织
@@ -152,17 +170,17 @@ public interface OrganizationService {
     /**
      * 更新组织 Logo
      *
-     * @param id 组织编号
-     * @param newLogo 新 Logo
+     * @errorCode InvalidParameter: 组织编号或组织 logo 格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *              InternalError: 上传文件失败
+     *              OperationConflict.Lock: 获取组织 logo 的锁失败
+     *
+     * @param updateOrganizationLogoPO 更新 logo 的参数对象
      * @return 更新后的组织
      */
-    Result<OrganizationDTO> updateLogo(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
-            @NotNull(message = "The newLogo can't be null.")
-            @Size(max = OrganizationConstants.MAX_ORGANIZATION_LOGO_LENGTH,
-                    message = "The newLogo must not be greater than "
-                            + OrganizationConstants.MAX_ORGANIZATION_LOGO_LENGTH + ".") byte[] newLogo);
+    Result<OrganizationDTO> updateLogo(@NotNull(message = "The updateOrganizationLogoPO can't be null.")
+                                               UpdateOrganizationLogoPO updateOrganizationLogoPO);
 
     /**
      * 增加成员数，+1

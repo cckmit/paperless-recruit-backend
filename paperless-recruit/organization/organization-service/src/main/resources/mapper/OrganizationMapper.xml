@@ -42,6 +42,13 @@
         where id = #{id}
     </select>
 
+    <select id="getOrganizationLogoUrlByOrganizationId" resultType="string">
+        select logo_url
+        from organization
+        where id = #{id}
+    </select>
+
+
     <select id="listOrganizationLabelNamesByOrganizationId" resultType="string">
         select label_name
         from organization_organization_label
@@ -52,6 +59,12 @@
         select count(*)
         from organization
         where id = #{id}
+    </select>
+
+    <select id="countByOrganizationName" resultType="int">
+        select count(*)
+        from organization
+        where organization_name = #{organizationName}
     </select>
 
     <select id="countLabelByOrganizationId" resultType="int">
@@ -66,6 +79,30 @@
         where organization_id = #{organizationId}
         and label_name = #{labelName}
     </select>
+
+    <update id="updateOrganizationName">
+        update organization
+        set organization_name = #{organizationName}
+        where id = #{id}
+    </update>
+
+    <update id="updateAbbreviationOrganizationName">
+        update organization
+        set abbreviation_organization_name = #{abbreviationOrganizationName}
+        where id = #{id}
+    </update>
+
+    <update id="updateIntroduction">
+        update organization
+        set introduction = #{introduction}
+        where id = #{id}
+    </update>
+
+    <update id="updateLogoUrl">
+        update organization
+        set logo_url = #{logoUrl}
+        where id = #{id}
+    </update>
 
     <!--    <select id="getOrganizationLabelByLabelName" resultMap="organizationLabel">-->
 <!--        select <include refid="organizationLabel"/>-->

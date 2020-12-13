@@ -20,9 +20,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 描述：组织服务
@@ -241,9 +241,34 @@ public class OrganizationServiceImpl implements OrganizationService {
         return Result.success(organizationDTO);
     }
 
+    /**
+     * 查询组织
+     *
+     * @errorCode InvalidParameter: 查询参数格式错误
+     *
+     * @param query 查询参数
+     * @return PageInfo<OrganizationDTO> 查询结果，可能返回空列表
+     */
     @Override
-    public Result<PageInfo<OrganizationDTO>> listOrganizations(@NotNull OrganizationQuery query) {
-        return null;
+    public Result<PageInfo<OrganizationDTO>> listOrganizations(OrganizationQuery query) {
+        List<OrganizationDO> organizationDOList = organizationMapper.listOrganizations(query);
+        List<OrganizationDTO> organizationDTOList = organizationDOList
+                .stream()
+                .map(organizationDO -> new OrganizationDTO
+                        .Builder()
+                        .id(organizationDO.getId())
+                        .userId(organizationDO.getUserId())
+                        .organizationName(organizationDO.getOrganizationName())
+                        .abbreviationOrganizationName(organizationDO.getAbbreviationOrganizationName())
+                        .introduction(organizationDO.getIntroduction())
+                        .logoUrl(organizationDO.getLogoUrl())
+                        .memberNumber(organizationDO.getMemberNumber())
+                        .labels(organizationMapper.listOrganizationLabelNamesByOrganizationId(organizationDO.getId()))
+                        .available(organizationDO.getAvailable())
+                        .build())
+                .collect(Collectors.toList());
+        PageInfo<OrganizationDTO> pageInfo = new PageInfo<>(organizationDTOList);
+        return Result.success(pageInfo);
     }
 
     /**

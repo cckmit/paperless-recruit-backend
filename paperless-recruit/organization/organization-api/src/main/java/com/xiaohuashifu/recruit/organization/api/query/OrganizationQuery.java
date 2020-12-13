@@ -58,14 +58,59 @@ public class OrganizationQuery implements Serializable {
     private String abbreviationOrganizationName;
 
     /**
-     * 组织标签名，可模糊
-     */
-    private String labelName;
-
-    /**
      * 组织是否可用
      */
     private Boolean available;
+
+    /**
+     * 按照组织是否可用排序
+     */
+    private Boolean orderByAvailable;
+
+    /**
+     * 按照组织是否可用逆序排序
+     */
+    private Boolean orderByAvailableDesc;
+
+    /**
+     * 按照组织名排序
+     */
+    private Boolean orderByOrganizationName;
+
+    /**
+     * 按照组织名逆序排序
+     */
+    private Boolean orderByOrganizationNameDesc;
+
+    /**
+     * 按照组织名缩写排序
+     */
+    private Boolean orderByAbbreviationOrganizationName;
+
+    /**
+     * 按照组织名缩写逆序排序
+     */
+    private Boolean orderByAbbreviationOrganizationNameDesc;
+
+    /**
+     * 按照创建时间排序
+     */
+    private Boolean orderByCreateTime;
+
+    /**
+     * 按照创建时间逆序排序
+     */
+    private Boolean orderByCreateTimeDesc;
+
+    /**
+     * 按照更新时间排序
+     */
+    private Boolean orderByUpdateTime;
+
+    /**
+     * 按照更新时间逆序排序
+     */
+    private Boolean orderByUpdateTimeDesc;
 
     public Long getPageNum() {
         return pageNum;
@@ -123,20 +168,92 @@ public class OrganizationQuery implements Serializable {
         this.abbreviationOrganizationName = abbreviationOrganizationName;
     }
 
-    public String getLabelName() {
-        return labelName;
-    }
-
-    public void setLabelName(String labelName) {
-        this.labelName = labelName;
-    }
-
     public Boolean getAvailable() {
         return available;
     }
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public Boolean getOrderByAvailable() {
+        return orderByAvailable;
+    }
+
+    public void setOrderByAvailable(Boolean orderByAvailable) {
+        this.orderByAvailable = orderByAvailable;
+    }
+
+    public Boolean getOrderByAvailableDesc() {
+        return orderByAvailableDesc;
+    }
+
+    public void setOrderByAvailableDesc(Boolean orderByAvailableDesc) {
+        this.orderByAvailableDesc = orderByAvailableDesc;
+    }
+
+    public Boolean getOrderByOrganizationName() {
+        return orderByOrganizationName;
+    }
+
+    public void setOrderByOrganizationName(Boolean orderByOrganizationName) {
+        this.orderByOrganizationName = orderByOrganizationName;
+    }
+
+    public Boolean getOrderByOrganizationNameDesc() {
+        return orderByOrganizationNameDesc;
+    }
+
+    public void setOrderByOrganizationNameDesc(Boolean orderByOrganizationNameDesc) {
+        this.orderByOrganizationNameDesc = orderByOrganizationNameDesc;
+    }
+
+    public Boolean getOrderByAbbreviationOrganizationName() {
+        return orderByAbbreviationOrganizationName;
+    }
+
+    public void setOrderByAbbreviationOrganizationName(Boolean orderByAbbreviationOrganizationName) {
+        this.orderByAbbreviationOrganizationName = orderByAbbreviationOrganizationName;
+    }
+
+    public Boolean getOrderByAbbreviationOrganizationNameDesc() {
+        return orderByAbbreviationOrganizationNameDesc;
+    }
+
+    public void setOrderByAbbreviationOrganizationNameDesc(Boolean orderByAbbreviationOrganizationNameDesc) {
+        this.orderByAbbreviationOrganizationNameDesc = orderByAbbreviationOrganizationNameDesc;
+    }
+
+    public Boolean getOrderByCreateTime() {
+        return orderByCreateTime;
+    }
+
+    public void setOrderByCreateTime(Boolean orderByCreateTime) {
+        this.orderByCreateTime = orderByCreateTime;
+    }
+
+    public Boolean getOrderByCreateTimeDesc() {
+        return orderByCreateTimeDesc;
+    }
+
+    public void setOrderByCreateTimeDesc(Boolean orderByCreateTimeDesc) {
+        this.orderByCreateTimeDesc = orderByCreateTimeDesc;
+    }
+
+    public Boolean getOrderByUpdateTime() {
+        return orderByUpdateTime;
+    }
+
+    public void setOrderByUpdateTime(Boolean orderByUpdateTime) {
+        this.orderByUpdateTime = orderByUpdateTime;
+    }
+
+    public Boolean getOrderByUpdateTimeDesc() {
+        return orderByUpdateTimeDesc;
+    }
+
+    public void setOrderByUpdateTimeDesc(Boolean orderByUpdateTimeDesc) {
+        this.orderByUpdateTimeDesc = orderByUpdateTimeDesc;
     }
 
     @Override
@@ -149,8 +266,17 @@ public class OrganizationQuery implements Serializable {
                 ", userId=" + userId +
                 ", organizationName='" + organizationName + '\'' +
                 ", abbreviationOrganizationName='" + abbreviationOrganizationName + '\'' +
-                ", labelName='" + labelName + '\'' +
                 ", available=" + available +
+                ", orderByAvailable=" + orderByAvailable +
+                ", orderByAvailableDesc=" + orderByAvailableDesc +
+                ", orderByOrganizationName=" + orderByOrganizationName +
+                ", orderByOrganizationNameDesc=" + orderByOrganizationNameDesc +
+                ", orderByAbbreviationOrganizationName=" + orderByAbbreviationOrganizationName +
+                ", orderByAbbreviationOrganizationNameDesc=" + orderByAbbreviationOrganizationNameDesc +
+                ", orderByCreateTime=" + orderByCreateTime +
+                ", orderByCreateTimeDesc=" + orderByCreateTimeDesc +
+                ", orderByUpdateTime=" + orderByUpdateTime +
+                ", orderByUpdateTimeDesc=" + orderByUpdateTimeDesc +
                 '}';
     }
 
@@ -162,8 +288,17 @@ public class OrganizationQuery implements Serializable {
         private Long userId;
         private String organizationName;
         private String abbreviationOrganizationName;
-        private String labelName;
         private Boolean available;
+        private Boolean orderByAvailable;
+        private Boolean orderByAvailableDesc;
+        private Boolean orderByOrganizationName;
+        private Boolean orderByOrganizationNameDesc;
+        private Boolean orderByAbbreviationOrganizationName;
+        private Boolean orderByAbbreviationOrganizationNameDesc;
+        private Boolean orderByCreateTime;
+        private Boolean orderByCreateTimeDesc;
+        private Boolean orderByUpdateTime;
+        private Boolean orderByUpdateTimeDesc;
 
         public Builder pageNum(Long pageNum) {
             this.pageNum = pageNum;
@@ -200,13 +335,58 @@ public class OrganizationQuery implements Serializable {
             return this;
         }
 
-        public Builder labelName(String labelName) {
-            this.labelName = labelName;
+        public Builder available(Boolean available) {
+            this.available = available;
             return this;
         }
 
-        public Builder available(Boolean available) {
-            this.available = available;
+        public Builder orderByAvailable(Boolean orderByAvailable) {
+            this.orderByAvailable = orderByAvailable;
+            return this;
+        }
+
+        public Builder orderByAvailableDesc(Boolean orderByAvailableDesc) {
+            this.orderByAvailableDesc = orderByAvailableDesc;
+            return this;
+        }
+
+        public Builder orderByOrganizationName(Boolean orderByOrganizationName) {
+            this.orderByOrganizationName = orderByOrganizationName;
+            return this;
+        }
+
+        public Builder orderByOrganizationNameDesc(Boolean orderByOrganizationNameDesc) {
+            this.orderByOrganizationNameDesc = orderByOrganizationNameDesc;
+            return this;
+        }
+
+        public Builder orderByAbbreviationOrganizationName(Boolean orderByAbbreviationOrganizationName) {
+            this.orderByAbbreviationOrganizationName = orderByAbbreviationOrganizationName;
+            return this;
+        }
+
+        public Builder orderByAbbreviationOrganizationNameDesc(Boolean orderByAbbreviationOrganizationNameDesc) {
+            this.orderByAbbreviationOrganizationNameDesc = orderByAbbreviationOrganizationNameDesc;
+            return this;
+        }
+
+        public Builder orderByCreateTime(Boolean orderByCreateTime) {
+            this.orderByCreateTime = orderByCreateTime;
+            return this;
+        }
+
+        public Builder orderByCreateTimeDesc(Boolean orderByCreateTimeDesc) {
+            this.orderByCreateTimeDesc = orderByCreateTimeDesc;
+            return this;
+        }
+
+        public Builder orderByUpdateTime(Boolean orderByUpdateTime) {
+            this.orderByUpdateTime = orderByUpdateTime;
+            return this;
+        }
+
+        public Builder orderByUpdateTimeDesc(Boolean orderByUpdateTimeDesc) {
+            this.orderByUpdateTimeDesc = orderByUpdateTimeDesc;
             return this;
         }
 
@@ -219,8 +399,17 @@ public class OrganizationQuery implements Serializable {
             organizationQuery.setUserId(userId);
             organizationQuery.setOrganizationName(organizationName);
             organizationQuery.setAbbreviationOrganizationName(abbreviationOrganizationName);
-            organizationQuery.setLabelName(labelName);
             organizationQuery.setAvailable(available);
+            organizationQuery.setOrderByAvailable(orderByAvailable);
+            organizationQuery.setOrderByAvailableDesc(orderByAvailableDesc);
+            organizationQuery.setOrderByOrganizationName(orderByOrganizationName);
+            organizationQuery.setOrderByOrganizationNameDesc(orderByOrganizationNameDesc);
+            organizationQuery.setOrderByAbbreviationOrganizationName(orderByAbbreviationOrganizationName);
+            organizationQuery.setOrderByAbbreviationOrganizationNameDesc(orderByAbbreviationOrganizationNameDesc);
+            organizationQuery.setOrderByCreateTime(orderByCreateTime);
+            organizationQuery.setOrderByCreateTimeDesc(orderByCreateTimeDesc);
+            organizationQuery.setOrderByUpdateTime(orderByUpdateTime);
+            organizationQuery.setOrderByUpdateTimeDesc(orderByUpdateTimeDesc);
             return organizationQuery;
         }
     }

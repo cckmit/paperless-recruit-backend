@@ -97,6 +97,8 @@ public interface OrganizationService {
     /**
      * 查询组织
      *
+     * @errorCode InvalidParameter: 查询参数格式错误
+     *
      * @param query 查询参数
      * @return PageInfo<OrganizationDTO> 查询结果，可能返回空列表
      */

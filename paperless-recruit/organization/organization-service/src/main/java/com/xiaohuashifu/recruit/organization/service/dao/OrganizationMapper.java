@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.organization.service.dao;
 
+import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationOrganizationLabelDO;
 import org.apache.ibatis.annotations.Param;
@@ -24,6 +25,8 @@ public interface OrganizationMapper {
     OrganizationDO getOrganization(Long id);
 
     String getOrganizationLogoUrlByOrganizationId(Long id);
+
+    List<OrganizationDO> listOrganizations(OrganizationQuery query);
 
     List<String> listOrganizationLabelNamesByOrganizationId(Long organizationId);
 
@@ -50,6 +53,5 @@ public interface OrganizationMapper {
     int increaseMemberNumber(Long id);
 
     int decreaseMemberNumber(Long id);
-
 
 }

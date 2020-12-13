@@ -1,29 +1,37 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-import com.xiaohuashifu.recruit.common.validator.UsernameValidator;
+import com.xiaohuashifu.recruit.common.validator.ImageExtensionNameValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 描述: username校验
- *     用户名必须满足长度在4-32之间，只包含数字、小写字母、'-'、'_'，且以字母开头
- *     用户名不能是手机和邮箱的格式
+ * 描述: 图片扩展名校验器
+ *          默认支持 [.jpg | .jpeg | .png | .gif]
  *
  * @author xhsf
- * @create 2020-10-09
+ * @create 2020-12-13
  */
 @Documented
-@Constraint(validatedBy = {UsernameValidator.class})
+@Constraint(validatedBy = {ImageExtensionNameValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
         ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Username.List.class)
-public @interface Username {
+@Repeatable(ImageExtensionName.List.class)
+public @interface ImageExtensionName {
 
-    String message() default "The username must meet the length of 4-32, only contain numbers, " +
-            "lowercase letters,'-','_', and start with the letter.";
+    String message() default "Unsupported image extension name.";
+
+    /**
+     * 支持的图片扩展名
+     */
+    String[] supportedImageExtensionNames() default {".jpg", ".jpeg", ".png", ".gif"};
+
+    /**
+     * 额外支持的图片扩展名
+     */
+    String[] additionalSupportImageExtensionNames() default {};
 
     Class<?>[] groups() default {};
 
@@ -34,7 +42,7 @@ public @interface Username {
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface List {
-        Username[] value();
+        ImageExtensionName[] value();
     }
 
 }

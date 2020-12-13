@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *  用户名必须满足长度在 4-32 之间，只包含数字、小写字母、'-'、'_'，且以字母开头
  *
  * @author xhsf
- * @create 2019-10-09
+ * @create 2020-10-09
  */
 public class UsernameValidator implements ConstraintValidator<Username, String> {
 

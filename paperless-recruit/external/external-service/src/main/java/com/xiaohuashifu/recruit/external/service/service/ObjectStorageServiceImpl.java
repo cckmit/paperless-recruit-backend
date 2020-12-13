@@ -30,6 +30,9 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     /**
      * 上传对象
      *
+     * @errorCode InvalidParameter: 对象名 | 对象格式错误
+     *              InternalError: 上传文件失败
+     *
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @param object 对象
      * @return 上传结果
@@ -63,6 +66,9 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     /**
      * 删除对象
      *
+     * @errorCode InvalidParameter: 对象名格式错误
+     *              InternalError: 删除文件失败
+     *
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 删除结果
      */
@@ -76,6 +82,9 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     /**
      * 下载对象
+     *
+     * @errorCode InvalidParameter: 对象名格式错误
+     *              InvalidParameter.NotFound: 没有找到该对象
      *
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 对象
@@ -91,6 +100,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     /**
      * 获取对象信息，一次最大 50 条
+     *
+     * @errorCode InvalidParameter: 参数格式错误
      *
      * @param prefix 对象名前缀
      * @param startMarker 起始对象名，若为空默认

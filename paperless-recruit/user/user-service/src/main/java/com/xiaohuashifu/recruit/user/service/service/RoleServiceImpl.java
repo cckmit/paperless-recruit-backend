@@ -4,6 +4,8 @@ import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.dto.DisableRoleDTO;
+import com.xiaohuashifu.recruit.user.api.dto.EnableRoleDTO;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
@@ -14,9 +16,7 @@ import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.service.do0.RoleDO;
 import org.apache.dubbo.config.annotation.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -374,10 +374,10 @@ public class RoleServiceImpl implements RoleService {
      *              OperationConflict: 角色已经被禁用
      *
      * @param id 角色编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的 key 为 totalDisableCount 和 newRole
+     * @return Result<DisableRoleDTO> 禁用的数量和禁用后的角色对象
      */
     @Override
-    public Result<Map<String, Object>> disableRole(Long id) {
+    public Result<DisableRoleDTO> disableRole(Long id) {
         // 判断该角色存不存在
         int count = roleMapper.count(id);
         if (count < 1) {
@@ -391,11 +391,9 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 递归的禁用角色
-        int totalDisableCount = recursiveDisableRole(id);
-        Map<String, Object> map = new HashMap<>();
-        map.put("totalDisableCount", totalDisableCount);
-        map.put("newRole", getRole(id));
-        return Result.success(map);
+        int disabledCount = recursiveDisableRole(id);
+        DisableRoleDTO disableRoleDTO = new DisableRoleDTO(getRole(id).getData(), disabledCount);
+        return Result.success(disableRoleDTO);
     }
 
     /**
@@ -405,10 +403,10 @@ public class RoleServiceImpl implements RoleService {
      *              OperationConflict: 角色已经可用 | 父角色被禁用，无法解禁该角色
      *
      * @param id 角色编号
-     * @return Result<Map<String, Object>> 解禁的数量和解禁后的角色对象，分别对应的key为totalEnableCount和newRole
+     * @return Result<EnableRoleDTO> 解禁的数量和解禁后的角色对象
      */
     @Override
-    public Result<Map<String, Object>> enableRole(Long id) {
+    public Result<EnableRoleDTO> enableRole(Long id) {
         // 判断该角色存不存在
         RoleDO roleDO = roleMapper.getRole(id);
         if (roleDO == null) {
@@ -431,11 +429,9 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 递归的解禁角色
-        int totalEnableCount = recursiveEnableRole(id);
-        Map<String, Object> map = new HashMap<>();
-        map.put("totalEnableCount", totalEnableCount);
-        map.put("newRole", getRole(id));
-        return Result.success(map);
+        int enabledCount = recursiveEnableRole(id);
+        EnableRoleDTO enableRoleDTO = new EnableRoleDTO(getRole(id).getData(), enabledCount);
+        return Result.success(enableRoleDTO);
     }
 
     /**
@@ -448,10 +444,10 @@ public class RoleServiceImpl implements RoleService {
      *
      * @param id 角色编号
      * @param parentRoleId 父角色编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
+     * @return Result<DisableRoleDTO> 禁用的数量和禁用后的角色对象
      */
     @Override
-    public Result<Map<String, Object>> setParentRole(Long id, Long parentRoleId) {
+    public Result<DisableRoleDTO> setParentRole(Long id, Long parentRoleId) {
         // 判断该角色存不存在
         RoleDO roleDO = roleMapper.getRole(id);
         if (roleDO == null) {
@@ -482,10 +478,8 @@ public class RoleServiceImpl implements RoleService {
                 || roleMapper.countByIdAndAvailable(parentRoleId, true) == 1
                 || !roleDO.getAvailable();
         if (canReturn) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("totalDisableCount", 0);
-            map.put("newRole", getRole(id));
-            return Result.success(map);
+            DisableRoleDTO disableRoleDTO = new DisableRoleDTO(getRole(id).getData(), 0);
+            return Result.success(disableRoleDTO);
         }
 
         // 如果父角色状态为禁用，而该角色的状态为可用，则递归更新该角色状态为禁用

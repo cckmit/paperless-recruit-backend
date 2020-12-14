@@ -3,13 +3,13 @@ package com.xiaohuashifu.recruit.user.api.service;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.constant.PermissionConstants;
+import com.xiaohuashifu.recruit.user.api.dto.DisablePermissionDTO;
+import com.xiaohuashifu.recruit.user.api.dto.EnablePermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 
 import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 描述：权限服务 RPC 接口
@@ -130,10 +130,9 @@ public interface PermissionService {
      *              OperationConflict: 该权限已经被禁用
      *
      * @param id 权限编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，
-     *          分别对应的 key 为 totalDisableCount 和 newPermission
+     * @return DisablePermissionDTO 禁用的数量和禁用后的权限对象
      */
-    Result<Map<String, Object>> disablePermission(@NotNull(message = "The id can't be null.")
+    Result<DisablePermissionDTO> disablePermission(@NotNull(message = "The id can't be null.")
                                                   @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
@@ -144,9 +143,8 @@ public interface PermissionService {
      *
      * @param id 权限编号
      * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象
-     *          分别对应的 key 为 totalEnableCount 和 newPermission
      */
-    Result<Map<String, Object>> enablePermission(@NotNull(message = "The id can't be null.")
+    Result<EnablePermissionDTO> enablePermission(@NotNull(message = "The id can't be null.")
                                                  @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
@@ -159,11 +157,10 @@ public interface PermissionService {
      *
      * @param id 权限编号
      * @param parentPermissionId 父权限编号
-     * @return Result<Map<String, Object>>
-     *          禁用的数量和设置父权限后的权限对象，分别对应的key为totalDisableCount和newPermission
+     * @return Result<DisablePermissionDTO>，禁用的数量和设置父权限后的权限对象
      *          这里的禁用是因为如果父权限为禁用，则该权限必须也递归的禁用
      */
-    Result<Map<String, Object>> setParentPermission(
+    Result<DisablePermissionDTO> setParentPermission(
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotNull(message = "The parentPermissionId can't be null.")

@@ -3,13 +3,13 @@ package com.xiaohuashifu.recruit.user.api.service;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.constant.RoleConstants;
+import com.xiaohuashifu.recruit.user.api.dto.DisableRoleDTO;
+import com.xiaohuashifu.recruit.user.api.dto.EnableRoleDTO;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
 import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 
 import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 描述：角色服务 RPC 接口
@@ -174,9 +174,9 @@ public interface RoleService {
      *              OperationConflict: 角色已经被禁用
      *
      * @param id 角色编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的 key 为 totalDisableCount 和 newRole
+     * @return Result<DisableRoleDTO> 禁用的数量和禁用后的角色对象
      */
-    Result<Map<String, Object>> disableRole(@NotNull(message = "The id can't be null.")
+    Result<DisableRoleDTO> disableRole(@NotNull(message = "The id can't be null.")
                                             @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
@@ -186,9 +186,9 @@ public interface RoleService {
      *              OperationConflict: 角色已经可用 | 父角色被禁用，无法解禁该角色
      *
      * @param id 角色编号
-     * @return Result<Map<String, Object>> 解禁的数量和解禁后的角色对象，分别对应的key为totalEnableCount和newRole
+     * @return Result<EnableRoleDTO> 解禁的数量和解禁后的角色对象
      */
-    Result<Map<String, Object>> enableRole(@NotNull(message = "The id can't be null.")
+    Result<EnableRoleDTO> enableRole(@NotNull(message = "The id can't be null.")
                                            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
@@ -201,9 +201,9 @@ public interface RoleService {
      *
      * @param id 角色编号
      * @param parentRoleId 父角色编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的角色对象，分别对应的key为totalDisableCount和newRole
+     * @return Result<DisableRoleDTO> 禁用的数量和禁用后的角色对象
      */
-    Result<Map<String, Object>> setParentRole(
+    Result<DisableRoleDTO> setParentRole(
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotNull(message = "The parentRoleId can't be null.")

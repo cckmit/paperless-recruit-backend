@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.organization.service.service;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.organization.api.dto.DisableOrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationLabelQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
@@ -11,9 +12,7 @@ import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationLabelDO;
 import org.apache.dubbo.config.annotation.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -121,11 +120,10 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
      *              OperationConflict: 组织标签已经被禁用
      *
      * @param id 社团标签编号
-     * @return 禁用后的组织标签对象和被删除标签的社团数量；
-     *          Map 的 key 分别为 organizationLabel 和 deletedNumber，类型分别为 OrganizationLabelDTO 和 Integer
+     * @return DisableOrganizationLabelDTO 禁用后的组织标签对象和被删除标签的社团数量
      */
     @Override
-    public Result<Map<String, Object>> disableOrganizationLabel(Long id) {
+    public Result<DisableOrganizationLabelDTO> disableOrganizationLabel(Long id) {
         // 判断标签是否存在
         OrganizationLabelDO organizationLabelDO = organizationLabelMapper.getOrganizationLabel(id);
         if (organizationLabelDO == null) {
@@ -144,10 +142,10 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
         int deletedNumber = organizationMapper.deleteLabelsByLabelName(organizationLabelDO.getLabelName());
 
         // 封装删除数量和禁用后的组织标签对象
-        Map<String, Object> map = new HashMap<>();
-        map.put("organizationLabel", getOrganizationLabel(id).getData());
-        map.put("deletedNumber", deletedNumber);
-        return Result.success(map);
+        OrganizationLabelDTO organizationLabelDTO = getOrganizationLabel(id).getData();
+        DisableOrganizationLabelDTO disableOrganizationLabelDTO =
+                new DisableOrganizationLabelDTO(organizationLabelDTO, deletedNumber);
+        return Result.success(disableOrganizationLabelDTO);
     }
 
     /**

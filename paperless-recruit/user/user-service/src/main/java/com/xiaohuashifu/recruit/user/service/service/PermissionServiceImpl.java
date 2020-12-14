@@ -4,6 +4,8 @@ import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.user.api.dto.DisablePermissionDTO;
+import com.xiaohuashifu.recruit.user.api.dto.EnablePermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
 import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
@@ -12,9 +14,7 @@ import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
 import com.xiaohuashifu.recruit.user.service.do0.PermissionDO;
 import org.apache.dubbo.config.annotation.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -249,11 +249,10 @@ public class PermissionServiceImpl implements PermissionService {
      *              OperationConflict: 该权限已经被禁用
      *
      * @param id 权限编号
-     * @return Result<Map<String, Object>> 禁用的数量和禁用后的权限对象，
-     *          分别对应的 key 为 totalDisableCount 和 newPermission
+     * @return DisablePermissionDTO 禁用的数量和禁用后的权限对象
      */
     @Override
-    public Result<Map<String, Object>> disablePermission(Long id) {
+    public Result<DisablePermissionDTO> disablePermission(Long id) {
         // 判断该权限存不存在
         int count = permissionMapper.count(id);
         if (count < 1) {
@@ -267,11 +266,10 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         // 递归的禁用权限
-        int totalDisableCount = recursiveDisablePermission(id);
-        Map<String, Object> map = new HashMap<>();
-        map.put("totalDisableCount", totalDisableCount);
-        map.put("newPermission", getPermission(id));
-        return Result.success(map);
+        int disabledCount = recursiveDisablePermission(id);
+        DisablePermissionDTO disablePermissionDTO =
+                new DisablePermissionDTO(getPermission(id).getData(), disabledCount);
+        return Result.success(disablePermissionDTO);
     }
 
     /**
@@ -282,10 +280,9 @@ public class PermissionServiceImpl implements PermissionService {
      *
      * @param id 权限编号
      * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象
-     *          分别对应的 key 为 totalEnableCount 和 newPermission
      */
     @Override
-    public Result<Map<String, Object>> enablePermission(Long id) {
+    public Result<EnablePermissionDTO> enablePermission(Long id) {
         // 判断该权限存不存在
         PermissionDO permissionDO = permissionMapper.getPermission(id);
         if (permissionDO == null) {
@@ -308,11 +305,10 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         // 递归的解禁权限
-        int totalEnableCount = recursiveEnablePermission(id);
-        Map<String, Object> map = new HashMap<>();
-        map.put("totalEnableCount", totalEnableCount);
-        map.put("newPermission", getPermission(id));
-        return Result.success(map);
+        int enabledCount = recursiveEnablePermission(id);
+        EnablePermissionDTO enablePermissionDTO =
+                new EnablePermissionDTO(getPermission(id).getData(), enabledCount);
+        return Result.success(enablePermissionDTO);
     }
 
     /**
@@ -325,12 +321,11 @@ public class PermissionServiceImpl implements PermissionService {
      *
      * @param id 权限编号
      * @param parentPermissionId 父权限编号
-     * @return Result<Map<String, Object>>
-     *          禁用的数量和设置父权限后的权限对象，分别对应的key为totalDisableCount和newPermission
+     * @return Result<DisablePermissionDTO>，禁用的数量和设置父权限后的权限对象
      *          这里的禁用是因为如果父权限为禁用，则该权限必须也递归的禁用
      */
     @Override
-    public Result<Map<String, Object>> setParentPermission(Long id, Long parentPermissionId) {
+    public Result<DisablePermissionDTO> setParentPermission(Long id, Long parentPermissionId) {
         // 判断该权限存不存在
         PermissionDO permissionDO = permissionMapper.getPermission(id);
         if (permissionDO == null) {
@@ -361,10 +356,9 @@ public class PermissionServiceImpl implements PermissionService {
                 || permissionMapper.countByIdAndAvailable(parentPermissionId, true) == 1
                 || !permissionDO.getAvailable();
         if (canReturn) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("totalDisableCount", 0);
-            map.put("newPermission", getPermission(id));
-            return Result.success(map);
+            DisablePermissionDTO disablePermissionDTO =
+                    new DisablePermissionDTO(getPermission(id).getData(), 0);
+            return Result.success(disablePermissionDTO);
         }
 
         // 如果父权限状态为禁用，而该权限的状态为可用，则递归更新该权限状态为禁用

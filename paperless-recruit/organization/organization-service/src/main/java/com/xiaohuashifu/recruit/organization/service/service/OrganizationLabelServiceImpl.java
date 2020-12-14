@@ -194,6 +194,7 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
                     "This organization label is not available.");
         }
 
+        // 合法
         return Result.success();
     }
 
@@ -208,7 +209,8 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     private Result<OrganizationLabelDTO> getOrganizationLabel(Long id) {
         OrganizationLabelDO organizationLabelDO = organizationLabelMapper.getOrganizationLabel(id);
         if (organizationLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND,
+                    "The organization does not exist.");
         }
         OrganizationLabelDTO organizationLabelDTO = new OrganizationLabelDTO
                 .Builder()

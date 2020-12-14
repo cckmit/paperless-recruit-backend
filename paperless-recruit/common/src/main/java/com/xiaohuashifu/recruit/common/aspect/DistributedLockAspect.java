@@ -7,6 +7,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -19,6 +20,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
 /**
  * 描述：分布式锁切面，配合 {@link DistributedLock} 可以便捷的使用分布式锁
@@ -53,8 +55,11 @@ public class DistributedLockAspect {
         // 获取键
         String key = getKey(joinPoint, distributedLock);
 
+        // 构造锁
+        RLock lock = redissonClient.getLock(key);
+
         // 尝试获取锁
-        if (!tryLock(key, distributedLock)) {
+        if (!tryLock(lock, distributedLock)) {
             String errorMessageExpression = distributedLock.errorMessage();
             String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_LOCK, errorMessage);
@@ -65,7 +70,7 @@ public class DistributedLockAspect {
             return joinPoint.proceed();
         } finally {
             // 释放锁
-            unlock(key);
+            unlock(lock);
         }
     }
 
@@ -114,27 +119,27 @@ public class DistributedLockAspect {
     /**
      * 获取锁
      *
-     * @param key 键
+     * @param lock 锁
      * @param distributedLock DistributedLock
      * @return 获取结果
      */
-    private boolean tryLock(String key, DistributedLock distributedLock) throws InterruptedException {
+    private boolean tryLock(Lock lock, DistributedLock distributedLock) throws InterruptedException {
         // 判断是否需要设置超时时间
         long expirationTime = distributedLock.expirationTime();
         if (expirationTime > 0) {
             TimeUnit timeUnit = distributedLock.timeUnit();
-            return redissonClient.getLock(key).tryLock(expirationTime, timeUnit);
+            return lock.tryLock(expirationTime, timeUnit);
         }
-        return redissonClient.getLock(key).tryLock();
+        return lock.tryLock();
     }
 
     /**
      * 释放锁
      *
-     * @param key 键
+     * @param lock 锁
      */
-    private void unlock(String key) {
-        redissonClient.getLock(key).unlock();
+    private void unlock(Lock lock) {
+        lock.unlock();
     }
 
     /**

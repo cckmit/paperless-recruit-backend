@@ -24,11 +24,10 @@ public interface DepartmentService {
     /**
      * 创建部门
      *
-     * @errorCode InvalidParameter: 邮箱或验证码或密码格式错误
-     *              OperationConflict: 邮箱已经存在
-     *              OperationConflict.Lock: 无法获取关于该邮箱的锁
-     *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
-     *              UnknownError: 注册主体失败
+     * @errorCode InvalidParameter: 组织编号或部门猛或部门名缩写格式错误
+     *              InvalidParameter.NotExist: 部门所属组织不存在
+     *              Forbidden: 部门所属组织不可用
+     *              OperationConflict: 该组织已经存在该部门名或部门名缩写
      *
      * @param organizationId 部门所属组织的编号
      * @param departmentName 部门名
@@ -79,7 +78,7 @@ public interface DepartmentService {
      * 删除部门的标签
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
+     *              InvalidParameter.NotExist: 组织不存在或部门不存在
      *              Forbidden: 组织不可用
      *              OperationConflict: 该标签不存在
      *
@@ -121,11 +120,11 @@ public interface DepartmentService {
     /**
      * 更新部门名
      *
-     * @errorCode InvalidParameter: 组织编号或组织名格式错误
-     *              InvalidParameter.NotExist: 组织不存在
+     * @errorCode InvalidParameter: 部门编号或部门名格式错误
+     *              InvalidParameter.NotExist: 组织不存在或部门不存在
      *              Forbidden: 组织不可用
-     *              OperationConflict: 新组织名已经存在
-     *              OperationConflict.Lock: 获取组织名的锁失败
+     *              OperationConflict: 该组织已经存在相同的部门名
+     *              OperationConflict.Lock: 获取组织的部门名锁失败
      *
      * @param id 部门编号
      * @param newDepartmentName 新部门名
@@ -144,9 +143,11 @@ public interface DepartmentService {
     /**
      * 更新部门名缩写
      *
-     * @errorCode InvalidParameter: 组织编号或组织名缩写格式错误
-     *              InvalidParameter.NotExist: 组织不存在
+     * @errorCode InvalidParameter: 部门编号或部门名缩写格式错误
+     *              InvalidParameter.NotExist: 组织不存在或部门不存在
      *              Forbidden: 组织不可用
+     *              OperationConflict: 该组织已经存在相同的部门名缩写
+     *              OperationConflict.Lock: 获取组织的部门名缩写锁失败
      *
      * @param id 部门编号
      * @param newAbbreviationDepartmentName 新部门名缩写
@@ -166,8 +167,8 @@ public interface DepartmentService {
     /**
      * 更新部门介绍
      *
-     * @errorCode InvalidParameter: 组织编号或组织介绍格式错误
-     *              InvalidParameter.NotExist: 组织不存在
+     * @errorCode InvalidParameter: 部门编号或部门介绍格式错误
+     *              InvalidParameter.NotExist: 组织不存在或部门不存在
      *              Forbidden: 组织不可用
      *
      * @param id 部门编号
@@ -185,11 +186,11 @@ public interface DepartmentService {
     /**
      * 更新部门 Logo
      *
-     * @errorCode InvalidParameter: 组织编号或组织 logo 格式错误
-     *              InvalidParameter.NotExist: 组织不存在
+     * @errorCode InvalidParameter: 更新参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在或部门不存在
      *              Forbidden: 组织不可用
      *              InternalError: 上传文件失败
-     *              OperationConflict.Lock: 获取组织 logo 的锁失败
+     *              OperationConflict.Lock: 获取部门 logo 的锁失败
      *
      * @param updateDepartmentLogoPO 更新 logo 的参数对象
      * @return 更新后的部门
@@ -200,8 +201,8 @@ public interface DepartmentService {
     /**
      * 增加成员数，+1
      *
-     * @errorCode InvalidParameter: 组织编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在
+     * @errorCode InvalidParameter: 部门编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在或部门不存在
      *              Forbidden: 组织不可用
      *
      * @param id 部门编号
@@ -212,6 +213,10 @@ public interface DepartmentService {
 
     /**
      * 减少成员数，-1
+     *
+     * @errorCode InvalidParameter: 部门编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在或部门不存在
+     *              Forbidden: 组织不可用
      *
      * @param id 部门编号
      * @return 减少成员数后的部门对象

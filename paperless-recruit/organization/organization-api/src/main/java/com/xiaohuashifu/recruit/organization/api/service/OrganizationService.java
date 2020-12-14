@@ -173,7 +173,7 @@ public interface OrganizationService {
     /**
      * 更新组织 Logo
      *
-     * @errorCode InvalidParameter: 组织编号或组织 logo 格式错误
+     * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
      *              Forbidden: 组织不可用
      *              InternalError: 上传文件失败
@@ -201,6 +201,10 @@ public interface OrganizationService {
 
     /**
      * 减少成员数，-1
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
      *
      * @param id 组织编号
      * @return 减少成员数后的组织对象
@@ -247,7 +251,7 @@ public interface OrganizationService {
      * @param organizationId 组织编号
      * @return 检查结果
      */
-    Result<OrganizationDTO> checkOrganizationStatus(
+    <T> Result<T> checkOrganizationStatus(
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long organizationId);
 

@@ -22,7 +22,7 @@ public interface DepartmentLabelService {
 
     /**
      * 保存部门标签，初始引用数0
-    *
+     *
      * @errorCode InvalidParameter: 标签名格式错误
      *              OperationConflict: 标签名已经存在
      *
@@ -64,9 +64,9 @@ public interface DepartmentLabelService {
     /**
      * 禁用一个部门标签，会把所有拥有这个标签的部门的这个标签给删了
      *
-     * @errorCode InvalidParameter: 组织标签编号格式错误
-     *              InvalidParameter.NotExist: 组织标签不存在
-     *              OperationConflict: 组织标签已经被禁用
+     * @errorCode InvalidParameter: 部门标签编号格式错误
+     *              InvalidParameter.NotExist: 部门标签不存在
+     *              OperationConflict: 部门标签已经被禁用
      *
      * @param id 部门标签编号
      * @return DisableDepartmentLabelDTO 禁用后的部门标签对象和被删除标签的部门数量；
@@ -77,6 +77,10 @@ public interface DepartmentLabelService {
 
     /**
      * 解禁标签
+     *
+     * @errorCode InvalidParameter: 部门标签编号格式错误
+     *              InvalidParameter.NotExist: 部门标签不存在
+     *              OperationConflict: 部门标签已经可用
      *
      * @param id 部门标签编号
      * @return 解禁后的部门标签对象

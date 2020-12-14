@@ -17,7 +17,7 @@ public interface OrganizationMapper {
 
     int insertOrganization(OrganizationDO organizationDO);
 
-    int insertLabel(OrganizationOrganizationLabelDO organizationLabelDO);
+    int insertLabel(OrganizationOrganizationLabelDO organizationOrganizationLabelDO);
 
     int deleteLabelsByLabelName(String labelName);
 

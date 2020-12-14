@@ -78,6 +78,10 @@ public interface OrganizationLabelService {
     /**
      * 解禁标签
      *
+     * @errorCode InvalidParameter: 组织标签编号格式错误
+     *              InvalidParameter.NotExist: 组织标签不存在
+     *              OperationConflict: 组织标签已经可用
+     *
      * @param id 社团标签编号
      * @return 解禁后的组织标签对象
      */

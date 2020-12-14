@@ -234,7 +234,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
 
         // 封装成 DTO
-        List<String> labels = organizationMapper.listOrganizationLabelNamesByOrganizationId(organizationDO.getId());
+        List<String> labels = organizationMapper.listOrganizationLabelNamesByOrganizationId(id);
         OrganizationDTO organizationDTO = new OrganizationDTO.Builder()
                 .id(organizationDO.getId())
                 .userId(organizationDO.getUserId())
@@ -369,7 +369,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 更新组织 Logo
      *
-     * @errorCode InvalidParameter: 组织编号或组织 logo 格式错误
+     * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
      *              Forbidden: 组织不可用
      *              InternalError: 上传文件失败
@@ -418,7 +418,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      *              Forbidden: 组织不可用
      *
      * @param id 组织编号
-     * @return 增加成员数结果，通过 Result.isSuccess() 判断
+     * @return 增加成员数后的组织对象
      */
     @Override
     public Result<OrganizationDTO> increaseMemberNumber(Long id) {
@@ -533,7 +533,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @return 检查结果
      */
     @Override
-    public Result<OrganizationDTO> checkOrganizationStatus(Long organizationId) {
+    public <T> Result<T> checkOrganizationStatus(Long organizationId) {
         // 判断组织存不存在
         OrganizationDO organizationDO = organizationMapper.getOrganization(organizationId);
         if (organizationDO == null) {

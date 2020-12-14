@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.organization.service.dao.DepartmentMapper">
+
+    <resultMap id="department" type="com.xiaohuashifu.recruit.organization.service.do0.DepartmentDO">
+        <id property="id" column="id"/>
+        <result property="organizationId" column="organization_id"/>
+        <result property="departmentName" column="department_name"/>
+        <result property="abbreviationDepartmentName" column="abbreviation_department_name"/>
+        <result property="introduction" column="introduction"/>
+        <result property="logoUrl" column="logo_url"/>
+        <result property="memberNumber" column="member_number"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="department">
+        id, organization_id, department_name, abbreviation_department_name, introduction, logo_url, member_number,
+            create_time, update_time
+    </sql>
+
+    <insert id="insertDepartment" keyProperty="id">
+        insert into department(organization_id, department_name, abbreviation_department_name)
+        values(#{organizationId}, #{departmentName}, #{abbreviationDepartmentName})
+    </insert>
+
+    <insert id="insertLabel">
+        insert into department_department_label(department_id, label_name)
+        values(#{departmentId}, #{labelName})
+    </insert>
+
+    <delete id="deleteLabelsByLabelName">
+        delete from department_department_label
+        where label_name = #{labelName}
+    </delete>
+
+    <delete id="deleteLabelByDepartmentIdAndLabelName">
+        delete from department_department_label
+        where departmentn_id = #{departmentId}
+        and label_name = #{labelName}
+    </delete>
+
+    <select id="getDepartment" resultMap="department">
+        select <include refid="department"/>
+        from department
+        where id = #{id}
+    </select>
+
+    <select id="getDepartmentLogoUrlByDepartmentId" resultType="string">
+        select logo_url
+        from department
+        where id = #{id}
+    </select>
+
+    <select id="getOrganizationIdByDepartmentId" resultType="long">
+        select organization_id
+        from department
+        where id = #{departmentId}
+    </select>
+
+    <select id="listDepartments" resultMap="department">
+        select <include refid="department"/>
+        from department
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="ids != null">
+                and id in (
+                <foreach collection="ids"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="organizationId != null">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="departmentName != null">
+                and department_name like "%"#{departmentName}"%"
+            </if>
+            <if test="abbreviationDepartmentName != null">
+                and abbreviation_department_name like "%"#{abbreviationDepartmentName}"%"
+            </if>
+        </where>
+        <if test="orderByDepartmentName || orderByDepartmentNameDesc
+         || orderByAbbreviationDepartmentName || orderByAbbreviationDepartmentNameDesc
+         || orderByCreateTime || orderByCreateTimeDesc || orderByUpdateTime || orderByUpdateTimeDesc">
+            order by
+            <trim suffixOverrides=",">
+                <if test="orderByDepartmentName">
+                    department_name,
+                </if>
+                <if test="orderByDepartmentNameDesc">
+                    department_name desc,
+                </if>
+                <if test="orderByAbbreviationDepartmentName">
+                    abbreviation_department_name,
+                </if>
+                <if test="orderByAbbreviationDepartmentNameDesc">
+                    abbreviation_department_name desc,
+                </if>
+                <if test="orderByCreateTime">
+                    create_time,
+                </if>
+                <if test="orderByCreateTimeDesc">
+                    create_time desc,
+                </if>
+                <if test="orderByUpdateTime">
+                    update_time,
+                </if>
+                <if test="orderByUpdateTimeDesc">
+                    update_time desc,
+                </if>
+            </trim>
+        </if>
+    </select>
+
+    <select id="listDepartmentLabelNamesByDepartmentId" resultType="string">
+        select label_name
+        from department_department_label
+        where department_id = #{departmentId}
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*)
+        from department
+        where id = #{id}
+    </select>
+
+    <select id="countByOrganizationIdAndDepartmentName" resultType="int">
+        select count(*)
+        from department
+        where organization_id = #{organizationId}
+        and department_name = #{departmentName}
+    </select>
+
+    <select id="countByOrganizationIdAndAbbreviationDepartmentName" resultType="int">
+        select count(*)
+        from department
+        where organization_id = #{organizationId}
+        and abbreviation_department_name = #{abbreviationDepartmentName}
+    </select>
+
+    <select id="countLabelByDepartmentId" resultType="int">
+        select count(*)
+        from department_department_label
+        where department_id = #{departmentId}
+    </select>
+
+    <select id="countLabelByDepartmentIdAndLabelName" resultType="int">
+        select count(*)
+        from department_department_label
+        where department_id = #{departmentId}
+        and label_name = #{labelName}
+    </select>
+
+    <update id="updateDepartmentName">
+        update department
+        set department_name = #{departmentName}
+        where id = #{id}
+    </update>
+
+    <update id="updateAbbreviationDepartmentName">
+        update department
+        set abbreviation_department_name = #{abbreviationDepartmentName}
+        where id = #{id}
+    </update>
+
+    <update id="updateIntroduction">
+        update department
+        set introduction = #{introduction}
+        where id = #{id}
+    </update>
+
+    <update id="updateLogoUrl">
+        update department
+        set logo_url = #{logoUrl}
+        where id = #{id}
+    </update>
+
+    <update id="increaseMemberNumber">
+        update department
+        set member_number = member_number + 1
+        where id = #{id}
+    </update>
+
+    <update id="decreaseMemberNumber">
+        update department
+        set member_number = member_number - 1
+        where id = #{id}
+    </update>
+
+</mapper>

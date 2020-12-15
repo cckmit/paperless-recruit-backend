@@ -36,7 +36,7 @@
 
     <delete id="deleteLabelByDepartmentIdAndLabelName">
         delete from department_department_label
-        where departmentn_id = #{departmentId}
+        where department_id = #{departmentId}
         and label_name = #{labelName}
     </delete>
 

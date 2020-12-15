@@ -30,5 +30,4 @@ public interface DepartmentLabelMapper {
 
     int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
 
-
 }

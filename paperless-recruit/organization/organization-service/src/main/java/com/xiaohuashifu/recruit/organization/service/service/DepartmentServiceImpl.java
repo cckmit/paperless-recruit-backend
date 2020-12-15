@@ -84,7 +84,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         this.redissonClient = redissonClient;
     }
 
-
     /**
      * 创建部门
      *

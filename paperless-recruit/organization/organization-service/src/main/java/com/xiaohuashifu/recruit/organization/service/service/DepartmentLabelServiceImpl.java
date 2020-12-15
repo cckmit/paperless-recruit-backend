@@ -33,7 +33,6 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
         this.departmentMapper = departmentMapper;
     }
 
-
     /**
      * 保存部门标签，初始引用数0
      *

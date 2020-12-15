@@ -19,6 +19,11 @@ public interface OrganizationPositionService {
     /**
      * 保存组织职位
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *              OperationConflict: 操作冲突，该组织已经存在该部门名
+     *
      * @param organizationId 组织编号
      * @param positionName 职位名
      * @param priority 优先级，0-9，0最大，9最小
@@ -43,6 +48,8 @@ public interface OrganizationPositionService {
     /**
      * 删除组织职位
      *
+     * 该组织必须没有该职位的成员
+     *
      * @param id 组织职位编号
      * @return 删除结果
      */
@@ -52,7 +59,10 @@ public interface OrganizationPositionService {
     /**
      * 获取组织职位
      *
-     * @param organizationPositionId 组织职位编号
+     * @errorCode InvalidParameter: 组织职位编号格式错误
+     *              InvalidParameter.NotFound: 找不到该编号的组织职位
+     *
+     * @param id 组织职位编号
      * @return OrganizationPositionDTO 组织职位对象
      */
     Result<OrganizationPositionDTO> getOrganizationPosition(
@@ -73,6 +83,11 @@ public interface OrganizationPositionService {
     /**
      * 更新组织职位名
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在或组织职位不存在
+     *              Forbidden: 组织不可用
+     *              OperationConflict: 职位名已经存在
+     *
      * @param id 组织职位编号
      * @param newPositionName 新职位名
      * @return 更新后的组织职位对象
@@ -88,6 +103,10 @@ public interface OrganizationPositionService {
 
     /**
      * 更新组织职位优先级
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在或组织职位不存在
+     *              Forbidden: 组织不可用
      *
      * @param id 组织职位编号
      * @param newPriority 新职位优先级

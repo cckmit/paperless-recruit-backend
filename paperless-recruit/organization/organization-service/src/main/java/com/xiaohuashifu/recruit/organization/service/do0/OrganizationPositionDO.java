@@ -1,34 +1,18 @@
-package com.xiaohuashifu.recruit.organization.api.dto;
-
-import java.io.Serializable;
+package com.xiaohuashifu.recruit.organization.service.do0;
 
 /**
- * 描述：组织职位传输对象
+ * 描述：组织职位数据对象
  *
  * @author xhsf
  * @create 2020/12/13 19:25
  */
-public class OrganizationPositionDTO implements Serializable {
-
-    /**
-     * 组织职位编号
-     */
+public class OrganizationPositionDO {
     private Long id;
-
-    /**
-     * 组织编号
-     */
     private Long organizationId;
-
-    /**
-     * 职位名
-     */
     private String positionName;
-
-    /**
-     * 职位优先级，0最高，9最低
-     */
     private Integer priority;
+    private String createTime;
+    private String updateTime;
 
     public Long getId() {
         return id;
@@ -62,13 +46,31 @@ public class OrganizationPositionDTO implements Serializable {
         this.priority = priority;
     }
 
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
-        return "OrganizationPositionDTO{" +
+        return "OrganizationPositionDO{" +
                 "id=" + id +
                 ", organizationId=" + organizationId +
                 ", positionName='" + positionName + '\'' +
                 ", priority=" + priority +
+                ", createTime='" + createTime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
                 '}';
     }
 
@@ -77,6 +79,8 @@ public class OrganizationPositionDTO implements Serializable {
         private Long organizationId;
         private String positionName;
         private Integer priority;
+        private String createTime;
+        private String updateTime;
 
         public Builder id(Long id) {
             this.id = id;
@@ -98,13 +102,25 @@ public class OrganizationPositionDTO implements Serializable {
             return this;
         }
 
-        public OrganizationPositionDTO build() {
-            OrganizationPositionDTO organizationPositionDTO = new OrganizationPositionDTO();
-            organizationPositionDTO.setId(id);
-            organizationPositionDTO.setOrganizationId(organizationId);
-            organizationPositionDTO.setPositionName(positionName);
-            organizationPositionDTO.setPriority(priority);
-            return organizationPositionDTO;
+        public Builder createTime(String createTime) {
+            this.createTime = createTime;
+            return this;
+        }
+
+        public Builder updateTime(String updateTime) {
+            this.updateTime = updateTime;
+            return this;
+        }
+
+        public OrganizationPositionDO build() {
+            OrganizationPositionDO organizationPositionDO = new OrganizationPositionDO();
+            organizationPositionDO.setId(id);
+            organizationPositionDO.setOrganizationId(organizationId);
+            organizationPositionDO.setPositionName(positionName);
+            organizationPositionDO.setPriority(priority);
+            organizationPositionDO.setCreateTime(createTime);
+            organizationPositionDO.setUpdateTime(updateTime);
+            return organizationPositionDO;
         }
     }
 }

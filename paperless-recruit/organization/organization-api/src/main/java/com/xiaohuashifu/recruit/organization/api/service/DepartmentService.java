@@ -52,6 +52,22 @@ public interface DepartmentService {
                     String abbreviationDepartmentName);
 
     /**
+     * 移除部门
+     *
+     * 该组织必须没有该部门的成员
+     * 会删除该部门的标签，
+     *
+     * @param id 部门编号
+     * @return 移除结果
+     */
+    // TODO: 2020/12/15 该操作较为复杂
+    default Result<Void> removeDepartment(
+            @NotNull(message = "The id can't be null.")
+            @Positive(message = "The id must be greater than 0.") Long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * 添加部门的标签
      *
      * @errorCode InvalidParameter: 参数格式错误

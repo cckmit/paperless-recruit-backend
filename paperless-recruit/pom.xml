@@ -16,6 +16,7 @@
         <module>gateway</module>
         <module>facade</module>
         <module>organization</module>
+        <module>notification</module>
     </modules>
 
     <!--  项目自定义常量  -->
@@ -168,6 +169,13 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>organization-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!--      notification-api接口      -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>notification-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

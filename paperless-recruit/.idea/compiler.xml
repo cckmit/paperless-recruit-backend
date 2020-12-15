@@ -6,12 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="notification-api" />
         <module name="facade-service" />
         <module name="external-api" />
         <module name="gateway-api" />
         <module name="user-service" />
         <module name="organization-api" />
         <module name="facade-api" />
+        <module name="notification-service" />
         <module name="external-service" />
         <module name="authentication-api" />
         <module name="authentication-service" />

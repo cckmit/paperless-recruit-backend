@@ -2,9 +2,9 @@ package com.xiaohuashifu.recruit.user.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 import com.xiaohuashifu.recruit.common.validator.annotation.Password;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
-import com.xiaohuashifu.recruit.common.validator.annotation.AuthCode;
 import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
@@ -292,7 +292,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 是否存在，Result.success=true表示用户存在
      */
-    Result<Void> userExists(@NotNull(message = "The id can't be null.")
+    <T> Result<T> userExists(@NotNull(message = "The id can't be null.")
                             @Positive(message = "The id must be greater than 0.") Long id);
 
     /**

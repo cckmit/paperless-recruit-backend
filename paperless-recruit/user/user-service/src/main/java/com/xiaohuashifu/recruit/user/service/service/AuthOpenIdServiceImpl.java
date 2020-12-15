@@ -125,7 +125,6 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
         return getAuthOpenId(authOpenIdDO.getId());
     }
 
-
     /**
      * 用于微信小程序用户检查 AuthOpenId
      * 会通过 code 获取 openId

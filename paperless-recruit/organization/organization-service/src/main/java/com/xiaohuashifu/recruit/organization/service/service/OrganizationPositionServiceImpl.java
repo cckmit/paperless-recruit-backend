@@ -70,8 +70,26 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
         return getOrganizationPosition(organizationPositionDO.getId());
     }
 
+    /**
+     * 删除组织职位
+     *
+     * 会把该组织职位的成员的职位都清除
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在或组织职位不存在
+     *              Forbidden: 组织不可用
+     *
+     * @param id 组织职位编号
+     * @return 删除结果
+     */
     @Override
     public Result<Void> removeOrganizationPosition(Long id) {
+        // 检查组织和组织职位状态
+        Result<Long> checkResult = checkOrganizationAndPositionStatus(id);
+        if (!checkResult.isSuccess()) {
+            return Result.fail(checkResult.getErrorCode(), checkResult.getErrorMessage());
+        }
+
         return null;
     }
 

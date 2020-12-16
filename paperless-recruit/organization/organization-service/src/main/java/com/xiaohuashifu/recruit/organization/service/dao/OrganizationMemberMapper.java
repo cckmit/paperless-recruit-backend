@@ -1,11 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.dao;
 
-import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
-import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
-import com.xiaohuashifu.recruit.organization.service.do0.OrganizationOrganizationLabelDO;
+import com.xiaohuashifu.recruit.organization.service.do0.OrganizationMemberDO;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * 描述：组织成员数据库映射
@@ -15,5 +11,10 @@ import java.util.List;
  */
 public interface OrganizationMemberMapper {
 
+    int insertOrganizationMember(OrganizationMemberDO organizationMemberDO);
+
+    OrganizationMemberDO getOrganizationMember(Long id);
+
+    int countByOrganizationIdAndUserId(@Param("organizationId") Long organizationId, @Param("userId") Long userId);
 
 }

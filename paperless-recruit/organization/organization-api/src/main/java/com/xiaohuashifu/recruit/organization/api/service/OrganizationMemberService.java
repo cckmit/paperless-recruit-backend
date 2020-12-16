@@ -25,8 +25,17 @@ public interface OrganizationMemberService {
     /**
      * 发送加入组织邀请
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden: 组织不可用
+     *              InvalidParameter.User.NotExist: 用户不存在
+     *              Forbidden.User: 用户不可用
+     *              OperationConflict: 该组织已经存在该成员
+     *              OperationConflict.Duplicate: 已经发送了邀请，且邀请状态是等待接受
+     *              OperationConflict.Lock: 获取组织成员的锁失败
+     *
      * @param organizationId 组织编号
-     * @param username 用户名
+     * @param username       用户名
      * @return 发送结果
      */
     Result<OrganizationMemberInvitationDTO> sendInvitation(
@@ -37,15 +46,20 @@ public interface OrganizationMemberService {
     /**
      * 接受加入组织邀请
      *
-     * @param organizationId 组织编号
-     * @param userId 用户编号
-     * @return 接受结果
+     * @errorCode InvalidParameter: 参数格式错误
+     *              OperationConflict.Lock: 获取组织成员邀请的锁失败
+     *              InvalidParameter.NotExist: 组织成员邀请不存在
+     *              InvalidParameter.Status: 组织成员邀请的状态不是等待接受，无法拒绝
+     *              Forbidden: 组织不可用
+     *              Forbidden.User: 用户不可用
+     *
+     * @param organizationMemberInvitationId 组织成员邀请编号
+     * @return 组织成员对象
      */
-    Result<Void> acceptInvitation(
-            @NotNull(message = "The organizationId can't be null.")
-            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
-            @NotNull(message = "The userId can't be null.")
-            @Positive(message = "The userId must be greater than 0.") Long userId);
+    Result<OrganizationMemberDTO> acceptInvitation(
+            @NotNull(message = "The organizationMemberInvitationId can't be null.")
+            @Positive(message = "The organizationMemberInvitationId must be greater than 0.")
+                    Long organizationMemberInvitationId);
 
     /**
      * 查询组织成员
@@ -103,8 +117,44 @@ public interface OrganizationMemberService {
      * @param memberStatus 成员状态
      * @return 更新部门后的组织成员对象
      */
-    Result<OrganizationMemberDTO> updateOrganizationPosition(
+    Result<OrganizationMemberDTO> updateMemberStatus(
             @NotNull(message = "The organizationMemberId can't be null.")
             @Positive(message = "The organizationMemberId must be greater than 0.") Long organizationMemberId,
             @NotNull(message = "The memberStatus can't be null.") OrganizationMemberStatusEnum memberStatus);
+
+    /**
+     * 拒绝加入组织邀请
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织成员邀请不存在
+     *              Forbidden: 组织不可用
+     *              Forbidden.User: 用户不可用
+     *              InvalidParameter.Status: 组织成员邀请的状态不是等待接受，无法拒绝
+     *              OperationConflict.Lock: 获取组织成员邀请的锁失败
+     *
+     * @param organizationMemberInvitationId 组织成员邀请编号
+     * @return 拒绝结果
+     */
+    Result<OrganizationMemberInvitationDTO> rejectInvitation(
+            @NotNull(message = "The organizationMemberInvitationId can't be null.")
+            @Positive(message = "The organizationMemberInvitationId must be greater than 0.")
+                    Long organizationMemberInvitationId);
+
+    /**
+     * 更新组织成员邀请的状态为 EXPIRED
+     *
+     * @see com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum -> EXPIRED
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织成员邀请不存在
+     *              InvalidParameter.Status: 组织成员邀请的状态不是等待接受，无法更新
+     *              OperationConflict.Lock: 获取组织成员邀请的锁失败
+     *
+     * @param organizationMemberInvitationId 组织成员邀请编号
+     * @return 更新结果
+     */
+    Result<OrganizationMemberInvitationDTO> updateInvitationStatusToExpired(
+            @NotNull(message = "The organizationMemberInvitationId can't be null.")
+            @Positive(message = "The organizationMemberInvitationId must be greater than 0.")
+                    Long organizationMemberInvitationId);
 }

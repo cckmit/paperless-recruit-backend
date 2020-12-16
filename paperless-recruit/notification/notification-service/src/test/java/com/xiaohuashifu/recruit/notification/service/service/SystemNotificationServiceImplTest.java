@@ -35,7 +35,7 @@ public class SystemNotificationServiceImplTest {
     public void sendSystemNotification() {
         System.out.println(systemNotificationService.sendSystemNotification(
                 new SendSystemNotificationPO.Builder()
-                        .userId(20L)
+                        .userId(1L)
                         .notificationTitle("校科联成员邀请")
                         .notificationType(SystemNotificationTypeEnum.ORGANIZATION_INVITATION)
                         .notificationContent("校科联邀请您成为他们的成员").build()));

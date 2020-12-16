@@ -155,6 +155,16 @@ public class UserServiceImplTest {
     }
 
     @Test
+    public void checkUserStatus() {
+        System.out.println(userService.checkUserStatus(20L));
+    }
+
+    @Test
+    public void testCheckUserStatus() {
+        System.out.println(userService.checkUserStatus("xiaohuashifu11"));
+    }
+
+    @Test
     public void sendSmsAuthCodeForSignUp() {
         System.out.println(userService.sendSmsAuthCodeForSignUp("15992321303"));
     }
@@ -183,4 +193,5 @@ public class UserServiceImplTest {
     public void sendEmailAuthCodeForSignUp() {
         System.out.println(userService.sendEmailAuthCodeForSignUp("827032783@qq.com", "注册账号"));
     }
+
 }

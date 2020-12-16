@@ -29,7 +29,7 @@ public interface OrganizationMemberService {
      * @param username 用户名
      * @return 发送结果
      */
-    Result<Void> sendInvitation(
+    Result<OrganizationMemberInvitationDTO> sendInvitation(
             @NotNull(message = "The organizationId can't be null.")
             @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
             @NotBlank(message = "The username can't be blank.") @Username String username);

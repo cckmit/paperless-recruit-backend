@@ -293,7 +293,33 @@ public interface UserService {
      * @return 是否存在，Result.success=true表示用户存在
      */
     <T> Result<T> userExists(@NotNull(message = "The id can't be null.")
-                            @Positive(message = "The id must be greater than 0.") Long id);
+                             @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 检查用户状态
+     *
+     * @errorCode InvalidParameter: 用户编号格式错误
+     *              InvalidParameter.User.NotExist: 用户不存在
+     *              Forbidden.User: 用户不可用
+     *
+     * @param id 用户编号
+     * @return 检查结果
+     */
+    <T> Result<T> checkUserStatus(@NotNull(message = "The id can't be null.")
+                                  @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 检查用户状态
+     *
+     * @errorCode InvalidParameter: 用户名格式错误
+     *              InvalidParameter.User.NotExist: 用户不存在
+     *              Forbidden.User: 用户不可用
+     *
+     * @param username 用户名
+     * @return 检查结果
+     */
+    <T> Result<T> checkUserStatus(@NotBlank(message = "The username can't be blank.")
+                                  @Username String username);
 
     /**
      * 发送注册账号时使用的短信验证码

@@ -706,6 +706,38 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 检查用户状态
+     *
+     * @errorCode InvalidParameter: 用户编号格式错误
+     *              InvalidParameter.User.NotExist: 用户不存在
+     *              Forbidden.User: 用户不可用
+     *
+     * @param id 用户编号
+     * @return 检查结果
+     */
+    @Override
+    public <T> Result<T> checkUserStatus(Long id) {
+        Boolean available = userMapper.getAvailable(id);
+        return checkUserStatus(available);
+    }
+
+    /**
+     * 检查用户状态
+     *
+     * @errorCode InvalidParameter: 用户名格式错误
+     *              InvalidParameter.User.NotExist: 用户不存在
+     *              Forbidden.User: 用户不可用
+     *
+     * @param username 用户名
+     * @return 检查结果
+     */
+    @Override
+    public <T> Result<T> checkUserStatus(String username) {
+        Boolean available = userMapper.getAvailableByUsername(username);
+        return checkUserStatus(available);
+    }
+
+    /**
      * 发送注册账号时使用的短信验证码
      *
      * @errorCode InvalidParameter: 手机号码格式错误
@@ -904,6 +936,29 @@ public class UserServiceImpl implements UserService {
         return SIGN_UP_USERNAME_PREFIX + "_"
                 + RandomStringUtils.randomNumeric(7) + "_"
                 + String.format("%010d", incrementId);
+    }
+
+    /**
+     * 检查用户状态
+     *
+     * @errorCode InvalidParameter.User.NotExist: 用户不存在
+     *              Forbidden.User: 用户不可用
+     *
+     * @param available 用户是否可用，若为空表示用户不存在
+     * @return 检查结果
+     */
+    private  <T> Result<T> checkUserStatus(Boolean available) {
+        if (available == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_USER_NOT_EXIST, "The user does not exist.");
+        }
+
+        // 判断用户是否可用
+        if (!available) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN_USER, "The user unavailable.");
+        }
+
+        // 用户状态正常
+        return Result.success();
     }
 
 }

@@ -101,6 +101,18 @@
         where email = #{email}
     </select>
 
+    <select id="getAvailable" resultType="boolean">
+        select is_available
+        from user_principal
+        where id = #{id}
+    </select>
+
+    <select id="getAvailableByUsername" resultType="boolean">
+        select is_available
+        from user_principal
+        where username = #{username}
+    </select>
+
     <select id="count" resultType="int">
         select count(*)
         from user_principal

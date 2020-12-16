@@ -141,6 +141,13 @@ public enum ErrorCodeEnum implements Serializable {
             "Forbidden", "Forbidden."),
 
     /**
+     * 用户被禁止
+     */
+    FORBIDDEN_USER(HttpStatus.FORBIDDEN,
+            "Forbidden.User", "Forbidden."),
+
+
+    /**
      * 用户在未认证的情况下操作该资源
      */
     FORBIDDEN_UNAUTHORIZED(HttpStatus.FORBIDDEN,

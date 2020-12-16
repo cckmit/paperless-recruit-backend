@@ -28,6 +28,10 @@ public interface UserMapper {
 
     UserDO getUserByEmail(String email);
 
+    Boolean getAvailable(Long id);
+
+    Boolean getAvailableByUsername(String username);
+
     int count(Long id);
 
     int countByUsername(String username);

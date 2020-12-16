@@ -67,7 +67,7 @@ public interface OrganizationPositionService {
      */
     Result<OrganizationPositionDTO> getOrganizationPosition(
             @NotNull(message = "The organizationPositionId can't be null.")
-            @Positive(message = "The organizationPositionId must be greater than 0.") Long organizationPositionId);
+            @Positive(message = "The organizationPositionId must be greater than 0.") Long id);
 
     /**
      * 查询组织职位

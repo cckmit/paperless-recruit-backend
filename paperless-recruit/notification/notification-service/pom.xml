@@ -69,22 +69,16 @@
 			<artifactId>user-api</artifactId>
 		</dependency>
 
-		<!--    authentication-api接口    -->
-		<dependency>
-			<groupId>com.xiaohuashifu.recruit</groupId>
-			<artifactId>authentication-api</artifactId>
-		</dependency>
-
 		<!--    external-api接口    -->
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>
 			<artifactId>external-api</artifactId>
 		</dependency>
 
-		<!--    organization-api接口    -->
+		<!--    notification-api接口    -->
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>
-			<artifactId>organization-api</artifactId>
+			<artifactId>notification-api</artifactId>
 		</dependency>
 
 		<!--   公共对象     -->

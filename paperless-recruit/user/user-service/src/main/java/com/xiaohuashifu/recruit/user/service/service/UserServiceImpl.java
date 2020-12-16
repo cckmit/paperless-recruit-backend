@@ -700,7 +700,7 @@ public class UserServiceImpl implements UserService {
     public <T> Result<T> userExists(Long id) {
         int count = userMapper.count(id);
         if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_USER_NOT_EXIST);
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_USER_NOT_EXIST, "The user does not exist.");
         }
         return Result.success();
     }

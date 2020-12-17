@@ -19,9 +19,9 @@ public interface OrganizationPositionService {
     /**
      * 保存组织职位
      *
+     * @permission 必须判断 organizationId 是不是组织本身
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict: 操作冲突，该组织已经存在该部门名
      *
      * @param organizationId 组织编号
@@ -47,8 +47,11 @@ public interface OrganizationPositionService {
 
     /**
      * 删除组织职位
+     * 会把该组织职位的成员的职位都清除
      *
-     * 该组织必须没有该职位的成员
+     * @permission 必须判断 id 是不是该组织的
+     *
+     * @errorCode InvalidParameter: 参数格式错误
      *
      * @param id 组织职位编号
      * @return 删除结果
@@ -58,6 +61,8 @@ public interface OrganizationPositionService {
 
     /**
      * 获取组织职位
+     *
+     * @permission 必须判断 id 是不是该组织的
      *
      * @errorCode InvalidParameter: 组织职位编号格式错误
      *              InvalidParameter.NotFound: 找不到该编号的组织职位
@@ -72,6 +77,8 @@ public interface OrganizationPositionService {
     /**
      * 查询组织职位
      *
+     * @permission 只能获取组织自己的职位列表，即设置 organizationId
+     *
      * @errorCode InvalidParameter: 查询参数格式错误
      *
      * @param query 查询参数
@@ -81,20 +88,33 @@ public interface OrganizationPositionService {
             @NotNull(message = "The query can't be null.") OrganizationPositionQuery query);
 
     /**
-     * 更新组织职位名
+     * 获取组织编号
      *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在或组织职位不存在
-     *              Forbidden: 组织不可用
-     *              OperationConflict: 职位名已经存在
+     * @private 内部方法
      *
      * @param id 组织职位编号
+     * @return 组织编号，若找不到返回 null
+     */
+    Long getOrganizationId(Long id);
+
+    /**
+     * 更新组织职位名
+     *
+     * @permission 必须判断 organizationPositionId 是不是该组织的
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              OperationConflict: 职位名已经存在
+     *
+     * @param organizationId 该职位所属组织编号
+     * @param organizationPositionId 组织职位编号
      * @param newPositionName 新职位名
      * @return 更新后的组织职位对象
      */
     Result<OrganizationPositionDTO> updatePositionName(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The organizationId can't be null.")
+            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
+            @NotNull(message = "The organizationPositionId can't be null.")
+            @Positive(message = "The organizationPositionId must be greater than 0.") Long organizationPositionId,
             @NotBlank(message = "The newPositionName can't be blank.")
             @Size(max = OrganizationPositionConstants.MAX_ORGANIZATION_POSITION_NAME_LENGTH,
                     message = "The length of newPositionName must not be greater than "
@@ -104,9 +124,9 @@ public interface OrganizationPositionService {
     /**
      * 更新组织职位优先级
      *
+     * @permission 必须判断 id 是不是该组织的
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在或组织职位不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 组织职位编号
      * @param newPriority 新职位优先级

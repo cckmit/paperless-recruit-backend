@@ -121,12 +121,6 @@
         where department_id = #{departmentId}
     </select>
 
-    <select id="count" resultType="int">
-        select count(*)
-        from department
-        where id = #{id}
-    </select>
-
     <select id="countByOrganizationIdAndDepartmentName" resultType="int">
         select count(*)
         from department

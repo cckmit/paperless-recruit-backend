@@ -24,9 +24,9 @@ public interface DepartmentService {
     /**
      * 创建部门
      *
+     * @permission 需要 organizationId 是该组织自身
+     *
      * @errorCode InvalidParameter: 组织编号或部门猛或部门名缩写格式错误
-     *              InvalidParameter.NotExist: 部门所属组织不存在
-     *              Forbidden: 部门所属组织不可用
      *              OperationConflict: 该组织已经存在该部门名或部门名缩写
      *
      * @param organizationId 部门所属组织的编号
@@ -70,13 +70,13 @@ public interface DepartmentService {
     /**
      * 添加部门的标签
      *
+     * @permission 需要该部门属于该组织
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
      *              InvalidParameter.NotAvailable: 标签不可用
-     *              Forbidden: 组织不可用
      *              OperationConflict: 该标签已经存在
-     *              OperationConflict.OverLimit: 组织标签数量超过规定数量
-     *              OperationConflict.Lock: 获取组织标签的锁失败
+     *              OperationConflict.OverLimit: 部门标签数量超过规定数量
+     *              OperationConflict.Lock: 获取部门标签的锁失败
      *
      * @param departmentId 部门编号
      * @param labelName 标签名
@@ -93,9 +93,9 @@ public interface DepartmentService {
     /**
      * 删除部门的标签
      *
+     * @permission 需要该部门属于该组织
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在或部门不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict: 该标签不存在
      *
      * @param departmentId 部门编号
@@ -134,21 +134,34 @@ public interface DepartmentService {
             @NotNull(message = "The query can't be null.") DepartmentQuery query);
 
     /**
+     * 获取该部门所属组织的编号
+     *
+     * @private 内部方法
+     *
+     * @param id 部门编号
+     * @return 组织编号，若该部门不存在则返回 null
+     */
+    Long getOrganizationId(Long id);
+
+    /**
      * 更新部门名
      *
+     * @permission 需要该部门属于该组织
+     *
      * @errorCode InvalidParameter: 部门编号或部门名格式错误
-     *              InvalidParameter.NotExist: 组织不存在或部门不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict: 该组织已经存在相同的部门名
      *              OperationConflict.Lock: 获取组织的部门名锁失败
      *
-     * @param id 部门编号
+     * @param organizationId 部门所属组织编号
+     * @param departmentId 部门编号
      * @param newDepartmentName 新部门名
      * @return 更新后的部门
      */
     Result<DepartmentDTO> updateDepartmentName(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The organizationId can't be null.")
+            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
+            @NotNull(message = "The departmentId can't be null.")
+            @Positive(message = "The departmentId must be greater than 0.") Long departmentId,
             @NotBlank(message = "The newDepartmentName can't be blank.")
             @Size(min = DepartmentConstants.MIN_DEPARTMENT_NAME_LENGTH,
                     max = DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH,
@@ -159,19 +172,22 @@ public interface DepartmentService {
     /**
      * 更新部门名缩写
      *
-     * @errorCode InvalidParameter: 部门编号或部门名缩写格式错误
-     *              InvalidParameter.NotExist: 组织不存在或部门不存在
-     *              Forbidden: 组织不可用
-     *              OperationConflict: 该组织已经存在相同的部门名缩写
-     *              OperationConflict.Lock: 获取组织的部门名缩写锁失败
+     * @permission 需要该部门属于该组织
      *
-     * @param id 部门编号
+     * @errorCode InvalidParameter: 部门编号或部门名缩写格式错误
+     *              OperationConflict.Lock: 获取组织的部门名缩写锁失败
+     *              OperationConflict: 该组织已经存在相同的部门名缩写
+     *
+     * @param organizationId 部门所属组织编号
+     * @param departmentId 部门编号
      * @param newAbbreviationDepartmentName 新部门名缩写
      * @return 更新后的部门
      */
     Result<DepartmentDTO> updateAbbreviationDepartmentName(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The organizationId can't be null.")
+            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
+            @NotNull(message = "The departmentId can't be null.")
+            @Positive(message = "The departmentId must be greater than 0.") Long departmentId,
             @NotBlank(message = "The newAbbreviationDepartmentName can't be blank.")
             @Size(min = DepartmentConstants.MIN_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
                     max = DepartmentConstants.MAX_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
@@ -183,9 +199,9 @@ public interface DepartmentService {
     /**
      * 更新部门介绍
      *
+     * @permission 需要该部门属于该组织
+     *
      * @errorCode InvalidParameter: 部门编号或部门介绍格式错误
-     *              InvalidParameter.NotExist: 组织不存在或部门不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 部门编号
      * @param newIntroduction 新部门介绍
@@ -202,9 +218,9 @@ public interface DepartmentService {
     /**
      * 更新部门 Logo
      *
+     * @permission 需要该部门属于该组织
+     *
      * @errorCode InvalidParameter: 更新参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在或部门不存在
-     *              Forbidden: 组织不可用
      *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取部门 logo 的锁失败
      *
@@ -217,9 +233,9 @@ public interface DepartmentService {
     /**
      * 增加成员数，+1
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 部门编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在或部门不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 部门编号
      * @return 增加成员数后的部门对象
@@ -230,9 +246,9 @@ public interface DepartmentService {
     /**
      * 减少成员数，-1
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 部门编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在或部门不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 部门编号
      * @return 减少成员数后的部门对象

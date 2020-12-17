@@ -84,11 +84,17 @@
         </if>
     </select>
 
+    <select id="getOrganizationId" resultType="long">
+        select organization_id
+        from organization_member
+        where id = #{id}
+    </select>
+
     <select id="countByOrganizationIdAndUserId" resultType="int">
         select count(*)
         from organization_member
         where organization_id = #{organizationId}
-          and user_id = #{userId}
+        and user_id = #{userId}
     </select>
 
     <update id="updateDepartment">

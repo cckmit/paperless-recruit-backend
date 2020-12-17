@@ -12,12 +12,13 @@ import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationPositionConstants;
-import com.xiaohuashifu.recruit.organization.api.dto.*;
+import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
+import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberDTO;
+import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberInvitationDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberInvitationQuery;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
-import com.xiaohuashifu.recruit.organization.api.service.OrganizationPositionService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMemberInvitationMapper;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMemberMapper;
@@ -59,9 +60,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
 
     @Reference
     private DepartmentService departmentService;
-
-    @Reference
-    private OrganizationPositionService organizationPositionService;
 
     /**
      * 组织成员邀请通知标题模式，{0}是组织名缩写
@@ -105,9 +103,9 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 发送加入组织邀请
      *
+     * @permission 必须检查 organizationId 是否是该组织的
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *              InvalidParameter.User.NotExist: 用户不存在
      *              Forbidden.User: 用户不可用
      *              OperationConflict: 该组织已经存在该成员
@@ -135,12 +133,11 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 接受加入组织邀请
      *
+     * @permission 必须检查 organizationMemberInvitationId 是不是属于该用户
+     *
      * @errorCode InvalidParameter: 参数格式错误
      *              OperationConflict.Lock: 获取组织成员邀请的锁失败
-     *              InvalidParameter.NotExist: 组织成员邀请不存在
      *              OperationConflict.Status: 组织成员邀请的状态不是等待接受，无法拒绝
-     *              Forbidden: 组织不可用
-     *              Forbidden.User: 用户不可用
      *
      * @param organizationMemberInvitationId 组织成员邀请编号
      * @return 组织成员对象
@@ -150,15 +147,16 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             errorMessage = "Failed to acquire organizationMemberInvitation lock.")
     @Override
     public Result<OrganizationMemberDTO> acceptInvitation(Long organizationMemberInvitationId) {
-        // 检查组织成员邀请、发送邀请的组织、被邀请的用户的状态是否适合更新
-        Result<OrganizationMemberInvitationDO> checkResult =
-                checkOrganizationAndUserAndOrganizationMemberInvitationStatus(organizationMemberInvitationId);
-        if (checkResult.isFailure()) {
-            return Result.fail(checkResult.getErrorCode(), checkResult.getErrorMessage());
+        // 判断组织成员邀请是否处于等待接受状态
+        OrganizationMemberInvitationDO organizationMemberInvitationDO =
+                organizationMemberInvitationMapper.getOrganizationMemberInvitation(organizationMemberInvitationId);
+        if (organizationMemberInvitationMapper.getInvitationStatus(organizationMemberInvitationId)
+                != OrganizationMemberInvitationStatusEnum.WAITING_FOR_ACCEPTANCE) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
+                    "The invitationStatus must be \"WAITING_FOR_ACCEPTANCE\".");
         }
 
         // 创建组织成员
-        OrganizationMemberInvitationDO organizationMemberInvitationDO = checkResult.getData();
         Long userId = organizationMemberInvitationDO.getUserId();
         Long organizationId = organizationMemberInvitationDO.getOrganizationId();
         OrganizationMemberDO organizationMemberDO = new OrganizationMemberDO.Builder()
@@ -178,6 +176,8 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
 
     /**
      * 查询组织成员
+     *
+     * @permission 只能查询自己组织的记录
      *
      * @errorCode InvalidParameter: 查询参数格式错误
      *
@@ -206,6 +206,8 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 查询组织成员邀请
      *
+     * @permission 只能查询自己组织的记录
+     *
      * @errorCode InvalidParameter: 查询参数格式错误
      *
      * @param query 查询参数
@@ -232,15 +234,40 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     }
 
     /**
+     * 获取组织编号
+     *
+     * @private 内部方法
+     *
+     * @param id 组织成员编号
+     * @return 组织编号，若组织成员不存在返回 null
+     */
+    @Override
+    public Long getOrganizationId(Long id) {
+        return organizationMemberMapper.getOrganizationId(id);
+    }
+
+    /**
+     * 获取用户编号
+     *
+     * @private 内部方法
+     *
+     * @param id 组织成员邀请编号
+     * @return 用户编号，若组织成员邀请不存在返回 null
+     */
+    @Override
+    public Long getUserId(Long id) {
+        return organizationMemberInvitationMapper.getUserId(id);
+    }
+
+    /**
      * 更新组织成员的部门
+     *
+     * @permission 需要检查 organizationMemberId，newDepartmentId 是否属于该组织
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              OperationConflict.Lock: 获取组织成员的锁失败
-     *              InvalidParameter.NotExist: 组织成员不存在 | 部门不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧部门相同
-     *              InvalidParameter.Mismatch: 组织成员和部门所属的组织不匹配
      *
      * @param organizationMemberId 组织成员编号
      * @param newDepartmentId 部门编号，若为0表示不绑定任何部门
@@ -250,8 +277,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             errorMessage = "Failed to acquire organizationMember lock.")
     @Override
     public Result<OrganizationMemberDTO> updateDepartment(Long organizationMemberId, Long newDepartmentId) {
-        // 检查组织状态是否可用，组织成员和部门是否存在，组织成员和部门所属组织是否相同
-        // 新旧部门是否相同，组织成员状态是否是在职
+        // 检查新旧部门是否相同，组织成员状态是否是在职
         Result<OrganizationMemberDO> checkResult = checkForUpdateDepartment(organizationMemberId, newDepartmentId);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
@@ -271,13 +297,12 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 更新组织成员的组织职位
      *
+     * @permission 需要检查 organizationMemberId 和 newOrganizationPositionId 是不是该组织的
+     *
      * @errorCode InvalidParameter: 参数格式错误
      *              OperationConflict.Lock: 获取组织成员的锁失败
-     *              InvalidParameter.NotExist: 组织成员不存在 | 组织职位不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧组织职位相同
-     *              InvalidParameter.Mismatch: 组织成员和组织职位所属的组织不匹配
      *
      * @param organizationMemberId   组织成员编号
      * @param newOrganizationPositionId 组织职位编号，若为0表示不绑定任何组织职位
@@ -288,8 +313,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     @Override
     public Result<OrganizationMemberDTO> updateOrganizationPosition(Long organizationMemberId,
                                                                     Long newOrganizationPositionId) {
-        // 检查组织状态是否可用，组织成员和组织职位是否存在，组织成员和组织职位所属组织是否相同，
-        // 新旧组织职位是否相同，组织成员状态是否是在职
+        // 检查组织成员状态是否是在职，新旧组织职位相同
         Result<OrganizationMemberDO> checkResult = checkForUpdateOrganizationPosition(
                 organizationMemberId, newOrganizationPositionId);
         if (checkResult.isFailure()) {
@@ -306,10 +330,10 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 更新组织成员的状态
      *
+     * @permission 需要检查 organizationMemberId 是否属于该组织
+     *
      * @errorCode InvalidParameter: 参数格式错误
      *              OperationConflict.Lock: 获取组织成员的锁失败
-     *              InvalidParameter.NotExist: 组织成员不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict.Unmodified: 新旧成员状态相同
      *
      * @param organizationMemberId 组织成员编号
@@ -321,14 +345,9 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     @Override
     public Result<OrganizationMemberDTO> updateMemberStatus(Long organizationMemberId,
                                                             OrganizationMemberStatusEnum newMemberStatus) {
-        // 检查组织成员是否存在，组织是否可用
-        Result<OrganizationMemberDO> checkResult = checkOrganizationAndOrganizationMemberStatus(organizationMemberId);
-        if (checkResult.isFailure()) {
-            return Result.fail(checkResult);
-        }
-
         // 如果新旧状态相同，则不进行更新操作
-        OrganizationMemberDO organizationMemberDO = checkResult.getData();
+        OrganizationMemberDO organizationMemberDO =
+                organizationMemberMapper.getOrganizationMember(organizationMemberId);
         if (organizationMemberDO.getMemberStatus() == newMemberStatus) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
                     "The newMemberStatus can't be the same as the oldMemberStatus.");
@@ -346,8 +365,10 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     }
 
     /**
-     * 清除组织成员的组织职位，该接口不对外开放
+     * 清除组织成员的组织职位
      * 即通过组织职位编号，是该组织职位编号的成员，设置组织职位为0
+     *
+     * @private 内部方法
      *
      * @errorCode InvalidParameter: 参数格式错误
      *
@@ -362,36 +383,12 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     }
 
     /**
-     * 更新组织和部门的成员数量
-     *
-     * @param oldMemberStatus 原成员状态
-     * @param newMemberStatus 新成员状态
-     * @param organizationId 组织编号
-     * @param departmentId 部门编号
-     */
-    private void updateOrganizationAndDepartmentMemberNumber(OrganizationMemberStatusEnum oldMemberStatus,
-                                                             OrganizationMemberStatusEnum newMemberStatus,
-                                                             Long organizationId, Long departmentId) {
-        // 如果原状态为在职，组织和部门的成员数量-1
-        if (oldMemberStatus == OrganizationMemberStatusEnum.ON_JOB) {
-            organizationService.decreaseMemberNumber(organizationId);
-            departmentService.decreaseMemberNumber(departmentId);
-        }
-        // 如果新状态为在职，组织和部门的成员数量+1
-        if (newMemberStatus == OrganizationMemberStatusEnum.ON_JOB) {
-            organizationService.increaseMemberNumber(organizationId);
-            departmentService.increaseMemberNumber(departmentId);
-        }
-    }
-
-    /**
      * 拒绝加入组织邀请
      *
+     * @permission 需要检查 organizationMemberInvitationId 是否属于该用户
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织成员邀请不存在
      *              OperationConflict.Status: 组织成员邀请的状态不是等待接受，无法拒绝
-     *              Forbidden: 组织不可用
-     *              Forbidden.User: 用户不可用
      *              OperationConflict.Lock: 获取组织成员邀请的锁失败
      *
      * @param organizationMemberInvitationId 组织成员邀请编号
@@ -402,11 +399,11 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             errorMessage = "Failed to acquire organizationMemberInvitation lock.")
     @Override
     public Result<OrganizationMemberInvitationDTO> rejectInvitation(Long organizationMemberInvitationId) {
-        // 检查组织成员邀请、发送邀请的组织、被邀请的用户的状态是否适合更新
-        Result<OrganizationMemberInvitationDO> checkResult =
-                checkOrganizationAndUserAndOrganizationMemberInvitationStatus(organizationMemberInvitationId);
-        if (checkResult.isFailure()) {
-            return Result.fail(checkResult.getErrorCode(), checkResult.getErrorMessage());
+        // 判断组织成员邀请是否处于等待接受状态
+        if (organizationMemberInvitationMapper.getInvitationStatus(organizationMemberInvitationId)
+                != OrganizationMemberInvitationStatusEnum.WAITING_FOR_ACCEPTANCE) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
+                    "The invitationStatus must be \"WAITING_FOR_ACCEPTANCE\".");
         }
 
         // 拒绝组织邀请
@@ -418,11 +415,11 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 更新组织成员邀请的状态为 EXPIRED
      *
+     * @private 内部方法
+     *
      * @see com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum -> EXPIRED
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织成员邀请不存在
-     *              OperationConflict.Status: 组织成员邀请的状态不是等待接受，无法更新
      *              OperationConflict.Lock: 获取组织成员邀请的锁失败
      *
      * @param organizationMemberInvitationId 组织成员邀请编号
@@ -434,14 +431,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     @Override
     public Result<OrganizationMemberInvitationDTO> updateInvitationStatusToExpired(
             Long organizationMemberInvitationId) {
-        // 检查组织成员邀请的状态是否适合更新
-        Result<OrganizationMemberInvitationDO> checkOrganizationMemberInvitationStatusResult =
-                checkOrganizationMemberInvitationStatusForUpdate(organizationMemberInvitationId);
-        if (checkOrganizationMemberInvitationStatusResult.isFailure()) {
-            return Result.fail(checkOrganizationMemberInvitationStatusResult.getErrorCode(),
-                    checkOrganizationMemberInvitationStatusResult.getErrorMessage());
-        }
-
         // 更新组织成员邀请的状态为 EXPIRED
         organizationMemberInvitationMapper.updateInvitationStatus(organizationMemberInvitationId,
                 OrganizationMemberInvitationStatusEnum.EXPIRED);
@@ -451,9 +440,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 发送加入组织邀请
      *
-     * @errorCode InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
-     *              Forbidden.User: 用户不可用
+     * @errorCode Forbidden.User: 用户不可用
      *              OperationConflict: 该组织已经存在该成员
      *              OperationConflict.Duplicate: 已经发送了邀请，且邀请状态是等待接受
      *              OperationConflict.Lock: 获取组织成员的锁失败
@@ -467,10 +454,10 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     @DistributedLock(value = ORGANIZATION_MEMBER_SEND_INVITATION_LOCK_KEY_PATTERN, parameters = {"#{#organizationId}", "#{#userId}"},
             errorMessage = "Failed to acquire organization member lock.")
     public Result<OrganizationMemberInvitationDTO> sendInvitation(Long organizationId, Long userId) {
-        // 检查组织和用户的状态
-        Result<OrganizationMemberInvitationDTO> checkResult = checkOrganizationAndUserStatus(organizationId, userId);
-        if (checkResult.isFailure()) {
-            return checkResult;
+        // 检查用户的状态
+        Result<OrganizationMemberInvitationDTO> checkUserStatusResult = userService.checkUserStatus(userId);
+        if (checkUserStatusResult.isFailure()) {
+            return checkUserStatusResult;
         }
 
         // 判断该组织是否已经有该成员
@@ -576,200 +563,27 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     }
 
     /**
-     * 检查组织和用户的状态
+     * 检查组织成员状态必须是在职，新旧部门是否相同
      *
-     * @errorCode InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
-     *              InvalidParameter.User.NotExist: 用户不存在
-     *              Forbidden.User: 用户不可用
-     *
-     * @param organizationId 组织编号
-     * @param userId 用户编号
-     * @return 检查结果
-     */
-    private <T> Result<T> checkOrganizationAndUserStatus(Long organizationId, Long userId) {
-        // 判断组织状态
-        Result<T> checkOrganizationStatusResult =
-                organizationService.checkOrganizationStatus(organizationId);
-        if (checkOrganizationStatusResult.isFailure()) {
-            return checkOrganizationStatusResult;
-        }
-
-        // 判断用户状态
-        Result<T> checkUserStatusResult = userService.checkUserStatus(userId);
-        if (checkUserStatusResult.isFailure()) {
-            return checkUserStatusResult;
-        }
-
-        return Result.success();
-    }
-
-    /**
-     * 检查组织成员邀请的状态，用于更新，也是就组织成员邀请要存在且状态为等待接受
-     *
-     * @errorCode InvalidParameter.NotExist: 组织成员邀请不存在
-     *              OperationConflict.Status: 组织成员邀请的状态不是等待接受，无法更新
-     *
-     * @param organizationMemberInvitationId 组织成员邀请的编号
-     * @return 检查结果
-     */
-    private Result<OrganizationMemberInvitationDO> checkOrganizationMemberInvitationStatusForUpdate(
-            Long organizationMemberInvitationId) {
-        // 判断组织成员邀请存不存在
-        OrganizationMemberInvitationDO organizationMemberInvitationDO =
-                organizationMemberInvitationMapper.getOrganizationMemberInvitation(organizationMemberInvitationId);
-        if (organizationMemberInvitationDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organizationMemberInvitation does not exist.");
-        }
-
-        // 判断组织成员邀请是否处于等待接受状态
-        if (organizationMemberInvitationDO.getInvitationStatus()
-                != OrganizationMemberInvitationStatusEnum.WAITING_FOR_ACCEPTANCE) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
-                    "The invitationStatus must be \"WAITING_FOR_ACCEPTANCE\".");
-        }
-
-        // 通过检查
-        return Result.success(organizationMemberInvitationDO);
-    }
-
-    /**
-     * 检查组织成员邀请、发送邀请的组织、被邀请的用户的状态。
-     * 其中组织成员邀请的状态必须是 WAITING_FOR_ACCEPTANCE （等待接受）
-     * 用户和组织的状态必须是 available
-     *
-     * @errorCode InvalidParameter.NotExist: 组织成员邀请不存在
-     *              OperationConflict.Status: 组织成员邀请的状态不是等待接受，无法拒绝
-     *              Forbidden: 组织不可用
-     *              Forbidden.User: 用户不可用
-     *
-     * @param organizationMemberInvitationId 组织成员邀请编号
-     * @return 检查结果
-     */
-    private Result<OrganizationMemberInvitationDO> checkOrganizationAndUserAndOrganizationMemberInvitationStatus(
-            Long organizationMemberInvitationId) {
-        // 检查组织成员邀请的状态是否适合更新
-        Result<OrganizationMemberInvitationDO> checkOrganizationMemberInvitationStatusResult =
-                checkOrganizationMemberInvitationStatusForUpdate(organizationMemberInvitationId);
-        if (checkOrganizationMemberInvitationStatusResult.isFailure()) {
-            return Result.fail(checkOrganizationMemberInvitationStatusResult.getErrorCode(),
-                    checkOrganizationMemberInvitationStatusResult.getErrorMessage());
-        }
-
-        // 检查组织和用户的状态
-        OrganizationMemberInvitationDO organizationMemberInvitationDO =
-                checkOrganizationMemberInvitationStatusResult.getData();
-        Result<OrganizationMemberInvitationDO> checkOrganizationAndUserStatusResult =
-                checkOrganizationAndUserStatus(organizationMemberInvitationDO.getOrganizationId(),
-                        organizationMemberInvitationDO.getUserId());
-        if (checkOrganizationAndUserStatusResult.isFailure()) {
-            return checkOrganizationAndUserStatusResult;
-        }
-
-        // 通过检查
-        return Result.success(organizationMemberInvitationDO);
-    }
-
-    /**
-     * 检查组织是否可用，组织成员是否存在
-     *
-     * @errorCode InvalidParameter.NotExist: 组织成员不存在
-     *              Forbidden: 组织不可用
-     *
-     * @param organizationMemberId 组织成员编号
-     * @return 检查结果，若通过检查，附带 OrganizationMemberDO
-     */
-    private Result<OrganizationMemberDO> checkOrganizationAndOrganizationMemberStatus(Long organizationMemberId) {
-        // 判断组织成员存不存在
-        OrganizationMemberDO organizationMemberDO =
-                organizationMemberMapper.getOrganizationMember(organizationMemberId);
-        if (organizationMemberDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organizationMember does not exist.");
-        }
-
-        // 判断组织是否有效
-        Result<OrganizationMemberDO> checkOrganizationStatusResult =
-                organizationService.checkOrganizationStatus(organizationMemberDO.getOrganizationId());
-        if (checkOrganizationStatusResult.isFailure()) {
-            return checkOrganizationStatusResult;
-        }
-
-        // 通过检查
-        return Result.success(organizationMemberDO);
-    }
-
-    /**
-     * 检查组织是否可用，组织成员是否存在，组织成员状态是不是在职
-     *
-     * @errorCode InvalidParameter.NotExist: 组织成员不存在
-     *              Forbidden: 组织不可用
-     *              OperationConflict.Status: 组织成员状态必须是在职
-     *
-     * @param organizationMemberId 组织成员编号
-     * @return 检查结果，若通过检查，附带 OrganizationMemberDO
-     */
-    private Result<OrganizationMemberDO> checkForOrganizationMemberUpdate(Long organizationMemberId) {
-        // 检查组织成员是否存在，组织是否可用
-        Result<OrganizationMemberDO> checkResult = checkOrganizationAndOrganizationMemberStatus(organizationMemberId);
-        if (checkResult.isFailure()) {
-            return checkResult;
-        }
-
-        // 判断组织成员状态是否为在职，必须在职才可以改变部门
-        OrganizationMemberDO organizationMemberDO = checkResult.getData();
-        if (organizationMemberDO.getMemberStatus() != OrganizationMemberStatusEnum.ON_JOB) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
-                    "The memberStatus must be \"ON_JOB\".");
-        }
-
-        // 通过检查
-        return Result.success(organizationMemberDO);
-    }
-
-    /**
-     * 检查组织是否可用，组织成员和部门是否存在，组织成员和部门所属组织是否匹配，新旧部门是否相同，组织成员状态是否是在职
-     *
-     * @errorCode InvalidParameter.NotExist: 组织成员不存在 | 部门不存在
-     *              OperationConflict.Status: 组织成员状态必须是在职
-     *              Forbidden: 组织不可用
+     * @errorCode OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧部门相同
-     *              InvalidParameter.Mismatch: 组织成员和部门所属的组织不匹配
      *
      * @param organizationMemberId 组织成员编号
      * @param newDepartmentId 新部门编号
      * @return 检查结果，若通过检查，附带 OrganizationMemberDO
      */
     private Result<OrganizationMemberDO> checkForUpdateDepartment(Long organizationMemberId, Long newDepartmentId) {
-        // 检查组织是否可用，组织成员是否存在，组织成员状态是不是在职
-        Result<OrganizationMemberDO> checkResult = checkForOrganizationMemberUpdate(organizationMemberId);
-        if (checkResult.isFailure()) {
-            return checkResult;
+        // 判断组织成员状态是否为在职，必须在职才可以改变部门
+        OrganizationMemberDO organizationMemberDO = organizationMemberMapper.getOrganizationMember(organizationMemberId);
+        if (organizationMemberDO.getMemberStatus() != OrganizationMemberStatusEnum.ON_JOB) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
+                    "The memberStatus must be \"ON_JOB\".");
         }
 
         // 判断新旧部门是否相同
-        OrganizationMemberDO organizationMemberDO = checkResult.getData();
         if (Objects.equals(organizationMemberDO.getDepartmentId(), newDepartmentId)) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
                     "The newDepartment can't be the same as the oldDepartment.");
-        }
-
-        // 当部门编号不为0时
-        if (!Objects.equals(newDepartmentId, DepartmentConstants.DEPARTMENT_ID_WHEN_NO_DEPARTMENT)) {
-            // 判断部门存不存在
-            Result<DepartmentDTO> getDepartmentResult = departmentService.getDepartment(newDepartmentId);
-            if (getDepartmentResult.isFailure()) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                        "The department does not exist.");
-            }
-
-            // 判断组织成员和部门是不是同一个组织的
-            DepartmentDTO departmentDTO = getDepartmentResult.getData();
-            if (!Objects.equals(organizationMemberDO.getOrganizationId(), departmentDTO.getOrganizationId())) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
-                        "Organization member and department must have the same organization.");
-            }
         }
 
         // 通过检查
@@ -777,14 +591,10 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     }
 
     /**
-     * 检查组织是否可用，组织成员和组织职位是否存在，组织成员和组织职位所属组织是否匹配
-     * 新旧组织职位是否相同，组织成员状态是否是在职
+     * 检查组织成员状态是否是在职，新旧组织职位相同
      *
-     * @errorCode InvalidParameter.NotExist: 组织成员不存在 | 组织职位不存在
-     *              OperationConflict.Status: 组织成员状态必须是在职
-     *              Forbidden: 组织不可用
+     * @errorCode OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧组织职位相同
-     *              InvalidParameter.Mismatch: 组织成员和组织职位所属的组织不匹配
      *
      * @param organizationMemberId 组织成员编号
      * @param newOrganizationPositionId 新组织职位编号
@@ -792,36 +602,17 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
      */
     private Result<OrganizationMemberDO> checkForUpdateOrganizationPosition(Long organizationMemberId,
                                                                             Long newOrganizationPositionId) {
-        // 检查组织是否可用，组织成员是否存在，组织成员状态是不是在职
-        Result<OrganizationMemberDO> checkResult = checkForOrganizationMemberUpdate(organizationMemberId);
-        if (checkResult.isFailure()) {
-            return checkResult;
+        // 判断组织成员状态是否为在职，必须在职才可以改变部门
+        OrganizationMemberDO organizationMemberDO = organizationMemberMapper.getOrganizationMember(organizationMemberId);
+        if (organizationMemberDO.getMemberStatus() != OrganizationMemberStatusEnum.ON_JOB) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
+                    "The memberStatus must be \"ON_JOB\".");
         }
 
         // 判断新旧职位是否相同
-        OrganizationMemberDO organizationMemberDO = checkResult.getData();
         if (Objects.equals(organizationMemberDO.getOrganizationPositionId(), newOrganizationPositionId)) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
                     "The newOrganizationPosition can't be the same as the oldOrganizationPosition.");
-        }
-
-        // 当组织职位编号不为0时
-        if (!Objects.equals(newOrganizationPositionId,
-                OrganizationPositionConstants.ORGANIZATION_POSITION_ID_WHEN_NO_POSITION)) {
-            // 判断组织职位存不存在
-            Result<OrganizationPositionDTO> getOrganizationPositionResult =
-                    organizationPositionService.getOrganizationPosition(newOrganizationPositionId);
-            if (getOrganizationPositionResult.isFailure()) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                        "The organizationPosition does not exist.");
-            }
-
-            // 判断组织成员和组织职位是不是同一个组织的
-            OrganizationPositionDTO organizationPositionDTO = getOrganizationPositionResult.getData();
-            if (!Objects.equals(organizationMemberDO.getOrganizationId(), organizationPositionDTO.getOrganizationId())) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
-                        "Organization member and organization position must have the same organization.");
-            }
         }
 
         // 通过检查
@@ -841,6 +632,29 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         }
         // 增加当前部门的人数
         departmentService.increaseMemberNumber(newDepartmentId);
+    }
+
+    /**
+     * 更新组织和部门的成员数量
+     *
+     * @param oldMemberStatus 原成员状态
+     * @param newMemberStatus 新成员状态
+     * @param organizationId 组织编号
+     * @param departmentId 部门编号
+     */
+    private void updateOrganizationAndDepartmentMemberNumber(OrganizationMemberStatusEnum oldMemberStatus,
+                                                             OrganizationMemberStatusEnum newMemberStatus,
+                                                             Long organizationId, Long departmentId) {
+        // 如果原状态为在职，组织和部门的成员数量-1
+        if (oldMemberStatus == OrganizationMemberStatusEnum.ON_JOB) {
+            organizationService.decreaseMemberNumber(organizationId);
+            departmentService.decreaseMemberNumber(departmentId);
+        }
+        // 如果新状态为在职，组织和部门的成员数量+1
+        if (newMemberStatus == OrganizationMemberStatusEnum.ON_JOB) {
+            organizationService.increaseMemberNumber(organizationId);
+            departmentService.increaseMemberNumber(departmentId);
+        }
     }
 
 }

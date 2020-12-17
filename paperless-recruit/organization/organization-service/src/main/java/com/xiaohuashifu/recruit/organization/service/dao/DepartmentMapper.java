@@ -34,8 +34,6 @@ public interface DepartmentMapper {
 
     List<String> listDepartmentLabelNamesByDepartmentId(Long departmentId);
 
-    int count(Long id);
-
     int countByOrganizationIdAndDepartmentName(@Param("organizationId") Long organizationId,
                                                @Param("departmentName") String departmentName);
 

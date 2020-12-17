@@ -40,9 +40,9 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
     /**
      * 保存组织职位
      *
+     * @permission 必须判断 organizationId 是不是组织本身
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict: 操作冲突，该组织已经存在该部门名
      *
      * @param organizationId 组织编号
@@ -53,13 +53,7 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
     @Override
     public Result<OrganizationPositionDTO> saveOrganizationPosition(Long organizationId, String positionName,
                                                                     Integer priority) {
-        // 检查组织状态
-        Result<OrganizationPositionDTO> checkResult = organizationService.checkOrganizationStatus(organizationId);
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
-        // 判断该组织是否已经存在该部门名
+        // 判断该组织是否已经存在该职位名
         int count = organizationPositionMapper.countByOrganizationIdPositionName(organizationId, positionName);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The positionName already exist.");
@@ -76,24 +70,17 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
 
     /**
      * 删除组织职位
-     *
      * 会把该组织职位的成员的职位都清除
      *
+     * @permission 必须判断 id 是不是该组织的
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在或组织职位不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 组织职位编号
      * @return 删除结果
      */
     @Override
     public Result<Integer> removeOrganizationPosition(Long id) {
-        // 检查组织和组织职位状态
-        Result<Long> checkResult = checkOrganizationAndPositionStatus(id);
-        if (checkResult.isFailure()) {
-            return Result.fail(checkResult);
-        }
-
         // 把该职位的组织成员的职位都清除（设置为0）
         Result<Integer> clearResult = organizationMemberService.clearOrganizationPositions(id);
         Integer clearCount = clearResult.getData();
@@ -105,6 +92,8 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
 
     /**
      * 获取组织职位
+     *
+     * @permission 必须判断 id 是不是该组织的
      *
      * @errorCode InvalidParameter: 组织职位编号格式错误
      *              InvalidParameter.NotFound: 找不到该编号的组织职位
@@ -135,6 +124,8 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
     /**
      * 查询组织职位
      *
+     * @permission 只能获取组织自己的职位列表，即设置 organizationId
+     *
      * @errorCode InvalidParameter: 查询参数格式错误
      *
      * @param query 查询参数
@@ -159,43 +150,49 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
     }
 
     /**
+     * 获取组织编号
+     *
+     * @private 内部方法
+     *
+     * @param id 组织职位编号
+     * @return 组织编号，若找不到返回 null
+     */
+    @Override
+    public Long getOrganizationId(Long id) {
+        return organizationPositionMapper.getOrganizationId(id);
+    }
+
+    /**
      * 更新组织职位名
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在或组织职位不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict: 职位名已经存在
      *
-     * @param id 组织职位编号
+     * @param organizationId 该职位所属组织编号
+     * @param organizationPositionId 组织职位编号
      * @param newPositionName 新职位名
      * @return 更新后的组织职位对象
      */
     @Override
-    public Result<OrganizationPositionDTO> updatePositionName(Long id, String newPositionName) {
-        // 检查组织和组织职位状态
-        Result<Long> checkResult = checkOrganizationAndPositionStatus(id);
-        if (!checkResult.isSuccess()) {
-            return Result.fail(checkResult.getErrorCode(), checkResult.getErrorMessage());
-        }
-
+    public Result<OrganizationPositionDTO> updatePositionName(Long organizationId, Long organizationPositionId,
+                                                              String newPositionName) {
         // 判断组织是否存在相同的职位名
-        Long organizationId = checkResult.getData();
         int count = organizationPositionMapper.countByOrganizationIdPositionName(organizationId, newPositionName);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The newPositionName already exist.");
         }
 
         // 更新组织职位名
-        organizationPositionMapper.updatePositionName(id, newPositionName);
-        return getOrganizationPosition(id);
+        organizationPositionMapper.updatePositionName(organizationPositionId, newPositionName);
+        return getOrganizationPosition(organizationPositionId);
     }
 
     /**
      * 更新组织职位优先级
      *
+     * @permission 必须判断 id 是不是该组织的
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在或组织职位不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 组织职位编号
      * @param newPriority 新职位优先级
@@ -203,43 +200,9 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
      */
     @Override
     public Result<OrganizationPositionDTO> updatePriority(Long id, Integer newPriority) {
-        // 检查组织和组织职位状态
-        Result<Long> checkResult = checkOrganizationAndPositionStatus(id);
-        if (!checkResult.isSuccess()) {
-            return Result.fail(checkResult.getErrorCode(), checkResult.getErrorMessage());
-        }
-
         // 更新组织组织优先级
         organizationPositionMapper.updatePriority(id, newPriority);
         return getOrganizationPosition(id);
-    }
-
-    /**
-     * 检查组织和组织职位的状态
-     *
-     * @errorCode InvalidParameter.NotExist: 组织不存在或组织职位不存在
-     *              Forbidden: 组织不可用
-     *
-     * @param organizationPositionId 组织职位编号
-     * @return 若检查成功则返回组织编号
-     */
-    private Result<Long> checkOrganizationAndPositionStatus(Long organizationPositionId) {
-        // 判断组织职位存不存在
-        Long organizationId = organizationPositionMapper.getOrganizationId(organizationPositionId);
-        if (organizationId == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organizationPosition does not exist.");
-        }
-
-        // 检查组织状态
-        Result<Long> checkOrganizationStatusResult =
-                organizationService.checkOrganizationStatus(organizationId);
-        if (checkOrganizationStatusResult.isFailure()) {
-            return checkOrganizationStatusResult;
-        }
-
-        // 通过检查
-        return Result.success(organizationId);
     }
 
 }

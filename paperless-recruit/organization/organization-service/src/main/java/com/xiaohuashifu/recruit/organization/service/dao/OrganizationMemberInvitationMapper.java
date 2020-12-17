@@ -21,6 +21,10 @@ public interface OrganizationMemberInvitationMapper {
 
     List<OrganizationMemberInvitationDO> listOrganizationMemberInvitations(OrganizationMemberInvitationQuery query);
 
+    Long getUserId(Long id);
+
+    OrganizationMemberInvitationStatusEnum getInvitationStatus(Long id);
+
     int countByOrganizationIdAndUserIdAndInvitationStatus(
             @Param("organizationId") Long organizationId, @Param("userId") Long userId,
             @Param("invitationStatus") OrganizationMemberInvitationStatusEnum invitationStatus);

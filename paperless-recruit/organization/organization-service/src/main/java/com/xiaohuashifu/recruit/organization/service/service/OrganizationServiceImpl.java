@@ -120,10 +120,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 添加组织的标签
      *
+     * @permission 必须是该组织本身，即 organizationId 是组织本身
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
      *              InvalidParameter.NotAvailable: 标签不可用
-     *              Forbidden: 组织不可用
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
      *              OperationConflict.Lock: 获取组织标签的锁失败
@@ -136,12 +136,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     @DistributedLock(value = ORGANIZATION_LABELS_LOCK_KEY_PATTERN, parameters = "#{#organizationId}",
             errorMessage = "Failed to acquire organization labels lock.")
     public Result<OrganizationDTO> addLabel(Long organizationId, String labelName) {
-        // 检查组织状态
-        Result<OrganizationDTO> checkResult = checkOrganizationStatus(organizationId);
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
         // 判断该组织是否已经存在该标签
         int count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
         if (count > 0) {
@@ -181,9 +175,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 删除组织的标签
      *
+     * @permission 必须是该组织本身，即 organizationId 是组织本身
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict: 该标签不存在
      *
      * @param organizationId 组织编号
@@ -192,12 +186,6 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Result<OrganizationDTO> removeLabel(Long organizationId, String labelName) {
-        // 检查组织状态
-        Result<OrganizationDTO> checkResult = checkOrganizationStatus(organizationId);
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
         // 判断该组织是否拥有该标签
         int count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
         if (count < 1) {
@@ -277,9 +265,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 更新组织名
      *
+     * @permission 必须是该组织本身，即 id 是组织本身
+     *
      * @errorCode InvalidParameter: 组织编号或组织名格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict: 新组织名已经存在
      *              OperationConflict.Lock: 获取组织名的锁失败
      *
@@ -291,12 +279,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     @DistributedLock(value = ORGANIZATION_NAME_LOCK_KEY_PATTERN, parameters = "#{#newOrganizationName}",
             errorMessage = "Failed to acquire organizationName lock.")
     public Result<OrganizationDTO> updateOrganizationName(Long id, String newOrganizationName) {
-        // 检查组织状态
-        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
         // 判断组织名存不存在
         int count = organizationMapper.countByOrganizationName(newOrganizationName);
         if (count > 0) {
@@ -313,9 +295,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 更新组织名缩写
      *
+     * @permission 必须是该组织本身，即 id 是组织本身
+     *
      * @errorCode InvalidParameter: 组织编号或组织名缩写格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 组织编号
      * @param newAbbreviationOrganizationName 新组织名缩写
@@ -323,12 +305,6 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Result<OrganizationDTO> updateAbbreviationOrganizationName(Long id, String newAbbreviationOrganizationName) {
-        // 检查组织状态
-        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
         // 更新组织名缩写
         organizationMapper.updateAbbreviationOrganizationName(id, newAbbreviationOrganizationName);
 
@@ -339,9 +315,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 更新组织介绍
      *
+     * @permission 必须是该组织本身，即 id 是组织本身
+     *
      * @errorCode InvalidParameter: 组织编号或组织介绍格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 组织编号
      * @param newIntroduction 新组织介绍
@@ -349,12 +325,6 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Result<OrganizationDTO> updateIntroduction(Long id, String newIntroduction) {
-        // 检查组织状态
-        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
         // 更新组织介绍
         organizationMapper.updateIntroduction(id, newIntroduction);
 
@@ -365,9 +335,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 更新组织 Logo
      *
+     * @permission 必须是该组织本身，即 UpdateOrganizationLogoPO.id 是组织本身
+     *
      * @errorCode InvalidParameter: 更新参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取组织 logo 的锁失败
      *
@@ -378,12 +348,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     @DistributedLock(value = ORGANIZATION_LOGO_LOCK_KEY_PATTERN, parameters = "#{#updateOrganizationLogoPO.id}",
             errorMessage = "Failed to acquire organization logo lock.")
     public Result<OrganizationDTO> updateLogo(UpdateOrganizationLogoPO updateOrganizationLogoPO) {
-        // 检查组织状态
-        Result<OrganizationDTO> checkResult = checkOrganizationStatus(updateOrganizationLogoPO.getId());
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
         // 获取组织 logoUrl
         String logoUrl = organizationMapper.getOrganizationLogoUrlByOrganizationId(updateOrganizationLogoPO.getId());
         // 若原来的 logoUrl 为空，则随机产生一个
@@ -409,21 +373,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 增加成员数，+1
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 组织编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 组织编号
      * @return 增加成员数后的组织对象
      */
     @Override
     public Result<OrganizationDTO> increaseMemberNumber(Long id) {
-        // 检查组织状态
-        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
         // 增加成员数
         organizationMapper.increaseMemberNumber(id);
 
@@ -434,21 +392,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 减少成员数，-1
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 组织编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *
      * @param id 组织编号
      * @return 减少成员数后的组织对象
      */
     @Override
     public Result<OrganizationDTO> decreaseMemberNumber(Long id) {
-        // 检查组织状态
-        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
-        if (!checkResult.isSuccess()) {
-            return checkResult;
-        }
-
         // 减少成员数
         organizationMapper.decreaseMemberNumber(id);
 
@@ -458,6 +410,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     /**
      * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等
+     *
+     * @permission 必须是管理员
      *
      * @errorCode InvalidParameter: 组织编号格式错误
      *              InvalidParameter.NotExist: 组织不存在
@@ -490,6 +444,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 解禁组织
      *
+     * @permission 必须是管理员
+     *
      * @errorCode InvalidParameter: 组织编号格式错误
      *              InvalidParameter.NotExist: 组织不存在
      *              OperationConflict: 组织已经可用
@@ -519,35 +475,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 检查组织状态
-     *
-     * @errorCode InvalidParameter: 组织编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
-     *
-     * @param organizationId 组织编号
-     * @return 检查结果
-     */
-    @Override
-    public <T> Result<T> checkOrganizationStatus(Long organizationId) {
-        // 判断组织存不存在
-        OrganizationDO organizationDO = organizationMapper.getOrganization(organizationId);
-        if (organizationDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
-        }
-
-        // 判断组织是否可用
-        if (!organizationDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The organization unavailable.");
-        }
-
-        // 组织状态正常
-        return Result.success();
-    }
-
-    /**
      * 发送注册账号时使用的邮箱验证码
+     *
+     * @public 公开方法
      *
      * @errorCode InvalidParameter: 邮箱或标题格式错误
      *              OperationConflict: 该邮箱已经被注册，无法发送验证码

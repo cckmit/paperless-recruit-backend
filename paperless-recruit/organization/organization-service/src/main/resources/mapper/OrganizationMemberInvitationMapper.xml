@@ -78,6 +78,19 @@
         </if>
     </select>
 
+    <select id="getUserId" resultType="long">
+        select user_id
+        from organization_member_invitation
+        where id = #{id}
+    </select>
+
+    <select id="getInvitationStatus"
+            resultType="com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum">
+        select invitation_status
+        from organization_member_invitation
+        where id = #{id}
+    </select>
+
     <select id="countByOrganizationIdAndUserIdAndInvitationStatus" resultType="int">
         select count(*)
         from organization_member_invitation

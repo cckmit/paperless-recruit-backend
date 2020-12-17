@@ -23,6 +23,8 @@ public interface OrganizationLabelService {
     /**
      * 保存组织标签，初始引用数0
      *
+     * @permission 需要管理员权限
+     *
      * @errorCode InvalidParameter: 标签名格式错误
      *              OperationConflict: 标签名已经存在
      *
@@ -37,6 +39,8 @@ public interface OrganizationLabelService {
 
     /**
      * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
+     *
+     * @private 内部方法
      *
      * @errorCode InvalidParameter: 标签名格式错误
      *              Forbidden: 该标签已经被禁用，不可用增加引用
@@ -64,6 +68,8 @@ public interface OrganizationLabelService {
     /**
      * 禁用一个组织标签，会把所有拥有这个标签的社团的这个标签给删了
      *
+     * @permission 需要管理员权限
+     *
      * @errorCode InvalidParameter: 组织标签编号格式错误
      *              InvalidParameter.NotExist: 组织标签不存在
      *              OperationConflict: 组织标签已经被禁用
@@ -77,6 +83,8 @@ public interface OrganizationLabelService {
 
     /**
      * 解禁标签
+     *
+     * @permission 需要管理员权限
      *
      * @errorCode InvalidParameter: 组织标签编号格式错误
      *              InvalidParameter.NotExist: 组织标签不存在

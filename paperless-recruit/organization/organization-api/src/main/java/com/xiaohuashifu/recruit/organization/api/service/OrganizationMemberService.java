@@ -25,9 +25,9 @@ public interface OrganizationMemberService {
     /**
      * 发送加入组织邀请
      *
+     * @permission 必须检查 organizationId 是否是该组织的
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden: 组织不可用
      *              InvalidParameter.User.NotExist: 用户不存在
      *              Forbidden.User: 用户不可用
      *              OperationConflict: 该组织已经存在该成员
@@ -46,12 +46,11 @@ public interface OrganizationMemberService {
     /**
      * 接受加入组织邀请
      *
+     * @permission 必须检查 organizationMemberInvitationId 是不是属于该用户
+     *
      * @errorCode InvalidParameter: 参数格式错误
      *              OperationConflict.Lock: 获取组织成员邀请的锁失败
-     *              InvalidParameter.NotExist: 组织成员邀请不存在
      *              OperationConflict.Status: 组织成员邀请的状态不是等待接受，无法拒绝
-     *              Forbidden: 组织不可用
-     *              Forbidden.User: 用户不可用
      *
      * @param organizationMemberInvitationId 组织成员邀请编号
      * @return 组织成员对象
@@ -75,6 +74,8 @@ public interface OrganizationMemberService {
     /**
      * 查询组织成员邀请
      *
+     * @permission 只能查询组织自己的记录，也就是必须设置 organizationId
+     *
      * @errorCode InvalidParameter: 查询参数格式错误
      *
      * @param query 查询参数
@@ -84,15 +85,34 @@ public interface OrganizationMemberService {
             @NotNull(message = "The query can't be null.") OrganizationMemberInvitationQuery query);
 
     /**
+     * 获取组织编号
+     *
+     * @private 内部方法
+     *
+     * @param id 组织成员编号
+     * @return 组织编号，若组织成员不存在返回 null
+     */
+    Long getOrganizationId(Long id);
+
+    /**
+     * 获取用户编号
+     *
+     * @private 内部方法
+     *
+     * @param id 组织成员邀请编号
+     * @return 用户编号，若组织成员邀请不存在返回 null
+     */
+    Long getUserId(Long id);
+
+    /**
      * 更新组织成员的部门
+     *
+     * @permission 需要检查 organizationMemberId，newDepartmentId 是否属于该组织
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              OperationConflict.Lock: 获取组织成员的锁失败
-     *              InvalidParameter.NotExist: 组织成员不存在 | 部门不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧部门相同
-     *              InvalidParameter.Mismatch: 组织成员和部门所属的组织不匹配
      *
      * @param organizationMemberId 组织成员编号
      * @param newDepartmentId 部门编号，若为0表示不绑定任何部门
@@ -107,13 +127,12 @@ public interface OrganizationMemberService {
     /**
      * 更新组织成员的组织职位
      *
+     * @permission 需要检查 organizationMemberId 和 newOrganizationPositionId 是不是该组织的
+     *
      * @errorCode InvalidParameter: 参数格式错误
      *              OperationConflict.Lock: 获取组织成员的锁失败
-     *              InvalidParameter.NotExist: 组织成员不存在 | 组织职位不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧组织职位相同
-     *              InvalidParameter.Mismatch: 组织成员和组织职位所属的组织不匹配
      *
      * @param organizationMemberId   组织成员编号
      * @param newOrganizationPositionId 组织职位编号，若为0表示不绑定任何组织职位
@@ -129,10 +148,10 @@ public interface OrganizationMemberService {
     /**
      * 更新组织成员的状态
      *
+     * @permission 需要检查 organizationMemberId 是否属于该组织
+     *
      * @errorCode InvalidParameter: 参数格式错误
      *              OperationConflict.Lock: 获取组织成员的锁失败
-     *              InvalidParameter.NotExist: 组织成员不存在
-     *              Forbidden: 组织不可用
      *              OperationConflict.Unmodified: 新旧成员状态相同
      *
      * @param organizationMemberId 组织成员编号
@@ -148,6 +167,8 @@ public interface OrganizationMemberService {
      * 清除组织成员的组织职位，该接口不对外开放
      * 即通过组织职位编号，是该组织职位编号的成员，设置组织职位为0
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 参数格式错误
      *
      * @param organizationPositionId 组织职位编号
@@ -161,11 +182,10 @@ public interface OrganizationMemberService {
     /**
      * 拒绝加入组织邀请
      *
+     * @permission 需要检查 organizationMemberInvitationId 是否属于该用户
+     *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织成员邀请不存在
      *              OperationConflict.Status: 组织成员邀请的状态不是等待接受，无法拒绝
-     *              Forbidden: 组织不可用
-     *              Forbidden.User: 用户不可用
      *              OperationConflict.Lock: 获取组织成员邀请的锁失败
      *
      * @param organizationMemberInvitationId 组织成员邀请编号
@@ -179,11 +199,11 @@ public interface OrganizationMemberService {
     /**
      * 更新组织成员邀请的状态为 EXPIRED
      *
+     * @private 内部方法
+     *
      * @see com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum -> EXPIRED
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织成员邀请不存在
-     *              OperationConflict.Status: 组织成员邀请的状态不是等待接受，无法更新
      *              OperationConflict.Lock: 获取组织成员邀请的锁失败
      *
      * @param organizationMemberInvitationId 组织成员邀请编号
@@ -193,4 +213,5 @@ public interface OrganizationMemberService {
             @NotNull(message = "The organizationMemberInvitationId can't be null.")
             @Positive(message = "The organizationMemberInvitationId must be greater than 0.")
                     Long organizationMemberInvitationId);
+
 }

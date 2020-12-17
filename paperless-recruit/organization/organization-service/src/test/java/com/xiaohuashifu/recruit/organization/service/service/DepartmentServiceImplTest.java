@@ -70,12 +70,13 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void updateDepartmentName() {
-        System.out.println(departmentService.updateDepartmentName(1L, "自然科学部"));
+        System.out.println(departmentService.updateDepartmentName(1L, 1L, "自然科学部"));
     }
 
     @Test
     public void updateAbbreviationDepartmentName() {
-        System.out.println(departmentService.updateAbbreviationDepartmentName(1L, "自科部"));
+        System.out.println(departmentService.updateAbbreviationDepartmentName(
+                1L,1L,  "自科部"));
     }
 
     @Test

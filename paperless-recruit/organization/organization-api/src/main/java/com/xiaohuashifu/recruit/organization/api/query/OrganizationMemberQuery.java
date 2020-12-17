@@ -7,7 +7,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 描述：组织成员查询参数
@@ -32,21 +31,6 @@ public class OrganizationMemberQuery implements Serializable {
     @Max(value = QueryConstants.DEFAULT_PAGE_SIZE,
             message = "The pageSize must be less than or equal to " + QueryConstants.DEFAULT_PAGE_SIZE + ".")
     private Long pageSize;
-
-    /**
-     * 组织成员编号
-     */
-    private Long id;
-
-    /**
-     * 组织成员编号列表
-     */
-    private List<Long> ids;
-
-    /**
-     * 组织成员主体编号
-     */
-    private Long userId;
 
     /**
      * 组织编号
@@ -132,30 +116,6 @@ public class OrganizationMemberQuery implements Serializable {
 
     public void setPageSize(Long pageSize) {
         this.pageSize = pageSize;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<Long> getIds() {
-        return ids;
-    }
-
-    public void setIds(List<Long> ids) {
-        this.ids = ids;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Long getOrganizationId() {
@@ -275,9 +235,6 @@ public class OrganizationMemberQuery implements Serializable {
         return "OrganizationMemberQuery{" +
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
-                ", id=" + id +
-                ", ids=" + ids +
-                ", userId=" + userId +
                 ", organizationId=" + organizationId +
                 ", departmentId=" + departmentId +
                 ", organizationPositionId=" + organizationPositionId +
@@ -298,9 +255,6 @@ public class OrganizationMemberQuery implements Serializable {
     public static final class Builder {
         private Long pageNum;
         private Long pageSize;
-        private Long id;
-        private List<Long> ids;
-        private Long userId;
         private Long organizationId;
         private Long departmentId;
         private Long organizationPositionId;
@@ -323,21 +277,6 @@ public class OrganizationMemberQuery implements Serializable {
 
         public Builder pageSize(Long pageSize) {
             this.pageSize = pageSize;
-            return this;
-        }
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder ids(List<Long> ids) {
-            this.ids = ids;
-            return this;
-        }
-
-        public Builder userId(Long userId) {
-            this.userId = userId;
             return this;
         }
 
@@ -415,9 +354,6 @@ public class OrganizationMemberQuery implements Serializable {
             OrganizationMemberQuery organizationMemberQuery = new OrganizationMemberQuery();
             organizationMemberQuery.setPageNum(pageNum);
             organizationMemberQuery.setPageSize(pageSize);
-            organizationMemberQuery.setId(id);
-            organizationMemberQuery.setIds(ids);
-            organizationMemberQuery.setUserId(userId);
             organizationMemberQuery.setOrganizationId(organizationId);
             organizationMemberQuery.setDepartmentId(departmentId);
             organizationMemberQuery.setOrganizationPositionId(organizationPositionId);

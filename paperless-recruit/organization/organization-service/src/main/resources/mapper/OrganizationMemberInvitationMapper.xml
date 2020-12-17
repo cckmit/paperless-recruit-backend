@@ -28,71 +28,55 @@
         where id = #{id}
     </select>
 
-<!--    <select id="listOrganizations" resultMap="organization">-->
-<!--        select <include refid="organization"/>-->
-<!--        from organization-->
-<!--        <where>-->
-<!--            <if test="id != null">-->
-<!--                and id = #{id}-->
-<!--            </if>-->
-<!--            <if test="ids != null">-->
-<!--                and id in (-->
-<!--                <foreach collection="ids"  item="item" index="index" separator=",">-->
-<!--                    #{item}-->
-<!--                </foreach>-->
-<!--                )-->
-<!--            </if>-->
-<!--            <if test="userId != null">-->
-<!--                and user_id = #{userId}-->
-<!--            </if>-->
-<!--            <if test="organizationName != null">-->
-<!--                and organization_name like "%"#{organizationName}"%"-->
-<!--            </if>-->
-<!--            <if test="abbreviationOrganizationName != null">-->
-<!--                and abbreviation_organization_name like "%"#{abbreviationOrganizationName}"%"-->
-<!--            </if>-->
-<!--            <if test="available != null">-->
-<!--                and is_available = #{available}-->
-<!--            </if>-->
-<!--        </where>-->
-<!--        <if test="orderByAvailable || orderByAvailableDesc || orderByOrganizationName || orderByOrganizationNameDesc-->
-<!--         || orderByAbbreviationOrganizationName || orderByAbbreviationOrganizationNameDesc-->
-<!--         || orderByCreateTime || orderByCreateTimeDesc || orderByUpdateTime || orderByUpdateTimeDesc">-->
-<!--            order by-->
-<!--            <trim suffixOverrides=",">-->
-<!--                <if test="orderByAvailable">-->
-<!--                    is_available,-->
-<!--                </if>-->
-<!--                <if test="orderByAvailableDesc">-->
-<!--                    is_available desc,-->
-<!--                </if>-->
-<!--                <if test="orderByOrganizationName">-->
-<!--                    organization_name,-->
-<!--                </if>-->
-<!--                <if test="orderByOrganizationNameDesc">-->
-<!--                    organization_name desc,-->
-<!--                </if>-->
-<!--                <if test="orderByAbbreviationOrganizationName">-->
-<!--                    abbreviation_organization_name,-->
-<!--                </if>-->
-<!--                <if test="orderByAbbreviationOrganizationNameDesc">-->
-<!--                    abbreviation_organization_name desc,-->
-<!--                </if>-->
-<!--                <if test="orderByCreateTime">-->
-<!--                    create_time,-->
-<!--                </if>-->
-<!--                <if test="orderByCreateTimeDesc">-->
-<!--                    create_time desc,-->
-<!--                </if>-->
-<!--                <if test="orderByUpdateTime">-->
-<!--                    update_time,-->
-<!--                </if>-->
-<!--                <if test="orderByUpdateTimeDesc">-->
-<!--                    update_time desc,-->
-<!--                </if>-->
-<!--            </trim>-->
-<!--        </if>-->
-<!--    </select>-->
+    <select id="listOrganizationMemberInvitations" resultMap="organizationMemberInvitation">
+        select <include refid="organizationMemberInvitation"/>
+        from organization_member_invitation
+        <where>
+            <if test="organizationId != null">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="invitationStatus != null">
+                and invitation_status = #{invitationStatus}
+            </if>
+        </where>
+        <if test="orderByOrganizationId || orderByOrganizationIdDesc
+         || orderByInvitationStatus || orderByInvitationStatusDesc || orderByInvitationTime || orderByInvitationTimeDesc
+         || orderByCreateTime || orderByCreateTimeDesc || orderByUpdateTime || orderByUpdateTimeDesc">
+            order by
+            <trim suffixOverrides=",">
+                <if test="orderByOrganizationId">
+                    organization_id,
+                </if>
+                <if test="orderByOrganizationIdDesc">
+                    organization_id desc,
+                </if>
+                <if test="orderByInvitationStatus">
+                    invitation_status,
+                </if>
+                <if test="orderByInvitationStatusDesc">
+                    invitation_status desc,
+                </if>
+                <if test="orderByInvitationTime">
+                    invitation_time,
+                </if>
+                <if test="orderByInvitationTimeDesc">
+                    invitation_time desc,
+                </if>
+                <if test="orderByCreateTime">
+                    create_time,
+                </if>
+                <if test="orderByCreateTimeDesc">
+                    create_time desc,
+                </if>
+                <if test="orderByUpdateTime">
+                    update_time,
+                </if>
+                <if test="orderByUpdateTimeDesc">
+                    update_time desc,
+                </if>
+            </trim>
+        </if>
+    </select>
 
     <select id="countByOrganizationIdAndUserIdAndInvitationStatus" resultType="int">
         select count(*)

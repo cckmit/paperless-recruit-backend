@@ -1,8 +1,11 @@
 package com.xiaohuashifu.recruit.organization.service.dao;
 
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
+import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberQuery;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationMemberDO;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 描述：组织成员数据库映射
@@ -15,6 +18,8 @@ public interface OrganizationMemberMapper {
     int insertOrganizationMember(OrganizationMemberDO organizationMemberDO);
 
     OrganizationMemberDO getOrganizationMember(Long id);
+
+    List<OrganizationMemberDO> listOrganizationMembers(OrganizationMemberQuery query);
 
     int countByOrganizationIdAndUserId(@Param("organizationId") Long organizationId, @Param("userId") Long userId);
 

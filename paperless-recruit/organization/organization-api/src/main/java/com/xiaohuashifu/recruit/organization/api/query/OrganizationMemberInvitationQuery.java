@@ -7,7 +7,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 描述：组织成员邀请查询参数
@@ -34,24 +33,9 @@ public class OrganizationMemberInvitationQuery implements Serializable {
     private Long pageSize;
 
     /**
-     * 组织成员邀请编号
-     */
-    private Long id;
-
-    /**
-     * 组织成员邀请编号列表
-     */
-    private List<Long> ids;
-
-    /**
      * 组织编号
      */
     private Long organizationId;
-
-    /**
-     * 邀请的用户主体编号
-     */
-    private Long userId;
 
     /**
      * 邀请的状态
@@ -124,36 +108,12 @@ public class OrganizationMemberInvitationQuery implements Serializable {
         this.pageSize = pageSize;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<Long> getIds() {
-        return ids;
-    }
-
-    public void setIds(List<Long> ids) {
-        this.ids = ids;
-    }
-
     public Long getOrganizationId() {
         return organizationId;
     }
 
     public void setOrganizationId(Long organizationId) {
         this.organizationId = organizationId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public OrganizationMemberInvitationStatusEnum getInvitationStatus() {
@@ -249,10 +209,7 @@ public class OrganizationMemberInvitationQuery implements Serializable {
         return "OrganizationMemberInvitationQuery{" +
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
-                ", id=" + id +
-                ", ids=" + ids +
                 ", organizationId=" + organizationId +
-                ", userId=" + userId +
                 ", invitationStatus=" + invitationStatus +
                 ", orderByOrganizationId=" + orderByOrganizationId +
                 ", orderByOrganizationIdDesc=" + orderByOrganizationIdDesc +
@@ -270,10 +227,7 @@ public class OrganizationMemberInvitationQuery implements Serializable {
     public static final class Builder {
         private Long pageNum;
         private Long pageSize;
-        private Long id;
-        private List<Long> ids;
         private Long organizationId;
-        private Long userId;
         private OrganizationMemberInvitationStatusEnum invitationStatus;
         private Boolean orderByOrganizationId;
         private Boolean orderByOrganizationIdDesc;
@@ -296,23 +250,8 @@ public class OrganizationMemberInvitationQuery implements Serializable {
             return this;
         }
 
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder ids(List<Long> ids) {
-            this.ids = ids;
-            return this;
-        }
-
         public Builder organizationId(Long organizationId) {
             this.organizationId = organizationId;
-            return this;
-        }
-
-        public Builder userId(Long userId) {
-            this.userId = userId;
             return this;
         }
 
@@ -375,10 +314,7 @@ public class OrganizationMemberInvitationQuery implements Serializable {
             OrganizationMemberInvitationQuery organizationMemberInvitationQuery = new OrganizationMemberInvitationQuery();
             organizationMemberInvitationQuery.setPageNum(pageNum);
             organizationMemberInvitationQuery.setPageSize(pageSize);
-            organizationMemberInvitationQuery.setId(id);
-            organizationMemberInvitationQuery.setIds(ids);
             organizationMemberInvitationQuery.setOrganizationId(organizationId);
-            organizationMemberInvitationQuery.setUserId(userId);
             organizationMemberInvitationQuery.setInvitationStatus(invitationStatus);
             organizationMemberInvitationQuery.setOrderByOrganizationId(orderByOrganizationId);
             organizationMemberInvitationQuery.setOrderByOrganizationIdDesc(orderByOrganizationIdDesc);

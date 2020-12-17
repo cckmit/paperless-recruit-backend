@@ -29,7 +29,9 @@ import org.springframework.aop.framework.AopContext;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 描述：组织成员服务实现
@@ -186,26 +188,56 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 查询组织成员
      *
+     * @errorCode InvalidParameter: 查询参数格式错误
+     *
      * @param query 查询参数
      * @return PageInfo<OrganizationPositionDTO> 带分页参数的组织成员列表，可能返回空列表
-     * @errorCode InvalidParameter: 查询参数格式错误
      */
     @Override
-    public Result<PageInfo<OrganizationMemberDTO>> listOrganizationMemberDTO(OrganizationMemberQuery query) {
-        return null;
+    public Result<PageInfo<OrganizationMemberDTO>> listOrganizationMember(OrganizationMemberQuery query) {
+        List<OrganizationMemberDO> organizationMemberDOList = organizationMemberMapper.listOrganizationMembers(query);
+        List<OrganizationMemberDTO> organizationMemberDTOList = organizationMemberDOList
+                .stream()
+                .map(organizationMemberDO -> new OrganizationMemberDTO
+                        .Builder()
+                        .id(organizationMemberDO.getId())
+                        .userId(organizationMemberDO.getUserId())
+                        .organizationId(organizationMemberDO.getOrganizationId())
+                        .departmentId(organizationMemberDO.getDepartmentId())
+                        .organizationPositionId(organizationMemberDO.getOrganizationPositionId())
+                        .memberStatus(organizationMemberDO.getMemberStatus().name())
+                        .build())
+                .collect(Collectors.toList());
+        PageInfo<OrganizationMemberDTO> pageInfo = new PageInfo<>(organizationMemberDTOList);
+        return Result.success(pageInfo);
     }
 
     /**
      * 查询组织成员邀请
      *
+     * @errorCode InvalidParameter: 查询参数格式错误
+     *
      * @param query 查询参数
      * @return PageInfo<OrganizationMemberInvitationDTO> 带分页参数的组织成员邀请列表，可能返回空列表
-     * @errorCode InvalidParameter: 查询参数格式错误
      */
     @Override
-    public Result<PageInfo<OrganizationMemberInvitationDTO>> listOrganizationMemberInvitationDTO(
+    public Result<PageInfo<OrganizationMemberInvitationDTO>> listOrganizationMemberInvitation(
             OrganizationMemberInvitationQuery query) {
-        return null;
+        List<OrganizationMemberInvitationDO> organizationMemberInvitationDOList =
+                organizationMemberInvitationMapper.listOrganizationMemberInvitations(query);
+        List<OrganizationMemberInvitationDTO> organizationMemberInvitationDTOList =
+                organizationMemberInvitationDOList.stream()
+                .map(organizationMemberInvitationDO -> new OrganizationMemberInvitationDTO
+                        .Builder()
+                        .id(organizationMemberInvitationDO.getId())
+                        .userId(organizationMemberInvitationDO.getUserId())
+                        .organizationId(organizationMemberInvitationDO.getOrganizationId())
+                        .invitationTime(organizationMemberInvitationDO.getInvitationTime())
+                        .invitationStatus(organizationMemberInvitationDO.getInvitationStatus().name())
+                        .build())
+                .collect(Collectors.toList());
+        PageInfo<OrganizationMemberInvitationDTO> pageInfo = new PageInfo<>(organizationMemberInvitationDTOList);
+        return Result.success(pageInfo);
     }
 
     /**

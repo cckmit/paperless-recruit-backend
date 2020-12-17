@@ -69,7 +69,7 @@ public interface OrganizationMemberService {
      * @param query 查询参数
      * @return PageInfo<OrganizationPositionDTO> 带分页参数的组织成员列表，可能返回空列表
      */
-    Result<PageInfo<OrganizationMemberDTO>> listOrganizationMemberDTO(
+    Result<PageInfo<OrganizationMemberDTO>> listOrganizationMember(
             @NotNull(message = "The query can't be null.") OrganizationMemberQuery query);
 
     /**
@@ -80,7 +80,7 @@ public interface OrganizationMemberService {
      * @param query 查询参数
      * @return PageInfo<OrganizationMemberInvitationDTO> 带分页参数的组织成员邀请列表，可能返回空列表
      */
-    Result<PageInfo<OrganizationMemberInvitationDTO>> listOrganizationMemberInvitationDTO(
+    Result<PageInfo<OrganizationMemberInvitationDTO>> listOrganizationMemberInvitation(
             @NotNull(message = "The query can't be null.") OrganizationMemberInvitationQuery query);
 
     /**

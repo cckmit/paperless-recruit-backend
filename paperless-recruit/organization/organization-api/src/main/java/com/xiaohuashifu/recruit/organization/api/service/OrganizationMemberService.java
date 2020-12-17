@@ -145,6 +145,20 @@ public interface OrganizationMemberService {
             @NotNull(message = "The newMemberStatus can't be null.") OrganizationMemberStatusEnum newMemberStatus);
 
     /**
+     * 清除组织成员的组织职位，该接口不对外开放
+     * 即通过组织职位编号，是该组织职位编号的成员，设置组织职位为0
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *
+     * @param organizationPositionId 组织职位编号
+     * @return 被清除职位的组织成员数量
+     */
+    Result<Integer> clearOrganizationPositions(
+            @NotNull(message = "The organizationPositionId can't be null.")
+            @PositiveOrZero(message = "The organizationPositionId must be greater than or equal to 0.")
+                    Long organizationPositionId);
+
+    /**
      * 拒绝加入组织邀请
      *
      * @errorCode InvalidParameter: 参数格式错误

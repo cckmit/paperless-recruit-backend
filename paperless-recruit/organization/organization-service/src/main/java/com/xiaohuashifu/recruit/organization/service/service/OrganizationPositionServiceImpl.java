@@ -5,6 +5,7 @@ import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationPositionDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationPositionQuery;
+import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationPositionService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationPositionMapper;
@@ -26,6 +27,9 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
 
     @Reference
     private OrganizationService organizationService;
+
+    @Reference
+    private OrganizationMemberService organizationMemberService;
 
     private final OrganizationPositionMapper organizationPositionMapper;
 
@@ -83,7 +87,7 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
      * @return 删除结果
      */
     @Override
-    public Result<Void> removeOrganizationPosition(Long id) {
+    public Result<Integer> removeOrganizationPosition(Long id) {
         // 检查组织和组织职位状态
         Result<Long> checkResult = checkOrganizationAndPositionStatus(id);
         if (checkResult.isFailure()) {
@@ -91,8 +95,12 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
         }
 
         // 把该职位的组织成员的职位都清除（设置为0）
+        Result<Integer> clearResult = organizationMemberService.clearOrganizationPositions(id);
+        Integer clearCount = clearResult.getData();
 
-        return null;
+        // 删除组织职位
+        organizationPositionMapper.deleteOrganizationPosition(id);
+        return Result.success(clearCount);
     }
 
     /**

@@ -20,6 +20,11 @@
         values(#{organizationId}, #{positionName}, #{priority})
     </insert>
 
+    <delete id="deleteOrganizationPosition">
+        delete from organization_position
+        where id = #{id}
+    </delete>
+
     <select id="getOrganizationPosition" resultMap="organizationPosition">
         select <include refid="organizationPosition"/>
         from organization_position

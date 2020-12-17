@@ -176,7 +176,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         return getOrganizationMember(organizationMemberDO.getId());
     }
 
-
     /**
      * 查询组织成员
      *
@@ -344,6 +343,22 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
 
         // 更新后的组织成员对象
         return getOrganizationMember(organizationMemberId);
+    }
+
+    /**
+     * 清除组织成员的组织职位，该接口不对外开放
+     * 即通过组织职位编号，是该组织职位编号的成员，设置组织职位为0
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *
+     * @param organizationPositionId 组织职位编号
+     * @return 被清除职位的组织成员数量
+     */
+    @Override
+    public Result<Integer> clearOrganizationPositions(Long organizationPositionId) {
+        int clearCount = organizationMemberMapper.updateOrganizationPositionByOrganizationPositionId(
+                organizationPositionId, OrganizationPositionConstants.ORGANIZATION_POSITION_ID_WHEN_NO_POSITION);
+        return Result.success(clearCount);
     }
 
     /**

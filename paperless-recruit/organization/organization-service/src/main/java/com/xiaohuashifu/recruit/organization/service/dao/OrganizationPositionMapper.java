@@ -28,4 +28,6 @@ public interface OrganizationPositionMapper {
     int updatePositionName(@Param("id") Long id, @Param("positionName") String positionName);
 
     int updatePriority(@Param("id") Long id, @Param("priority") Integer priority);
+
+    int deleteOrganizationPosition(Long id);
 }

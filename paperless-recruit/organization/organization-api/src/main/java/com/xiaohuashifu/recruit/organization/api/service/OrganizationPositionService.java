@@ -53,8 +53,8 @@ public interface OrganizationPositionService {
      * @param id 组织职位编号
      * @return 删除结果
      */
-    Result<Void> removeOrganizationPosition(@NotNull(message = "The id can't be null.")
-                                            @Positive(message = "The id must be greater than 0.") Long id);
+    Result<Integer> removeOrganizationPosition(@NotNull(message = "The id can't be null.")
+                                               @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 获取组织职位

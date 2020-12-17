@@ -35,11 +35,12 @@ public class OrganizationPositionServiceImplTest {
     @Test
     public void saveOrganizationPosition() {
         System.out.println(organizationPositionService.saveOrganizationPosition(
-                1L, "副主席", 1));
+                1L, "中心主席", 2));
     }
 
     @Test
     public void removeOrganizationPosition() {
+        System.out.println(organizationPositionService.removeOrganizationPosition(2L));
     }
 
     @Test

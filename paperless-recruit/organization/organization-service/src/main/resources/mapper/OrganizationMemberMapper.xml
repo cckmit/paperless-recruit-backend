@@ -109,4 +109,10 @@
         where id = #{id}
     </update>
 
+    <update id="updateOrganizationPositionByOrganizationPositionId">
+        update organization_member
+        set organization_position_id = #{newOrganizationPositionId}
+        where organization_position_id = #{oldOrganizationPositionId}
+    </update>
+
 </mapper>

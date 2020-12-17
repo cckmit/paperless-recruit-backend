@@ -28,4 +28,8 @@ public interface OrganizationMemberMapper {
     int updateOrganizationPosition(@Param("id") Long id, @Param("organizationPositionId") Long organizationPositionId);
 
     int updateMemberStatus(@Param("id") Long id, @Param("memberStatus") OrganizationMemberStatusEnum memberStatus);
+
+    int updateOrganizationPositionByOrganizationPositionId(
+            @Param("oldOrganizationPositionId") Long oldOrganizationPositionId,
+            @Param("newOrganizationPositionId") Long newOrganizationPositionId);
 }

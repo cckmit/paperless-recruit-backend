@@ -101,4 +101,22 @@
           and user_id = #{userId}
     </select>
 
+    <update id="updateDepartment">
+        update organization_member
+        set department_id = #{departmentId}
+        where id = #{id}
+    </update>
+
+    <update id="updateOrganizationPosition">
+        update organization_member
+        set organization_position_id = #{organizationPositionId}
+        where id = #{id}
+    </update>
+
+    <update id="updateMemberStatus">
+        update organization_member
+        set member_status = #{memberStatus}
+        where id = #{id}
+    </update>
+
 </mapper>

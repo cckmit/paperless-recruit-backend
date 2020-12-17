@@ -41,7 +41,7 @@ public class DepartmentServiceImplTest {
     @Test
     public void createDepartment() {
         System.out.println(departmentService.createDepartment(
-                1L, "自然科学部1", "自科部"));
+                1L, "社会科学部", "社科部"));
     }
 
     @Test

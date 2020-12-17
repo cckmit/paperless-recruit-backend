@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
+import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -33,12 +34,12 @@ public class OrganizationMemberServiceImplTest {
 
     @Test
     public void sendInvitation() {
-        System.out.println(organizationMemberService.sendInvitation(1L, "xhsfnew"));
+        System.out.println(organizationMemberService.sendInvitation(1L, "xiaohuashifu"));
     }
 
     @Test
     public void acceptInvitation() {
-        System.out.println(organizationMemberService.acceptInvitation(6L));
+        System.out.println(organizationMemberService.acceptInvitation(7L));
     }
 
     @Test
@@ -51,14 +52,19 @@ public class OrganizationMemberServiceImplTest {
 
     @Test
     public void updateDepartment() {
+        System.out.println(organizationMemberService.updateDepartment(1L, 2L));
     }
 
     @Test
     public void updateOrganizationPosition() {
+        System.out.println(organizationMemberService.updateOrganizationPosition(
+                1L, 1L));
     }
 
     @Test
     public void updateMemberStatus() {
+        System.out.println(organizationMemberService.updateMemberStatus(
+                1L, OrganizationMemberStatusEnum.ON_JOB));
     }
 
     @Test

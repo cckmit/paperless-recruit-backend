@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.organization.service.dao;
 
+import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationMemberDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,4 +18,9 @@ public interface OrganizationMemberMapper {
 
     int countByOrganizationIdAndUserId(@Param("organizationId") Long organizationId, @Param("userId") Long userId);
 
+    int updateDepartment(@Param("id") Long id, @Param("departmentId") Long departmentId);
+
+    int updateOrganizationPosition(@Param("id") Long id, @Param("organizationPositionId") Long organizationPositionId);
+
+    int updateMemberStatus(@Param("id") Long id, @Param("memberStatus") OrganizationMemberStatusEnum memberStatus);
 }

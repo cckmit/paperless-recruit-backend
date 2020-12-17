@@ -20,9 +20,9 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter", "The required parameter is not valid."),
 
     /**
-     * 非法参数，状态不正确（不允许）
+     * 非法参数，不匹配
      */
-    INVALID_PARAMETER_STATUS(HttpStatus.BAD_REQUEST, "InvalidParameter.Status", "Invalid status."),
+    INVALID_PARAMETER_MISMATCH(HttpStatus.BAD_REQUEST, "InvalidParameter.Mismatch", "Mismatch."),
 
     /**
      * 非法 Code
@@ -187,6 +187,18 @@ public enum ErrorCodeEnum implements Serializable {
      */
     OPERATION_CONFLICT(HttpStatus.CONFLICT,
             "OperationConflict", "Request was denied due to conflict with a previous request."),
+
+    /**
+     * 操作冲突，由于未做任何修改修改
+     */
+    OPERATION_CONFLICT_UNMODIFIED(HttpStatus.CONFLICT,
+            "OperationConflict.Unmodified", "Request was denied due to unmodified."),
+
+    /**
+     * 操作冲突，状态不正确（不允许）
+     */
+    OPERATION_CONFLICT_STATUS(HttpStatus.CONFLICT,
+            "OperationConflict.Status", "Request was denied due to invalid status."),
 
     /**
      * 操作冲突，获取锁失败

@@ -108,8 +108,22 @@ public class Result<T> implements Serializable {
         return new Result<>(false, null, errorCode.getCode(), null);
     }
 
+    /**
+     * 失败调用时的构造方法
+     *
+     * @param result 错误码
+     * @return Result<T>
+     */
+    public static <T> Result<T> fail(Result<?> result) {
+        return new Result<>(false, null, result.getErrorCode(), result.getErrorMessage());
+    }
+
     public Boolean isSuccess() {
         return success;
+    }
+
+    public Boolean isFailure() {
+        return !success;
     }
 
     public T getData() {

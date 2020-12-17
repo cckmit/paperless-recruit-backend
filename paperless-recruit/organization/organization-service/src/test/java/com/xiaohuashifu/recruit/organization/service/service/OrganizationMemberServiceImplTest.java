@@ -61,7 +61,7 @@ public class OrganizationMemberServiceImplTest {
 
     @Test
     public void updateDepartment() {
-        System.out.println(organizationMemberService.updateDepartment(1L, 2L));
+        System.out.println(organizationMemberService.updateDepartment(2L, 1L));
     }
 
     @Test

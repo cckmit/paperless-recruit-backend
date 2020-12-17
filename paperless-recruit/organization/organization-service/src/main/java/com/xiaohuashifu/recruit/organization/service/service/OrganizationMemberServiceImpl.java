@@ -12,6 +12,7 @@ import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationPositionConstants;
+import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberInvitationDTO;
@@ -268,6 +269,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
      *              OperationConflict.Lock: 获取组织成员的锁失败
      *              OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧部门相同
+     *              OperationConflict.Deactivated: 新部门已经被停用
      *
      * @param organizationMemberId 组织成员编号
      * @param newDepartmentId 部门编号，若为0表示不绑定任何部门
@@ -277,7 +279,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             errorMessage = "Failed to acquire organizationMember lock.")
     @Override
     public Result<OrganizationMemberDTO> updateDepartment(Long organizationMemberId, Long newDepartmentId) {
-        // 检查新旧部门是否相同，组织成员状态是否是在职
+        // 检查新旧部门是否相同，组织成员状态是否是在职，部门是否已经停用
         Result<OrganizationMemberDO> checkResult = checkForUpdateDepartment(organizationMemberId, newDepartmentId);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
@@ -563,10 +565,11 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     }
 
     /**
-     * 检查组织成员状态必须是在职，新旧部门是否相同
+     * 检查组织成员状态必须是在职，新旧部门是否相同，部门是否被停用
      *
      * @errorCode OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧部门相同
+     *              OperationConflict.Deactivated: 新部门已经被停用
      *
      * @param organizationMemberId 组织成员编号
      * @param newDepartmentId 新部门编号
@@ -584,6 +587,13 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         if (Objects.equals(organizationMemberDO.getDepartmentId(), newDepartmentId)) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
                     "The newDepartment can't be the same as the oldDepartment.");
+        }
+
+        // 判断部门是否被停用
+        DepartmentDTO departmentDTO = departmentService.getDepartment(newDepartmentId).getData();
+        if (departmentDTO.getDeactivated()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DEACTIVATED,
+                    "The department already deactivated.");
         }
 
         // 通过检查

@@ -219,6 +219,12 @@ public enum ErrorCodeEnum implements Serializable {
             "OperationConflict.Duplicate", "Request was denied due to duplicate."),
 
     /**
+     * 操作冲突，已停用
+     */
+    OPERATION_CONFLICT_DEACTIVATED(HttpStatus.CONFLICT,
+            "OperationConflict.Deactivated", "Request was denied due to deactivated."),
+
+    /**
      * 由于某些未知错误、异常或失败，请求处理失败。
      */
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "InternalError",

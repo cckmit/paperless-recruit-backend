@@ -113,6 +113,7 @@ public interface OrganizationMemberService {
      *              OperationConflict.Lock: 获取组织成员的锁失败
      *              OperationConflict.Status: 组织成员状态必须是在职
      *              OperationConflict.Unmodified: 新旧部门相同
+     *              OperationConflict.Deactivated: 新部门已经被停用
      *
      * @param organizationMemberId 组织成员编号
      * @param newDepartmentId 部门编号，若为0表示不绑定任何部门

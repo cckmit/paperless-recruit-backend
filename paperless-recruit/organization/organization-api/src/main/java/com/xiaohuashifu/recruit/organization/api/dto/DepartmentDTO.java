@@ -47,6 +47,11 @@ public class DepartmentDTO implements Serializable {
     private String memberNumber;
 
     /**
+     * 部门是否被废弃
+     */
+    private Boolean deactivated;
+
+    /**
      * 部门标签
      */
     private List<String> labels;
@@ -107,6 +112,14 @@ public class DepartmentDTO implements Serializable {
         this.memberNumber = memberNumber;
     }
 
+    public Boolean getDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(Boolean deactivated) {
+        this.deactivated = deactivated;
+    }
+
     public List<String> getLabels() {
         return labels;
     }
@@ -125,6 +138,7 @@ public class DepartmentDTO implements Serializable {
                 ", introduction='" + introduction + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", memberNumber='" + memberNumber + '\'' +
+                ", deactivated=" + deactivated +
                 ", labels=" + labels +
                 '}';
     }
@@ -137,6 +151,7 @@ public class DepartmentDTO implements Serializable {
         private String introduction;
         private String logoUrl;
         private String memberNumber;
+        private Boolean deactivated;
         private List<String> labels;
 
         public Builder id(Long id) {
@@ -174,6 +189,11 @@ public class DepartmentDTO implements Serializable {
             return this;
         }
 
+        public Builder deactivated(Boolean deactivated) {
+            this.deactivated = deactivated;
+            return this;
+        }
+
         public Builder labels(List<String> labels) {
             this.labels = labels;
             return this;
@@ -188,6 +208,7 @@ public class DepartmentDTO implements Serializable {
             departmentDTO.setIntroduction(introduction);
             departmentDTO.setLogoUrl(logoUrl);
             departmentDTO.setMemberNumber(memberNumber);
+            departmentDTO.setDeactivated(deactivated);
             departmentDTO.setLabels(labels);
             return departmentDTO;
         }

@@ -45,6 +45,11 @@ public class DepartmentServiceImplTest {
     }
 
     @Test
+    public void deactivateDepartment() {
+        System.out.println(departmentService.deactivateDepartment(1L));
+    }
+
+    @Test
     public void addLabel() {
         System.out.println(departmentService.addLabel(1L, "项目"));
     }
@@ -104,4 +109,5 @@ public class DepartmentServiceImplTest {
     public void decreaseMemberNumber() {
         System.out.println(departmentService.decreaseMemberNumber(1L));
     }
+
 }

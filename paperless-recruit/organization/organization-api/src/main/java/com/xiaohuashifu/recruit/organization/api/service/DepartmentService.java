@@ -52,20 +52,19 @@ public interface DepartmentService {
                     String abbreviationDepartmentName);
 
     /**
-     * 移除部门
+     * 停用部门，只是标识为停用
+     * 无法再添加成员到该部门，无法创建招新报名
      *
-     * 该组织必须没有该部门的成员
-     * 会删除该部门的标签，
+     * @permission 该部门需要是该组织的
+     *
+     * @errorCode InvalidParameter: 部门编号错误
+     *              OperationConflict: 部门已经被停用
      *
      * @param id 部门编号
-     * @return 移除结果
+     * @return 停用后的部门对象
      */
-    // TODO: 2020/12/15 该操作较为复杂
-    default Result<Void> removeDepartment(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id) {
-        throw new UnsupportedOperationException();
-    }
+     Result<DepartmentDTO> deactivateDepartment(@NotNull(message = "The id can't be null.")
+                                                @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 添加部门的标签

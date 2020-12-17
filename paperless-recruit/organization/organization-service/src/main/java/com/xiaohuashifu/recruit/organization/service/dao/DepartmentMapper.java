@@ -26,7 +26,9 @@ public interface DepartmentMapper {
 
     DepartmentDO getDepartment(Long id);
 
-    String getDepartmentLogoUrlByDepartmentId(Long departmentId);
+    Boolean getDeactivated(Long id);
+
+    String getLogoUrlByDepartmentId(Long departmentId);
 
     Long getOrganizationIdByDepartmentId(Long departmentId);
 
@@ -54,6 +56,8 @@ public interface DepartmentMapper {
     int updateIntroduction(@Param("id") Long id, @Param("introduction") String introduction);
 
     int updateLogoUrl(@Param("id") Long id, @Param("logoUrl") String logoUrl);
+
+    int updateDeactivated(@Param("id") Long id, @Param("deactivated") Boolean deactivated);
 
     int increaseMemberNumber(Long id);
 

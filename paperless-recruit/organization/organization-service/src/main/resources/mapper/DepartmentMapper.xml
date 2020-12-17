@@ -10,13 +10,14 @@
         <result property="introduction" column="introduction"/>
         <result property="logoUrl" column="logo_url"/>
         <result property="memberNumber" column="member_number"/>
+        <result property="deactivated" column="is_deactivated"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="department">
         id, organization_id, department_name, abbreviation_department_name, introduction, logo_url, member_number,
-            create_time, update_time
+            is_deactivated, create_time, update_time
     </sql>
 
     <insert id="insertDepartment" keyProperty="id">
@@ -46,7 +47,13 @@
         where id = #{id}
     </select>
 
-    <select id="getDepartmentLogoUrlByDepartmentId" resultType="string">
+    <select id="getDeactivated" resultType="boolean">
+        select is_deactivated
+        from department
+        where id = #{id}
+    </select>
+
+    <select id="getLogoUrlByDepartmentId" resultType="string">
         select logo_url
         from department
         where id = #{id}
@@ -81,12 +88,21 @@
             <if test="abbreviationDepartmentName != null">
                 and abbreviation_department_name like "%"#{abbreviationDepartmentName}"%"
             </if>
+            <if test="deactivated != null">
+                and is_deactivated = #{deactivated}
+            </if>
         </where>
-        <if test="orderByDepartmentName || orderByDepartmentNameDesc
+        <if test="orderByDiscarded || orderByDiscardedDesc || orderByDepartmentName || orderByDepartmentNameDesc
          || orderByAbbreviationDepartmentName || orderByAbbreviationDepartmentNameDesc
          || orderByCreateTime || orderByCreateTimeDesc || orderByUpdateTime || orderByUpdateTimeDesc">
             order by
             <trim suffixOverrides=",">
+                <if test="orderByDiscarded">
+                    is_deactivated,
+                </if>
+                <if test="orderByDiscardedDesc">
+                    is_deactivated desc,
+                </if>
                 <if test="orderByDepartmentName">
                     department_name,
                 </if>
@@ -169,6 +185,12 @@
     <update id="updateLogoUrl">
         update department
         set logo_url = #{logoUrl}
+        where id = #{id}
+    </update>
+
+    <update id="updateDeactivated">
+        update department
+        set is_deactivated = #{deactivated}
         where id = #{id}
     </update>
 

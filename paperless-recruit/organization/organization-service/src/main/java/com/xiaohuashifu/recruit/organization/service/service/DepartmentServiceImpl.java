@@ -117,6 +117,31 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
+     * 停用部门，只是标识为停用
+     * 无法再添加成员到该部门，无法创建招新报名
+     *
+     * @permission 该部门需要是该组织的
+     *
+     * @errorCode InvalidParameter: 部门编号错误
+     *              OperationConflict: 部门已经被停用
+     *
+     * @param id 部门编号
+     * @return 停用后的部门对象
+     */
+    @Override
+    public Result<DepartmentDTO> deactivateDepartment(Long id) {
+        // 判断是否已经被停用
+        Boolean deactivated = departmentMapper.getDeactivated(id);
+        if (Boolean.TRUE.equals(deactivated)) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The department already deactivated.");
+        }
+
+        // 更新为停用
+        departmentMapper.updateDeactivated(id, true);
+        return getDepartment(id);
+    }
+
+    /**
      * 添加部门的标签
      *
      * @permission 需要该部门属于该组织
@@ -226,6 +251,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .introduction(departmentDO.getIntroduction())
                 .logoUrl(departmentDO.getLogoUrl())
                 .memberNumber(departmentDO.getMemberNumber())
+                .deactivated(departmentDO.getDeactivated())
                 .labels(labels)
                 .build();
         return Result.success(departmentDTO);
@@ -253,6 +279,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                         .introduction(departmentDO.getIntroduction())
                         .logoUrl(departmentDO.getLogoUrl())
                         .memberNumber(departmentDO.getMemberNumber())
+                        .deactivated(departmentDO.getDeactivated())
                         .labels(departmentMapper.listDepartmentLabelNamesByDepartmentId(departmentDO.getId()))
                         .build())
                 .collect(Collectors.toList());
@@ -378,7 +405,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             errorMessage = "Failed to acquire department logo lock.")
     public Result<DepartmentDTO> updateLogo(UpdateDepartmentLogoPO updateDepartmentLogoPO) {
         // 获取部门 logoUrl
-        String logoUrl = departmentMapper.getDepartmentLogoUrlByDepartmentId(updateDepartmentLogoPO.getId());
+        String logoUrl = departmentMapper.getLogoUrlByDepartmentId(updateDepartmentLogoPO.getId());
         // 若原来的 logoUrl 为空，则随机产生一个
         boolean needUpdateLogoUrl = false;
         if (StringUtils.isBlank(logoUrl)) {

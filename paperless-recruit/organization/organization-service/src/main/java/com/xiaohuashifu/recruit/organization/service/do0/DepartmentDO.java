@@ -16,6 +16,7 @@ public class DepartmentDO {
     private String introduction;
     private String logoUrl;
     private String memberNumber;
+    private Boolean deactivated;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
@@ -75,6 +76,14 @@ public class DepartmentDO {
         this.memberNumber = memberNumber;
     }
 
+    public Boolean getDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(Boolean deactivated) {
+        this.deactivated = deactivated;
+    }
+
     public LocalDateTime getCreateTime() {
         return createTime;
     }
@@ -101,6 +110,7 @@ public class DepartmentDO {
                 ", introduction='" + introduction + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", memberNumber='" + memberNumber + '\'' +
+                ", deactivated=" + deactivated +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -114,6 +124,7 @@ public class DepartmentDO {
         private String introduction;
         private String logoUrl;
         private String memberNumber;
+        private Boolean deactivated;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -152,6 +163,11 @@ public class DepartmentDO {
             return this;
         }
 
+        public Builder deactivated(Boolean deactivated) {
+            this.deactivated = deactivated;
+            return this;
+        }
+
         public Builder createTime(LocalDateTime createTime) {
             this.createTime = createTime;
             return this;
@@ -171,6 +187,7 @@ public class DepartmentDO {
             departmentDO.setIntroduction(introduction);
             departmentDO.setLogoUrl(logoUrl);
             departmentDO.setMemberNumber(memberNumber);
+            departmentDO.setDeactivated(deactivated);
             departmentDO.setCreateTime(createTime);
             departmentDO.setUpdateTime(updateTime);
             return departmentDO;

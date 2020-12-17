@@ -58,6 +58,21 @@ public class DepartmentQuery implements Serializable {
     private String abbreviationDepartmentName;
 
     /**
+     * 部门是否被废弃
+     */
+    private Boolean discarded;
+
+    /**
+     * 按照部门是否被废弃排序
+     */
+    private Boolean orderByDiscarded;
+
+    /**
+     * 按照部门是否被废弃逆序排序
+     */
+    private Boolean orderByDiscardedDesc;
+
+    /**
      * 按照部门名排序
      */
     private Boolean orderByDepartmentName;
@@ -153,6 +168,30 @@ public class DepartmentQuery implements Serializable {
         this.abbreviationDepartmentName = abbreviationDepartmentName;
     }
 
+    public Boolean getDiscarded() {
+        return discarded;
+    }
+
+    public void setDiscarded(Boolean discarded) {
+        this.discarded = discarded;
+    }
+
+    public Boolean getOrderByDiscarded() {
+        return orderByDiscarded;
+    }
+
+    public void setOrderByDiscarded(Boolean orderByDiscarded) {
+        this.orderByDiscarded = orderByDiscarded;
+    }
+
+    public Boolean getOrderByDiscardedDesc() {
+        return orderByDiscardedDesc;
+    }
+
+    public void setOrderByDiscardedDesc(Boolean orderByDiscardedDesc) {
+        this.orderByDiscardedDesc = orderByDiscardedDesc;
+    }
+
     public Boolean getOrderByDepartmentName() {
         return orderByDepartmentName;
     }
@@ -227,6 +266,9 @@ public class DepartmentQuery implements Serializable {
                 ", organizationId=" + organizationId +
                 ", departmentName='" + departmentName + '\'' +
                 ", abbreviationDepartmentName='" + abbreviationDepartmentName + '\'' +
+                ", discarded=" + discarded +
+                ", orderByDiscarded=" + orderByDiscarded +
+                ", orderByDiscardedDesc=" + orderByDiscardedDesc +
                 ", orderByDepartmentName=" + orderByDepartmentName +
                 ", orderByDepartmentNameDesc=" + orderByDepartmentNameDesc +
                 ", orderByAbbreviationDepartmentName=" + orderByAbbreviationDepartmentName +
@@ -246,6 +288,9 @@ public class DepartmentQuery implements Serializable {
         private Long organizationId;
         private String departmentName;
         private String abbreviationDepartmentName;
+        private Boolean discarded;
+        private Boolean orderByDiscarded;
+        private Boolean orderByDiscardedDesc;
         private Boolean orderByDepartmentName;
         private Boolean orderByDepartmentNameDesc;
         private Boolean orderByAbbreviationDepartmentName;
@@ -287,6 +332,21 @@ public class DepartmentQuery implements Serializable {
 
         public Builder abbreviationDepartmentName(String abbreviationDepartmentName) {
             this.abbreviationDepartmentName = abbreviationDepartmentName;
+            return this;
+        }
+
+        public Builder discarded(Boolean discarded) {
+            this.discarded = discarded;
+            return this;
+        }
+
+        public Builder orderByDiscarded(Boolean orderByDiscarded) {
+            this.orderByDiscarded = orderByDiscarded;
+            return this;
+        }
+
+        public Builder orderByDiscardedDesc(Boolean orderByDiscardedDesc) {
+            this.orderByDiscardedDesc = orderByDiscardedDesc;
             return this;
         }
 
@@ -339,6 +399,9 @@ public class DepartmentQuery implements Serializable {
             departmentQuery.setOrganizationId(organizationId);
             departmentQuery.setDepartmentName(departmentName);
             departmentQuery.setAbbreviationDepartmentName(abbreviationDepartmentName);
+            departmentQuery.setDiscarded(discarded);
+            departmentQuery.setOrderByDiscarded(orderByDiscarded);
+            departmentQuery.setOrderByDiscardedDesc(orderByDiscardedDesc);
             departmentQuery.setOrderByDepartmentName(orderByDepartmentName);
             departmentQuery.setOrderByDepartmentNameDesc(orderByDepartmentNameDesc);
             departmentQuery.setOrderByAbbreviationDepartmentName(orderByAbbreviationDepartmentName);

@@ -242,7 +242,6 @@ public enum ErrorCodeEnum implements Serializable {
     SERVICE_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "ServiceTimeout",
             "The request processing has failed due to timeout.");
 
-
     /**
      * HTTP 响应码，符合 HTTP 协议语义
      */

@@ -128,7 +128,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     public Result<OrganizationMemberInvitationDTO> sendInvitation(Long organizationId, String username) {
         // 获取用户
         Result<UserDTO> getUserResult = userService.getUserByUsername(username);
-        if (!getUserResult.isSuccess()) {
+        if (getUserResult.isFailure()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_USER_NOT_EXIST, "The user does not exist.");
         }
         UserDTO userDTO = getUserResult.getData();
@@ -159,7 +159,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         // 检查组织成员邀请、发送邀请的组织、被邀请的用户的状态是否适合更新
         Result<OrganizationMemberInvitationDO> checkResult =
                 checkOrganizationAndUserAndOrganizationMemberInvitationStatus(organizationMemberInvitationId);
-        if (!checkResult.isSuccess()) {
+        if (checkResult.isFailure()) {
             return Result.fail(checkResult.getErrorCode(), checkResult.getErrorMessage());
         }
 
@@ -366,7 +366,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         // 检查组织成员邀请、发送邀请的组织、被邀请的用户的状态是否适合更新
         Result<OrganizationMemberInvitationDO> checkResult =
                 checkOrganizationAndUserAndOrganizationMemberInvitationStatus(organizationMemberInvitationId);
-        if (!checkResult.isSuccess()) {
+        if (checkResult.isFailure()) {
             return Result.fail(checkResult.getErrorCode(), checkResult.getErrorMessage());
         }
 
@@ -398,7 +398,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         // 检查组织成员邀请的状态是否适合更新
         Result<OrganizationMemberInvitationDO> checkOrganizationMemberInvitationStatusResult =
                 checkOrganizationMemberInvitationStatusForUpdate(organizationMemberInvitationId);
-        if (!checkOrganizationMemberInvitationStatusResult.isSuccess()) {
+        if (checkOrganizationMemberInvitationStatusResult.isFailure()) {
             return Result.fail(checkOrganizationMemberInvitationStatusResult.getErrorCode(),
                     checkOrganizationMemberInvitationStatusResult.getErrorMessage());
         }
@@ -430,7 +430,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     public Result<OrganizationMemberInvitationDTO> sendInvitation(Long organizationId, Long userId) {
         // 检查组织和用户的状态
         Result<OrganizationMemberInvitationDTO> checkResult = checkOrganizationAndUserStatus(organizationId, userId);
-        if (!checkResult.isSuccess()) {
+        if (checkResult.isFailure()) {
             return checkResult;
         }
 
@@ -552,13 +552,13 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         // 判断组织状态
         Result<T> checkOrganizationStatusResult =
                 organizationService.checkOrganizationStatus(organizationId);
-        if (!checkOrganizationStatusResult.isSuccess()) {
+        if (checkOrganizationStatusResult.isFailure()) {
             return checkOrganizationStatusResult;
         }
 
         // 判断用户状态
         Result<T> checkUserStatusResult = userService.checkUserStatus(userId);
-        if (!checkUserStatusResult.isSuccess()) {
+        if (checkUserStatusResult.isFailure()) {
             return checkUserStatusResult;
         }
 
@@ -613,7 +613,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         // 检查组织成员邀请的状态是否适合更新
         Result<OrganizationMemberInvitationDO> checkOrganizationMemberInvitationStatusResult =
                 checkOrganizationMemberInvitationStatusForUpdate(organizationMemberInvitationId);
-        if (!checkOrganizationMemberInvitationStatusResult.isSuccess()) {
+        if (checkOrganizationMemberInvitationStatusResult.isFailure()) {
             return Result.fail(checkOrganizationMemberInvitationStatusResult.getErrorCode(),
                     checkOrganizationMemberInvitationStatusResult.getErrorMessage());
         }
@@ -624,7 +624,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         Result<OrganizationMemberInvitationDO> checkOrganizationAndUserStatusResult =
                 checkOrganizationAndUserStatus(organizationMemberInvitationDO.getOrganizationId(),
                         organizationMemberInvitationDO.getUserId());
-        if (!checkOrganizationAndUserStatusResult.isSuccess()) {
+        if (checkOrganizationAndUserStatusResult.isFailure()) {
             return checkOrganizationAndUserStatusResult;
         }
 
@@ -653,7 +653,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         // 判断组织是否有效
         Result<OrganizationMemberDO> checkOrganizationStatusResult =
                 organizationService.checkOrganizationStatus(organizationMemberDO.getOrganizationId());
-        if (!checkOrganizationStatusResult.isSuccess()) {
+        if (checkOrganizationStatusResult.isFailure()) {
             return checkOrganizationStatusResult;
         }
 

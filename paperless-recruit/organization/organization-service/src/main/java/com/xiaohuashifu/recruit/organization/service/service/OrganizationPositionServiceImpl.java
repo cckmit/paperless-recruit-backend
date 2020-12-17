@@ -86,9 +86,11 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
     public Result<Void> removeOrganizationPosition(Long id) {
         // 检查组织和组织职位状态
         Result<Long> checkResult = checkOrganizationAndPositionStatus(id);
-        if (!checkResult.isSuccess()) {
-            return Result.fail(checkResult.getErrorCode(), checkResult.getErrorMessage());
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
         }
+
+        // 把该职位的组织成员的职位都清除（设置为0）
 
         return null;
     }
@@ -224,7 +226,7 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
         // 检查组织状态
         Result<Long> checkOrganizationStatusResult =
                 organizationService.checkOrganizationStatus(organizationId);
-        if (!checkOrganizationStatusResult.isSuccess()) {
+        if (checkOrganizationStatusResult.isFailure()) {
             return checkOrganizationStatusResult;
         }
 

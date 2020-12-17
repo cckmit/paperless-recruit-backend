@@ -67,7 +67,7 @@ public class OrganizationMemberServiceImplTest {
     @Test
     public void updateOrganizationPosition() {
         System.out.println(organizationMemberService.updateOrganizationPosition(
-                1L, 1L));
+                2L, 2L));
     }
 
     @Test

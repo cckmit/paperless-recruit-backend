@@ -5,6 +5,7 @@ import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
+import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.po.UpdateDepartmentLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
@@ -46,11 +47,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentMapper departmentMapper;
 
     private final RedissonClient redissonClient;
-
-    /**
-     * 部门最大的标签数
-     */
-    private static final int MAX_DEPARTMENT_LABEL_NUMBER = 3;
 
     /**
      * 部门标签锁定键模式
@@ -166,10 +162,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         // 判断标签数量是否大于 MAX_DEPARTMENT_LABEL_NUMBER
         count = departmentMapper.countLabelByDepartmentId(departmentId);
-        if (count >= MAX_DEPARTMENT_LABEL_NUMBER) {
+        if (count >= DepartmentConstants.MAX_DEPARTMENT_LABEL_NUMBER) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_OVER_LIMIT,
                     "The number of label must not be greater than "
-                            + MAX_DEPARTMENT_LABEL_NUMBER + ".");
+                            + DepartmentConstants.MAX_DEPARTMENT_LABEL_NUMBER + ".");
         }
 
         // 判断该标签是否可用

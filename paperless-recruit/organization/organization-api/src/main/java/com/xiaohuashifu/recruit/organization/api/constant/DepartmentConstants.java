@@ -9,6 +9,11 @@ package com.xiaohuashifu.recruit.organization.api.constant;
 public class DepartmentConstants {
 
     /**
+     * 没有部门时的部门编号
+     */
+    public static final long DEPARTMENT_ID_WHEN_NO_DEPARTMENT = 0;
+
+    /**
      * 部门名最小长度
      */
     public static final int MIN_DEPARTMENT_NAME_LENGTH = 2;

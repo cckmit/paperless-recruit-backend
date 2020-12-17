@@ -5,6 +5,7 @@ import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
+import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
@@ -56,11 +57,6 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 创建组织邮件验证码标题
      */
     private static final String CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE = "创建组织";
-
-    /**
-     * 组织最大的标签数
-     */
-    private static final int MAX_ORGANIZATION_LABEL_NUMBER = 3;
 
     /**
      * 组织标签锁定键模式
@@ -155,10 +151,10 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         // 判断标签数量是否大于 MAX_ORGANIZATION_LABEL_NUMBER
         count = organizationMapper.countLabelByOrganizationId(organizationId);
-        if (count >= MAX_ORGANIZATION_LABEL_NUMBER) {
+        if (count >= OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_OVER_LIMIT,
                     "The number of label must not be greater than "
-                            + MAX_ORGANIZATION_LABEL_NUMBER + ".");
+                            + OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER + ".");
         }
 
         // 判断该标签是否可用

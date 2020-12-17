@@ -8,8 +8,10 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
 import com.xiaohuashifu.recruit.notification.api.po.SendSystemNotificationPO;
 import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
+import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
+import com.xiaohuashifu.recruit.organization.api.constant.OrganizationPositionConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.*;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberInvitationQuery;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberQuery;
@@ -93,16 +95,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
      * 组织成员邀请的锁定键模式，{0}是组织成员邀请编号
      */
     private static final String ORGANIZATION_MEMBER_INVITATION_LOCK_KEY_PATTERN = "organization-member-invitation:{0}";
-
-    /**
-     * 没有组织职位时的组织职位编号
-     */
-    private static final Long ORGANIZATION_POSITION_ID_WHEN_NO_POSITION = 0L;
-
-    /**
-     * 没有部门时的部门编号
-     */
-    private static final Long DEPARTMENT_ID_WHEN_NO_DEPARTMENT = 0L;
 
     public OrganizationMemberServiceImpl(OrganizationMemberMapper organizationMemberMapper,
                                          OrganizationMemberInvitationMapper organizationMemberInvitationMapper) {
@@ -749,7 +741,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         }
 
         // 当部门编号不为0时
-        if (!Objects.equals(newDepartmentId, DEPARTMENT_ID_WHEN_NO_DEPARTMENT)) {
+        if (!Objects.equals(newDepartmentId, DepartmentConstants.DEPARTMENT_ID_WHEN_NO_DEPARTMENT)) {
             // 判断部门存不存在
             Result<DepartmentDTO> getDepartmentResult = departmentService.getDepartment(newDepartmentId);
             if (getDepartmentResult.isFailure()) {
@@ -799,7 +791,8 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         }
 
         // 当组织职位编号不为0时
-        if (!Objects.equals(newOrganizationPositionId, ORGANIZATION_POSITION_ID_WHEN_NO_POSITION)) {
+        if (!Objects.equals(newOrganizationPositionId,
+                OrganizationPositionConstants.ORGANIZATION_POSITION_ID_WHEN_NO_POSITION)) {
             // 判断组织职位存不存在
             Result<OrganizationPositionDTO> getOrganizationPositionResult =
                     organizationPositionService.getOrganizationPosition(newOrganizationPositionId);
@@ -827,8 +820,8 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
      * @param newDepartmentId 新部门编号
      */
     private void updateDepartmentMemberNumber(Long oldDepartmentId, Long newDepartmentId) {
-        // 当原来部门编号不为0时，需要减少原来部门的人数
-        if (!Objects.equals(oldDepartmentId, DEPARTMENT_ID_WHEN_NO_DEPARTMENT)) {
+        // 当原来部门编号不为0（没有职位时的编号）时，需要减少原来部门的人数
+        if (!Objects.equals(oldDepartmentId, DepartmentConstants.DEPARTMENT_ID_WHEN_NO_DEPARTMENT)) {
             departmentService.decreaseMemberNumber(oldDepartmentId);
         }
         // 增加当前部门的人数

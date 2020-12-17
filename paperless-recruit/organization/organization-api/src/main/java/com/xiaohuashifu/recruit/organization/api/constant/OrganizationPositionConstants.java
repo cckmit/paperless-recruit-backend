@@ -9,6 +9,11 @@ package com.xiaohuashifu.recruit.organization.api.constant;
 public class OrganizationPositionConstants {
 
     /**
+     * 没有组织职位时的组织职位编号
+     */
+    public static final long ORGANIZATION_POSITION_ID_WHEN_NO_POSITION = 0;
+
+    /**
      * 组织职位名最大长度
      */
     public static final int MAX_ORGANIZATION_POSITION_NAME_LENGTH = 10;

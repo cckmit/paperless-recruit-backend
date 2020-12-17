@@ -41,6 +41,8 @@ public class SmsServiceImpl implements SmsService {
      * 发送短信验证码服务
      * 该服务会把短信验证码进行缓存
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 手机号码或主题或过期时间的格式错误
      *              UnknownError: 发送短信验证码错误，需要重试
      *
@@ -67,6 +69,8 @@ public class SmsServiceImpl implements SmsService {
     /**
      * 短信验证码检验验证码是否有效的服务
      * 该服务检验成功后，可以清除该验证码，即一个验证码只能使用一次（SmsAuthCodeDTO.delete == true 即可）
+     *
+     * @private 内部方法
      *
      * @errorCode InvalidParameter: 请求参数格式错误
      *              InvalidParameter.AuthCode.NotExist: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功

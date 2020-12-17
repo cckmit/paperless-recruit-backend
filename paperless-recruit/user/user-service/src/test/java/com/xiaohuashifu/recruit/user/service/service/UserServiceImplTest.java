@@ -160,11 +160,6 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testCheckUserStatus() {
-        System.out.println(userService.checkUserStatus("xiaohuashifu11"));
-    }
-
-    @Test
     public void sendSmsAuthCodeForSignUp() {
         System.out.println(userService.sendSmsAuthCodeForSignUp("15992321303"));
     }

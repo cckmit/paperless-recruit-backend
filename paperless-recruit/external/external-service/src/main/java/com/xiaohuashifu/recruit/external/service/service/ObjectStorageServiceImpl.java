@@ -30,6 +30,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     /**
      * 上传对象
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 对象名 | 对象格式错误
      *              InternalError: 上传文件失败
      *
@@ -66,6 +68,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     /**
      * 删除对象
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 对象名格式错误
      *              InternalError: 删除文件失败
      *
@@ -82,6 +86,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     /**
      * 下载对象
+     *
+     * @private 内部方法
      *
      * @errorCode InvalidParameter: 对象名格式错误
      *              InvalidParameter.NotFound: 没有找到该对象
@@ -100,6 +106,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     /**
      * 获取对象信息，一次最大 50 条
+     *
+     * @private 内部方法
      *
      * @errorCode InvalidParameter: 参数格式错误
      *

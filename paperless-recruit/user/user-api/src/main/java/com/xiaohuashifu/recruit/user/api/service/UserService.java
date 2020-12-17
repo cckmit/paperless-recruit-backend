@@ -22,6 +22,8 @@ public interface UserService {
     /**
      * 创建用户，对外不使用该方式进行注册
      *
+     * @permission 需要 admin 角色
+     *
      * @errorCode InvalidParameter: 用户名或密码格式错误
      *              OperationConflict: 用户名已经存在
      *
@@ -54,7 +56,8 @@ public interface UserService {
     /**
      * 通过邮箱验证码注册账号
      * 该方式会随机生成用户名
-     * 推荐使用该方式进行注册
+     *
+     * @private 内部方法
      *
      * @errorCode InvalidParameter: 邮箱或验证码或密码格式错误
      *              OperationConflict: 邮箱已经存在
@@ -74,6 +77,8 @@ public interface UserService {
     /**
      * 通过id获取用户信息
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 编号格式错误
      *              InvalidParameter.NotFound: 该编号的用户不存在
      *
@@ -85,6 +90,8 @@ public interface UserService {
 
     /**
      * 通过用户名获取用户对象
+     *
+     * @private 内部方法
      *
      * @errorCode InvalidParameter: 用户名格式错误
      *              InvalidParameter.NotFound: 该用户名的用户不存在
@@ -111,6 +118,8 @@ public interface UserService {
     /**
      * 通过手机号码获取用户对象
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 手机号码格式错误
      *              InvalidParameter.NotFound: 该手机号码的用户不存在
      *
@@ -121,6 +130,8 @@ public interface UserService {
 
     /**
      * 通过邮箱获取用户对象
+     *
+     * @private 内部方法
      *
      * @errorCode InvalidParameter: 邮箱格式错误
      *              InvalidParameter.NotFound: 该邮箱的用户不存在
@@ -144,6 +155,8 @@ public interface UserService {
     /**
      * 更新用户名
      *
+     * @permission 必须是用户自身
+     *
      * @errorCode InvalidParameter: 用户编号或新用户名格式错误 | 用户不存在
      *              OperationConflict: 新用户名已经存在
      *              OperationConflict.Lock: 无法获取关于该用户名的锁
@@ -160,6 +173,8 @@ public interface UserService {
 
     /**
      * 更新手机号码
+     *
+     * @permission 必须是用户自身
      *
      * @errorCode InvalidParameter: 用户编号或新手机号码或短信验证码格式错误 | 用户不存在
      *              OperationConflict: 新手机号码已经存在
@@ -183,6 +198,8 @@ public interface UserService {
     /**
      * 更新邮箱
      *
+     * @permission 必须是用户自身
+     *
      * @errorCode InvalidParameter: 用户编号或新邮箱或邮箱验证码格式错误 | 用户不存在
      *              OperationConflict: 新邮箱已经存在
      *              OperationConflict.Lock: 无法获取关于该邮箱的锁
@@ -205,6 +222,8 @@ public interface UserService {
     /**
      * 更新密码
      *
+     * @permission 必须是用户自身
+     *
      * @errorCode InvalidParameter: 用户编号或新密码格式错误 | 该用户不存在
      *              Forbidden: 用户被禁用
      *
@@ -220,6 +239,8 @@ public interface UserService {
 
     /**
      * 更新密码，通过邮箱验证码
+     *
+     * @permission 必须是用户自身
      *
      * @errorCode InvalidParameter: 请求参数格式错误 | 该邮箱的用户不存在
      *              InvalidParameter.AuthCode.Incorrect: 邮箱验证码错误
@@ -240,6 +261,8 @@ public interface UserService {
 
     /**
      * 更新密码，通过短信验证码
+     *
+     * @permission 必须是用户自身
      *
      * @errorCode InvalidParameter: 手机号码或验证码或新密码格式错误
      *              InvalidParameter.NotFound: 对应手机号码的用户不存在
@@ -262,6 +285,8 @@ public interface UserService {
     /**
      * 禁用用户
      *
+     * @permission 必须 admin 权限
+     *
      * @errorCode InvalidParameter: 用户编号格式错误 | 用户不存在
      *              OperationConflict: 用户已经被禁用，无需再次禁用
      *
@@ -273,6 +298,8 @@ public interface UserService {
 
     /**
      * 解禁用户
+     *
+     * @permission 必须 admin 权限
      *
      * @errorCode InvalidParameter: 用户编号格式错误 | 用户不存在
      *              OperationConflict: 用户没有被禁用，无需解禁
@@ -286,6 +313,8 @@ public interface UserService {
     /**
      * 判断用户是否存在
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 用户编号格式错误
      *              InvalidParameter.User.NotExist: 对应编号的用户不存在
      *
@@ -298,6 +327,8 @@ public interface UserService {
     /**
      * 检查用户状态
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 用户编号格式错误
      *              InvalidParameter.User.NotExist: 用户不存在
      *              Forbidden.User: 用户不可用
@@ -307,19 +338,6 @@ public interface UserService {
      */
     <T> Result<T> checkUserStatus(@NotNull(message = "The id can't be null.")
                                   @Positive(message = "The id must be greater than 0.") Long id);
-
-    /**
-     * 检查用户状态
-     *
-     * @errorCode InvalidParameter: 用户名格式错误
-     *              InvalidParameter.User.NotExist: 用户不存在
-     *              Forbidden.User: 用户不可用
-     *
-     * @param username 用户名
-     * @return 检查结果
-     */
-    <T> Result<T> checkUserStatus(@NotBlank(message = "The username can't be blank.")
-                                  @Username String username);
 
     /**
      * 发送注册账号时使用的短信验证码

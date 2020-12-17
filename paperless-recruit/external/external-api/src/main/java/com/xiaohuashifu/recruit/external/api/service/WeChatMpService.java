@@ -12,6 +12,8 @@ import javax.validation.constraints.Size;
 /**
  * 描述：微信小程序相关服务
  *
+ * @private 内部服务
+ *
  * @author: xhsf
  * @create: 2020/11/20 13:57
  */

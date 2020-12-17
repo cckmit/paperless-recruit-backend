@@ -13,6 +13,8 @@ import javax.validation.constraints.Positive;
 /**
  * 描述：微信小程序订阅消息模板的服务
  *
+ * @private 内部服务
+ *
  * @author: xhsf
  * @create: 2020/11/22 00:39
  */

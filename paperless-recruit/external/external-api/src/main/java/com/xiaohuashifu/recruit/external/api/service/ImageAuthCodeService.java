@@ -33,6 +33,8 @@ public interface ImageAuthCodeService {
      * 该接口不管校验是否通过都会删除缓存里的验证码
      * 即验证码只能进行一次校验（进行一次校验后即失效）
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 请求参数格式错误
      *              InvalidParameter.AuthCode.Incorrect: 验证码错误
      *              InvalidParameter.AuthCode.NotExist: 验证码不存在，可能是因为过期

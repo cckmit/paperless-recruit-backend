@@ -16,6 +16,8 @@ import java.util.List;
 /**
  * 描述：白名单服务，这是基于 URL 的白名单
  *
+ * @private 内部服务
+ *
  * @author xhsf
  * @create 2020/11/27 17:22
  */

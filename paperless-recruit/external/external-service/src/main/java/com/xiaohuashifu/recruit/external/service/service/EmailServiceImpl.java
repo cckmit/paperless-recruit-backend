@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * 描述：发送邮件的服务
  *
+ * @private 内部服务
+ *
  * @author: xhsf
  * @create: 2020/11/18 16:19
  */

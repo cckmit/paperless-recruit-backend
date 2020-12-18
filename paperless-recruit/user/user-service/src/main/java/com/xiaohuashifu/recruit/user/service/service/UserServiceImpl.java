@@ -22,6 +22,7 @@ import com.xiaohuashifu.recruit.user.service.do0.UserDO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 
@@ -137,7 +138,7 @@ public class UserServiceImpl implements UserService {
     private static final String EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX = "email:";
 
     public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate,
-                           RedisScript<Long> incrementIdRedisScript) {
+                           @Qualifier("incrementIdRedisScript") RedisScript<Long> incrementIdRedisScript) {
         this.userMapper = userMapper;
         this.mapper = mapper;
         this.redisTemplate = redisTemplate;

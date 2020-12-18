@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8fefbfd7-7556-4e69-bd7f-7051b5ba5c85" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/paperless-recruit/.idea/paperless-recruit.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/paperless-recruit/external/external-api/src/main/java/com/xiaohuashifu/recruit/external/api/service/FrequencyLimitService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/paperless-recruit/external/external-service/src/main/java/com/xiaohuashifu/recruit/external/service/service/FrequencyLimitServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/paperless-recruit/external/external-service/src/main/resources/redis/lua/FrequencyLimit.lua" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/paperless-recruit/external/external-service/src/test/java/com/xiaohuashifu/recruit/external/service/service/FrequencyLimitServiceImplTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/paperless-recruit/organization/organization-api/src/main/java/com/xiaohuashifu/recruit/organization/api/service/OrganizationCoreMemberService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +44,7 @@
       <option name="presentableId" value="Default" />
       <updated>1606207244407</updated>
       <workItem from="1606207245445" duration="26000" />
+      <workItem from="1608289297993" duration="20000" />
     </task>
     <servers />
   </component>
@@ -47,9 +52,9 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1606207270056">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1608289316112">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1606207270056" />
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1608289316112" />
   </component>
 </project>

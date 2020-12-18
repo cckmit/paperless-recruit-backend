@@ -7,6 +7,7 @@ import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.po.CreateImageAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.ImageAuthCodeService;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 
@@ -46,8 +47,8 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
      */
     private final RedisScript<Long> incrementIdRedisScript;
 
-    public ImageAuthCodeServiceImpl(
-            StringRedisTemplate redisTemplate, RedisScript<Long> incrementIdRedisScript) {
+    public ImageAuthCodeServiceImpl(StringRedisTemplate redisTemplate,
+                                    @Qualifier("incrementIdRedisScript") RedisScript<Long> incrementIdRedisScript) {
         this.redisTemplate = redisTemplate;
         this.incrementIdRedisScript = incrementIdRedisScript;
     }

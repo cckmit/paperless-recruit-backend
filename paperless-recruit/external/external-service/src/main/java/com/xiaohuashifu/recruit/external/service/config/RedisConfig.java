@@ -22,7 +22,13 @@ public class RedisConfig {
     private static final String INCREMENT_ID_REDIS_LUA_SCRIPT_CLASS_PATH = "/redis/lua/IncrementId.lua";
 
     /**
+     * 限频 Lua 脚本 classpath 路径
+     */
+    private static final String FREQUENCY_LIMIT_LUA_SCRIPT_CLASS_PATH = "/redis/lua/FrequencyLimit.lua";
+
+    /**
      * 自增 ID Redis 脚本
+     *
      * @return 自增 id 值
      */
     @Bean("incrementIdRedisScript")
@@ -34,4 +40,17 @@ public class RedisConfig {
         return incrementIdRedisScript;
     }
 
+    /**
+     * 限频 Redis 脚本
+     *
+     * @return 是否允许
+     */
+    @Bean("frequencyLimitRedisScript")
+    public RedisScript<Long> frequencyLimitRedisScript() {
+        DefaultRedisScript<Long> frequencyLimitRedisScript = new DefaultRedisScript<>();
+        frequencyLimitRedisScript.setResultType(Long.class);
+        frequencyLimitRedisScript.setScriptSource(new ResourceScriptSource(
+                new ClassPathResource(FREQUENCY_LIMIT_LUA_SCRIPT_CLASS_PATH)));
+        return frequencyLimitRedisScript;
+    }
 }

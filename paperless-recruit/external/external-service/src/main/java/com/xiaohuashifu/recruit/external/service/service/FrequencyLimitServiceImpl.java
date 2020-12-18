@@ -2,10 +2,12 @@ package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.external.api.service.FrequencyLimitService;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.TimeoutUtils;
+import org.springframework.data.redis.core.script.RedisScript;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,8 +28,16 @@ public class FrequencyLimitServiceImpl implements FrequencyLimitService {
      */
     private static final String FREQUENCY_LIMIT_REDIS_KEY_PREFIX = "frequency-limit:";
 
-    public FrequencyLimitServiceImpl(StringRedisTemplate redisTemplate) {
+    /**
+     * 限频的脚本
+     */
+    private final RedisScript<Boolean> frequencyLimitRedisScript;
+
+    public FrequencyLimitServiceImpl(
+            StringRedisTemplate redisTemplate,
+            @Qualifier("frequencyLimitRedisScript") RedisScript<Boolean> frequencyLimitRedisScript) {
         this.redisTemplate = redisTemplate;
+        this.frequencyLimitRedisScript = frequencyLimitRedisScript;
     }
 
     /**
@@ -45,39 +55,8 @@ public class FrequencyLimitServiceImpl implements FrequencyLimitService {
     @Override
     public Boolean isAllowed(String key, Long frequency, Long time, TimeUnit unit) {
         key = FREQUENCY_LIMIT_REDIS_KEY_PREFIX + key;
-
-        // 获取 set 里的元素
-        // smembers(key)
-        Set<String> keys = redisTemplate.opsForSet().members(key);
-
-        // 删除 set 里面过期的元素
-        // srem(key+uid)
-        int expiredKeysCount = 0;
-        // 删除 keys 里面所有过期的 key
-        for (String key0 : keys) {
-            if (redisTemplate.opsForValue().get(key0) == null) {
-                redisTemplate.opsForSet().remove(key, key0);
-                expiredKeysCount++;
-            }
-        }
-
-        // 如果未过期的 key 数量大于 frequency
-        // return false
-        int unexpiredKeysCount = keys.size() - expiredKeysCount;
-        if (unexpiredKeysCount >= frequency) {
-            return false;
-        }
-
-        // 添加 key 到 redis 里，设置过期时间
-        // set(key+uid, "", time, unit)
-        // sadd(key, key+uid)
-        // expire(key, time, unit)
-        // return true
-        String member = key + UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(member, "", time, unit);
-        redisTemplate.opsForSet().add(key, member);
-        redisTemplate.expire(key, time, unit);
-        return true;
+        return redisTemplate.execute(frequencyLimitRedisScript, Collections.singletonList(key), frequency.toString(),
+                String.valueOf(TimeoutUtils.toMillis(time, unit)));
     }
 
 }

@@ -46,9 +46,9 @@ public class RedisConfig {
      * @return 是否允许
      */
     @Bean("frequencyLimitRedisScript")
-    public RedisScript<Long> frequencyLimitRedisScript() {
-        DefaultRedisScript<Long> frequencyLimitRedisScript = new DefaultRedisScript<>();
-        frequencyLimitRedisScript.setResultType(Long.class);
+    public RedisScript<Boolean> frequencyLimitRedisScript() {
+        DefaultRedisScript<Boolean> frequencyLimitRedisScript = new DefaultRedisScript<>();
+        frequencyLimitRedisScript.setResultType(Boolean.class);
         frequencyLimitRedisScript.setScriptSource(new ResourceScriptSource(
                 new ClassPathResource(FREQUENCY_LIMIT_LUA_SCRIPT_CLASS_PATH)));
         return frequencyLimitRedisScript;

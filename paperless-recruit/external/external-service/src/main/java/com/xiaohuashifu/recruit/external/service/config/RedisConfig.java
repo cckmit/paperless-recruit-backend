@@ -1,8 +1,11 @@
 package com.xiaohuashifu.recruit.external.service.config;
 
+import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimitAspect;
+import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
@@ -22,11 +25,6 @@ public class RedisConfig {
     private static final String INCREMENT_ID_REDIS_LUA_SCRIPT_CLASS_PATH = "/redis/lua/IncrementId.lua";
 
     /**
-     * 限频 Lua 脚本 classpath 路径
-     */
-    private static final String FREQUENCY_LIMIT_LUA_SCRIPT_CLASS_PATH = "/redis/lua/FrequencyLimit.lua";
-
-    /**
      * 自增 ID Redis 脚本
      *
      * @return 自增 id 值
@@ -41,16 +39,25 @@ public class RedisConfig {
     }
 
     /**
-     * 限频 Redis 脚本
+     * 限频器
      *
-     * @return 是否允许
+     * @param stringRedisTemplate StringRedisTemplate
+     * @return FrequencyLimiter
      */
-    @Bean("frequencyLimitRedisScript")
-    public RedisScript<Boolean> frequencyLimitRedisScript() {
-        DefaultRedisScript<Boolean> frequencyLimitRedisScript = new DefaultRedisScript<>();
-        frequencyLimitRedisScript.setResultType(Boolean.class);
-        frequencyLimitRedisScript.setScriptSource(new ResourceScriptSource(
-                new ClassPathResource(FREQUENCY_LIMIT_LUA_SCRIPT_CLASS_PATH)));
-        return frequencyLimitRedisScript;
+    @Bean
+    public FrequencyLimiter frequencyLimiter(StringRedisTemplate stringRedisTemplate) {
+        return new FrequencyLimiter(stringRedisTemplate);
     }
+
+    /**
+     * 限频切面
+     *
+     * @param frequencyLimiter FrequencyLimiter
+     * @return FrequencyLimitAspect
+     */
+    @Bean
+    public FrequencyLimitAspect frequencyLimitAspect(FrequencyLimiter frequencyLimiter) {
+        return new FrequencyLimitAspect(frequencyLimiter);
+    }
+
 }

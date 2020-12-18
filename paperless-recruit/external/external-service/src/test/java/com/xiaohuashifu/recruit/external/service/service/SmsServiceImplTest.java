@@ -34,7 +34,7 @@ public class SmsServiceImplTest {
     public void createAndSendSmsAuthCode() {
         System.out.println(smsService.createAndSendSmsAuthCode(
                 new CreateAndSendSmsAuthCodePO.Builder()
-                        .phone("13534133310").subject("sms-login").expirationTime(600).build()));
+                        .phone("15992321303").subject("sms-login").expirationTime(10).build()));
     }
 
     @Test

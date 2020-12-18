@@ -51,7 +51,7 @@ public class DistributedLockAspect {
      * @return Object
      */
     @Around("@annotation(distributedLock)")
-    public Object handler(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
+    public Object lock(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
         // 获取键
         String key = getKey(joinPoint, distributedLock);
 

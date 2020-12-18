@@ -225,6 +225,11 @@ public enum ErrorCodeEnum implements Serializable {
             "OperationConflict.Deactivated", "Request was denied due to deactivated."),
 
     /**
+     * 太多请求
+     */
+    TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "TooManyRequests", "Too many requests."),
+
+    /**
      * 由于某些未知错误、异常或失败，请求处理失败。
      */
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "InternalError",

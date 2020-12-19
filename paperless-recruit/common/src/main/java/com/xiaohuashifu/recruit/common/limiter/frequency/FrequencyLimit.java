@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.common.limiter.frequency;
 
+import org.springframework.scheduling.annotation.Scheduled;
+
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
@@ -62,14 +64,14 @@ public @interface FrequencyLimit {
     long frequency() default 0;
 
     /**
-     * 限频时间，默认0
+     * 刷新时间，默认0
      */
-    long time() default 0;
+    long refreshTime() default 0;
 
     /**
      * 时间单位，默认为秒
      */
-    TimeUnit unit() default TimeUnit.SECONDS;
+    TimeUnit timeUnit() default TimeUnit.SECONDS;
 
     /**
      * 当获取 token 失败时的错误信息，支持 EL 表达式

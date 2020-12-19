@@ -82,10 +82,13 @@ public class FrequencyLimitAspect {
         long[] frequencies = new long[frequencyLimits.length];
         long[] timeouts = new long[frequencyLimits.length];
         for (int i = 0; i < frequencyLimits.length; i++) {
+            // 如果 cron 是空，表示是 RANGE_REFRESH 类型的限频
             if (frequencyLimits[i].cron().equals("")) {
                 frequencyLimiterTypes[i] = FrequencyLimiterType.RANGE_REFRESH;
-                timeouts[i] = TimeoutUtils.toMillis(frequencyLimits[i].time(), frequencyLimits[i].unit());
-            } else {
+                timeouts[i] = TimeoutUtils.toMillis(frequencyLimits[i].refreshTime(), frequencyLimits[i].timeUnit());
+            }
+            // 否则是 FIXED_POINT_REFRESH 类型的限频，需要解析 cron
+            else {
                 frequencyLimiterTypes[i] = FrequencyLimiterType.FIXED_POINT_REFRESH;
                 String cron = frequencyLimits[i].cron();
                 CronSequenceGenerator cronSequenceGenerator = cronSequenceGeneratorMap.getOrDefault(
@@ -98,6 +101,7 @@ public class FrequencyLimitAspect {
             frequencies[i] = frequencyLimits[i].frequency();
         }
 
+        // 判断是否允许
         return frequencyLimiter.isAllowed(frequencyLimiterTypes, keys, frequencies, timeouts);
     }
 

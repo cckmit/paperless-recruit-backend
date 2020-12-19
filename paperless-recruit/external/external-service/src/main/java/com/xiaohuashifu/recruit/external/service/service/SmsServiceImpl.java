@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimit;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
@@ -33,16 +32,6 @@ public class SmsServiceImpl implements SmsService {
      */
     private static final String SMS_AUTH_CODE_REDIS_PREFIX = "sms:auth-code";
 
-    /**
-     * 短信验证码限频模式，{0}为手机号码
-     */
-    private static final String SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN = "sms:auth-code:{0}";
-
-    /**
-     * 短信验证码频率，单位秒
-     */
-    private static final long SMS_AUTH_CODE_FREQUENCY = 60;
-
     public SmsServiceImpl(StringRedisTemplate redisTemplate, SmsManager smsManager) {
         this.redisTemplate = redisTemplate;
         this.smsManager = smsManager;
@@ -61,8 +50,6 @@ public class SmsServiceImpl implements SmsService {
      * @return Result<Void> 返回结果若 Result.isSuccess()为true 表示发送成功，否则发送失败
      */
     @Override
-    @FrequencyLimit(value = SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#createAndSendSmsAuthCodePO.phone}",
-            time = SMS_AUTH_CODE_FREQUENCY)
     public Result<Void> createAndSendSmsAuthCode(CreateAndSendSmsAuthCodePO createAndSendSmsAuthCodePO) {
         // 发送短信验证码到手机
         String authCode = AuthCodeUtils.randomAuthCode();

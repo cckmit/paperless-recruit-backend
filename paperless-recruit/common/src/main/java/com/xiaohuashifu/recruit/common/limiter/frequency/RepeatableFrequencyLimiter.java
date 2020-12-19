@@ -48,7 +48,6 @@ public class RepeatableFrequencyLimiter implements FrequencyLimiter {
             "        end\n" +
             "\n" +
             "        -- 获取 key 对应的 token 数量\n" +
-            "        KEYS[i] = '" + FIXED_POINT_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX + "' .. KEYS[i]\n" +
             "        local tokenNumbers = redis.call('GET', KEYS[i])\n" +
             "\n" +
             "        -- 如果对应 key 存在，且数量大于等于 frequency，直接 break\n" +
@@ -62,7 +61,6 @@ public class RepeatableFrequencyLimiter implements FrequencyLimiter {
             "        tokenMap[KEYS[i]] = ''\n" +
             "    else\n" +
             "        -- 获取 key 对应的 tokens\n" +
-            "        KEYS[i] = '" + RANGE_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX + "' .. KEYS[i]\n" +
             "        local tokens = redis.call('SMEMBERS', KEYS[i])\n" +
             "\n" +
             "        -- 删除 tokens 里面所有过期的 token\n" +
@@ -151,6 +149,13 @@ public class RepeatableFrequencyLimiter implements FrequencyLimiter {
         }
         for (int i = 0; i < frequencyLimiterTypes.length; i++) {
             args[frequencyLimiterTypes.length * 2 + i] = frequencyLimiterTypes[i].name();
+        }
+        for (int i = 0; i < keys.size(); i++) {
+            if (frequencyLimiterTypes[i] == FrequencyLimiterType.FIXED_POINT_REFRESH) {
+                keys.set(i, FIXED_POINT_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX +  timeouts[i] + ":" + keys.get(i));
+            } else {
+                keys.set(i, RANGE_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX +  timeouts[i] + ":" + keys.get(i));
+            }
         }
         return stringRedisTemplate.execute(repeatableFrequencyLimitRedisScript, keys, args);
     }

@@ -4,6 +4,7 @@ import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
+import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimit;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.po.CheckEmailAuthCodePO;
@@ -28,6 +29,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -136,6 +138,39 @@ public class UserServiceImpl implements UserService {
      * 邮箱的分布式锁的 key 的前缀
      */
     private static final String EMAIL_DISTRIBUTED_LOCK_KEY_PREFIX = "email:";
+
+    /**
+     * 短信验证码每分钟频率限制
+     */
+    private static final long SMS_AUTH_CODE_FREQUENCY_PER_MINUTE = 1;
+
+    /**
+     * 短信验证码每天频率限制
+     */
+    private static final long SMS_AUTH_CODE_FREQUENCY_PER_DAY = 10;
+
+    /**
+     * 注册时短信验证码限频模式，{0}为手机号码
+     */
+    private static final String SIGN_UP_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN = "user:sign-up:sms-auth-code:{0}";
+
+    /**
+     * 更新手机时短信验证码限频模式，{0}为手机号码
+     */
+    private static final String UPDATE_PHONE_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
+            "user:update-phone:sms-auth-code:{0}";
+
+//    /**
+//     * 更新密码时短信验证码每分钟的限频模式，{0}为手机号码
+//     */
+//    private static final String UPDATE_PASSWORD_SMS_AUTH_CODE_PER_MINUTE_FREQUENCY_LIMIT_PATTERN =
+//            "user:update-password:sms-auth-code:per-minute:{0}";
+
+    /**
+     * 更新密码时短信验证码限频模式，{0}为手机号码
+     */
+    private static final String UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
+            "user:update-password:sms-auth-code:{0}";
 
     public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate,
                            @Qualifier("incrementIdRedisScript") RedisScript<Long> incrementIdRedisScript) {
@@ -759,10 +794,15 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 手机号码格式错误
      *              OperationConflict: 该手机号码已经被注册，无法发送验证码
      *              UnknownError: 发送短信验证码错误，需要重试
+     *              TooManyRequests: 请求太频繁
      *
      * @param phone 手机号码
      * @return 发送结果
      */
+    @FrequencyLimit(value = SIGN_UP_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+            frequency = SMS_AUTH_CODE_FREQUENCY_PER_DAY, refreshTime = 1, timeUnit = TimeUnit.DAYS)
+    @FrequencyLimit(value = SIGN_UP_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+            frequency = SMS_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
     @Override
     public Result<Void> sendSmsAuthCodeForSignUp(String phone) {
         // 判断该手机号码是否存在，如果存在就不发送短信验证码
@@ -802,10 +842,15 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 手机号码格式错误
      *              OperationConflict: 该手机号码已经被使用，无法发送验证码
      *              UnknownError: 发送短信验证码错误，需要重试
+     *              TooManyRequests: 请求太频繁
      *
      * @param phone 手机号码
      * @return 发送结果
      */
+    @FrequencyLimit(value = UPDATE_PHONE_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+            frequency = SMS_AUTH_CODE_FREQUENCY_PER_DAY, refreshTime = 1, timeUnit = TimeUnit.DAYS)
+    @FrequencyLimit(value = UPDATE_PHONE_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+            frequency = SMS_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
     @Override
     public Result<Void> sendSmsAuthCodeForUpdatePhone(String phone) {
         // 判断该手机号码是否存在，如果存在就不发送短信验证码
@@ -823,10 +868,15 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 手机号码格式错误
      *              InvalidParameter.NotFound: 手机号码不存在，不给发送验证码
      *              UnknownError: 发送短信验证码错误，需要重试
+     *              TooManyRequests: 请求太频繁
      *
      * @param phone 手机号码
      * @return 发送结果
      */
+    @FrequencyLimit(value = UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+            frequency = SMS_AUTH_CODE_FREQUENCY_PER_DAY, refreshTime = 1, timeUnit = TimeUnit.DAYS)
+    @FrequencyLimit(value = UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+            frequency = SMS_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
     @Override
     public Result<Void> sendSmsAuthCodeForUpdatePassword(String phone) {
         // 判断该手机号码是否存在，如果不存在就不发送短信验证码

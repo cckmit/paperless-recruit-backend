@@ -161,12 +161,12 @@ public class UserServiceImplTest {
 
     @Test
     public void sendSmsAuthCodeForSignUp() {
-        System.out.println(userService.sendSmsAuthCodeForSignUp("15992321303"));
+        System.out.println(userService.sendSmsAuthCodeForSignUp("15992321301"));
     }
 
     @Test
     public void sendSmsAuthCodeForUpdatePhone() {
-        System.out.println(userService.sendSmsAuthCodeForUpdatePhone("15992321309"));
+        System.out.println(userService.sendSmsAuthCodeForUpdatePhone("15992321303"));
     }
 
     @Test

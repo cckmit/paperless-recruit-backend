@@ -1,12 +1,8 @@
 package com.xiaohuashifu.recruit.external.service.config;
 
-import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimitAspect;
-import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiter;
-import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiterManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
@@ -37,28 +33,6 @@ public class RedisConfig {
         incrementIdRedisScript.setScriptSource(new ResourceScriptSource(
                 new ClassPathResource(INCREMENT_ID_REDIS_LUA_SCRIPT_CLASS_PATH)));
         return incrementIdRedisScript;
-    }
-
-    /**
-     * 限频器
-     *
-     * @param stringRedisTemplate StringRedisTemplate
-     * @return FrequencyLimiter
-     */
-    @Bean
-    public FrequencyLimiter frequencyLimiter(StringRedisTemplate stringRedisTemplate) {
-        return new FrequencyLimiterManager(stringRedisTemplate);
-    }
-
-    /**
-     * 限频切面
-     *
-     * @param frequencyLimiter FrequencyLimiter
-     * @return FrequencyLimitAspect
-     */
-    @Bean
-    public FrequencyLimitAspect frequencyLimitAspect(FrequencyLimiter frequencyLimiter) {
-        return new FrequencyLimitAspect(frequencyLimiter);
     }
 
 }

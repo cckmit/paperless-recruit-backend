@@ -345,6 +345,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 手机号码格式错误
      *              OperationConflict: 该手机号码已经被注册，无法发送验证码
      *              UnknownError: 发送短信验证码错误，需要重试
+     *              TooManyRequests: 请求太频繁
      *
      * @param phone 手机号码
      * @return 发送结果
@@ -373,6 +374,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 手机号码格式错误
      *              OperationConflict: 该手机号码已经被使用，无法发送验证码
      *              UnknownError: 发送短信验证码错误，需要重试
+     *              TooManyRequests: 请求太频繁
      *
      * @param phone 手机号码
      * @return 发送结果
@@ -386,6 +388,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 手机号码格式错误
      *              InvalidParameter.NotFound: 手机号码不存在，不给发送验证码
      *              UnknownError: 发送短信验证码错误，需要重试
+     *              TooManyRequests: 请求太频繁
      *
      * @param phone 手机号码
      * @return 发送结果

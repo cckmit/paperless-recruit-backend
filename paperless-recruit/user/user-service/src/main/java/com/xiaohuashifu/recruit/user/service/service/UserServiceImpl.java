@@ -23,11 +23,8 @@ import com.xiaohuashifu.recruit.user.service.do0.UserDO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.RedisScript;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -61,8 +58,6 @@ public class UserServiceImpl implements UserService {
     private final Mapper mapper;
 
     private final StringRedisTemplate redisTemplate;
-
-    private final RedisScript<Long> incrementIdRedisScript;
 
     /**
      * 用户默认角色编号，即所有用户都拥有的角色
@@ -115,11 +110,6 @@ public class UserServiceImpl implements UserService {
     private static final String SIGN_UP_USERNAME_INCREMENT_ID_REDIS_KEY = "user:sign-up:username:increment-id";
 
     /**
-     * 注册时用户名的自增编号Redis里的起始值
-     */
-    private static final String SIGN_UP_USERNAME_INCREMENT_ID_REDIS_START_VALUE = "0";
-
-    /**
      * 注册时用户名的前缀
      */
     private static final String SIGN_UP_USERNAME_PREFIX = "scau_recruit";
@@ -160,24 +150,16 @@ public class UserServiceImpl implements UserService {
     private static final String UPDATE_PHONE_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
             "user:update-phone:sms-auth-code:{0}";
 
-//    /**
-//     * 更新密码时短信验证码每分钟的限频模式，{0}为手机号码
-//     */
-//    private static final String UPDATE_PASSWORD_SMS_AUTH_CODE_PER_MINUTE_FREQUENCY_LIMIT_PATTERN =
-//            "user:update-password:sms-auth-code:per-minute:{0}";
-
     /**
      * 更新密码时短信验证码限频模式，{0}为手机号码
      */
     private static final String UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
             "user:update-password:sms-auth-code:{0}";
 
-    public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate,
-                           @Qualifier("incrementIdRedisScript") RedisScript<Long> incrementIdRedisScript) {
+    public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate) {
         this.userMapper = userMapper;
         this.mapper = mapper;
         this.redisTemplate = redisTemplate;
-        this.incrementIdRedisScript = incrementIdRedisScript;
     }
 
     /**
@@ -996,9 +978,7 @@ public class UserServiceImpl implements UserService {
      * @return 随机产生的用户名
      */
     private String generateRandomUsername() {
-        Long incrementId = redisTemplate.execute(incrementIdRedisScript,
-                Collections.singletonList(SIGN_UP_USERNAME_INCREMENT_ID_REDIS_KEY),
-                SIGN_UP_USERNAME_INCREMENT_ID_REDIS_START_VALUE);
+        Long incrementId = redisTemplate.opsForValue().increment(SIGN_UP_USERNAME_INCREMENT_ID_REDIS_KEY);
         return SIGN_UP_USERNAME_PREFIX + "_"
                 + RandomStringUtils.randomNumeric(7) + "_"
                 + String.format("%010d", incrementId);

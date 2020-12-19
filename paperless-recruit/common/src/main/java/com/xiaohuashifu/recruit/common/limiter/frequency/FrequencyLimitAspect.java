@@ -7,17 +7,18 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.scheduling.support.CronSequenceGenerator;
 
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 描述：限频切面，配合 {@link FrequencyLimit} 可以便捷的使用限频
@@ -28,12 +29,20 @@ import java.util.Map;
 @Aspect
 public class FrequencyLimitAspect {
 
+    /**
+     * 限频器
+     */
     private final FrequencyLimiter frequencyLimiter;
 
     /**
      * EL 表达式解析器
      */
     private static final ExpressionParser expressionParser = new SpelExpressionParser();
+
+    /**
+     * cron 表达式的 CronSequenceGenerator 的缓存
+     */
+    private final Map<String, CronSequenceGenerator> cronSequenceGeneratorMap = new HashMap<>();
 
     public FrequencyLimitAspect(FrequencyLimiter frequencyLimiter) {
         this.frequencyLimiter = frequencyLimiter;
@@ -50,13 +59,10 @@ public class FrequencyLimitAspect {
     @Around("@annotation(FrequencyLimits) || @annotation(FrequencyLimit)")
     public Object handler(ProceedingJoinPoint joinPoint) throws Throwable {
         FrequencyLimit[] frequencyLimits = getFrequencyLimits(joinPoint);
-        for (FrequencyLimit frequencyLimit : frequencyLimits) {
-            boolean isAllowed = isAllowed(joinPoint, frequencyLimit);
-            if (!isAllowed) {
-                String errorMessageExpression = frequencyLimit.errorMessage();
-                String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
-                return Result.fail(ErrorCodeEnum.TOO_MANY_REQUESTS, errorMessage);
-            }
+        if (!isAllowed(joinPoint, frequencyLimits)) {
+            String errorMessageExpression = frequencyLimits[0].errorMessage();
+            String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
+            return Result.fail(ErrorCodeEnum.TOO_MANY_REQUESTS, errorMessage);
         }
 
         // 执行业务逻辑
@@ -67,18 +73,32 @@ public class FrequencyLimitAspect {
      * 是否允许
      *
      * @param joinPoint ProceedingJoinPoint
-     * @param frequencyLimit FrequencyLimit
+     * @param frequencyLimits FrequencyLimit[]
      * @return 是否允许
      */
-    private boolean isAllowed(ProceedingJoinPoint joinPoint, FrequencyLimit frequencyLimit) {
-        // 获取键
-        String key = getKey(joinPoint, frequencyLimit);
-        // 是否允许
-        if (frequencyLimit.cron().equals("")) {
-            return frequencyLimiter.isAllowed(
-                    key, frequencyLimit.frequency(), frequencyLimit.time(),frequencyLimit.unit());
+    private boolean isAllowed(ProceedingJoinPoint joinPoint, FrequencyLimit[] frequencyLimits) {
+        FrequencyLimiterType[] frequencyLimiterTypes = new FrequencyLimiterType[frequencyLimits.length];
+        List<String> keys = new ArrayList<>(frequencyLimits.length);
+        long[] frequencies = new long[frequencyLimits.length];
+        long[] timeouts = new long[frequencyLimits.length];
+        for (int i = 0; i < frequencyLimits.length; i++) {
+            if (frequencyLimits[i].cron().equals("")) {
+                frequencyLimiterTypes[i] = FrequencyLimiterType.RANGE_REFRESH;
+                timeouts[i] = TimeoutUtils.toMillis(frequencyLimits[i].time(), frequencyLimits[i].unit());
+            } else {
+                frequencyLimiterTypes[i] = FrequencyLimiterType.FIXED_POINT_REFRESH;
+                String cron = frequencyLimits[i].cron();
+                CronSequenceGenerator cronSequenceGenerator = cronSequenceGeneratorMap.getOrDefault(
+                        cron, cronSequenceGeneratorMap.put(cron, new CronSequenceGenerator(cron)));
+                Date now = new Date();
+                Date next = cronSequenceGenerator.next(now);
+                timeouts[i] = next.getTime() - now.getTime();
+            }
+            keys.add(getKey(joinPoint, frequencyLimits[i]));
+            frequencies[i] = frequencyLimits[i].frequency();
         }
-        return frequencyLimiter.isAllowed(key, frequencyLimit.frequency(), frequencyLimit.cron());
+
+        return frequencyLimiter.isAllowed(frequencyLimiterTypes, keys, frequencies, timeouts);
     }
 
     /**

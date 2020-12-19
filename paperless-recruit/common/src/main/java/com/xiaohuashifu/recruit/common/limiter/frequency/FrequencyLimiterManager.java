@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.common.limiter.frequency;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,9 +17,12 @@ public class FrequencyLimiterManager implements FrequencyLimiter {
 
     private final RangeRefreshFrequencyLimiter rangeRefreshFrequencyLimiter;
 
+    private final RepeatableFrequencyLimiter repeatableFrequencyLimiter;
+
     public FrequencyLimiterManager(StringRedisTemplate stringRedisTemplate) {
         this.fixedPointRefreshFrequencyLimiter = new FixedPointRefreshFrequencyLimiter(stringRedisTemplate);
         this.rangeRefreshFrequencyLimiter = new RangeRefreshFrequencyLimiter(stringRedisTemplate);
+        this.repeatableFrequencyLimiter = new RepeatableFrequencyLimiter(stringRedisTemplate);
     }
 
     /**
@@ -50,6 +54,22 @@ public class FrequencyLimiterManager implements FrequencyLimiter {
      */
     public boolean isAllowed(String key, long frequency, String cron) {
         return fixedPointRefreshFrequencyLimiter.isAllowed(key, frequency, cron);
+    }
+
+    /**
+     * 查询多个键是否被允许操作
+     *
+     * 只要其中一个不被允许，就会失败，并释放已经获取的 tokens
+     *
+     * @param frequencyLimiterTypes 限频类型
+     * @param keys 需要限频的键
+     * @param frequencies 频率
+     * @param timeouts 过期时间
+     * @return 是否允许
+     */
+    public boolean isAllowed(FrequencyLimiterType[] frequencyLimiterTypes, List<String> keys, long[] frequencies,
+                             long[] timeouts) {
+        return repeatableFrequencyLimiter.isAllowed(frequencyLimiterTypes, keys, frequencies, timeouts);
     }
 
 }

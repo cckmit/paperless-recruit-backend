@@ -38,7 +38,7 @@ public class RangeRefreshFrequencyLimiter implements FrequencyLimiter{
                     "end\n" +
                     "\n" +
                     "-- 如果未过期的 token 数量大于等于 frequency，return false\n" +
-                    "local unexpiredTokensCount = #tokens - expiredTokensCount;\n" +
+                    "local unexpiredTokensCount = #tokens - expiredTokensCount\n" +
                     "if unexpiredTokensCount >= tonumber(ARGV[1]) then\n" +
                     "    return false\n" +
                     "end\n" +

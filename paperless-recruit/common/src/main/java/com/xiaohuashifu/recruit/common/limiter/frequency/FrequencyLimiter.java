@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.common.limiter.frequency;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,6 +39,22 @@ public interface FrequencyLimiter {
      * @return 是否允许
      */
     default boolean isAllowed(String key, long frequency, String cron) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 查询多个键是否被允许操作
+     *
+     * 只要其中一个不被允许，就会失败，并释放已经获取的 tokens
+     *
+     * @param frequencyLimiterTypes 限频类型
+     * @param keys 需要限频的键
+     * @param frequencies 频率
+     * @param timeouts 过期时间
+     * @return 是否允许
+     */
+    default boolean isAllowed(FrequencyLimiterType[] frequencyLimiterTypes, List<String> keys, long[] frequencies,
+                             long[] timeouts) {
         throw new UnsupportedOperationException();
     }
 

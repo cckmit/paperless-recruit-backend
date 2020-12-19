@@ -7,11 +7,8 @@ import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.po.CreateImageAuthCodePO;
 import com.xiaohuashifu.recruit.external.api.service.ImageAuthCodeService;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.RedisScript;
 
-import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -37,20 +34,8 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
      */
     private static final String IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY = "image-auth-code:increment-id";
 
-    /**
-     * 图形验证码自增 id Redis 里的初始值
-     */
-    private static final String IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_START_VALUE = "0";
-
-    /**
-     * 自增id的脚本
-     */
-    private final RedisScript<Long> incrementIdRedisScript;
-
-    public ImageAuthCodeServiceImpl(StringRedisTemplate redisTemplate,
-                                    @Qualifier("incrementIdRedisScript") RedisScript<Long> incrementIdRedisScript) {
+    public ImageAuthCodeServiceImpl(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.incrementIdRedisScript = incrementIdRedisScript;
     }
 
     /**
@@ -70,9 +55,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
                 createImageAuthCodePO.getLength());
 
         // 创建图形验证码编号
-        Long incrementId = redisTemplate.execute(incrementIdRedisScript,
-                Collections.singletonList(IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY),
-                IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_START_VALUE);
+        Long incrementId = redisTemplate.opsForValue().increment(IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY);
         String id = UUID.randomUUID().toString() + incrementId;
 
         // 添加验证码到缓存

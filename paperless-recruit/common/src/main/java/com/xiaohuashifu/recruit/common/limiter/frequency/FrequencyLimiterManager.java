@@ -1,14 +1,25 @@
 package com.xiaohuashifu.recruit.common.limiter.frequency;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
+
 import java.util.concurrent.TimeUnit;
 
 /**
- * 限频器
+ * 限频器管理器
  *
  * @author xhsf
  * @create 2020/12/18 15:41
  */
-public interface FrequencyLimiter {
+public class FrequencyLimiterManager implements FrequencyLimiter {
+
+    private final FixedPointRefreshFrequencyLimiter fixedPointRefreshFrequencyLimiter;
+
+    private final RangeRefreshFrequencyLimiter rangeRefreshFrequencyLimiter;
+
+    public FrequencyLimiterManager(StringRedisTemplate stringRedisTemplate) {
+        this.fixedPointRefreshFrequencyLimiter = new FixedPointRefreshFrequencyLimiter(stringRedisTemplate);
+        this.rangeRefreshFrequencyLimiter = new RangeRefreshFrequencyLimiter(stringRedisTemplate);
+    }
 
     /**
      * 查询一个键是否被允许操作，范围刷新
@@ -22,8 +33,8 @@ public interface FrequencyLimiter {
      * @param unit      时间单位
      * @return 是否允许
      */
-    default boolean isAllowed(String key, long frequency, long time, TimeUnit unit) {
-        throw new UnsupportedOperationException();
+    public boolean isAllowed(String key, long frequency, long time, TimeUnit unit) {
+        return rangeRefreshFrequencyLimiter.isAllowed(key, frequency, time, unit);
     }
 
     /**
@@ -37,8 +48,8 @@ public interface FrequencyLimiter {
      * @param cron cron表达式
      * @return 是否允许
      */
-    default boolean isAllowed(String key, long frequency, String cron) {
-        throw new UnsupportedOperationException();
+    public boolean isAllowed(String key, long frequency, String cron) {
+        return fixedPointRefreshFrequencyLimiter.isAllowed(key, frequency, cron);
     }
 
 }

@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -13,6 +14,7 @@ import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,22 +47,57 @@ public class FrequencyLimitAspect {
      * @param joinPoint ProceedingJoinPoint
      * @return Object
      */
-    @Around("@annotation(frequencyLimit)")
-    public Object handler(ProceedingJoinPoint joinPoint, FrequencyLimit frequencyLimit) throws Throwable {
-        // 获取键
-        String key = getKey(joinPoint, frequencyLimit);
-
-        // 尝试获取 token
-        boolean isAllowed = frequencyLimiter.isAllowed(
-                key,frequencyLimit.frequency(), frequencyLimit.time(),frequencyLimit.unit());
-        if (!isAllowed) {
-            String errorMessageExpression = frequencyLimit.errorMessage();
-            String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
-            return Result.fail(ErrorCodeEnum.TOO_MANY_REQUESTS, errorMessage);
+    @Around("@annotation(FrequencyLimits) || @annotation(FrequencyLimit)")
+    public Object handler(ProceedingJoinPoint joinPoint) throws Throwable {
+        FrequencyLimit[] frequencyLimits = getFrequencyLimits(joinPoint);
+        for (FrequencyLimit frequencyLimit : frequencyLimits) {
+            boolean isAllowed = isAllowed(joinPoint, frequencyLimit);
+            if (!isAllowed) {
+                String errorMessageExpression = frequencyLimit.errorMessage();
+                String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
+                return Result.fail(ErrorCodeEnum.TOO_MANY_REQUESTS, errorMessage);
+            }
         }
 
         // 执行业务逻辑
         return joinPoint.proceed();
+    }
+
+    /**
+     * 是否允许
+     *
+     * @param joinPoint ProceedingJoinPoint
+     * @param frequencyLimit FrequencyLimit
+     * @return 是否允许
+     */
+    private boolean isAllowed(ProceedingJoinPoint joinPoint, FrequencyLimit frequencyLimit) {
+        // 获取键
+        String key = getKey(joinPoint, frequencyLimit);
+        // 是否允许
+        if (frequencyLimit.cron().equals("")) {
+            return frequencyLimiter.isAllowed(
+                    key, frequencyLimit.frequency(), frequencyLimit.time(),frequencyLimit.unit());
+        }
+        return frequencyLimiter.isAllowed(key, frequencyLimit.frequency(), frequencyLimit.cron());
+    }
+
+    /**
+     * 获取限频注解列表
+     *
+     * @param joinPoint ProceedingJoinPoint
+     * @return FrequencyLimit[]
+     */
+    private FrequencyLimit[] getFrequencyLimits(ProceedingJoinPoint joinPoint) {
+        Method method;
+        try {
+            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+            method = joinPoint.getTarget()
+                    .getClass()
+                    .getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
+            return method.getAnnotationsByType(FrequencyLimit.class);
+        } catch (NoSuchMethodException ignored) {
+        }
+        return new FrequencyLimit[]{};
     }
 
     /**

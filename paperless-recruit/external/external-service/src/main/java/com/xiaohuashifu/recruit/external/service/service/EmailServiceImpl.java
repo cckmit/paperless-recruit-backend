@@ -1,5 +1,8 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
+import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimit;
+import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiter;
+import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiterManager;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.AuthCodeUtils;
@@ -10,6 +13,7 @@ import com.xiaohuashifu.recruit.external.api.po.SendSimpleEmailPO;
 import com.xiaohuashifu.recruit.external.api.po.SendTemplateEmailPO;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -130,6 +134,9 @@ public class EmailServiceImpl implements EmailService {
         return Result.success();
     }
 
+    @Autowired
+    private FrequencyLimiter frequencyLimiter;
+
     /**
      * 发送邮箱验证码服务
      * 该服务会把邮箱验证码进行缓存
@@ -140,6 +147,9 @@ public class EmailServiceImpl implements EmailService {
      * @param createAndSendEmailAuthCodePO 创建并发送邮箱验证码参数对象
      * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示发送成功，否则发送失败
      */
+    @FrequencyLimit(value = "email:auth-code:#{#createAndSendEmailAuthCodePO.email}", frequency = 1, time = 60)
+    @FrequencyLimit(value = "email:auth-code:#{#createAndSendEmailAuthCodePO.email}", frequency = 5,
+            cron = "0 0 0/1 * * ?")
     @Override
     public Result<Void> createAndSendEmailAuthCode(CreateAndSendEmailAuthCodePO createAndSendEmailAuthCodePO) {
         // 构造发送邮件的参数

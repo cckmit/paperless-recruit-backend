@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.external.service.config;
 
 import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimitAspect;
 import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiter;
+import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiterManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -46,7 +47,7 @@ public class RedisConfig {
      */
     @Bean
     public FrequencyLimiter frequencyLimiter(StringRedisTemplate stringRedisTemplate) {
-        return new FrequencyLimiter(stringRedisTemplate);
+        return new FrequencyLimiterManager(stringRedisTemplate);
     }
 
     /**

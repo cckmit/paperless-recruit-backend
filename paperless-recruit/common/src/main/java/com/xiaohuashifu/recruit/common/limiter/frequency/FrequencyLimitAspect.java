@@ -57,7 +57,7 @@ public class FrequencyLimitAspect {
      * @return Object
      */
     @Around("@annotation(FrequencyLimits) || @annotation(FrequencyLimit)")
-    public Object handler(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object isAllowed(ProceedingJoinPoint joinPoint) throws Throwable {
         FrequencyLimit[] frequencyLimits = getFrequencyLimits(joinPoint);
         int notAllowIndex = isAllowed(joinPoint, frequencyLimits);
         if (notAllowIndex != -1) {

@@ -103,10 +103,10 @@ public class RepeatableFrequencyLimiter implements FrequencyLimiter {
             "            redis.call('DEL', token)\n" +
             "        end\n" +
             "    end\n" +
-            "    return false\n" +
+            "    return tokenMapSize\n" +
             "end\n" +
             "\n" +
-            "return true";
+            "return -1";
 
     /**
      * StringRedisTemplate
@@ -116,13 +116,13 @@ public class RepeatableFrequencyLimiter implements FrequencyLimiter {
     /**
      * 可获取多个 key 的限频脚本
      */
-    private final RedisScript<Boolean> repeatableFrequencyLimitRedisScript;
+    private final RedisScript<Long> repeatableFrequencyLimitRedisScript;
 
     public RepeatableFrequencyLimiter(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
         // 可获取多个 key 的限频脚本
-        DefaultRedisScript<Boolean> repeatableFrequencyLimitRedisScript = new DefaultRedisScript<>();
-        repeatableFrequencyLimitRedisScript.setResultType(Boolean.class);
+        DefaultRedisScript<Long> repeatableFrequencyLimitRedisScript = new DefaultRedisScript<>();
+        repeatableFrequencyLimitRedisScript.setResultType(Long.class);
         repeatableFrequencyLimitRedisScript.setScriptText(REPEATABLE_FREQUENCY_LIMIT_LUA);
         this.repeatableFrequencyLimitRedisScript = repeatableFrequencyLimitRedisScript;
     }
@@ -136,9 +136,9 @@ public class RepeatableFrequencyLimiter implements FrequencyLimiter {
      * @param keys 需要限频的键
      * @param frequencies 频率
      * @param timeouts 过期时间
-     * @return 是否允许
+     * @return 是否允许，-1表示允许，其他表示获取失败时的下标
      */
-    public boolean isAllowed(FrequencyLimiterType[] frequencyLimiterTypes, List<String> keys, long[] frequencies,
+    public int isAllowed(FrequencyLimiterType[] frequencyLimiterTypes, List<String> keys, long[] frequencies,
                              long[] timeouts) {
         String[] args = new String[frequencyLimiterTypes.length * 3];
         for (int i = 0; i < frequencies.length; i++) {
@@ -157,7 +157,7 @@ public class RepeatableFrequencyLimiter implements FrequencyLimiter {
                 keys.set(i, RANGE_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX +  timeouts[i] + ":" + keys.get(i));
             }
         }
-        return stringRedisTemplate.execute(repeatableFrequencyLimitRedisScript, keys, args);
+        return stringRedisTemplate.execute(repeatableFrequencyLimitRedisScript, keys, args).intValue();
     }
     
 }

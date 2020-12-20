@@ -59,8 +59,10 @@ public class FrequencyLimitAspect {
     @Around("@annotation(FrequencyLimits) || @annotation(FrequencyLimit)")
     public Object handler(ProceedingJoinPoint joinPoint) throws Throwable {
         FrequencyLimit[] frequencyLimits = getFrequencyLimits(joinPoint);
-        if (!isAllowed(joinPoint, frequencyLimits)) {
-            String errorMessageExpression = frequencyLimits[0].errorMessage();
+        int notAllowIndex = isAllowed(joinPoint, frequencyLimits);
+        if (notAllowIndex != -1) {
+            System.out.println(frequencyLimits[notAllowIndex].errorMessage());
+            String errorMessageExpression = frequencyLimits[notAllowIndex].errorMessage();
             String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
             return Result.fail(ErrorCodeEnum.TOO_MANY_REQUESTS, errorMessage);
         }
@@ -74,9 +76,9 @@ public class FrequencyLimitAspect {
      *
      * @param joinPoint ProceedingJoinPoint
      * @param frequencyLimits FrequencyLimit[]
-     * @return 是否允许
+     * @return 是否允许，-1表示允许，其他表示获取失败时的下标
      */
-    private boolean isAllowed(ProceedingJoinPoint joinPoint, FrequencyLimit[] frequencyLimits) {
+    private int isAllowed(ProceedingJoinPoint joinPoint, FrequencyLimit[] frequencyLimits) {
         FrequencyLimiterType[] frequencyLimiterTypes = new FrequencyLimiterType[frequencyLimits.length];
         List<String> keys = new ArrayList<>(frequencyLimits.length);
         long[] frequencies = new long[frequencyLimits.length];

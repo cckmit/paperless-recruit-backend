@@ -72,8 +72,8 @@ if tokenMapSize < #KEYS then
             redis.call('DEL', token)
         end
     end
-    return false
+    return tokenMapSize
 end
 
-return true
+return -1
 

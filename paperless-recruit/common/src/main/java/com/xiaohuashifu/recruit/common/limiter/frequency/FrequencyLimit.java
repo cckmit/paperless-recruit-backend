@@ -1,7 +1,5 @@
 package com.xiaohuashifu.recruit.common.limiter.frequency;
 
-import org.springframework.scheduling.annotation.Scheduled;
-
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 

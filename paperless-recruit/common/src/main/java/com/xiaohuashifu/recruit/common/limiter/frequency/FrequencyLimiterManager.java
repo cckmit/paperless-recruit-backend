@@ -65,9 +65,9 @@ public class FrequencyLimiterManager implements FrequencyLimiter {
      * @param keys 需要限频的键
      * @param frequencies 频率
      * @param timeouts 过期时间
-     * @return 是否允许
+     * @return 是否允许，-1表示允许，其他表示获取失败时的下标
      */
-    public boolean isAllowed(FrequencyLimiterType[] frequencyLimiterTypes, List<String> keys, long[] frequencies,
+    public int isAllowed(FrequencyLimiterType[] frequencyLimiterTypes, List<String> keys, long[] frequencies,
                              long[] timeouts) {
         return repeatableFrequencyLimiter.isAllowed(frequencyLimiterTypes, keys, frequencies, timeouts);
     }

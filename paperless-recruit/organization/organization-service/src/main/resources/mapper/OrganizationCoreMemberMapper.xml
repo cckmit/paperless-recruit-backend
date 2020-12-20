@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.organization.service.dao.OrganizationCoreMemberMapper">
+
+    <resultMap id="organizationCoreMember"
+               type="com.xiaohuashifu.recruit.organization.service.do0.OrganizationCoreMemberDO">
+        <id property="id" column="id"/>
+        <result property="organizationId" column="organization_id"/>
+        <result property="organizationMemberId" column="organization_member_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="organizationCoreMember">
+        id, organization_id, organization_member_id, create_time, update_time
+    </sql>
+
+    <insert id="insertOrganizationCoreMember" keyProperty="id">
+        insert into organization_core_member(organization_id, organization_member_id)
+        values(#{organizationId}, #{organizationMemberId})
+    </insert>
+
+    <delete id="deleteOrganizationCoreMember">
+        delete from organization_core_member
+        where id = #{id}
+    </delete>
+
+    <select id="getOrganizationCoreMember" resultMap="organizationCoreMember">
+        select <include refid="organizationCoreMember"/>
+        from organization_core_member
+        where id = #{id}
+    </select>
+
+    <select id="getOrganizationId" resultType="long">
+        select organization_id
+        from organization_core_member
+        where id = #{id}
+    </select>
+
+    <select id="listOrganizationCoreMembersByOrganizationId" resultMap="organizationCoreMember">
+        select <include refid="organizationCoreMember"/>
+        from organization_core_member
+        where organization_id = #{organizationId}
+    </select>
+
+    <select id="countByOrganizationIdAndOrganizationMemberId" resultType="int">
+        select count(*)
+        from organization_core_member
+        where organization_id = #{organizationId}
+        and organization_member_id = #{organizationMemberId}
+    </select>
+
+    <select id="countByOrganizationId" resultType="int">
+        select count(*)
+        from organization_core_member
+        where organization_id = #{organizationId}
+    </select>
+
+</mapper>

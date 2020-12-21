@@ -42,16 +42,6 @@ public class CollegeServiceImplTest {
     }
 
     @Test
-    public void deleteCollege() {
-        System.out.println(collegeService.deleteCollege(3L));
-    }
-
-    @Test
-    public void deleteMajor() {
-        System.out.println(collegeService.deleteMajor(1L));
-    }
-
-    @Test
     public void getCollege() {
         System.out.println(collegeService.getCollege(1L));
     }

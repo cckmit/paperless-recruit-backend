@@ -50,29 +50,6 @@ public interface CollegeService {
             @Size(max = MajorConstants.MAX_MAJOR_NAME_LENGTH,
                     message = "The length of majorName must not be greater than "
                             + MajorConstants.MAX_MAJOR_NAME_LENGTH + ".") String majorName);
-
-    /**
-     * 删除学院，删除时会删除该学院的所有专业信息
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 对应编号的学院不存在
-     *
-     * @param id 学院编号
-     * @return 删除结果
-     */
-    Result<Void> deleteCollege(@NotNull(message = "The id can't be null.")
-                               @Positive(message = "The id must be greater than 0.") Long id);
-
-    /**
-     * 删除专业
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 对应编号的专业不存在
-     *
-     * @param id 专业编号
-     * @return 删除结果
-     */
-    Result<Void> deleteMajor(@NotNull(message = "The id can't be null.")
-                             @Positive(message = "The id must be greater than 0.") Long id);
-
     /**
      * 获取学院
      *

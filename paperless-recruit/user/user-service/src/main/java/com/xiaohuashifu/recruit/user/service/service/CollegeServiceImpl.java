@@ -92,51 +92,6 @@ public class CollegeServiceImpl implements CollegeService {
     }
 
     /**
-     * 删除学院，删除时会删除该学院的所有专业信息
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 对应编号的学院不存在
-     *
-     * @param id 学院编号
-     * @return 删除结果
-     */
-    @Override
-    public Result<Void> deleteCollege(Long id) {
-        // 查看学院是否存在
-        CollegeDO collegeDO = collegeMapper.getCollege(id);
-        if (collegeDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The college does not exists.");
-        }
-
-        // 删除该学院的所有专业
-        majorMapper.deleteByCollegeId(id);
-
-        // 删除学院
-        collegeMapper.delete(id);
-        return Result.success();
-    }
-
-    /**
-     * 删除专业
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 对应编号的专业不存在
-     *
-     * @param id 专业编号
-     * @return 删除结果
-     */
-    @Override
-    public Result<Void> deleteMajor(Long id) {
-        // 查看专业是否存在
-        MajorDO majorDO = majorMapper.getMajor(id);
-        if (majorDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The major does not exists.");
-        }
-
-        // 删除专业
-        majorMapper.delete(id);
-        return Result.success();
-    }
-
-    /**
      * 获取学院
      *
      * @errorCode InvalidParameter: 请求参数格式错误

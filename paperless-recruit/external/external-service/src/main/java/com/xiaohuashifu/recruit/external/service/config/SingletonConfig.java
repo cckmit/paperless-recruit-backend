@@ -36,4 +36,5 @@ public class SingletonConfig {
         restTemplate.getMessageConverters().add(messageConverter);
         return restTemplate;
     }
+
 }

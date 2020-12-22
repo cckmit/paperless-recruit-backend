@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.common.limiter.frequency;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 限频器
@@ -12,50 +11,29 @@ import java.util.concurrent.TimeUnit;
 public interface FrequencyLimiter {
 
     /**
-     * 查询一个键是否被允许操作，范围刷新
+     * 查询一个键是否被允许操作
      *
-     * 如短信验证码服务使用 isAllowed("15333333333", 10, 1, TimeUnit.DAYS); 表示一天只能发送10次短信验证码
-     * 如短信验证码服务使用 isAllowed("15333333333", 1, 1, TimeUnit.MINUTES); 表示一分钟只能发送1次短信验证码
-     *
-     * @param key       需要限频的键，key的格式最好是 {服务名}:{具体业务名}:{唯一标识符}，如 sms:auth-code:15333333333
+     * @param frequencyLimitType 限频类型
+     * @param key 需要限频的键，key的格式最好是 {服务名}:{具体业务名}:{唯一标识符}，如 sms:auth-code:15333333333
      * @param frequency 频率
-     * @param time      限频时间
-     * @param unit      时间单位
+     * @param expireAt 过期时间戳
+     * @param currentTime 当前时间戳
      * @return 是否允许
      */
-    default boolean isAllowed(String key, long frequency, long time, TimeUnit unit) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * 查询一个键是否被允许操作，固定时间点刷新
-     *
-     * 如短信验证码服务使用 isAllowed("15333333333", 10, 1, TimeUnit.DAYS); 表示一天只能发送10次短信验证码
-     * 如短信验证码服务使用 isAllowed("15333333333", 1, 1, TimeUnit.MINUTES); 表示一分钟只能发送1次短信验证码
-     *
-     * @param key       需要限频的键，key的格式最好是 {服务名}:{具体业务名}:{唯一标识符}，如 sms:auth-code:15333333333
-     * @param frequency 频率
-     * @param cron cron表达式
-     * @return 是否允许
-     */
-    default boolean isAllowed(String key, long frequency, String cron) {
-        throw new UnsupportedOperationException();
-    }
+     boolean isAllowed(FrequencyLimitType frequencyLimitType, String key, long frequency, long expireAt,
+                       long currentTime);
 
     /**
      * 查询多个键是否被允许操作
      *
      * 只要其中一个不被允许，就会失败，并释放已经获取的 tokens
      *
-     * @param frequencyLimiterTypes 限频类型
      * @param keys 需要限频的键
-     * @param frequencies 频率
-     * @param timeouts 过期时间
+     * @param args 参数列表，格式为 [frequency1, expireAt1, frequencyLimitType1,
+     *             frequency2, expireAt2, frequencyLimitType2, ..., frequencyN, expireAtN, frequencyLimitTypeN,
+     *             currentTime]
      * @return 是否允许，-1表示允许，其他表示获取失败时的下标
      */
-    default int isAllowed(FrequencyLimiterType[] frequencyLimiterTypes, List<String> keys, long[] frequencies,
-                             long[] timeouts) {
-        throw new UnsupportedOperationException();
-    }
+    int isAllowed(List<String> keys, String[] args);
 
 }

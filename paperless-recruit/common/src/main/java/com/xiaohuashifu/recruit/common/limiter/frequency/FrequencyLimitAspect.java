@@ -2,26 +2,23 @@ package com.xiaohuashifu.recruit.common.limiter.frequency;
 
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.util.SpELUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.CodeSignature;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.data.redis.core.TimeoutUtils;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.common.TemplateParserContext;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.scheduling.support.CronSequenceGenerator;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
- * 描述：限频切面，配合 {@link FrequencyLimit} 可以便捷的使用限频
+ * 描述：限频切面，配合 {@link FixedDelayRefreshFrequencyLimit}、{@link FixedPointRefreshFrequencyLimit}、
+ *                  {@link RangeRefreshFrequencyLimit} 可以便捷的使用限频
  *
  * @author xhsf
  * @create 2020/12/18 21:10
@@ -33,16 +30,6 @@ public class FrequencyLimitAspect {
      * 限频器
      */
     private final FrequencyLimiter frequencyLimiter;
-
-    /**
-     * EL 表达式解析器
-     */
-    private static final ExpressionParser expressionParser = new SpelExpressionParser();
-
-    /**
-     * cron 表达式的 CronSequenceGenerator 的缓存
-     */
-    private final Map<String, CronSequenceGenerator> cronSequenceGeneratorMap = new HashMap<>();
 
     public FrequencyLimitAspect(FrequencyLimiter frequencyLimiter) {
         this.frequencyLimiter = frequencyLimiter;
@@ -56,14 +43,14 @@ public class FrequencyLimitAspect {
      * @param joinPoint ProceedingJoinPoint
      * @return Object
      */
-    @Around("@annotation(FrequencyLimits) || @annotation(FrequencyLimit)")
+    @Around("@annotation(FixedDelayRefreshFrequencyLimit.List) || @annotation(FixedDelayRefreshFrequencyLimit) " +
+            "|| @annotation(FixedPointRefreshFrequencyLimit.List) || @annotation(FixedPointRefreshFrequencyLimit) " +
+            "|| @annotation(RangeRefreshFrequencyLimit.List) || @annotation(RangeRefreshFrequencyLimit)")
     public Object isAllowed(ProceedingJoinPoint joinPoint) throws Throwable {
-        FrequencyLimit[] frequencyLimits = getFrequencyLimits(joinPoint);
+        List<Annotation> frequencyLimits = getFrequencyLimits(joinPoint);
         int notAllowIndex = isAllowed(joinPoint, frequencyLimits);
         if (notAllowIndex != -1) {
-            System.out.println(frequencyLimits[notAllowIndex].errorMessage());
-            String errorMessageExpression = frequencyLimits[notAllowIndex].errorMessage();
-            String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
+            String errorMessage = getErrorMessage(joinPoint, frequencyLimits.get(notAllowIndex));
             return Result.fail(ErrorCodeEnum.TOO_MANY_REQUESTS, errorMessage);
         }
 
@@ -75,113 +62,121 @@ public class FrequencyLimitAspect {
      * 是否允许
      *
      * @param joinPoint ProceedingJoinPoint
-     * @param frequencyLimits FrequencyLimit[]
+     * @param frequencyLimits List<Annotation>
      * @return 是否允许，-1表示允许，其他表示获取失败时的下标
      */
-    private int isAllowed(ProceedingJoinPoint joinPoint, FrequencyLimit[] frequencyLimits) {
-        FrequencyLimiterType[] frequencyLimiterTypes = new FrequencyLimiterType[frequencyLimits.length];
-        List<String> keys = new ArrayList<>(frequencyLimits.length);
-        long[] frequencies = new long[frequencyLimits.length];
-        long[] timeouts = new long[frequencyLimits.length];
-        for (int i = 0; i < frequencyLimits.length; i++) {
-            // 如果 cron 是空，表示是 RANGE_REFRESH 类型的限频
-            if (frequencyLimits[i].cron().equals("")) {
-                frequencyLimiterTypes[i] = FrequencyLimiterType.RANGE_REFRESH;
-                timeouts[i] = TimeoutUtils.toMillis(frequencyLimits[i].refreshTime(), frequencyLimits[i].timeUnit());
+    private int isAllowed(ProceedingJoinPoint joinPoint, List<Annotation> frequencyLimits) {
+        List<String> keys = new ArrayList<>(frequencyLimits.size());
+        String[] args = new String[frequencyLimits.size() * 3 + 1];
+        Date now = new Date();
+        long currentTime = now.getTime();
+        args[frequencyLimits.size() * 3] = String.valueOf(currentTime);
+        for (int i = 0; i < frequencyLimits.size(); i++) {
+            // 范围刷新限频
+            if (frequencyLimits.get(i) instanceof RangeRefreshFrequencyLimit) {
+                RangeRefreshFrequencyLimit rangeRefreshFrequencyLimit =
+                        (RangeRefreshFrequencyLimit) frequencyLimits.get(i);
+                keys.add(getKey(joinPoint, rangeRefreshFrequencyLimit.key(), rangeRefreshFrequencyLimit.parameters()));
+                args[i * 3] = String.valueOf(rangeRefreshFrequencyLimit.frequency());
+                args[i * 3 + 1] = String.valueOf(FrequencyLimiterUtils.getExpireAt(
+                        rangeRefreshFrequencyLimit.refreshTime(), rangeRefreshFrequencyLimit.timeUnit(), currentTime));
+                args[i * 3 + 2] = FrequencyLimitType.RANGE_REFRESH.name();
             }
-            // 否则是 FIXED_POINT_REFRESH 类型的限频，需要解析 cron
+            // 固定时间点刷新限频
+            else if (frequencyLimits.get(i) instanceof FixedPointRefreshFrequencyLimit) {
+                FixedPointRefreshFrequencyLimit fixedPointRefreshFrequencyLimit =
+                        (FixedPointRefreshFrequencyLimit) frequencyLimits.get(i);
+                keys.add(getKey(joinPoint, fixedPointRefreshFrequencyLimit.key(),
+                        fixedPointRefreshFrequencyLimit.parameters()));
+                args[i * 3] = String.valueOf(fixedPointRefreshFrequencyLimit.frequency());
+                args[i * 3 + 1] = String.valueOf(FrequencyLimiterUtils.getExpireAt(
+                        fixedPointRefreshFrequencyLimit.cron(), now));
+                args[i * 3 + 2] = FrequencyLimitType.FIXED_POINT_REFRESH.name();
+            }
+            // 固定延迟刷新限频
             else {
-                frequencyLimiterTypes[i] = FrequencyLimiterType.FIXED_POINT_REFRESH;
-                String cron = frequencyLimits[i].cron();
-                CronSequenceGenerator cronSequenceGenerator = cronSequenceGeneratorMap.getOrDefault(
-                        cron, cronSequenceGeneratorMap.put(cron, new CronSequenceGenerator(cron)));
-                Date now = new Date();
-                Date next = cronSequenceGenerator.next(now);
-                timeouts[i] = next.getTime() - now.getTime();
+                FixedDelayRefreshFrequencyLimit fixedDelayRefreshFrequencyLimit =
+                        (FixedDelayRefreshFrequencyLimit) frequencyLimits.get(i);
+                keys.add(getKey(joinPoint, fixedDelayRefreshFrequencyLimit.key(),
+                        fixedDelayRefreshFrequencyLimit.parameters()));
+                args[i * 3] = String.valueOf(fixedDelayRefreshFrequencyLimit.frequency());
+                args[i * 3 + 1] = String.valueOf(FrequencyLimiterUtils.getExpireAt(
+                        fixedDelayRefreshFrequencyLimit.refreshTime(), fixedDelayRefreshFrequencyLimit.timeUnit(),
+                        currentTime));
+                args[i * 3 + 2] = FrequencyLimitType.FIXED_DELAY_REFRESH.name();
             }
-            keys.add(getKey(joinPoint, frequencyLimits[i]));
-            frequencies[i] = frequencyLimits[i].frequency();
         }
 
         // 判断是否允许
-        return frequencyLimiter.isAllowed(frequencyLimiterTypes, keys, frequencies, timeouts);
+        return frequencyLimiter.isAllowed(keys, args);
     }
 
     /**
      * 获取限频注解列表
      *
      * @param joinPoint ProceedingJoinPoint
-     * @return FrequencyLimit[]
+     * @return List<Annotation>
      */
-    private FrequencyLimit[] getFrequencyLimits(ProceedingJoinPoint joinPoint) {
+    private List<Annotation> getFrequencyLimits(ProceedingJoinPoint joinPoint) {
         Method method;
         try {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             method = joinPoint.getTarget()
                     .getClass()
                     .getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
-            return method.getAnnotationsByType(FrequencyLimit.class);
+            Annotation[] rangeRefreshFrequencyLimits =
+                    method.getAnnotationsByType(RangeRefreshFrequencyLimit.class);
+            Annotation[] fixedPointRefreshFrequencyLimits =
+                    method.getAnnotationsByType(FixedPointRefreshFrequencyLimit.class);
+            Annotation[] fixedDelayRefreshFrequencyLimits =
+                    method.getAnnotationsByType(FixedDelayRefreshFrequencyLimit.class);
+            List<Annotation> frequencyLimits = new ArrayList<>(rangeRefreshFrequencyLimits.length
+                    + fixedPointRefreshFrequencyLimits.length + fixedDelayRefreshFrequencyLimits.length);
+            frequencyLimits.addAll(Arrays.asList(rangeRefreshFrequencyLimits));
+            frequencyLimits.addAll(Arrays.asList(fixedPointRefreshFrequencyLimits));
+            frequencyLimits.addAll(Arrays.asList(fixedDelayRefreshFrequencyLimits));
+            return frequencyLimits;
         } catch (NoSuchMethodException ignored) {
         }
-        return new FrequencyLimit[]{};
+        return new ArrayList<>();
+    }
+
+    /**
+     * 获取错误信息
+     *
+     * @param joinPoint ProceedingJoinPoint
+     * @param frequencyLimit frequencyLimit
+     * @return 错误信息
+     */
+    private String getErrorMessage(ProceedingJoinPoint joinPoint, Annotation frequencyLimit) {
+        String errorMessageExpression;
+        if (frequencyLimit instanceof RangeRefreshFrequencyLimit) {
+            errorMessageExpression = ((RangeRefreshFrequencyLimit) frequencyLimit).errorMessage();
+        } else if (frequencyLimit instanceof FixedPointRefreshFrequencyLimit) {
+            errorMessageExpression = ((FixedPointRefreshFrequencyLimit) frequencyLimit).errorMessage();
+        } else {
+            errorMessageExpression = ((FixedDelayRefreshFrequencyLimit) frequencyLimit).errorMessage();
+        }
+        return SpELUtils.getExpressionValue(errorMessageExpression, joinPoint);
     }
 
     /**
      * 获取限频的键
      *
      * @param joinPoint ProceedingJoinPoint
-     * @param frequencyLimit FrequencyLimit
+     * @param key Key
+     * @param parameters parameters
      * @return 限频键
      */
-    private String getKey(ProceedingJoinPoint joinPoint, FrequencyLimit frequencyLimit) {
-        // 获得键表达式模式
-        String keyExpressionPattern = frequencyLimit.value();
-        // 获取参数
-        Object[] parameters = frequencyLimit.parameters();
+    private String getKey(ProceedingJoinPoint joinPoint, String key, Object[] parameters) {
         // 构造键表达式
-        String keyExpression = keyExpressionPattern;
+        String keyExpression = key;
         // 若有参数则需要填充参数
         if (parameters.length > 0) {
-            keyExpression = MessageFormat.format(keyExpressionPattern, parameters);
+            keyExpression = MessageFormat.format(key, parameters);
         }
         // 获取键
-        return getExpressionValue(keyExpression, joinPoint);
-    }
-
-    /**
-     * 获取表达式的值
-     *
-     * @param expression 表达式
-     * @param joinPoint ProceedingJoinPoint
-     * @return value
-     */
-    private String getExpressionValue(String expression, ProceedingJoinPoint joinPoint) {
-        // 获得方法参数的 Map
-        String[] parameterNames = ((CodeSignature) joinPoint.getSignature()).getParameterNames();
-        Object[] parameterValues = joinPoint.getArgs();
-        Map<String, Object> parameterMap = new HashMap<>();
-        for (int i = 0; i < parameterNames.length; i++) {
-            parameterMap.put(parameterNames[i], parameterValues[i]);
-        }
-
-        // 解析 EL 表达式
-        return getExpressionValue(expression, parameterMap);
-    }
-
-    /**
-     * 获取 EL 表达式的值
-     *
-     * @param elExpression EL 表达式
-     * @param parameterMap 参数名-值 Map
-     * @return 表达式的值
-     */
-    private String getExpressionValue(String elExpression, Map<String, Object> parameterMap) {
-        Expression expression = expressionParser.parseExpression(elExpression, new TemplateParserContext());
-        EvaluationContext context = new StandardEvaluationContext();
-        for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
-            context.setVariable(entry.getKey(), entry.getValue());
-        }
-        return expression.getValue(context, String.class);
+        return SpELUtils.getExpressionValue(keyExpression, joinPoint);
     }
 
 }

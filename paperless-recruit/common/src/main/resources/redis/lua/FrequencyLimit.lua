@@ -1,78 +1,49 @@
 --[[
-KEYS[i] 需要限频的 key
-ARGV[i] 频率
-ARGV[#KEYS + i] 限频时间
-ARGV[#KEYS * 2 + i] 限频类型
+KEYS[1] 需要限频的 key
+ARGV[1] 频率
+ARGV[2] 过期时间戳
+ARGV[3] 限频类型
+ARGV[4] 当前时间戳
 --]]
 
--- 记录已经获取成功的 key: token 键值对
-local tokenMap = {}
+-- 若频率为0直接拒绝请求
+local frequency = tonumber(ARGV[1])
+if frequency == 0 then
+    break
+end
 
--- 循环获取每个 token
-for i = 1, #KEYS do
-    if ARGV[#KEYS * 2 + i] == 'FIXED_POINT_REFRESH' then
-        -- 若频率为0直接拒绝请求
-        if tonumber(ARGV[i]) == 0 then
-            break
-        end
+-- 范围刷新
+if ARGV[3] == 'RANGE_REFRESH' then
+    -- 删除 tokens 里面第一个过期的 token
+    local expireTime = redis.call('LINDEX', KEYS[1], 0)
+    if expireTime and (tonumber(expireTime) <= tonumber(ARGV[4])) then
+        redis.call('LPOP', KEYS[1])
+    end
 
-        -- 获取 key 对应的 token 数量
-        local tokenNumbers = redis.call('GET', KEYS[i])
+    -- 如果 token 的数量大于等于 frequency，直接 return
+    if redis.call('LLEN', KEYS[1]) >= frequency) then
+        return false
+    end
 
-        -- 如果对应 key 存在，且数量大于等于 frequency，直接 break
-        if tokenNumbers and tonumber(tokenNumbers) >= tonumber(ARGV[i]) then
-            break
-        end
+    -- 把 expireAt 作为 value 添加到对于 key 的 list 里，并设置 list 的过期时间
+    redis.call('RPUSH', KEYS[1], ARGV[2])
+    redis.call('PEXPIREAT', KEYS[1], ARGV[2])
+-- 固定时间点刷新和固定延迟刷新
+else
+    -- 获取 key 对应的 token 数量
+    local tokenNumbers = redis.call('GET', KEYS[1])
 
-        -- 增加token数量，设置过期时间
-        redis.call('INCR', KEYS[i])
-        redis.call('PEXPIRE', KEYS[i], ARGV[#KEYS + i])
-        tokenMap[KEYS[i]] = ''
-    else
-        -- 获取 key 对应的 tokens
-        local tokens = redis.call('SMEMBERS', KEYS[i])
+    -- 如果对应 key 存在，且数量大于等于 frequency，直接 return
+    if tokenNumbers and tonumber(tokenNumbers) >= tonumber(ARGV[1]) then
+        return false
+    end
 
-        -- 删除 tokens 里面所有过期的 token
-        local expiredTokensCount = 0
-        for j = 1, #tokens do
-            if not redis.call('GET', tokens[j]) then
-                redis.call('SREM', KEYS[i], tokens[j])
-                expiredTokensCount = expiredTokensCount + 1
-            end
-        end
-
-        -- 如果未过期的 token 数量大于等于 frequency，直接 break
-        local unexpiredTokensCount = #tokens - expiredTokensCount
-        if unexpiredTokensCount >= tonumber(ARGV[i]) then
-            break
-        end
-
-        -- 生成唯一的 token，添加 token 到 redis 里和 key 对应的 set 里，并设置过期时间
-        local token = redis.call('INCR', 'frequency-limit:token:increment-id')
-        redis.call('SET', token, '', 'PX', ARGV[#KEYS + i])
-        redis.call('SADD', KEYS[i], token)
-        redis.call('PEXPIRE', KEYS[i], ARGV[#KEYS + i])
-        tokenMap[KEYS[i]] = token
+    -- 增加 token 数量，设置过期时间
+    redis.call('INCR', KEYS[1])
+    -- 如果原来的并不存在对应 key，需要设置过期时间
+    if not tokenNumbers then
+        redis.call('PEXPIREAT', KEYS[1], ARGV[2])
     end
 end
 
--- 获取 tokenMap 的大小
-local tokenMapSize = 0
-for key, token in pairs(tokenMap) do
-	tokenMapSize = tokenMapSize + 1
-end
-
--- 判断是否获取所有 token 都成功，若失败需要释放已经获取的 token
-if tokenMapSize < #KEYS then
-    for key, token in pairs(tokenMap) do
-        if token == '' then
-            redis.call('INCRBY', key, -1)
-        else
-            redis.call('SREM', key, token)
-            redis.call('DEL', token)
-        end
-    end
-    return tokenMapSize
-end
-
-return -1
+return true

@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.user.service.config;
 
 import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimitAspect;
+import com.xiaohuashifu.recruit.common.limiter.frequency.DefaultFrequencyLimiter;
 import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiter;
-import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimiterManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -24,7 +24,7 @@ public class RedisConfig {
      */
     @Bean
     public FrequencyLimiter frequencyLimiter(StringRedisTemplate stringRedisTemplate) {
-        return new FrequencyLimiterManager(stringRedisTemplate);
+        return new DefaultFrequencyLimiter(stringRedisTemplate);
     }
 
     /**

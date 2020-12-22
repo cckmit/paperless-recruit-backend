@@ -4,7 +4,7 @@ import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
-import com.xiaohuashifu.recruit.common.limiter.frequency.FrequencyLimit;
+import com.xiaohuashifu.recruit.common.limiter.frequency.RangeRefreshFrequencyLimit;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.po.CheckEmailAuthCodePO;
@@ -781,9 +781,9 @@ public class UserServiceImpl implements UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    @FrequencyLimit(value = SIGN_UP_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+    @RangeRefreshFrequencyLimit(key = SIGN_UP_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
             frequency = SMS_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
-    @FrequencyLimit(value = SIGN_UP_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+    @RangeRefreshFrequencyLimit(key = SIGN_UP_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
             frequency = SMS_AUTH_CODE_FREQUENCY_PER_DAY, refreshTime = 1, timeUnit = TimeUnit.DAYS)
     @Override
     public Result<Void> sendSmsAuthCodeForSignUp(String phone) {
@@ -829,9 +829,9 @@ public class UserServiceImpl implements UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    @FrequencyLimit(value = UPDATE_PHONE_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+    @RangeRefreshFrequencyLimit(key = UPDATE_PHONE_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
             frequency = SMS_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
-    @FrequencyLimit(value = UPDATE_PHONE_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+    @RangeRefreshFrequencyLimit(key = UPDATE_PHONE_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
             frequency = SMS_AUTH_CODE_FREQUENCY_PER_DAY, refreshTime = 1, timeUnit = TimeUnit.DAYS)
     @Override
     public Result<Void> sendSmsAuthCodeForUpdatePhone(String phone) {
@@ -855,9 +855,9 @@ public class UserServiceImpl implements UserService {
      * @param phone 手机号码
      * @return 发送结果
      */
-    @FrequencyLimit(value = UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+    @RangeRefreshFrequencyLimit(key = UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
             frequency = SMS_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
-    @FrequencyLimit(value = UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
+    @RangeRefreshFrequencyLimit(key = UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#phone}",
             frequency = SMS_AUTH_CODE_FREQUENCY_PER_DAY, refreshTime = 1, timeUnit = TimeUnit.DAYS)
     @Override
     public Result<Void> sendSmsAuthCodeForUpdatePassword(String phone) {

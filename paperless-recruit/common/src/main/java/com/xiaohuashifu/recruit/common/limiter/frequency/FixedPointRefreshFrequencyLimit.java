@@ -1,10 +1,9 @@
 package com.xiaohuashifu.recruit.common.limiter.frequency;
 
 import java.lang.annotation.*;
-import java.util.concurrent.TimeUnit;
 
 /**
- * 描述: 限频注解，由 {@link FrequencyLimitAspect} 实现
+ * 描述: 固定时间点刷新限频注解，由 {@link FrequencyLimitAspect} 实现
  *
  * @author xhsf
  * @create 2020-12-18 21:16
@@ -12,15 +11,15 @@ import java.util.concurrent.TimeUnit;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Repeatable(FrequencyLimits.class)
-public @interface FrequencyLimit {
+@Repeatable(FixedPointRefreshFrequencyLimit.List.class)
+public @interface FixedPointRefreshFrequencyLimit {
 
     /**
      * 限频的 key，支持 EL 表达式，如#{#user.phone}
      * @see #parameters() 配合该参数，支持占位符填充
      *      如 value = "user:{0}:phone", parameters="#{#user.id}" 会转换成 value = "user:#{#user.id}:phone"
      */
-    String value();
+    String key();
 
     /**
      * 填充到占位符的参数
@@ -54,26 +53,33 @@ public @interface FrequencyLimit {
      *
      * @see org.springframework.scheduling.support.CronSequenceGenerator
      */
-    String cron() default "";
+    String cron();
 
     /**
-     * 频率，默认0
+     * 频率
      */
-    long frequency() default 0;
-
-    /**
-     * 刷新时间，默认0
-     */
-    long refreshTime() default 0;
-
-    /**
-     * 时间单位，默认为秒
-     */
-    TimeUnit timeUnit() default TimeUnit.SECONDS;
+    long frequency();
 
     /**
      * 当获取 token 失败时的错误信息，支持 EL 表达式
      */
     String errorMessage() default "Too many request.";
 
+    /**
+     * 描述: 限频注解数组
+     *
+     * @author xhsf
+     * @create 2020-12-18 21:16
+     */
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @interface List {
+
+        /**
+         * 限频的注解数组
+         */
+        FixedPointRefreshFrequencyLimit[] value();
+
+    }
 }

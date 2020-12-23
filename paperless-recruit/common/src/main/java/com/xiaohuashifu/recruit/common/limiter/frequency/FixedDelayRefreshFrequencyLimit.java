@@ -33,9 +33,9 @@ public @interface FixedDelayRefreshFrequencyLimit {
     long frequency();
 
     /**
-     * 刷新时间
+     * 延迟时间
      */
-    long refreshTime();
+    long delayTime();
 
     /**
      * 时间单位，默认为秒

@@ -1,14 +1,19 @@
 --[[
 KEYS[i] 需要限频的 key
 ARGV[(i - 1) * 3 + 1] 频率
-ARGV[(i - 1) * 3 + 2] 过期时间戳
+ARGV[(i - 1) * 3 + 2] expireAt or refreshTime or delayTime
 ARGV[(i - 1) * 3 + 3] 限频类型
-ARGV[#KEYS * 3 + 1] 当前时间戳
 --]]
+
+-- 由于调用了时间函数，因此需要调用此函数，让 Redis 只复制写命令，避免主从不一致
+redis.replicate_commands()
 
 -- 记录已经获取成功的 key，值是失败时需要进行的操作
 local tokenMap = {}
-local currentTime = tonumber(ARGV[#KEYS * 3 + 1])
+
+-- 获取当前时间
+local now = redis.call('TIME')
+local currentTime = tonumber(now[1]) * 1000 + math.ceil(tonumber(now[2]) / 1000)
 
 -- 最后一个获取成功的 key 下标
 local lastIndex = 0
@@ -35,13 +40,37 @@ for i = 1, #KEYS do
         end
 
         -- 把 expireAt 作为 value 添加到对于 key 的 list 里，并设置 list 的过期时间
-        local expireAt = ARGV[(i - 1) * 3 + 2]
+        local expireAt = currentTime + tonumber(ARGV[(i - 1) * 3 + 2])
         redis.call('RPUSH', KEYS[i], expireAt)
         redis.call('PEXPIREAT', KEYS[i], expireAt)
         tokenMap[KEYS[i]] = 'RPOP'
 
-    -- 固定时间点刷新和固定延迟刷新
+    -- 固定延迟刷新
+    elseif ARGV[(i - 1) * 3 + 3] == 'FIXED_DELAY_REFRESH' then
+        -- 获取 key 对应的 token 数量
+        local tokenNumbers = redis.call('GET', KEYS[i])
+
+        -- 如果对应 key 存在，且数量大于等于 frequency，直接 break
+        if tokenNumbers and tonumber(tokenNumbers) >= frequency then
+            break
+        end
+
+        -- 增加 token 数量，设置过期时间
+        redis.call('INCR', KEYS[i])
+        -- 如果原来的并不存在对应 key，需要设置过期时间
+        if not tokenNumbers then
+            redis.call('PEXPIRE', KEYS[i], ARGV[(i - 1) * 3 + 2])
+        end
+        tokenMap[KEYS[i]] = 'INCRBY'
+
+    -- 固定时间点刷新
     else
+        -- expireAt 小于当前时间直接拒绝
+        local expireAt = tonumber(ARGV[(i - 1) * 3 + 2])
+        if expireAt <= currentTime then
+            break
+        end
+
         -- 获取 key 对应的 token 数量
         local tokenNumbers = redis.call('GET', KEYS[i])
 

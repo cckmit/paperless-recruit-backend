@@ -2,11 +2,13 @@ package com.xiaohuashifu.recruit.common.limiter.frequency;
 
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.util.CronUtils;
 import com.xiaohuashifu.recruit.common.util.SpELUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.data.redis.core.TimeoutUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -78,8 +80,8 @@ public class FrequencyLimitAspect {
                         (RangeRefreshFrequencyLimit) frequencyLimits.get(i);
                 keys.add(getKey(joinPoint, rangeRefreshFrequencyLimit.key(), rangeRefreshFrequencyLimit.parameters()));
                 args[i * 3] = String.valueOf(rangeRefreshFrequencyLimit.frequency());
-                args[i * 3 + 1] = String.valueOf(FrequencyLimiterUtils.getExpireAt(
-                        rangeRefreshFrequencyLimit.refreshTime(), rangeRefreshFrequencyLimit.timeUnit(), currentTime));
+                args[i * 3 + 1] = String.valueOf(TimeoutUtils.toMillis(rangeRefreshFrequencyLimit.refreshTime(),
+                        rangeRefreshFrequencyLimit.timeUnit()));
                 args[i * 3 + 2] = FrequencyLimitType.RANGE_REFRESH.name();
             }
             // 固定时间点刷新限频
@@ -89,8 +91,7 @@ public class FrequencyLimitAspect {
                 keys.add(getKey(joinPoint, fixedPointRefreshFrequencyLimit.key(),
                         fixedPointRefreshFrequencyLimit.parameters()));
                 args[i * 3] = String.valueOf(fixedPointRefreshFrequencyLimit.frequency());
-                args[i * 3 + 1] = String.valueOf(FrequencyLimiterUtils.getExpireAt(
-                        fixedPointRefreshFrequencyLimit.cron(), now));
+                args[i * 3 + 1] = String.valueOf(CronUtils.next(fixedPointRefreshFrequencyLimit.cron(), now).getTime());
                 args[i * 3 + 2] = FrequencyLimitType.FIXED_POINT_REFRESH.name();
             }
             // 固定延迟刷新限频
@@ -100,9 +101,8 @@ public class FrequencyLimitAspect {
                 keys.add(getKey(joinPoint, fixedDelayRefreshFrequencyLimit.key(),
                         fixedDelayRefreshFrequencyLimit.parameters()));
                 args[i * 3] = String.valueOf(fixedDelayRefreshFrequencyLimit.frequency());
-                args[i * 3 + 1] = String.valueOf(FrequencyLimiterUtils.getExpireAt(
-                        fixedDelayRefreshFrequencyLimit.refreshTime(), fixedDelayRefreshFrequencyLimit.timeUnit(),
-                        currentTime));
+                args[i * 3 + 1] = String.valueOf(TimeoutUtils.toMillis(fixedDelayRefreshFrequencyLimit.delayTime(),
+                        fixedDelayRefreshFrequencyLimit.timeUnit()));
                 args[i * 3 + 2] = FrequencyLimitType.FIXED_DELAY_REFRESH.name();
             }
         }

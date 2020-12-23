@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="notification-api" />
         <module name="facade-service" />
+        <module name="registration-service" />
         <module name="external-api" />
         <module name="gateway-api" />
         <module name="user-service" />
@@ -17,6 +18,7 @@
         <module name="external-service" />
         <module name="authentication-api" />
         <module name="authentication-service" />
+        <module name="registration-api" />
         <module name="user-api" />
         <module name="common" />
         <module name="gateway-service" />
@@ -43,6 +45,8 @@
       <module name="gateway-service" options="" />
       <module name="login" options="" />
       <module name="organization-service" options="" />
+      <module name="registration-api" options="" />
+      <module name="registration-service" options="" />
       <module name="user" options="" />
       <module name="user-api" options="" />
       <module name="user-service" options="" />

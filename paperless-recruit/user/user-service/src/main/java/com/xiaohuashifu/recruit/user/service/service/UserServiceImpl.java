@@ -4,6 +4,7 @@ import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
+import com.xiaohuashifu.recruit.common.limiter.frequency.FixedDelayRefreshFrequencyLimit;
 import com.xiaohuashifu.recruit.common.limiter.frequency.RangeRefreshFrequencyLimit;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;

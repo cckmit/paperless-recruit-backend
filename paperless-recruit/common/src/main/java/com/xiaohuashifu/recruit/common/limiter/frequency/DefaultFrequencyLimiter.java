@@ -195,10 +195,11 @@ public class DefaultFrequencyLimiter implements FrequencyLimiter {
     public int isAllowed(List<String> keys, String[] args) {
         for (int i = 0; i < keys.size(); i++) {
             String frequencyLimitType = args[i * 3 + 2];
+            String time = args[i * 3 + 1];
             if (frequencyLimitType.equals(FrequencyLimitType.FIXED_POINT_REFRESH.name())) {
-                keys.set(i, FIXED_POINT_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX + keys.get(i));
+                keys.set(i, FIXED_POINT_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX + time + ":" + keys.get(i));
             } else if (frequencyLimitType.equals(FrequencyLimitType.RANGE_REFRESH.name())){
-                keys.set(i, RANGE_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX + keys.get(i));
+                keys.set(i, RANGE_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX + time + ":" + keys.get(i));
             } else {
                 keys.set(i, FIXED_DELAY_REFRESH_FREQUENCY_LIMIT_REDIS_KEY_PREFIX + keys.get(i));
             }

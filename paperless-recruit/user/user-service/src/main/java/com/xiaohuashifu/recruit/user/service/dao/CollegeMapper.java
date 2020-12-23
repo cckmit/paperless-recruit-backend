@@ -16,8 +16,6 @@ public interface CollegeMapper {
 
     int insertCollege(CollegeDO collegeDO);
 
-    int delete(Long id);
-
     CollegeDO getCollege(Long id);
 
     List<CollegeDO> listColleges(CollegeQuery query);

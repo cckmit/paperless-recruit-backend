@@ -77,6 +77,12 @@
         where college_id = #{collegeId}
     </select>
 
+    <select id="countByMajorName" resultType="int">
+        select count(*)
+        from major
+        where major_name = #{majorName}
+    </select>
+
     <select id="countByCollegeIdAndMajorName" resultType="int">
         select count(*)
         from major

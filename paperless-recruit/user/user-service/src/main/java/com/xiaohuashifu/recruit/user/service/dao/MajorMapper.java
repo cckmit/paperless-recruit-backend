@@ -16,22 +16,13 @@ public interface MajorMapper {
 
     int insertMajor(MajorDO majorDO);
 
-    int deleteByCollegeId(Long collegeId);
-
-    int delete(Long id);
-
     MajorDO getMajor(Long id);
 
     List<MajorDO> listMajorsByCollegeId(Long collegeId);
 
     List<MajorDO> listMajors(MajorQuery query);
 
-    int count(Long id);
-
-    int countByCollegeId(Long collegeId);
-
-    int countByCollegeIdAndMajorName(
-            @Param("collegeId") Long collegeId, @Param("majorName") String majorName);
+    int countByMajorName(String majorName);
 
     int updateMajorName(@Param("id") Long id, @Param("majorName") String majorName);
 

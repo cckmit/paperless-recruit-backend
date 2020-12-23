@@ -43,6 +43,11 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 保存学院
      *
+     * @permission admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              OperationConflict: 该学院名已经存在
+     *
      * @param collegeName 学院名
      * @return CollegeDTO
      */
@@ -51,7 +56,7 @@ public class CollegeServiceImpl implements CollegeService {
         // 判断是否已经存在这个学院
         int count = collegeMapper.countByCollegeName(collegeName);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This college name already exists.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This collegeName already exist.");
         }
 
         // 添加到数据库
@@ -63,8 +68,11 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 保存专业
      *
+     * @permission admin 权限
+     *
      * @errorCode InvalidParameter: 请求参数格式错误
-     *              OperationConflict: 该学院名已经存在
+     *              InvalidParameter.NotExist: 学院不存在
+     *              OperationConflict: 该专业名已经存在
      *
      * @param collegeId 学院编号
      * @param majorName 专业名
@@ -75,14 +83,13 @@ public class CollegeServiceImpl implements CollegeService {
         // 判断这个学院是否存在
         int count = collegeMapper.count(collegeId);
         if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This college does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The college does not exist.");
         }
 
-        // 判断这个学院是否已经存在这个专业
-        count = majorMapper.countByCollegeIdAndMajorName(collegeId, majorName);
+        // 判断这个专业名是否已经存
+        count = majorMapper.countByMajorName(majorName);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
-                    "This major name already exists in the college.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The majorName already exist.");
         }
 
         // 保存到数据库
@@ -214,7 +221,11 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 更新学院名
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 学院编号不存在 | 新旧学院名相同
+     * @permission admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 学院不存在
+     *              OperationConflict.Unmodified: 新旧学院名相同
      *              OperationConflict: 新学院名已经存在
      *
      * @param id 学院编号
@@ -226,19 +237,19 @@ public class CollegeServiceImpl implements CollegeService {
         // 查看学院是否存在
         CollegeDO collegeDO = collegeMapper.getCollege(id);
         if (collegeDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The college does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The college does not exist.");
         }
 
         // 查看新学院名是否和旧学院名相同
         if (Objects.equals(collegeDO.getCollegeName(), newCollegeName)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
-                    "The new college name can't be the same as the old college name.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The newCollegeName can't be the same as the oldCollegeName.");
         }
 
         // 查看新学院名是否存在
         int count = collegeMapper.countByCollegeName(newCollegeName);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This college name already exists.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The collegeName already exist.");
         }
 
         // 更新到数据库
@@ -249,8 +260,12 @@ public class CollegeServiceImpl implements CollegeService {
     /**
      * 更新专业名
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 专业不存在 | 新旧专业名相同
-     *              OperationConflict: 新专业名已经存在该学院
+     * @permission admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 专业不存在
+     *              OperationConflict.Unmodified: 新旧专业名相同
+     *              OperationConflict: 新专业名已经存在
      *
      * @param id 专业编号
      * @param newMajorName 新专业名
@@ -261,24 +276,24 @@ public class CollegeServiceImpl implements CollegeService {
         // 查看专业是否存在
         MajorDO majorDO = majorMapper.getMajor(id);
         if (majorDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The major does not exists.");
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The major does not exist.");
         }
 
         // 查看新专业名是否和旧专业名相同
         if (Objects.equals(majorDO.getMajorName(), newMajorName)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
                     "The new major name can't be the same as the old major name.");
         }
 
         // 查看该学院是否存在新专业名
-        int count = majorMapper.countByCollegeIdAndMajorName(majorDO.getCollegeId(), newMajorName);
+        int count = majorMapper.countByMajorName(newMajorName);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
-                    "This major name already exists in the college.");
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The majorName already exist.");
         }
 
         // 更新到数据库
         majorMapper.updateMajorName(id, newMajorName);
         return getMajor(id);
     }
+
 }

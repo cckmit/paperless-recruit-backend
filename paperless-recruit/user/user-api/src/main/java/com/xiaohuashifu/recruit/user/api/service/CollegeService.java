@@ -23,6 +23,11 @@ public interface CollegeService {
     /**
      * 保存学院
      *
+     * @permission admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              OperationConflict: 该学院名已经存在
+     *
      * @param collegeName 学院名
      * @return CollegeDTO
      */
@@ -30,14 +35,16 @@ public interface CollegeService {
             @NotBlank(message = "The collegeName can't be blank.")
             @Size(max = CollegeConstants.MAX_COLLEGE_NAME_LENGTH,
                     message = "The length of collegeName must not be greater than "
-                            + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".")
-                    String collegeName);
+                            + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".") String collegeName);
 
     /**
      * 保存专业
      *
+     * @permission admin 权限
+     *
      * @errorCode InvalidParameter: 请求参数格式错误
-     *              OperationConflict: 该学院名已经存在
+     *              InvalidParameter.NotExist: 学院不存在
+     *              OperationConflict: 该专业名已经存在
      *
      * @param collegeId 学院编号
      * @param majorName 专业名
@@ -121,7 +128,11 @@ public interface CollegeService {
     /**
      * 更新学院名
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 学院不存在 | 新旧学院名相同
+     * @permission admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 学院不存在
+     *              OperationConflict.Unmodified: 新旧学院名相同
      *              OperationConflict: 新学院名已经存在
      *
      * @param id 学院编号
@@ -134,14 +145,17 @@ public interface CollegeService {
             @NotBlank(message = "The newCollegeName can't be blank.")
             @Size(max = CollegeConstants.MAX_COLLEGE_NAME_LENGTH,
                     message = "The length of newCollegeName must not be greater than "
-                            + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".")
-                    String newCollegeName);
+                            + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".") String newCollegeName);
 
     /**
      * 更新专业名
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 专业不存在 | 新旧专业名相同
-     *              OperationConflict: 新专业名已经存在该学院
+     * @permission admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 专业不存在
+     *              OperationConflict.Unmodified: 新旧专业名相同
+     *              OperationConflict: 新专业名已经存在
      *
      * @param id 专业编号
      * @param newMajorName 新专业名
@@ -153,7 +167,6 @@ public interface CollegeService {
             @NotBlank(message = "The newMajorName can't be blank.")
             @Size(max = MajorConstants.MAX_MAJOR_NAME_LENGTH,
                     message = "The length of newMajorName must not be greater than "
-                            + MajorConstants.MAX_MAJOR_NAME_LENGTH + ".")
-                    String newMajorName);
+                            + MajorConstants.MAX_MAJOR_NAME_LENGTH + ".") String newMajorName);
 
 }

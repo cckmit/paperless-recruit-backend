@@ -77,9 +77,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * 创建部门
      *
-     * @permission 需要 organizationId 是该组织自身
+     * @permission 必须是组织所属用户主体本身
      *
      * @errorCode InvalidParameter: 组织编号或部门猛或部门名缩写格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该组织已经存在该部门名或部门名缩写
      *
      * @param organizationId 部门所属组织的编号
@@ -90,6 +92,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Result<DepartmentDTO> createDepartment(Long organizationId, String departmentName,
                                                   String abbreviationDepartmentName) {
+        // 检查组织状态
+        Result<DepartmentDTO> checkResult = organizationService.checkOrganizationStatus(organizationId);
+        if (checkResult.isFailure()) {
+            return checkResult;
+        }
+
         // 判断组织是否已经有这个部门名了
         int count = departmentMapper.countByOrganizationIdAndDepartmentName(organizationId, departmentName);
         if (count > 0) {
@@ -120,9 +128,11 @@ public class DepartmentServiceImpl implements DepartmentService {
      * 停用部门，只是标识为停用
      * 无法再添加成员到该部门，无法创建招新报名
      *
-     * @permission 该部门需要是该组织的
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
      *
      * @errorCode InvalidParameter: 部门编号错误
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 部门已经被停用
      *
      * @param id 部门编号
@@ -130,6 +140,12 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public Result<DepartmentDTO> deactivateDepartment(Long id) {
+        // 检查部门和组织的状态
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
         // 判断是否已经被停用
         Boolean deactivated = departmentMapper.getDeactivated(id);
         if (Boolean.TRUE.equals(deactivated)) {
@@ -144,10 +160,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * 添加部门的标签
      *
-     * @permission 需要该部门属于该组织
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotAvailable: 标签不可用
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 部门标签数量超过规定数量
      *              OperationConflict.Lock: 获取部门标签的锁失败
@@ -160,6 +178,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     @DistributedLock(value = DEPARTMENT_LABELS_LOCK_KEY_PATTERN, parameters = "#{#departmentId}",
             errorMessage = "Failed to acquire department labels lock.")
     public Result<DepartmentDTO> addLabel(Long departmentId, String labelName) {
+        // 检查部门和组织的状态
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(departmentId);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
         // 判断该部门是否已经存在该标签
         int count = departmentMapper.countLabelByDepartmentIdAndLabelName(departmentId, labelName);
         if (count > 0) {
@@ -199,9 +223,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * 删除部门的标签
      *
-     * @permission 需要该部门属于该组织
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
      *
      * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签不存在
      *
      * @param departmentId 部门编号
@@ -210,6 +236,12 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public Result<DepartmentDTO> removeLabel(Long departmentId, String labelName) {
+        // 检查部门和组织的状态
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(departmentId);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
         // 判断该部门是否拥有该标签
         int count = departmentMapper.countLabelByDepartmentIdAndLabelName(departmentId, labelName);
         if (count < 1) {
@@ -240,21 +272,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND,
                     "The department does not exist.");
         }
-
-        // 封装成 DTO
-        List<String> labels = departmentMapper.listDepartmentLabelNamesByDepartmentId(id);
-        DepartmentDTO departmentDTO = new DepartmentDTO.Builder()
-                .id(departmentDO.getId())
-                .organizationId(departmentDO.getOrganizationId())
-                .departmentName(departmentDO.getDepartmentName())
-                .abbreviationDepartmentName(departmentDO.getAbbreviationDepartmentName())
-                .introduction(departmentDO.getIntroduction())
-                .logoUrl(departmentDO.getLogoUrl())
-                .memberNumber(departmentDO.getMemberNumber())
-                .deactivated(departmentDO.getDeactivated())
-                .labels(labels)
-                .build();
-        return Result.success(departmentDTO);
+        return Result.success(departmentDO2DepartmentDTO(departmentDO));
     }
 
     /**
@@ -270,47 +288,24 @@ public class DepartmentServiceImpl implements DepartmentService {
         List<DepartmentDO> departmentDOList = departmentMapper.listDepartments(query);
         List<DepartmentDTO> departmentDTOList = departmentDOList
                 .stream()
-                .map(departmentDO -> new DepartmentDTO
-                        .Builder()
-                        .id(departmentDO.getId())
-                        .organizationId(departmentDO.getOrganizationId())
-                        .departmentName(departmentDO.getDepartmentName())
-                        .abbreviationDepartmentName(departmentDO.getAbbreviationDepartmentName())
-                        .introduction(departmentDO.getIntroduction())
-                        .logoUrl(departmentDO.getLogoUrl())
-                        .memberNumber(departmentDO.getMemberNumber())
-                        .deactivated(departmentDO.getDeactivated())
-                        .labels(departmentMapper.listDepartmentLabelNamesByDepartmentId(departmentDO.getId()))
-                        .build())
+                .map(this::departmentDO2DepartmentDTO)
                 .collect(Collectors.toList());
         PageInfo<DepartmentDTO> pageInfo = new PageInfo<>(departmentDTOList);
         return Result.success(pageInfo);
     }
 
     /**
-     * 获取该部门所属组织的编号
-     *
-     * @private 内部方法
-     *
-     * @param id 部门编号
-     * @return 组织编号，若该部门不存在则返回 null
-     */
-    @Override
-    public Long getOrganizationId(Long id) {
-        return departmentMapper.getOrganizationIdByDepartmentId(id);
-    }
-
-    /**
      * 更新部门名
      *
-     * @permission 需要该部门属于该组织
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
      *
      * @errorCode InvalidParameter: 部门编号或部门名格式错误
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该组织已经存在相同的部门名
      *              OperationConflict.Lock: 获取组织的部门名锁失败
      *
-     * @param organizationId 部门所属组织编号
-     * @param departmentId 部门编号
+     * @param id 部门编号
      * @param newDepartmentName 新部门名
      * @return 更新后的部门
      */
@@ -318,32 +313,39 @@ public class DepartmentServiceImpl implements DepartmentService {
             parameters = {"#{#organizationId}", "#{#newDepartmentName}"},
             errorMessage = "Failed to acquire departmentName lock.")
     @Override
-    public Result<DepartmentDTO> updateDepartmentName(Long organizationId, Long departmentId,
-                                                      String newDepartmentName) {
+    public Result<DepartmentDTO> updateDepartmentName(Long id, String newDepartmentName) {
+        // 检查部门和组织的状态
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
         // 判断该组织是否已经存在该部门名
+        Long organizationId = checkResult.getData();
         int count = departmentMapper.countByOrganizationIdAndDepartmentName(organizationId, newDepartmentName);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The departmentName already exist.");
         }
 
         // 更新部门名
-        departmentMapper.updateDepartmentName(departmentId, newDepartmentName);
+        departmentMapper.updateDepartmentName(id, newDepartmentName);
 
         // 获取更新后的部门对象
-        return getDepartment(departmentId);
+        return getDepartment(id);
     }
 
     /**
      * 更新部门名缩写
      *
-     * @permission 需要该部门属于该组织
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
      *
      * @errorCode InvalidParameter: 部门编号或部门名缩写格式错误
-     *              OperationConflict.Lock: 获取组织的部门名缩写锁失败
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该组织已经存在相同的部门名缩写
+     *              OperationConflict.Lock: 获取组织的部门名缩写锁失败
      *
-     * @param organizationId 部门所属组织编号
-     * @param departmentId 部门编号
+     * @param id 部门编号
      * @param newAbbreviationDepartmentName 新部门名缩写
      * @return 更新后的部门
      */
@@ -351,9 +353,15 @@ public class DepartmentServiceImpl implements DepartmentService {
             parameters = {"#{#organizationId}", "#{#newAbbreviationDepartmentName}"},
             errorMessage = "Failed to acquire abbreviationDepartmentName lock.")
     @Override
-    public Result<DepartmentDTO> updateAbbreviationDepartmentName(
-            Long organizationId, Long departmentId, String newAbbreviationDepartmentName) {
+    public Result<DepartmentDTO> updateAbbreviationDepartmentName(Long id, String newAbbreviationDepartmentName) {
+        // 检查部门和组织的状态
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
         // 判断该组织是否已经存在该部门名缩写
+        Long organizationId = checkResult.getData();
         int count = departmentMapper.countByOrganizationIdAndAbbreviationDepartmentName(
                 organizationId, newAbbreviationDepartmentName);
         if (count > 0) {
@@ -362,18 +370,20 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         // 更新部门名缩写
-        departmentMapper.updateAbbreviationDepartmentName(departmentId, newAbbreviationDepartmentName);
+        departmentMapper.updateAbbreviationDepartmentName(id, newAbbreviationDepartmentName);
 
         // 获取更新后的部门对象
-        return getDepartment(departmentId);
+        return getDepartment(id);
     }
 
     /**
      * 更新部门介绍
      *
-     * @permission 需要该部门属于该组织
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
      *
      * @errorCode InvalidParameter: 部门编号或部门介绍格式错误
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 部门编号
      * @param newIntroduction 新部门介绍
@@ -381,6 +391,12 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public Result<DepartmentDTO> updateIntroduction(Long id, String newIntroduction) {
+        // 检查部门和组织的状态
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
         // 更新部门介绍
         departmentMapper.updateIntroduction(id, newIntroduction);
 
@@ -391,9 +407,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * 更新部门 Logo
      *
-     * @permission 需要该部门属于该组织
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
      *
      * @errorCode InvalidParameter: 更新参数格式错误
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取部门 logo 的锁失败
      *
@@ -404,6 +422,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     @DistributedLock(value = DEPARTMENT_LOGO_LOCK_KEY_PATTERN, parameters = "#{#updateDepartmentLogoPO.id}",
             errorMessage = "Failed to acquire department logo lock.")
     public Result<DepartmentDTO> updateLogo(UpdateDepartmentLogoPO updateDepartmentLogoPO) {
+        // 检查部门和组织的状态
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(updateDepartmentLogoPO.getId());
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
         // 获取部门 logoUrl
         String logoUrl = departmentMapper.getLogoUrlByDepartmentId(updateDepartmentLogoPO.getId());
         // 若原来的 logoUrl 为空，则随机产生一个
@@ -424,6 +448,19 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         // 更新后的组织信息
         return getDepartment(updateDepartmentLogoPO.getId());
+    }
+
+    /**
+     * 获取该部门所属组织的编号
+     *
+     * @private 内部方法
+     *
+     * @param id 部门编号
+     * @return 组织编号，若该部门不存在则返回 null
+     */
+    @Override
+    public Long getOrganizationId(Long id) {
+        return departmentMapper.getOrganizationId(id);
     }
 
     /**
@@ -462,6 +499,54 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         // 减少成员数后的部门对象
         return getDepartment(id);
+    }
+
+    /**
+     * DepartmentDO to DepartmentDTO
+     *
+     * @param departmentDO DepartmentDO
+     * @return DepartmentDTO
+     */
+    private DepartmentDTO departmentDO2DepartmentDTO(DepartmentDO departmentDO) {
+        List<String> labels = departmentMapper.listDepartmentLabelNamesByDepartmentId(departmentDO.getId());
+        return new DepartmentDTO.Builder()
+                .id(departmentDO.getId())
+                .organizationId(departmentDO.getOrganizationId())
+                .departmentName(departmentDO.getDepartmentName())
+                .abbreviationDepartmentName(departmentDO.getAbbreviationDepartmentName())
+                .introduction(departmentDO.getIntroduction())
+                .logoUrl(departmentDO.getLogoUrl())
+                .memberNumber(departmentDO.getMemberNumber())
+                .deactivated(departmentDO.getDeactivated())
+                .labels(labels)
+                .build();
+    }
+
+    /**
+     * 检查部门和组织状态
+     *
+     * @errorCode InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 部门编号
+     * @return 检查结果，若成功附带组织编号
+     */
+    private Result<Long> checkDepartmentAndOrganizationStatus(Long id) {
+        // 判断部门是否存在
+        Long organizationId = departmentMapper.getOrganizationId(id);
+        if (organizationId == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The department does not exist.");
+        }
+
+        // 检查组织状态
+        Result<Long> checkResult = organizationService.checkOrganizationStatus(organizationId);
+        if (checkResult.isFailure()) {
+            return checkResult;
+        }
+
+        // 通过检查
+        return Result.success(organizationId);
     }
 
 }

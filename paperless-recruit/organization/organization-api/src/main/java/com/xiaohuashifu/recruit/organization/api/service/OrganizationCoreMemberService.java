@@ -18,11 +18,14 @@ public interface OrganizationCoreMemberService {
     /**
      * 保存组织核心成员
      *
+     * @permission 必须是该组织的主体用户
+     *
      * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织成员不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict.Duplicate: 该组织核心成员已经存在
      *              OperationConflict.OverLimit: 该组织的核心成员数量已经超过限制
-     *
-     * @permission 必须验证 organizationId 和 organizationMemberId 是属于用户本身的
+     *              Forbidden: 禁止操作
      *
      * @param organizationId 组织编号
      * @param organizationMemberId 组织成员编号
@@ -34,22 +37,16 @@ public interface OrganizationCoreMemberService {
             @NotNull(message = "The organizationMemberId can't be null.")
             @Positive(message = "The organizationMemberId must be greater than 0.") Long organizationMemberId);
 
-    /**
-     * 获取组织编号
-     *
-     * @private 内部方法
-     *
-     * @param id 组织核心成员编号
-     * @return 组织编号
-     */
-    Long getOrganizationId(Long id);
+
 
     /**
      * 删除组织核心成员
      *
-     * @errorCode InvalidParameter: 参数格式错误
+     * @permission 该编号的组织成员所属组织必须是属于用户主体本身
      *
-     * @permission 必须验证该 id 是属于该组织的
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织核心成员不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 组织核心成员编号
      * @return OrganizationCoreMemberDTO

@@ -38,23 +38,6 @@ public interface OrganizationLabelService {
                             + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
 
     /**
-     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 标签名格式错误
-     *              Forbidden: 该标签已经被禁用，不可用增加引用
-     *
-     * @param labelName 标签名
-     * @return 操作是否成功
-     */
-    Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(
-            @NotBlank(message = "The labelName can't be blank.")
-            @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of labelName must not be greater than "
-                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
-
-    /**
      * 查询组织标签
      *
      * @errorCode InvalidParameter: 查询参数格式错误
@@ -107,6 +90,23 @@ public interface OrganizationLabelService {
      * @return 标签是否合法
      */
     Result<Void> isValidOrganizationLabel(
+            @NotBlank(message = "The labelName can't be blank.")
+            @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
+                    message = "The length of labelName must not be greater than "
+                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
+
+    /**
+     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              Forbidden: 该标签已经被禁用，不可用增加引用
+     *
+     * @param labelName 标签名
+     * @return 操作是否成功
+     */
+    Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(
             @NotBlank(message = "The labelName can't be blank.")
             @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
                     message = "The length of labelName must not be greater than "

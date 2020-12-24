@@ -47,6 +47,7 @@ public interface OrganizationService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotAvailable: 标签不可用
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
      *              OperationConflict.Lock: 获取组织标签的锁失败
@@ -70,6 +71,7 @@ public interface OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签不存在
      *
      * @param organizationId 组织编号
@@ -109,21 +111,13 @@ public interface OrganizationService {
             @NotNull(message = "The query can't be null.") OrganizationQuery query);
 
     /**
-     * 通过组织编号获取用户编号
-     * 也就是查询组织的主体账号
-     *
-     * @param id 组织编号
-     * @return 用户编号，可能返回 null，若组织不存在
-     */
-    Long getUserId(Long id);
-
-    /**
      * 更新组织名
      *
      * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 组织编号或组织名格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 新组织名已经存在
      *              OperationConflict.Lock: 获取组织名的锁失败
      *
@@ -148,6 +142,7 @@ public interface OrganizationService {
      *
      * @errorCode InvalidParameter: 组织编号或组织名缩写格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 组织编号
      * @param newAbbreviationOrganizationName 新组织名缩写
@@ -171,6 +166,7 @@ public interface OrganizationService {
      *
      * @errorCode InvalidParameter: 组织编号或组织介绍格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 组织编号
      * @param newIntroduction 新组织介绍
@@ -191,6 +187,7 @@ public interface OrganizationService {
      *
      * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取组织 logo 的锁失败
      *
@@ -199,36 +196,6 @@ public interface OrganizationService {
      */
     Result<OrganizationDTO> updateLogo(@NotNull(message = "The updateOrganizationLogoPO can't be null.")
                                                UpdateOrganizationLogoPO updateOrganizationLogoPO);
-
-    /**
-     * 增加成员数，+1
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 组织编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *
-     * @param id 组织编号
-     * @return 增加成员数后的组织对象
-     */
-    Result<OrganizationDTO> increaseMemberNumber(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id);
-
-    /**
-     * 减少成员数，-1
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 组织编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *
-     * @param id 组织编号
-     * @return 减少成员数后的组织对象
-     */
-    Result<OrganizationDTO> decreaseMemberNumber(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等
@@ -242,9 +209,8 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return 禁用后的组织
      */
-    Result<OrganizationDTO> disableOrganization(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id);
+    Result<OrganizationDTO> disableOrganization(@NotNull(message = "The id can't be null.")
+                                                @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 解禁组织
@@ -258,9 +224,8 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return 解禁后的组织
      */
-    Result<OrganizationDTO> enableOrganization(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id);
+    Result<OrganizationDTO> enableOrganization(@NotNull(message = "The id can't be null.")
+                                               @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 发送注册账号时使用的邮箱验证码
@@ -276,4 +241,78 @@ public interface OrganizationService {
     Result<Void> sendEmailAuthCodeForSignUp(@NotBlank(message = "The email can't be blank.")
                                             @Email(message = "The email format error.") String email);
 
+    /**
+     * 通过组织编号获取用户编号
+     * 也就是查询组织的主体账号
+     *
+     * @private 内部方法
+     *
+     * @param id 组织编号
+     * @return 用户编号，可能返回 null，若组织不存在
+     */
+    Long getUserId(Long id);
+
+    /**
+     * 通过组织编号判断组织是否存在
+     *
+     * @private 内部方法
+     *
+     * @param id 组织编号
+     * @return 组织是否存在
+     */
+    boolean organizationExists(Long id);
+
+    /**
+     * 增加成员数，+1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 增加成员数后的组织对象
+     */
+    Result<OrganizationDTO> increaseMemberNumber(@NotNull(message = "The id can't be null.")
+                                                 @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 减少成员数，-1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 减少成员数后的组织对象
+     */
+    Result<OrganizationDTO> decreaseMemberNumber(@NotNull(message = "The id can't be null.")
+                                                 @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 检查组织是否存在，
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 检查结果
+     */
+    <T> Result<T> checkOrganizationStatus(Long id);
+
+    /**
+     * 删除组织的标签，通过标签名
+     * 小心使用，一次性会删除所有的拥有该标签的组织的这个标签
+     *
+     * @private 内部方法
+     *
+     * @param labelName 标签名
+     * @return 被删除标签的组织数量
+     */
+    int removeLabelsByLabelName(String labelName);
 }

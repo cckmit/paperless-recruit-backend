@@ -59,38 +59,6 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     }
 
     /**
-     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 标签名格式错误
-     *              Forbidden: 该标签已经被禁用，不可用增加引用
-     *
-     * @param labelName 标签名
-     * @return 操作是否成功
-     */
-    @Override
-    public Result<DepartmentLabelDTO> increaseReferenceNumberOrSaveDepartmentLabel(String labelName) {
-        // 判断标签是否已经存在
-        DepartmentLabelDO departmentLabelDO = departmentLabelMapper.getDepartmentLabelByLabelName(labelName);
-
-        // 若存在且被禁用则不可用增加引用数量
-        if (departmentLabelDO != null && !departmentLabelDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The department label unavailable.");
-        }
-
-        // 若不存在先添加标签
-        if (departmentLabelDO == null) {
-            departmentLabelDO = new DepartmentLabelDO.Builder().labelName(labelName).build();
-            departmentLabelMapper.insertDepartmentLabel(departmentLabelDO);
-        }
-
-        // 添加标签引用数量
-        departmentLabelMapper.increaseReferenceNumber(departmentLabelDO.getId());
-        return getDepartmentLabel(departmentLabelDO.getId());
-    }
-
-    /**
      * 查询部门标签
      *
      * @errorCode InvalidParameter: 查询参数格式错误
@@ -103,13 +71,7 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
         List<DepartmentLabelDO> departmentLabelDOList = departmentLabelMapper.listDepartmentLabels(query);
         List<DepartmentLabelDTO> departmentLabelDTOList = departmentLabelDOList
                 .stream()
-                .map(departmentLabelDO -> new DepartmentLabelDTO
-                        .Builder()
-                        .id(departmentLabelDO.getId())
-                        .labelName(departmentLabelDO.getLabelName())
-                        .referenceNumber(departmentLabelDO.getReferenceNumber())
-                        .available(departmentLabelDO.getAvailable())
-                        .build())
+                .map(this::departmentLabelDO2DepartmentLabelDTO)
                 .collect(Collectors.toList());
         PageInfo<DepartmentLabelDTO> pageInfo = new PageInfo<>(departmentLabelDTOList);
         return Result.success(pageInfo);
@@ -206,6 +168,38 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     }
 
     /**
+     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              Forbidden: 该标签已经被禁用，不可用增加引用
+     *
+     * @param labelName 标签名
+     * @return 操作是否成功
+     */
+    @Override
+    public Result<DepartmentLabelDTO> increaseReferenceNumberOrSaveDepartmentLabel(String labelName) {
+        // 判断标签是否已经存在
+        DepartmentLabelDO departmentLabelDO = departmentLabelMapper.getDepartmentLabelByLabelName(labelName);
+
+        // 若存在且被禁用则不可用增加引用数量
+        if (departmentLabelDO != null && !departmentLabelDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The department label unavailable.");
+        }
+
+        // 若不存在先添加标签
+        if (departmentLabelDO == null) {
+            departmentLabelDO = new DepartmentLabelDO.Builder().labelName(labelName).build();
+            departmentLabelMapper.insertDepartmentLabel(departmentLabelDO);
+        }
+
+        // 添加标签引用数量
+        departmentLabelMapper.increaseReferenceNumber(departmentLabelDO.getId());
+        return getDepartmentLabel(departmentLabelDO.getId());
+    }
+
+    /**
      * 获取部门标签
      *
      * @errorCode InvalidParameter.NotFound: 该编号的部门标签不存在
@@ -219,14 +213,23 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND,
                     "The department does not exist.");
         }
-        DepartmentLabelDTO departmentLabelDTO = new DepartmentLabelDTO
+        return Result.success(departmentLabelDO2DepartmentLabelDTO(departmentLabelDO));
+    }
+
+    /**
+     * DepartmentLabelDO to DepartmentLabelDTO
+     *
+     * @param departmentLabelDO DepartmentLabelDO
+     * @return DepartmentLabelDTO
+     */
+    private DepartmentLabelDTO departmentLabelDO2DepartmentLabelDTO(DepartmentLabelDO departmentLabelDO) {
+        return new DepartmentLabelDTO
                 .Builder()
                 .id(departmentLabelDO.getId())
                 .labelName(departmentLabelDO.getLabelName())
                 .referenceNumber(departmentLabelDO.getReferenceNumber())
                 .available(departmentLabelDO.getAvailable())
                 .build();
-        return Result.success(departmentLabelDTO);
     }
 
 }

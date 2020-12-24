@@ -5,11 +5,15 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationCoreMemberConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationCoreMemberDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationCoreMemberService;
+import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
+import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationCoreMemberMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationCoreMemberDO;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +27,12 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
 
     private final OrganizationCoreMemberMapper organizationCoreMemberMapper;
 
+    @Reference
+    private OrganizationMemberService organizationMemberService;
+
+    @Reference
+    private OrganizationService organizationService;
+
     public OrganizationCoreMemberServiceImpl(OrganizationCoreMemberMapper organizationCoreMemberMapper) {
         this.organizationCoreMemberMapper = organizationCoreMemberMapper;
     }
@@ -30,11 +40,14 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
     /**
      * 保存组织核心成员
      *
+     * @permission 必须是该组织的主体用户
+     *
      * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织成员不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict.Duplicate: 该组织核心成员已经存在
      *              OperationConflict.OverLimit: 该组织的核心成员数量已经超过限制
-     *
-     * @permission 必须验证 organizationId 和 organizationMemberId 是属于用户本身的
+     *              Forbidden: 禁止操作
      *
      * @param organizationId 组织编号
      * @param organizationMemberId 组织成员编号
@@ -43,6 +56,24 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
     @Override
     public Result<OrganizationCoreMemberDTO> saveOrganizationCoreMember(Long organizationId,
                                                                         Long organizationMemberId) {
+        // 判断组织成员是否存在
+        Long organizationId0 = organizationMemberService.getOrganizationId(organizationMemberId);
+        if (organizationId0 == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The organizationMember does not exist.");
+        }
+
+        // 检查组织状态
+        Result<OrganizationCoreMemberDTO> checkResult = organizationService.checkOrganizationStatus(organizationId);
+        if (checkResult.isFailure()) {
+            return checkResult;
+        }
+
+        // 判断该组织成员是否属于该组织的
+        if (!Objects.equals(organizationId0, organizationId)) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN);
+        }
+
         // 判断该成员是否已经存在
         int count = organizationCoreMemberMapper.countByOrganizationIdAndOrganizationMemberId(
                 organizationId, organizationMemberId);
@@ -69,30 +100,32 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
     }
 
     /**
-     * 获取组织编号
-     *
-     * @private 内部方法
-     *
-     * @param id 组织核心成员编号
-     * @return 组织编号
-     */
-    @Override
-    public Long getOrganizationId(Long id) {
-        return organizationCoreMemberMapper.getOrganizationId(id);
-    }
-
-    /**
      * 删除组织核心成员
      *
-     * @errorCode InvalidParameter: 参数格式错误
+     * @permission 该编号的组织成员所属组织必须是属于用户主体本身
      *
-     * @permission 必须验证该 id 是属于该组织的
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织核心成员不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 组织核心成员编号
      * @return OrganizationCoreMemberDTO
      */
     @Override
     public Result<Void> deleteOrganizationCoreMember(Long id) {
+        // 判断该组织核心成员是否存在
+        Long organizationId = organizationCoreMemberMapper.getOrganizationId(id);
+        if (organizationId == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The organizationCoreMember does not exist.");
+        }
+
+        // 检查组织状态
+        Result<Void> checkResult = organizationService.checkOrganizationStatus(organizationId);
+        if (checkResult.isFailure()) {
+            return checkResult;
+        }
+
         // 删除该核心成员
         organizationCoreMemberMapper.deleteOrganizationCoreMember(id);
         return Result.success();

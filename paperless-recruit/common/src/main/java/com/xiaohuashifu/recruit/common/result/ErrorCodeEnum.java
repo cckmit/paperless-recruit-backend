@@ -151,12 +151,17 @@ public enum ErrorCodeEnum implements Serializable {
     FORBIDDEN_USER(HttpStatus.FORBIDDEN,
             "Forbidden.User", "Forbidden."),
 
-
     /**
      * 用户在未认证的情况下操作该资源
      */
     FORBIDDEN_UNAUTHORIZED(HttpStatus.FORBIDDEN,
             "Forbidden.Unauthorized", "User not authorized to operate on the specified resource."),
+
+    /**
+     * 被禁止，因为不可用
+     */
+    FORBIDDEN_UNAVAILABLE(HttpStatus.FORBIDDEN,
+            "Forbidden.Unavailable", "Forbidden."),
 
     /**
      * 未找到该参数对应的资源

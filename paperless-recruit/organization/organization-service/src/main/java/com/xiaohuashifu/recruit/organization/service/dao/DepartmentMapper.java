@@ -30,11 +30,13 @@ public interface DepartmentMapper {
 
     String getLogoUrlByDepartmentId(Long departmentId);
 
-    Long getOrganizationIdByDepartmentId(Long departmentId);
+    Long getOrganizationId(Long id);
 
     List<DepartmentDO> listDepartments(DepartmentQuery query);
 
     List<String> listDepartmentLabelNamesByDepartmentId(Long departmentId);
+
+    int count(Long id);
 
     int countByOrganizationIdAndDepartmentName(@Param("organizationId") Long organizationId,
                                                @Param("departmentName") String departmentName);

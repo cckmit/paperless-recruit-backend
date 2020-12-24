@@ -43,6 +43,12 @@
         where organization_id = #{organizationId}
     </select>
 
+    <select id="count" resultType="int">
+        select count(*)
+        from organization_core_member
+        where id = #{id}
+    </select>
+
     <select id="countByOrganizationIdAndOrganizationMemberId" resultType="int">
         select count(*)
         from organization_core_member

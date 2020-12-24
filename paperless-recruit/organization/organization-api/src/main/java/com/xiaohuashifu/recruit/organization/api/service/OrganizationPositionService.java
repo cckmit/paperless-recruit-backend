@@ -23,6 +23,7 @@ public interface OrganizationPositionService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 操作冲突，该组织已经存在该部门名
      *
      * @param organizationId 组织编号
@@ -54,6 +55,7 @@ public interface OrganizationPositionService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织职位不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 组织职位编号
      * @return 删除结果
@@ -86,22 +88,13 @@ public interface OrganizationPositionService {
             @NotNull(message = "The query can't be null.") OrganizationPositionQuery query);
 
     /**
-     * 获取组织编号
-     *
-     * @private 内部方法
-     *
-     * @param id 组织职位编号
-     * @return 组织编号，若找不到返回 null
-     */
-    Long getUserId(Long id);
-
-    /**
      * 更新组织职位名
      *
      * @permission 必须是该组织职位所属组织的主体用户
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织职位不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 职位名已经存在
      *
      * @param id 组织职位编号
@@ -120,9 +113,10 @@ public interface OrganizationPositionService {
      * 更新组织职位优先级
      *
      * @permission 必须是该组织职位所属组织的主体用户
-     *              InvalidParameter.NotExist: 组织职位不存在
      *
      * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织职位不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 组织职位编号
      * @param newPriority 新职位优先级
@@ -139,5 +133,15 @@ public interface OrganizationPositionService {
                     message = "The newPriority must be less than or equal to "
                             + OrganizationPositionConstants.MAX_ORGANIZATION_POSITION_PRIORITY + ".")
                     Integer newPriority);
+
+    /**
+     * 获取组织编号
+     *
+     * @private 内部方法
+     *
+     * @param id 组织职位编号
+     * @return 组织编号，若找不到返回 null
+     */
+    Long getOrganizationId(Long id);
 
 }

@@ -7,8 +7,8 @@ import com.xiaohuashifu.recruit.organization.api.dto.DisableOrganizationLabelDTO
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationLabelQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
+import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationLabelMapper;
-import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationLabelDO;
 import org.apache.dubbo.config.annotation.Service;
 
@@ -26,12 +26,12 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
 
     private final OrganizationLabelMapper organizationLabelMapper;
 
-    private final OrganizationMapper organizationMapper;
+    private final OrganizationService organizationService;
 
     public OrganizationLabelServiceImpl(OrganizationLabelMapper organizationLabelMapper,
-                                        OrganizationMapper organizationMapper) {
+                                        OrganizationService organizationService) {
         this.organizationLabelMapper = organizationLabelMapper;
-        this.organizationMapper = organizationMapper;
+        this.organizationService = organizationService;
     }
 
     /**
@@ -60,38 +60,6 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     }
 
     /**
-     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 标签名格式错误
-     *              Forbidden: 该标签已经被禁用，不可用增加引用
-     *
-     * @param labelName 标签名
-     * @return 操作是否成功
-     */
-    @Override
-    public Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(String labelName) {
-        // 判断标签是否已经存在
-        OrganizationLabelDO organizationLabelDO = organizationLabelMapper.getOrganizationLabelByLabelName(labelName);
-
-        // 若存在且被禁用则不可用增加引用数量
-        if (organizationLabelDO != null && !organizationLabelDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The organization label unavailable.");
-        }
-
-        // 若不存在先添加标签
-        if (organizationLabelDO == null) {
-            organizationLabelDO = new OrganizationLabelDO.Builder().labelName(labelName).build();
-            organizationLabelMapper.insertOrganizationLabel(organizationLabelDO);
-        }
-
-        // 添加标签引用数量
-        organizationLabelMapper.increaseReferenceNumber(organizationLabelDO.getId());
-        return getOrganizationLabel(organizationLabelDO.getId());
-    }
-
-    /**
      * 查询组织标签
      *
      * @errorCode InvalidParameter: 查询参数格式错误
@@ -104,13 +72,7 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
         List<OrganizationLabelDO> organizationLabelDOList = organizationLabelMapper.listOrganizationLabels(query);
         List<OrganizationLabelDTO> organizationLabelDTOList = organizationLabelDOList
                 .stream()
-                .map(organizationLabelDO -> new OrganizationLabelDTO
-                        .Builder()
-                        .id(organizationLabelDO.getId())
-                        .labelName(organizationLabelDO.getLabelName())
-                        .referenceNumber(organizationLabelDO.getReferenceNumber())
-                        .available(organizationLabelDO.getAvailable())
-                        .build())
+                .map(this::organizationLabelDO2OrganizationLabelDTO)
                 .collect(Collectors.toList());
         PageInfo<OrganizationLabelDTO> pageInfo = new PageInfo<>(organizationLabelDTOList);
         return Result.success(pageInfo);
@@ -145,7 +107,7 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
         organizationLabelMapper.updateAvailable(id, false);
 
         // 删除社团的这个标签
-        int deletedNumber = organizationMapper.deleteLabelsByLabelName(organizationLabelDO.getLabelName());
+        int deletedNumber = organizationService.removeLabelsByLabelName(organizationLabelDO.getLabelName());
 
         // 封装删除数量和禁用后的组织标签对象
         OrganizationLabelDTO organizationLabelDTO = getOrganizationLabel(id).getData();
@@ -207,6 +169,38 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     }
 
     /**
+     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              Forbidden: 该标签已经被禁用，不可用增加引用
+     *
+     * @param labelName 标签名
+     * @return 操作是否成功
+     */
+    @Override
+    public Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(String labelName) {
+        // 判断标签是否已经存在
+        OrganizationLabelDO organizationLabelDO = organizationLabelMapper.getOrganizationLabelByLabelName(labelName);
+
+        // 若存在且被禁用则不可用增加引用数量
+        if (organizationLabelDO != null && !organizationLabelDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN, "The organization label unavailable.");
+        }
+
+        // 若不存在先添加标签
+        if (organizationLabelDO == null) {
+            organizationLabelDO = new OrganizationLabelDO.Builder().labelName(labelName).build();
+            organizationLabelMapper.insertOrganizationLabel(organizationLabelDO);
+        }
+
+        // 添加标签引用数量
+        organizationLabelMapper.increaseReferenceNumber(organizationLabelDO.getId());
+        return getOrganizationLabel(organizationLabelDO.getId());
+    }
+
+    /**
      * 获取组织标签
      *
      * @errorCode InvalidParameter.NotFound: 该编号的组织标签不存在
@@ -220,14 +214,23 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND,
                     "The organization does not exist.");
         }
-        OrganizationLabelDTO organizationLabelDTO = new OrganizationLabelDTO
+        return Result.success(organizationLabelDO2OrganizationLabelDTO(organizationLabelDO));
+    }
+
+    /**
+     * OrganizationLabelDO to OrganizationLabelDTO
+     *
+     * @param organizationLabelDO OrganizationLabelDO
+     * @return OrganizationLabelDTO
+     */
+    private OrganizationLabelDTO organizationLabelDO2OrganizationLabelDTO(OrganizationLabelDO organizationLabelDO) {
+        return new OrganizationLabelDTO
                 .Builder()
                 .id(organizationLabelDO.getId())
                 .labelName(organizationLabelDO.getLabelName())
                 .referenceNumber(organizationLabelDO.getReferenceNumber())
                 .available(organizationLabelDO.getAvailable())
                 .build();
-        return Result.success(organizationLabelDTO);
     }
 
 }

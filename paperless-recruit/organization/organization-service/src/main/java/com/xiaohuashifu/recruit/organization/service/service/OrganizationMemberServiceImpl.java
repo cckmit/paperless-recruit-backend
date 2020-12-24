@@ -104,7 +104,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     /**
      * 发送加入组织邀请
      *
-     * @permission 必须检查 organizationId 是否是该组织的
+     * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.User.NotExist: 用户不存在

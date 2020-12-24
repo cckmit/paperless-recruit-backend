@@ -37,11 +37,6 @@ public class OrganizationCoreMemberServiceImplTest {
                 1L, 2L));
     }
 
-    @Test
-    public void getOrganizationId() {
-        System.out.println(organizationCoreMemberService.getOrganizationId(2L));
-
-    }
 
     @Test
     public void deleteOrganizationCoreMember() {

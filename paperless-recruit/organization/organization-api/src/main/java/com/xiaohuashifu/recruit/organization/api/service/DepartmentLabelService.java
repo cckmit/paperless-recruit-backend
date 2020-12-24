@@ -37,22 +37,6 @@ public interface DepartmentLabelService {
                     message = "The length of labelName must not be greater than "
                             + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
 
-    /**
-     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 标签名格式错误
-     *              Forbidden: 该标签已经被禁用，不可用增加引用
-     *
-     * @param labelName 标签名
-     * @return 操作是否成功
-     */
-    Result<DepartmentLabelDTO> increaseReferenceNumberOrSaveDepartmentLabel(
-            @NotBlank(message = "The labelName can't be blank.")
-            @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of labelName must not be greater than "
-                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
 
     /**
      * 查询部门标签
@@ -78,8 +62,7 @@ public interface DepartmentLabelService {
      * @return DisableDepartmentLabelDTO 禁用后的部门标签对象和被删除标签的部门数量；
      */
     Result<DisableDepartmentLabelDTO> disableDepartmentLabel(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id);
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 解禁标签
@@ -106,6 +89,23 @@ public interface DepartmentLabelService {
      * @return 标签是否合法
      */
     Result<Void> isValidDepartmentLabel(
+            @NotBlank(message = "The labelName can't be blank.")
+            @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH,
+                    message = "The length of labelName must not be greater than "
+                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
+
+    /**
+     * 增加标签引用数量，若标签不存在则保存标签，初始引用数1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              Forbidden: 该标签已经被禁用，不可用增加引用
+     *
+     * @param labelName 标签名
+     * @return 操作是否成功
+     */
+    Result<DepartmentLabelDTO> increaseReferenceNumberOrSaveDepartmentLabel(
             @NotBlank(message = "The labelName can't be blank.")
             @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH,
                     message = "The length of labelName must not be greater than "

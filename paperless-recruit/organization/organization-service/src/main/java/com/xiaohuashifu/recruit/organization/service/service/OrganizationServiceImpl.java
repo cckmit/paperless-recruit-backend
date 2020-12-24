@@ -125,6 +125,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotAvailable: 标签不可用
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
      *              OperationConflict.Lock: 获取组织标签的锁失败
@@ -137,15 +138,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     @DistributedLock(value = ORGANIZATION_LABELS_LOCK_KEY_PATTERN, parameters = "#{#organizationId}",
             errorMessage = "Failed to acquire organization labels lock.")
     public Result<OrganizationDTO> addLabel(Long organizationId, String labelName) {
-        // 判断组织是否存在
-        int count = organizationMapper.count(organizationId);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
+        // 检查组织状态
+        Result<Object> checkResult = checkOrganizationStatus(organizationId);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
         }
 
         // 判断该组织是否已经存在该标签
-        count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
+        int count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
                     "The organization already owns this label.");
@@ -187,6 +187,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签不存在
      *
      * @param organizationId 组织编号
@@ -195,15 +196,14 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Result<OrganizationDTO> removeLabel(Long organizationId, String labelName) {
-        // 判断组织是否存在
-        int count = organizationMapper.count(organizationId);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
+        // 检查组织状态
+        Result<Object> checkResult = checkOrganizationStatus(organizationId);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
         }
 
         // 判断该组织是否拥有该标签
-        count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
+        int count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
         if (count < 1) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label does not exist.");
         }
@@ -257,23 +257,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 通过组织编号获取用户编号
-     *
-     * @param id 组织编号
-     * @return 用户编号，可能返回 null，若组织不存在
-     */
-    @Override
-    public Long getUserId(Long id) {
-        return organizationMapper.getUserId(id);
-    }
-
-    /**
      * 更新组织名
      *
      * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 组织编号或组织名格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 新组织名已经存在
      *              OperationConflict.Lock: 获取组织名的锁失败
      *
@@ -285,15 +275,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     @DistributedLock(value = ORGANIZATION_NAME_LOCK_KEY_PATTERN, parameters = "#{#newOrganizationName}",
             errorMessage = "Failed to acquire organizationName lock.")
     public Result<OrganizationDTO> updateOrganizationName(Long id, String newOrganizationName) {
-        // 判断组织是否存在
-        int count = organizationMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
+        // 检查组织状态
+        Result<Object> checkResult = checkOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
         }
 
         // 判断组织名存不存在
-        count = organizationMapper.countByOrganizationName(newOrganizationName);
+        int count = organizationMapper.countByOrganizationName(newOrganizationName);
         if (count > 0) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The organization name already exist.");
         }
@@ -312,6 +301,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      *
      * @errorCode InvalidParameter: 组织编号或组织名缩写格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 组织编号
      * @param newAbbreviationOrganizationName 新组织名缩写
@@ -319,11 +309,10 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Result<OrganizationDTO> updateAbbreviationOrganizationName(Long id, String newAbbreviationOrganizationName) {
-        // 判断组织是否存在
-        int count = organizationMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
+        // 检查组织状态
+        Result<Object> checkResult = checkOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
         }
 
         // 更新组织名缩写
@@ -340,6 +329,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      *
      * @errorCode InvalidParameter: 组织编号或组织介绍格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *
      * @param id 组织编号
      * @param newIntroduction 新组织介绍
@@ -347,11 +337,10 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Result<OrganizationDTO> updateIntroduction(Long id, String newIntroduction) {
-        // 判断组织是否存在
-        int count = organizationMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
+        // 检查组织状态
+        Result<Object> checkResult = checkOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
         }
 
         // 更新组织介绍
@@ -368,6 +357,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      *
      * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
      *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取组织 logo 的锁失败
      *
@@ -378,11 +368,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     @DistributedLock(value = ORGANIZATION_LOGO_LOCK_KEY_PATTERN, parameters = "#{#updateOrganizationLogoPO.id}",
             errorMessage = "Failed to acquire organization logo lock.")
     public Result<OrganizationDTO> updateLogo(UpdateOrganizationLogoPO updateOrganizationLogoPO) {
-        // 判断组织是否存在
-        int count = organizationMapper.count(updateOrganizationLogoPO.getId());
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
+        // 检查组织状态
+        Result<Object> checkResult = checkOrganizationStatus(updateOrganizationLogoPO.getId());
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
         }
 
         // 获取组织 logoUrl
@@ -408,60 +397,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 增加成员数，+1
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 组织编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *
-     * @param id 组织编号
-     * @return 增加成员数后的组织对象
-     */
-    @Override
-    public Result<OrganizationDTO> increaseMemberNumber(Long id) {
-        // 判断组织是否存在
-        int count = organizationMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
-        }
-
-        // 增加成员数
-        organizationMapper.increaseMemberNumber(id);
-
-        // 添加成员数后的组织对象
-        return getOrganization(id);
-    }
-
-    /**
-     * 减少成员数，-1
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 组织编号格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *
-     * @param id 组织编号
-     * @return 减少成员数后的组织对象
-     */
-    @Override
-    public Result<OrganizationDTO> decreaseMemberNumber(Long id) {
-        // 判断组织是否存在
-        int count = organizationMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The organization does not exist.");
-        }
-
-        // 减少成员数
-        organizationMapper.decreaseMemberNumber(id);
-
-        // 减少成员数后的组织对象
-        return getOrganization(id);
-    }
-
-    /**
      * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等
      *
      * @permission 必须是管理员
@@ -476,14 +411,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Result<OrganizationDTO> disableOrganization(Long id) {
         // 判断组织存不存在
-        OrganizationDO organizationDO = organizationMapper.getOrganization(id);
-        if (organizationDO == null) {
+        Boolean available = organizationMapper.getAvailable(id);
+        if (available == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
                     "The organization does not exist.");
         }
 
         // 判断组织是否已经被禁用
-        if (!organizationDO.getAvailable()) {
+        if (!available) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The organization already unavailable.");
         }
 
@@ -509,14 +444,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Result<OrganizationDTO> enableOrganization(Long id) {
         // 判断组织存不存在
-        OrganizationDO organizationDO = organizationMapper.getOrganization(id);
-        if (organizationDO == null) {
+        Boolean available = organizationMapper.getAvailable(id);
+        if (available == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
                     "The organization does not exist.");
         }
 
         // 判断组织是否可用
-        if (organizationDO.getAvailable()) {
+        if (available) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The organization already available.");
         }
 
@@ -544,7 +479,131 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
+     * 通过组织编号获取用户编号
+     *
+     * @private 内部方法
+     *
+     * @param id 组织编号
+     * @return 用户编号，可能返回 null，若组织不存在
+     */
+    @Override
+    public Long getUserId(Long id) {
+        return organizationMapper.getUserId(id);
+    }
+
+    /**
+     * 通过组织编号判断组织是否存在
+     *
+     * @private 内部方法
+     *
+     * @param id 组织编号
+     * @return 组织是否存在
+     */
+    @Override
+    public boolean organizationExists(Long id) {
+        return organizationMapper.count(id) > 0;
+    }
+
+    /**
+     * 增加成员数，+1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 增加成员数后的组织对象
+     */
+    @Override
+    public Result<OrganizationDTO> increaseMemberNumber(Long id) {
+        // 检查组织状态
+        Result<Object> checkResult = checkOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 增加成员数
+        organizationMapper.increaseMemberNumber(id);
+
+        // 添加成员数后的组织对象
+        return getOrganization(id);
+    }
+
+    /**
+     * 减少成员数，-1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 减少成员数后的组织对象
+     */
+    @Override
+    public Result<OrganizationDTO> decreaseMemberNumber(Long id) {
+        // 检查组织状态
+        Result<Object> checkResult = checkOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 减少成员数
+        organizationMapper.decreaseMemberNumber(id);
+
+        // 减少成员数后的组织对象
+        return getOrganization(id);
+    }
+
+    /**
+     * 检查组织是否存在，
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 检查结果
+     */
+    @Override
+    public <T> Result<T> checkOrganizationStatus(Long id) {
+        // 判断组织存不存在
+        Boolean available = organizationMapper.getAvailable(id);
+        if (available == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The organization does not exist.");
+        }
+
+        // 判断组织是否可用
+        if (!available) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN_UNAVAILABLE);
+        }
+
+        // 通过检查
+        return Result.success();
+    }
+
+    /**
+     * 删除组织的标签，通过标签名
+     * 小心使用，一次性会删除所有的拥有该标签的组织的这个标签
+     *
+     * @private 内部方法
+     *
+     * @param labelName 标签名
+     * @return 被删除标签的组织数量
+     */
+    @Override
+    public int removeLabelsByLabelName(String labelName) {
+        return organizationMapper.deleteLabelsByLabelName(labelName);
+    }
+
+    /**
      * OrganizationDO to OrganizationDTO
+     *
      * @param organizationDO OrganizationDO
      * @return OrganizationDTO
      */

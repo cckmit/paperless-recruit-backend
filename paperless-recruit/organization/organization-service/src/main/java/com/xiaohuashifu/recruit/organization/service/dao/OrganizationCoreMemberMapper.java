@@ -23,6 +23,8 @@ public interface OrganizationCoreMemberMapper {
 
     List<OrganizationCoreMemberDO> listOrganizationCoreMembersByOrganizationId(Long organizationId);
 
+    int count(Long id);
+
     int countByOrganizationIdAndOrganizationMemberId(@Param("organizationId") Long organizationId,
                                                      @Param("organizationMemberId") Long organizationMemberId);
 

@@ -59,10 +59,10 @@
         where id = #{id}
     </select>
 
-    <select id="getOrganizationIdByDepartmentId" resultType="long">
+    <select id="getOrganizationId" resultType="long">
         select organization_id
         from department
-        where id = #{departmentId}
+        where id = #{id}
     </select>
 
     <select id="listDepartments" resultMap="department">
@@ -135,6 +135,12 @@
         select label_name
         from department_department_label
         where department_id = #{departmentId}
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*)
+        from department
+        where id = #{id}
     </select>
 
     <select id="countByOrganizationIdAndDepartmentName" resultType="int">

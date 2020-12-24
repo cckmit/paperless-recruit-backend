@@ -46,6 +46,7 @@ public interface OrganizationService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotAvailable: 标签不可用
+     *              InvalidParameter.NotExist: 组织不存在
      *              OperationConflict: 该标签已经存在
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
      *              OperationConflict.Lock: 获取组织标签的锁失败
@@ -68,6 +69,7 @@ public interface OrganizationService {
      * @permission 必须是该组织本身，即 organizationId 是组织本身
      *
      * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在
      *              OperationConflict: 该标签不存在
      *
      * @param organizationId 组织编号
@@ -112,6 +114,7 @@ public interface OrganizationService {
      * @permission 必须是该组织本身，即 id 是组织本身
      *
      * @errorCode InvalidParameter: 组织编号或组织名格式错误
+     *              InvalidParameter.NotExist: 组织不存在
      *              OperationConflict: 新组织名已经存在
      *              OperationConflict.Lock: 获取组织名的锁失败
      *
@@ -135,6 +138,7 @@ public interface OrganizationService {
      * @permission 必须是该组织本身，即 id 是组织本身
      *
      * @errorCode InvalidParameter: 组织编号或组织名缩写格式错误
+     *              InvalidParameter.NotExist: 组织不存在
      *
      * @param id 组织编号
      * @param newAbbreviationOrganizationName 新组织名缩写
@@ -157,6 +161,7 @@ public interface OrganizationService {
      * @permission 必须是该组织本身，即 id 是组织本身
      *
      * @errorCode InvalidParameter: 组织编号或组织介绍格式错误
+     *              InvalidParameter.NotExist: 组织不存在
      *
      * @param id 组织编号
      * @param newIntroduction 新组织介绍
@@ -176,6 +181,7 @@ public interface OrganizationService {
      * @permission 必须是该组织本身，即 UpdateOrganizationLogoPO.id 是组织本身
      *
      * @errorCode InvalidParameter: 更新参数格式错误
+     *              InvalidParameter.NotExist: 组织不存在
      *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取组织 logo 的锁失败
      *
@@ -191,6 +197,7 @@ public interface OrganizationService {
      * @private 内部方法
      *
      * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
      *
      * @param id 组织编号
      * @return 增加成员数后的组织对象
@@ -205,6 +212,7 @@ public interface OrganizationService {
      * @private 内部方法
      *
      * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
      *
      * @param id 组织编号
      * @return 减少成员数后的组织对象

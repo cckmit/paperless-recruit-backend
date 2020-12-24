@@ -359,6 +359,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 邮箱或标题格式错误
      *              OperationConflict: 该邮箱已经被注册，无法发送验证码
      *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *              TooManyRequests: 请求太频繁
      *
      * @param email 邮箱
      * @param title 邮件的标题
@@ -402,6 +403,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 邮箱格式错误
      *              OperationConflict: 该邮箱已经被使用，无法发送验证码
      *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *              TooManyRequests: 太多请求了
      *
      * @param email 邮箱
      * @return 发送结果
@@ -415,6 +417,7 @@ public interface UserService {
      * @errorCode InvalidParameter: 邮箱格式错误
      *              InvalidParameter.NotFound: 邮箱地址不存在，不给发送验证码
      *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *              TooManyRequests: 太多请求了
      *
      * @param email 邮箱
      * @return 发送结果

@@ -28,6 +28,8 @@ public interface OrganizationMapper {
 
     String getOrganizationLogoUrlByOrganizationId(Long id);
 
+    Long getUserId(Long id);
+    
     List<OrganizationDO> listOrganizations(OrganizationQuery query);
 
     List<String> listOrganizationLabelNamesByOrganizationId(Long organizationId);

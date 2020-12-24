@@ -56,8 +56,7 @@ public class OrganizationPositionServiceImplTest {
 
     @Test
     public void updatePositionName() {
-        System.out.println(organizationPositionService.updatePositionName(
-                1L,1L, "科联主席"));
+        System.out.println(organizationPositionService.updatePositionName(1L, "科联主席"));
     }
 
     @Test

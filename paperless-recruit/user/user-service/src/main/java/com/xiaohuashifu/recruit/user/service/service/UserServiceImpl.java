@@ -4,7 +4,6 @@ import com.github.dozermapper.core.Mapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
-import com.xiaohuashifu.recruit.common.limiter.frequency.FixedDelayRefreshFrequencyLimit;
 import com.xiaohuashifu.recruit.common.limiter.frequency.RangeRefreshFrequencyLimit;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
@@ -136,6 +135,11 @@ public class UserServiceImpl implements UserService {
     private static final long SMS_AUTH_CODE_FREQUENCY_PER_MINUTE = 1;
 
     /**
+     * 邮箱验证码每分钟频率限制
+     */
+    private static final long EMAIL_AUTH_CODE_FREQUENCY_PER_MINUTE = 1;
+
+    /**
      * 短信验证码每天频率限制
      */
     private static final long SMS_AUTH_CODE_FREQUENCY_PER_DAY = 10;
@@ -156,6 +160,23 @@ public class UserServiceImpl implements UserService {
      */
     private static final String UPDATE_PASSWORD_SMS_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
             "user:update-password:sms-auth-code:{0}";
+
+    /**
+     * 注册时邮件验证码限频模式，{0}为邮箱
+     */
+    private static final String SIGN_UP_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN = "user:sign-up:email-auth-code:{0}";
+
+    /**
+     * 更新邮箱时邮件验证码限频模式，{0}为邮箱
+     */
+    private static final String UPDATE_EMAIL_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
+            "user:update-email:email-auth-code:{0}";
+
+    /**
+     * 更新密码时邮件验证码限频模式，{0}为邮箱
+     */
+    private static final String UPDATE_PASSWORD_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
+            "user:update-password:email-auth-code:{0}";
 
     public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate) {
         this.userMapper = userMapper;
@@ -803,11 +824,14 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 邮箱或标题格式错误
      *              OperationConflict: 该邮箱已经被注册，无法发送验证码
      *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *              TooManyRequests: 请求太频繁
      *
      * @param email 邮箱
      * @param title 邮件的标题
      * @return 发送结果
      */
+    @RangeRefreshFrequencyLimit(key = SIGN_UP_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#email}",
+            frequency = EMAIL_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
     @Override
     public Result<Void> sendEmailAuthCodeForSignUp(String email, String title) {
         // 判断该邮箱是否存在，如果存在就不发送邮箱验证码
@@ -877,10 +901,13 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 邮箱格式错误
      *              OperationConflict: 该邮箱已经被使用，无法发送验证码
      *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *              TooManyRequests: 太多请求了
      *
      * @param email 邮箱
      * @return 发送结果
      */
+    @RangeRefreshFrequencyLimit(key = UPDATE_EMAIL_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#email}",
+            frequency = EMAIL_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
     @Override
     public Result<Void> sendEmailAuthCodeForUpdateEmail(String email) {
         // 判断邮箱是否存在，邮箱如果存在就不给发送验证码
@@ -898,10 +925,13 @@ public class UserServiceImpl implements UserService {
      * @errorCode InvalidParameter: 邮箱格式错误
      *              InvalidParameter.NotFound: 邮箱地址不存在，不给发送验证码
      *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *              TooManyRequests: 太多请求了
      *
      * @param email 邮箱
      * @return 发送结果
      */
+    @RangeRefreshFrequencyLimit(key = UPDATE_PASSWORD_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN, parameters = "#{#email}",
+            frequency = EMAIL_AUTH_CODE_FREQUENCY_PER_MINUTE, refreshTime = 1, timeUnit = TimeUnit.MINUTES)
     @Override
     public Result<Void> sendEmailAuthCodeForUpdatePassword(String email) {
         // 判断邮箱是否存在，邮箱如果不存在就不给发送验证码

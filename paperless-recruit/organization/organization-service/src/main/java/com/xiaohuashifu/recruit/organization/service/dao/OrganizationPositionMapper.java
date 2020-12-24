@@ -18,9 +18,11 @@ public interface OrganizationPositionMapper {
 
     OrganizationPositionDO getOrganizationPosition(Long id);
 
-    Long getOrganizationId(Long organizationPositionId);
+    Long getOrganizationId(Long id);
 
     List<OrganizationPositionDO> listOrganizationPositions(OrganizationPositionQuery query);
+
+    int count(Long id);
 
     int countByOrganizationIdPositionName(@Param("organizationId") Long organizationId,
                                           @Param("positionName") String positionName);
@@ -30,4 +32,5 @@ public interface OrganizationPositionMapper {
     int updatePriority(@Param("id") Long id, @Param("priority") Integer priority);
 
     int deleteOrganizationPosition(Long id);
+
 }

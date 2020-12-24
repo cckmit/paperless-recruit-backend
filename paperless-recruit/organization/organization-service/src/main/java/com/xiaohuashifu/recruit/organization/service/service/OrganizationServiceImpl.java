@@ -120,7 +120,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 添加组织的标签
      *
-     * @permission 必须是该组织本身，即 organizationId 是组织本身
+     * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotAvailable: 标签不可用
@@ -183,7 +183,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 删除组织的标签
      *
-     * @permission 必须是该组织本身，即 organizationId 是组织本身
+     * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
@@ -257,9 +257,20 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
+     * 通过组织编号获取用户编号
+     *
+     * @param id 组织编号
+     * @return 用户编号，可能返回 null，若组织不存在
+     */
+    @Override
+    public Long getUserId(Long id) {
+        return organizationMapper.getUserId(id);
+    }
+
+    /**
      * 更新组织名
      *
-     * @permission 必须是该组织本身，即 id 是组织本身
+     * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 组织编号或组织名格式错误
      *              InvalidParameter.NotExist: 组织不存在
@@ -297,7 +308,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 更新组织名缩写
      *
-     * @permission 必须是该组织本身，即 id 是组织本身
+     * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 组织编号或组织名缩写格式错误
      *              InvalidParameter.NotExist: 组织不存在
@@ -325,7 +336,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 更新组织介绍
      *
-     * @permission 必须是该组织本身，即 id 是组织本身
+     * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 组织编号或组织介绍格式错误
      *              InvalidParameter.NotExist: 组织不存在
@@ -353,7 +364,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 更新组织 Logo
      *
-     * @permission 必须是该组织本身，即 UpdateOrganizationLogoPO.id 是组织本身
+     * @permission 必须是该组织的主体用户
      *
      * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
@@ -519,11 +530,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 发送注册账号时使用的邮箱验证码
      *
-     * @public 公开方法
-     *
      * @errorCode InvalidParameter: 邮箱或标题格式错误
      *              OperationConflict: 该邮箱已经被注册，无法发送验证码
      *              UnknownError: 发送邮件验证码失败 | 邮箱地址错误 | 网络延迟
+     *              TooManyRequests: 请求太频繁
      *
      * @param email 邮箱
      * @return 发送结果

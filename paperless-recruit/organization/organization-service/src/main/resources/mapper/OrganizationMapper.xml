@@ -53,6 +53,12 @@
         where id = #{id}
     </select>
 
+    <select id="getUserId" resultType="long">
+        select user_id
+        from organization
+        where id = #{id}
+    </select>
+
     <select id="listOrganizations" resultMap="organization">
         select <include refid="organization"/>
         from organization

@@ -20,6 +20,11 @@ public class CollegeDTO implements Serializable {
      */
     private String collegeName;
 
+    public CollegeDTO(Long id, String collegeName) {
+        this.id = id;
+        this.collegeName = collegeName;
+    }
+
     public Long getId() {
         return id;
     }
@@ -44,25 +49,4 @@ public class CollegeDTO implements Serializable {
                 '}';
     }
 
-    public static final class Builder {
-        private Long id;
-        private String collegeName;
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder collegeName(String collegeName) {
-            this.collegeName = collegeName;
-            return this;
-        }
-
-        public CollegeDTO build() {
-            CollegeDTO collegeDTO = new CollegeDTO();
-            collegeDTO.setId(id);
-            collegeDTO.setCollegeName(collegeName);
-            return collegeDTO;
-        }
-    }
 }

@@ -58,14 +58,14 @@ public class UserProfileQuery implements Serializable {
     private String studentNumber;
 
     /**
-     * 学院，可模糊
+     * 学院编号
      */
-    private String college;
+    private Long collegeId;
 
     /**
-     * 专业，可模糊
+     * 专业编号
      */
-    private String major;
+    private Long majorId;
 
     /**
      * 自我介绍，可模糊
@@ -128,20 +128,20 @@ public class UserProfileQuery implements Serializable {
         this.studentNumber = studentNumber;
     }
 
-    public String getCollege() {
-        return college;
+    public Long getCollegeId() {
+        return collegeId;
     }
 
-    public void setCollege(String college) {
-        this.college = college;
+    public void setCollegeId(Long collegeId) {
+        this.collegeId = collegeId;
     }
 
-    public String getMajor() {
-        return major;
+    public Long getMajorId() {
+        return majorId;
     }
 
-    public void setMajor(String major) {
-        this.major = major;
+    public void setMajorId(Long majorId) {
+        this.majorId = majorId;
     }
 
     public String getIntroduction() {
@@ -162,8 +162,8 @@ public class UserProfileQuery implements Serializable {
                 ", userId=" + userId +
                 ", fullName='" + fullName + '\'' +
                 ", studentNumber='" + studentNumber + '\'' +
-                ", college='" + college + '\'' +
-                ", major='" + major + '\'' +
+                ", collegeId=" + collegeId +
+                ", majorId=" + majorId +
                 ", introduction='" + introduction + '\'' +
                 '}';
     }
@@ -176,12 +176,9 @@ public class UserProfileQuery implements Serializable {
         private Long userId;
         private String fullName;
         private String studentNumber;
-        private String college;
-        private String major;
+        private Long collegeId;
+        private Long majorId;
         private String introduction;
-
-        public Builder() {
-        }
 
         public Builder pageNum(Long pageNum) {
             this.pageNum = pageNum;
@@ -218,13 +215,13 @@ public class UserProfileQuery implements Serializable {
             return this;
         }
 
-        public Builder college(String college) {
-            this.college = college;
+        public Builder collegeId(Long collegeId) {
+            this.collegeId = collegeId;
             return this;
         }
 
-        public Builder major(String major) {
-            this.major = major;
+        public Builder majorId(Long majorId) {
+            this.majorId = majorId;
             return this;
         }
 
@@ -242,8 +239,8 @@ public class UserProfileQuery implements Serializable {
             userProfileQuery.setUserId(userId);
             userProfileQuery.setFullName(fullName);
             userProfileQuery.setStudentNumber(studentNumber);
-            userProfileQuery.setCollege(college);
-            userProfileQuery.setMajor(major);
+            userProfileQuery.setCollegeId(collegeId);
+            userProfileQuery.setMajorId(majorId);
             userProfileQuery.setIntroduction(introduction);
             return userProfileQuery;
         }

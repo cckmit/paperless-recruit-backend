@@ -52,13 +52,8 @@ public class UserProfileServiceImplTest {
     }
 
     @Test
-    public void getUserProfileByUserId() {
-        System.out.println(userProfileService.getUserProfileByUserId(1L));
-    }
-
-    @Test
     public void updateFullName() {
-        System.out.println(userProfileService.updateFullName(1L, "吴嘉贤1"));
+        System.out.println(userProfileService.updateFullName(1L, "吴嘉贤3"));
     }
 
     @Test
@@ -67,12 +62,12 @@ public class UserProfileServiceImplTest {
     }
 
     @Test
-    public void updateCollegeAndMajorByMajorId() {
-        System.out.println(userProfileService.updateCollegeAndMajorByMajorId(1L, 2L));
+    public void updateCollegeAndMajor() {
+        System.out.println(userProfileService.updateCollegeAndMajor(1L, 2L));
     }
 
     @Test
     public void updateIntroduction() {
-        System.out.println(userProfileService.updateIntroduction(1L, "我是17软件工程学生"));
+        System.out.println(userProfileService.updateIntroduction(1L, "我是17软件工程学生111"));
     }
 }

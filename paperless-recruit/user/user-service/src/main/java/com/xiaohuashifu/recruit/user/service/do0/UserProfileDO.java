@@ -17,9 +17,9 @@ public class UserProfileDO {
 
     private String studentNumber;
 
-    private String college;
+    private Long collegeId;
 
-    private String major;
+    private Long majorId;
 
     private String introduction;
 
@@ -59,20 +59,20 @@ public class UserProfileDO {
         this.studentNumber = studentNumber;
     }
 
-    public String getCollege() {
-        return college;
+    public Long getCollegeId() {
+        return collegeId;
     }
 
-    public void setCollege(String college) {
-        this.college = college;
+    public void setCollegeId(Long collegeId) {
+        this.collegeId = collegeId;
     }
 
-    public String getMajor() {
-        return major;
+    public Long getMajorId() {
+        return majorId;
     }
 
-    public void setMajor(String major) {
-        this.major = major;
+    public void setMajorId(Long majorId) {
+        this.majorId = majorId;
     }
 
     public String getIntroduction() {
@@ -106,8 +106,8 @@ public class UserProfileDO {
                 ", userId=" + userId +
                 ", fullName='" + fullName + '\'' +
                 ", studentNumber='" + studentNumber + '\'' +
-                ", college='" + college + '\'' +
-                ", major='" + major + '\'' +
+                ", collegeId=" + collegeId +
+                ", majorId=" + majorId +
                 ", introduction='" + introduction + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
@@ -119,8 +119,8 @@ public class UserProfileDO {
         private Long userId;
         private String fullName;
         private String studentNumber;
-        private String college;
-        private String major;
+        private Long collegeId;
+        private Long majorId;
         private String introduction;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -145,13 +145,13 @@ public class UserProfileDO {
             return this;
         }
 
-        public Builder college(String college) {
-            this.college = college;
+        public Builder collegeId(Long collegeId) {
+            this.collegeId = collegeId;
             return this;
         }
 
-        public Builder major(String major) {
-            this.major = major;
+        public Builder majorId(Long majorId) {
+            this.majorId = majorId;
             return this;
         }
 
@@ -176,8 +176,8 @@ public class UserProfileDO {
             userProfileDO.setUserId(userId);
             userProfileDO.setFullName(fullName);
             userProfileDO.setStudentNumber(studentNumber);
-            userProfileDO.setCollege(college);
-            userProfileDO.setMajor(major);
+            userProfileDO.setCollegeId(collegeId);
+            userProfileDO.setMajorId(majorId);
             userProfileDO.setIntroduction(introduction);
             userProfileDO.setCreateTime(createTime);
             userProfileDO.setUpdateTime(updateTime);

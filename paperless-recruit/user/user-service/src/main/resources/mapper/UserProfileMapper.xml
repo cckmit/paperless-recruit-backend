@@ -7,15 +7,15 @@
         <result property="userId" column="user_id"/>
         <result property="fullName" column="full_name"/>
         <result property="studentNumber" column="student_number"/>
-        <result property="college" column="college"/>
-        <result property="major" column="major"/>
+        <result property="collegeId" column="college_id"/>
+        <result property="majorId" column="major_id"/>
         <result property="introduction" column="introduction"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="userProfile">
-        id, user_id, full_name, student_number, college, major, introduction, create_time, update_time
+        id, user_id, full_name, student_number, college_id, major_id, introduction, create_time, update_time
     </sql>
 
     <insert id="insertUserProfile" keyProperty="id">
@@ -52,11 +52,11 @@
             <if test="studentNumber != null">
                 and student_number like "%"#{studentNumber}"%"
             </if>
-            <if test="college != null">
-                and college like "%"#{college}"%"
+            <if test="collegeId != null">
+                and college_id = #{collegeId}
             </if>
-            <if test="major != null">
-                and major like "%"#{major}"%"
+            <if test="majorId != null">
+                and major_id = #{majorId}
             </if>
             <if test="introduction != null">
                 and introduction like "%"#{introduction}"%"
@@ -64,10 +64,10 @@
         </where>
     </select>
 
-    <select id="getUserProfileByUserId" resultMap="userProfile">
-        select <include refid="userProfile"/>
+    <select id="getUserId" resultType="long">
+        select user_id
         from user_profile
-        where user_id = #{userId}
+        where id = #{id}
     </select>
 
     <select id="countByUserId" resultType="int">
@@ -79,24 +79,24 @@
     <update id="updateFullName">
         update user_profile
         set full_name = #{fullName}
-        where user_id = #{userId}
+        where id = #{id}
     </update>
 
     <update id="updateStudentNumber">
         update user_profile
         set student_number = #{studentNumber}
-        where user_id = #{userId}
+        where id = #{id}
     </update>
 
-    <update id="updateCollegeAndMajor">
+    <update id="updateCollegeIdAndMajorId">
         update user_profile
-        set college = #{college}, major = #{major}
-        where user_id = #{userId}
+        set college_id = #{collegeId}, major_id = #{majorId}
+        where id = #{id}
     </update>
 
     <update id="updateIntroduction">
         update user_profile
         set introduction = #{introduction}
-        where user_id = #{userId}
+        where id = #{id}
     </update>
 </mapper>

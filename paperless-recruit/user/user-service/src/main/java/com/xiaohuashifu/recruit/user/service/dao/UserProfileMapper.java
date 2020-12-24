@@ -20,18 +20,17 @@ public interface UserProfileMapper {
 
     List<UserProfileDO> listUserProfiles(UserProfileQuery query);
 
-    UserProfileDO getUserProfileByUserId(Long userId);
+    Long getUserId(Long id);
 
     int countByUserId(Long userId);
 
-    int updateFullName(@Param("userId") Long userId, @Param("fullName") String fullName);
+    int updateFullName(@Param("id") Long id, @Param("fullName") String fullName);
 
-    int updateStudentNumber(@Param("userId") Long userId, @Param("studentNumber") String studentNumber);
+    int updateStudentNumber(@Param("id") Long id, @Param("studentNumber") String studentNumber);
 
-    int updateCollegeAndMajor(@Param("userId") Long userId, @Param("college") String college,
-                              @Param("major") String major);
+    int updateCollegeIdAndMajorId(@Param("id") Long id, @Param("collegeId") Long collegeId,
+                                  @Param("majorId") Long majorId);
 
-    int updateIntroduction(@Param("userId") Long userId, @Param("introduction") String introduction);
-
+    int updateIntroduction(@Param("id") Long id, @Param("introduction") String introduction);
 
 }

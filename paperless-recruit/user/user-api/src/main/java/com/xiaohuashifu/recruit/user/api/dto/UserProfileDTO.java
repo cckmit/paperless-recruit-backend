@@ -31,14 +31,14 @@ public class UserProfileDTO implements Serializable {
     private String studentNumber;
 
     /**
-     * 学院
+     * 学院编号
      */
-    private String college;
+    private Long collegeId;
 
     /**
-     * 专业
+     * 专业编号
      */
-    private String major;
+    private Long majorId;
 
     /**
      * 自我介绍
@@ -77,20 +77,20 @@ public class UserProfileDTO implements Serializable {
         this.studentNumber = studentNumber;
     }
 
-    public String getCollege() {
-        return college;
+    public Long getCollegeId() {
+        return collegeId;
     }
 
-    public void setCollege(String college) {
-        this.college = college;
+    public void setCollegeId(Long collegeId) {
+        this.collegeId = collegeId;
     }
 
-    public String getMajor() {
-        return major;
+    public Long getMajorId() {
+        return majorId;
     }
 
-    public void setMajor(String major) {
-        this.major = major;
+    public void setMajorId(Long majorId) {
+        this.majorId = majorId;
     }
 
     public String getIntroduction() {
@@ -108,8 +108,8 @@ public class UserProfileDTO implements Serializable {
                 ", userId=" + userId +
                 ", fullName='" + fullName + '\'' +
                 ", studentNumber='" + studentNumber + '\'' +
-                ", college='" + college + '\'' +
-                ", major='" + major + '\'' +
+                ", collegeId=" + collegeId +
+                ", majorId=" + majorId +
                 ", introduction='" + introduction + '\'' +
                 '}';
     }
@@ -119,8 +119,8 @@ public class UserProfileDTO implements Serializable {
         private Long userId;
         private String fullName;
         private String studentNumber;
-        private String college;
-        private String major;
+        private Long collegeId;
+        private Long majorId;
         private String introduction;
 
         public Builder id(Long id) {
@@ -143,13 +143,13 @@ public class UserProfileDTO implements Serializable {
             return this;
         }
 
-        public Builder college(String college) {
-            this.college = college;
+        public Builder collegeId(Long collegeId) {
+            this.collegeId = collegeId;
             return this;
         }
 
-        public Builder major(String major) {
-            this.major = major;
+        public Builder majorId(Long majorId) {
+            this.majorId = majorId;
             return this;
         }
 
@@ -164,8 +164,8 @@ public class UserProfileDTO implements Serializable {
             userProfileDTO.setUserId(userId);
             userProfileDTO.setFullName(fullName);
             userProfileDTO.setStudentNumber(studentNumber);
-            userProfileDTO.setCollege(college);
-            userProfileDTO.setMajor(major);
+            userProfileDTO.setCollegeId(collegeId);
+            userProfileDTO.setMajorId(majorId);
             userProfileDTO.setIntroduction(introduction);
             return userProfileDTO;
         }

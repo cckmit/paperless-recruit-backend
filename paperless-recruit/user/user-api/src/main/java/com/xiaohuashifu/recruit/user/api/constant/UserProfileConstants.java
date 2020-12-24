@@ -11,12 +11,12 @@ public class UserProfileConstants {
     /**
      * 最小姓名长度
      */
-    public static final int MIN_FULL_NAME_LENGTH = 2;
+    public static final int MIN_FULL_NAME_LENGTH = 1;
 
     /**
      * 最大姓名长度
      */
-    public static final int MAX_FULL_NAME_LENGTH = 5;
+    public static final int MAX_FULL_NAME_LENGTH = 20;
 
     /**
      * 最大个人介绍长度

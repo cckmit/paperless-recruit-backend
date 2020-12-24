@@ -69,9 +69,10 @@ public interface UserProfileService {
     /**
      * 更新姓名
      *
-     * @permission id 必须是用户本身的
+     * @permission id 必须是用户本身
      *
      * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 用户个人信息不存在
      *
      * @param id 用户个人信息编号
      * @param newFullName 新姓名
@@ -95,6 +96,7 @@ public interface UserProfileService {
      * @permission id 必须是用户本身
      *
      * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 用户个人信息不存在
      *
      * @param id 用户个人信息编号
      * @param newStudentNumber 新学号
@@ -115,7 +117,7 @@ public interface UserProfileService {
      * @permission id 必须是用户本身
      *
      * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 专业不存在
+     *              InvalidParameter.NotExist: 专业不存在 | 用户个人信息不存在
      *
      * @param id 用户个人信息编号
      * @param newMajorId 新专业编号
@@ -132,6 +134,7 @@ public interface UserProfileService {
      * @permission id 必须是用户本身
      *
      * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 用户个人信息不存在
      *
      * @param id 用户个人信息编号
      * @param newIntroduction 新自我介绍

@@ -70,6 +70,12 @@
         where id = #{id}
     </select>
 
+    <select id="count" resultType="int">
+        select count(*)
+        from user_profile
+        where id = #{id}
+    </select>
+
     <select id="countByUserId" resultType="int">
         select count(*)
         from user_profile

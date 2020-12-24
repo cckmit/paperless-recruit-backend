@@ -19,6 +19,8 @@ public interface AuthorityService {
      * 这个服务会返回当前权限的层级结构，用于构建 RoleHierarchy
      * 会剔除不可用的权限（Permission）和角色（Role）
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: roleNamePrefix 格式错误
      *
      * 例如：    "root > user\n" +

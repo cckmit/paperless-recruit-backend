@@ -129,7 +129,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     /**
      * 更新姓名
      *
+     * @permission id 必须是用户本身
+     *
      * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 用户个人信息不存在
      *
      * @param id 用户个人信息编号
      * @param newFullName 新姓名
@@ -137,6 +140,12 @@ public class UserProfileServiceImpl implements UserProfileService {
      */
     @Override
     public Result<UserProfileDTO> updateFullName(Long id, String newFullName) {
+        // 判断用户个人信息是否存在
+        int count = userProfileMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The userProfile does not exist.");
+        }
+
         // 更新姓名
         userProfileMapper.updateFullName(id, newFullName);
         return getUserProfile(id);
@@ -151,6 +160,7 @@ public class UserProfileServiceImpl implements UserProfileService {
      * @permission id 必须是用户本身
      *
      * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 用户个人信息不存在
      *
      * @param id 用户个人信息编号
      * @param newStudentNumber 新学号
@@ -158,6 +168,12 @@ public class UserProfileServiceImpl implements UserProfileService {
      */
     @Override
     public Result<UserProfileDTO> updateStudentNumber(Long id, String newStudentNumber) {
+        // 判断用户个人信息是否存在
+        int count = userProfileMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The userProfile does not exist.");
+        }
+
         // 更新学号
         userProfileMapper.updateStudentNumber(id, newStudentNumber);
         return getUserProfile(id);
@@ -171,7 +187,7 @@ public class UserProfileServiceImpl implements UserProfileService {
      * @permission id 必须是用户本身
      *
      * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 专业不存在
+     *              InvalidParameter.NotExist: 专业不存在 | 用户个人信息不存在
      *
      * @param id 用户个人信息编号
      * @param newMajorId 新专业编号
@@ -179,6 +195,12 @@ public class UserProfileServiceImpl implements UserProfileService {
      */
     @Override
     public Result<UserProfileDTO> updateCollegeAndMajor(Long id, Long newMajorId) {
+        // 判断用户个人信息是否存在
+        int count = userProfileMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The userProfile does not exist.");
+        }
+
         // 判断该专业编号是否存在系统库里
         Result<MajorDTO> getMajorResult = majorService.getMajor(newMajorId);
         if (!getMajorResult.isSuccess()) {
@@ -197,6 +219,7 @@ public class UserProfileServiceImpl implements UserProfileService {
      * @permission id 必须是用户本身
      *
      * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 用户个人信息不存在
      *
      * @param id 用户个人信息编号
      * @param newIntroduction 新自我介绍
@@ -204,6 +227,12 @@ public class UserProfileServiceImpl implements UserProfileService {
      */
     @Override
     public Result<UserProfileDTO> updateIntroduction(Long id, String newIntroduction) {
+        // 判断用户个人信息是否存在
+        int count = userProfileMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The userProfile does not exist.");
+        }
+
         // 更新自我介绍
         userProfileMapper.updateIntroduction(id, newIntroduction);
         return getUserProfile(id);

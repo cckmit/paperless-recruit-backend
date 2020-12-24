@@ -22,6 +22,8 @@ public interface UserProfileMapper {
 
     Long getUserId(Long id);
 
+    int count(Long id);
+
     int countByUserId(Long userId);
 
     int updateFullName(@Param("id") Long id, @Param("fullName") String fullName);

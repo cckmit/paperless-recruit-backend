@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.organization.service.dao;
 
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import com.xiaohuashifu.recruit.organization.service.do0.DepartmentDO;
-import com.xiaohuashifu.recruit.organization.service.do0.DepartmentDepartmentLabelDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -17,24 +16,15 @@ public interface DepartmentMapper {
 
     int insertDepartment(DepartmentDO departmentDO);
 
-    int insertLabel(DepartmentDepartmentLabelDO departmentDepartmentLabelDO);
-
-    int deleteLabelsByLabelName(String labelName);
-
-    int deleteLabelByDepartmentIdAndLabelName(@Param("departmentId") Long departmentId,
-                                              @Param("labelName") String labelName);
-
     DepartmentDO getDepartment(Long id);
 
     Boolean getDeactivated(Long id);
 
-    String getLogoUrlByDepartmentId(Long departmentId);
+    String getLogoUrl(Long id);
 
     Long getOrganizationId(Long id);
 
     List<DepartmentDO> listDepartments(DepartmentQuery query);
-
-    List<String> listDepartmentLabelNamesByDepartmentId(Long departmentId);
 
     int count(Long id);
 
@@ -45,10 +35,7 @@ public interface DepartmentMapper {
             @Param("organizationId") Long organizationId,
             @Param("abbreviationDepartmentName") String abbreviationDepartmentName);
 
-    int countLabelByDepartmentId(Long departmentId);
-
-    int countLabelByDepartmentIdAndLabelName(@Param("departmentId") Long departmentId,
-                                             @Param("labelName") String labelName);
+    int countLabels(Long id);
 
     int updateDepartmentName(@Param("id") Long id, @Param("departmentName") String departmentName);
 
@@ -60,6 +47,12 @@ public interface DepartmentMapper {
     int updateLogoUrl(@Param("id") Long id, @Param("logoUrl") String logoUrl);
 
     int updateDeactivated(@Param("id") Long id, @Param("deactivated") Boolean deactivated);
+
+    int addLabel(@Param("id") Long id, @Param("label") String label);
+
+    int removeLabel(@Param("id") Long id, @Param("label") String label);
+
+    int removeLabels(String label);
 
     int increaseMemberNumber(Long id);
 

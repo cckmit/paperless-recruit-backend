@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.do0;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 描述：部门
@@ -16,6 +17,7 @@ public class DepartmentDO {
     private String introduction;
     private String logoUrl;
     private String memberNumber;
+    private List<String> labels;
     private Boolean deactivated;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
@@ -76,6 +78,14 @@ public class DepartmentDO {
         this.memberNumber = memberNumber;
     }
 
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
+    }
+
     public Boolean getDeactivated() {
         return deactivated;
     }
@@ -110,6 +120,7 @@ public class DepartmentDO {
                 ", introduction='" + introduction + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", memberNumber='" + memberNumber + '\'' +
+                ", labels=" + labels +
                 ", deactivated=" + deactivated +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
@@ -124,6 +135,7 @@ public class DepartmentDO {
         private String introduction;
         private String logoUrl;
         private String memberNumber;
+        private List<String> labels;
         private Boolean deactivated;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -163,6 +175,11 @@ public class DepartmentDO {
             return this;
         }
 
+        public Builder labels(List<String> labels) {
+            this.labels = labels;
+            return this;
+        }
+
         public Builder deactivated(Boolean deactivated) {
             this.deactivated = deactivated;
             return this;
@@ -187,6 +204,7 @@ public class DepartmentDO {
             departmentDO.setIntroduction(introduction);
             departmentDO.setLogoUrl(logoUrl);
             departmentDO.setMemberNumber(memberNumber);
+            departmentDO.setLabels(labels);
             departmentDO.setDeactivated(deactivated);
             departmentDO.setCreateTime(createTime);
             departmentDO.setUpdateTime(updateTime);

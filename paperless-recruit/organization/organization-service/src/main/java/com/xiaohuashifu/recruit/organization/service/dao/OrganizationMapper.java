@@ -32,8 +32,6 @@ public interface OrganizationMapper {
 
     int countLabels(Long id);
 
-    int countByIdAndLabel(@Param("id") Long id, @Param("label") String label);
-
     int updateOrganizationName(@Param("id") Long id, @Param("organizationName") String organizationName);
 
     int updateAbbreviationOrganizationName(@Param("id") Long id,

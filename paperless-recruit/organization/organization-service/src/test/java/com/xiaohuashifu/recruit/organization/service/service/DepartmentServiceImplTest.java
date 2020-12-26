@@ -3,7 +3,6 @@ package com.xiaohuashifu.recruit.organization.service.service;
 import com.xiaohuashifu.recruit.organization.api.po.UpdateDepartmentLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
-import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
@@ -11,10 +10,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -41,7 +37,7 @@ public class DepartmentServiceImplTest {
     @Test
     public void createDepartment() {
         System.out.println(departmentService.createDepartment(
-                1L, "社会科学部", "社科部"));
+                1L, "财务部", "财务部"));
     }
 
     @Test
@@ -51,12 +47,12 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void addLabel() {
-        System.out.println(departmentService.addLabel(1L, "项目"));
+        System.out.println(departmentService.addLabel(3L, "创新"));
     }
 
     @Test
     public void removeLabel() {
-        System.out.println(departmentService.removeLabel(1L, "项目"));
+        System.out.println(departmentService.removeLabel(1L, "软件"));
     }
 
     @Test

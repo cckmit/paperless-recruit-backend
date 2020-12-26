@@ -134,13 +134,6 @@
         where id = #{id}
     </select>
 
-    <select id="countByIdAndLabel" resultType="int">
-        select count(*)
-        from organization
-        where id = #{id}
-        and #{label} member of(labels)
-    </select>
-
     <update id="updateOrganizationName">
         update organization
         set organization_name = #{organizationName}
@@ -175,20 +168,20 @@
         update organization
         set labels = json_array_append(labels, '$', #{label})
         where id = #{id}
-        and not #{label} member of(labels)
+        and not #{label} member of(labels->'$')
     </update>
 
     <update id="removeLabel">
         update organization
         set labels = json_remove(labels, replace(json_search(labels, 'one', #{label}), '"', ''))
         where id = #{id}
-        and #{label} member of(labels)
+        and #{label} member of(labels->'$')
     </update>
 
     <delete id="removeLabels">
         update organization
         set labels = json_remove(labels, replace(json_search(labels, 'one', #{label}), '"', ''))
-        where #{label} member of(labels)
+        where #{label} member of(labels->'$')
     </delete>
 
     <update id="increaseMemberNumber">

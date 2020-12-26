@@ -10,6 +10,7 @@
         <result property="introduction" column="introduction"/>
         <result property="logoUrl" column="logo_url"/>
         <result property="memberNumber" column="member_number"/>
+        <result property="labels" column="labels"/>
         <result property="deactivated" column="is_deactivated"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
@@ -17,29 +18,13 @@
 
     <sql id="department">
         id, organization_id, department_name, abbreviation_department_name, introduction, logo_url, member_number,
-            is_deactivated, create_time, update_time
+        labels, is_deactivated, create_time, update_time
     </sql>
 
     <insert id="insertDepartment" keyProperty="id">
-        insert into department(organization_id, department_name, abbreviation_department_name)
-        values(#{organizationId}, #{departmentName}, #{abbreviationDepartmentName})
+        insert into department(organization_id, department_name, abbreviation_department_name, labels)
+        values(#{organizationId}, #{departmentName}, #{abbreviationDepartmentName}, json_array())
     </insert>
-
-    <insert id="insertLabel">
-        insert into department_department_label(department_id, label_name)
-        values(#{departmentId}, #{labelName})
-    </insert>
-
-    <delete id="deleteLabelsByLabelName">
-        delete from department_department_label
-        where label_name = #{labelName}
-    </delete>
-
-    <delete id="deleteLabelByDepartmentIdAndLabelName">
-        delete from department_department_label
-        where department_id = #{departmentId}
-        and label_name = #{labelName}
-    </delete>
 
     <select id="getDepartment" resultMap="department">
         select <include refid="department"/>
@@ -53,7 +38,7 @@
         where id = #{id}
     </select>
 
-    <select id="getLogoUrlByDepartmentId" resultType="string">
+    <select id="getLogoUrl" resultType="string">
         select logo_url
         from department
         where id = #{id}
@@ -92,15 +77,15 @@
                 and is_deactivated = #{deactivated}
             </if>
         </where>
-        <if test="orderByDiscarded || orderByDiscardedDesc || orderByDepartmentName || orderByDepartmentNameDesc
+        <if test="orderByDeactivated || orderByDeactivatedDesc || orderByDepartmentName || orderByDepartmentNameDesc
          || orderByAbbreviationDepartmentName || orderByAbbreviationDepartmentNameDesc
          || orderByCreateTime || orderByCreateTimeDesc || orderByUpdateTime || orderByUpdateTimeDesc">
             order by
             <trim suffixOverrides=",">
-                <if test="orderByDiscarded">
+                <if test="orderByDeactivated">
                     is_deactivated,
                 </if>
-                <if test="orderByDiscardedDesc">
+                <if test="orderByDeactivatedDesc">
                     is_deactivated desc,
                 </if>
                 <if test="orderByDepartmentName">
@@ -131,12 +116,6 @@
         </if>
     </select>
 
-    <select id="listDepartmentLabelNamesByDepartmentId" resultType="string">
-        select label_name
-        from department_department_label
-        where department_id = #{departmentId}
-    </select>
-
     <select id="count" resultType="int">
         select count(*)
         from department
@@ -157,17 +136,10 @@
         and abbreviation_department_name = #{abbreviationDepartmentName}
     </select>
 
-    <select id="countLabelByDepartmentId" resultType="int">
-        select count(*)
-        from department_department_label
-        where department_id = #{departmentId}
-    </select>
-
-    <select id="countLabelByDepartmentIdAndLabelName" resultType="int">
-        select count(*)
-        from department_department_label
-        where department_id = #{departmentId}
-        and label_name = #{labelName}
+    <select id="countLabels" resultType="int">
+        select json_length(labels)
+        from department
+        where id = #{id}
     </select>
 
     <update id="updateDepartmentName">
@@ -199,6 +171,26 @@
         set is_deactivated = #{deactivated}
         where id = #{id}
     </update>
+
+    <update id="addLabel">
+        update department
+        set labels = json_array_append(labels, '$', #{label})
+        where id = #{id}
+          and not #{label} member of(labels->'$')
+    </update>
+
+    <update id="removeLabel">
+        update department
+        set labels = json_remove(labels, replace(json_search(labels, 'one', #{label}), '"', ''))
+        where id = #{id}
+          and #{label} member of(labels->'$')
+    </update>
+
+    <delete id="removeLabels">
+        update department
+        set labels = json_remove(labels, replace(json_search(labels, 'one', #{label}), '"', ''))
+        where #{label} member of(labels->'$')
+    </delete>
 
     <update id="increaseMemberNumber">
         update department

@@ -7,9 +7,10 @@ import com.xiaohuashifu.recruit.organization.api.dto.DepartmentLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.DisableDepartmentLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentLabelQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentLabelService;
+import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.organization.service.dao.DepartmentLabelMapper;
-import com.xiaohuashifu.recruit.organization.service.dao.DepartmentMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.DepartmentLabelDO;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
@@ -26,11 +27,11 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
 
     private final DepartmentLabelMapper departmentLabelMapper;
 
-    private final DepartmentMapper departmentMapper;
+    @Reference
+    private DepartmentService departmentService;
 
-    public DepartmentLabelServiceImpl(DepartmentLabelMapper departmentLabelMapper, DepartmentMapper departmentMapper) {
+    public DepartmentLabelServiceImpl(DepartmentLabelMapper departmentLabelMapper) {
         this.departmentLabelMapper = departmentLabelMapper;
-        this.departmentMapper = departmentMapper;
     }
 
     /**
@@ -106,7 +107,7 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
         departmentLabelMapper.updateAvailable(id, false);
 
         // 删除部门的这个标签
-        int deletedNumber = departmentMapper.deleteLabelsByLabelName(departmentLabelDO.getLabelName());
+        int deletedNumber = departmentService.removeLabels(departmentLabelDO.getLabelName());
 
         // 封装删除数量和禁用后的部门标签对象
         DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id).getData();

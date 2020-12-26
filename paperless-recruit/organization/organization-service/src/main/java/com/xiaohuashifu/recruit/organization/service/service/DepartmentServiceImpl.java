@@ -14,7 +14,6 @@ import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.dao.DepartmentMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.DepartmentDO;
-import com.xiaohuashifu.recruit.organization.service.do0.DepartmentDepartmentLabelDO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -125,39 +124,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
-     * 停用部门，只是标识为停用
-     * 无法再添加成员到该部门，无法创建招新报名
-     *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 部门编号错误
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict: 部门已经被停用
-     *
-     * @param id 部门编号
-     * @return 停用后的部门对象
-     */
-    @Override
-    public Result<DepartmentDTO> deactivateDepartment(Long id) {
-        // 检查部门和组织的状态
-        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
-        if (checkResult.isFailure()) {
-            return Result.fail(checkResult);
-        }
-
-        // 判断是否已经被停用
-        Boolean deactivated = departmentMapper.getDeactivated(id);
-        if (Boolean.TRUE.equals(deactivated)) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The department already deactivated.");
-        }
-
-        // 更新为停用
-        departmentMapper.updateDeactivated(id, true);
-        return getDepartment(id);
-    }
-
-    /**
      * 添加部门的标签
      *
      * @permission 该部门所属组织的所属用户必须是用户主体本身
@@ -170,29 +136,22 @@ public class DepartmentServiceImpl implements DepartmentService {
      *              OperationConflict.OverLimit: 部门标签数量超过规定数量
      *              OperationConflict.Lock: 获取部门标签的锁失败
      *
-     * @param departmentId 部门编号
-     * @param labelName 标签名
+     * @param id 部门编号
+     * @param label 标签名
      * @return 添加后的部门对象
      */
     @Override
-    @DistributedLock(value = DEPARTMENT_LABELS_LOCK_KEY_PATTERN, parameters = "#{#departmentId}",
+    @DistributedLock(value = DEPARTMENT_LABELS_LOCK_KEY_PATTERN, parameters = "#{#id}",
             errorMessage = "Failed to acquire department labels lock.")
-    public Result<DepartmentDTO> addLabel(Long departmentId, String labelName) {
+    public Result<DepartmentDTO> addLabel(Long id, String label) {
         // 检查部门和组织的状态
-        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(departmentId);
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 判断该部门是否已经存在该标签
-        int count = departmentMapper.countLabelByDepartmentIdAndLabelName(departmentId, labelName);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
-                    "The department already owns this label.");
-        }
-
         // 判断标签数量是否大于 MAX_DEPARTMENT_LABEL_NUMBER
-        count = departmentMapper.countLabelByDepartmentId(departmentId);
+        int count = departmentMapper.countLabels(id);
         if (count >= DepartmentConstants.MAX_DEPARTMENT_LABEL_NUMBER) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_OVER_LIMIT,
                     "The number of label must not be greater than "
@@ -200,24 +159,24 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         // 判断该标签是否可用
-        Result<Void> checkDepartmentLabelResult = departmentLabelService.isValidDepartmentLabel(labelName);
+        Result<Void> checkDepartmentLabelResult = departmentLabelService.isValidDepartmentLabel(label);
         if (!checkDepartmentLabelResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_AVAILABLE, "The label unavailable.");
         }
 
-        // 部门标签的引用数增加
-        departmentLabelService.increaseReferenceNumberOrSaveDepartmentLabel(labelName);
-
         // 添加部门的标签
-        DepartmentDepartmentLabelDO departmentDepartmentLabelDO =
-                new DepartmentDepartmentLabelDO.Builder()
-                        .departmentId(departmentId)
-                        .labelName(labelName)
-                        .build();
-        departmentMapper.insertLabel(departmentDepartmentLabelDO);
+        count = departmentMapper.addLabel(id, label);
+        // 若添加失败则表示部门标签已经存在
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
+                    "The department already owns this label.");
+        }
+
+        // 部门标签的引用数增加
+        departmentLabelService.increaseReferenceNumberOrSaveDepartmentLabel(label);
 
         // 获取添加标签后的部门对象
-        return getDepartment(departmentId);
+        return getDepartment(id);
     }
 
     /**
@@ -230,29 +189,27 @@ public class DepartmentServiceImpl implements DepartmentService {
      *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签不存在
      *
-     * @param departmentId 部门编号
-     * @param labelName 标签名
+     * @param id 部门编号
+     * @param label 标签名
      * @return 删除标签后的部门
      */
     @Override
-    public Result<DepartmentDTO> removeLabel(Long departmentId, String labelName) {
+    public Result<DepartmentDTO> removeLabel(Long id, String label) {
         // 检查部门和组织的状态
-        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(departmentId);
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 判断该部门是否拥有该标签
-        int count = departmentMapper.countLabelByDepartmentIdAndLabelName(departmentId, labelName);
+        // 删除标签
+        int count = departmentMapper.removeLabel(id, label);
+        // 若删除失败则表示该部门不存在这个标签
         if (count < 1) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label does not exist.");
         }
 
-        // 删除标签
-        departmentMapper.deleteLabelByDepartmentIdAndLabelName(departmentId, labelName);
-
         // 获取删除标签后的部门对象
-        return getDepartment(departmentId);
+        return getDepartment(id);
     }
 
     /**
@@ -429,7 +386,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         // 获取部门 logoUrl
-        String logoUrl = departmentMapper.getLogoUrlByDepartmentId(updateDepartmentLogoPO.getId());
+        String logoUrl = departmentMapper.getLogoUrl(updateDepartmentLogoPO.getId());
         // 若原来的 logoUrl 为空，则随机产生一个
         boolean needUpdateLogoUrl = false;
         if (StringUtils.isBlank(logoUrl)) {
@@ -448,6 +405,53 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         // 更新后的组织信息
         return getDepartment(updateDepartmentLogoPO.getId());
+    }
+
+    /**
+     * 停用部门，只是标识为停用
+     * 无法再添加成员到该部门，无法创建招新报名
+     *
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
+     *
+     * @errorCode InvalidParameter: 部门编号错误
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *              OperationConflict: 部门已经被停用
+     *
+     * @param id 部门编号
+     * @return 停用后的部门对象
+     */
+    @Override
+    public Result<DepartmentDTO> deactivateDepartment(Long id) {
+        // 检查部门和组织的状态
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 判断是否已经被停用
+        Boolean deactivated = departmentMapper.getDeactivated(id);
+        if (Boolean.TRUE.equals(deactivated)) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The department already deactivated.");
+        }
+
+        // 更新为停用
+        departmentMapper.updateDeactivated(id, true);
+        return getDepartment(id);
+    }
+
+    /**
+     * 删除部门的标签，通过标签名
+     * 小心使用，一次性会删除所有的拥有该标签的部门的这个标签
+     *
+     * @private 内部方法
+     *
+     * @param label 标签名
+     * @return 被删除标签的部门数量
+     */
+    @Override
+    public int removeLabels(String label) {
+        return departmentMapper.removeLabels(label);
     }
 
     /**
@@ -508,7 +512,6 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @return DepartmentDTO
      */
     private DepartmentDTO departmentDO2DepartmentDTO(DepartmentDO departmentDO) {
-        List<String> labels = departmentMapper.listDepartmentLabelNamesByDepartmentId(departmentDO.getId());
         return new DepartmentDTO.Builder()
                 .id(departmentDO.getId())
                 .organizationId(departmentDO.getOrganizationId())
@@ -518,7 +521,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .logoUrl(departmentDO.getLogoUrl())
                 .memberNumber(departmentDO.getMemberNumber())
                 .deactivated(departmentDO.getDeactivated())
-                .labels(labels)
+                .labels(departmentDO.getLabels())
                 .build();
     }
 

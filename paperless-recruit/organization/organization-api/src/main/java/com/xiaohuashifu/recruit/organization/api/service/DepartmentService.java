@@ -54,23 +54,6 @@ public interface DepartmentService {
                     String abbreviationDepartmentName);
 
     /**
-     * 停用部门，只是标识为停用
-     * 无法再添加成员到该部门，无法创建招新报名
-     *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 部门编号错误
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict: 部门已经被停用
-     *
-     * @param id 部门编号
-     * @return 停用后的部门对象
-     */
-     Result<DepartmentDTO> deactivateDepartment(@NotNull(message = "The id can't be null.")
-                                                @Positive(message = "The id must be greater than 0.") Long id);
-
-    /**
      * 添加部门的标签
      *
      * @permission 该部门所属组织的所属用户必须是用户主体本身
@@ -83,17 +66,16 @@ public interface DepartmentService {
      *              OperationConflict.OverLimit: 部门标签数量超过规定数量
      *              OperationConflict.Lock: 获取部门标签的锁失败
      *
-     * @param departmentId 部门编号
-     * @param labelName 标签名
+     * @param id 部门编号
+     * @param label 标签名
      * @return 添加后的部门对象
      */
     Result<DepartmentDTO> addLabel(
-            @NotNull(message = "The departmentId can't be null.")
-            @Positive(message = "The departmentId must be greater than 0.") Long departmentId,
-            @NotBlank(message = "The labelName can't be blank.")
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The label can't be blank.")
             @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of labelName must not be greater than "
-                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
+                    message = "The length of label must not be greater than "
+                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String label);
 
     /**
      * 删除部门的标签
@@ -105,17 +87,16 @@ public interface DepartmentService {
      *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签不存在
      *
-     * @param departmentId 部门编号
-     * @param labelName 标签名
+     * @param id 部门编号
+     * @param label 标签名
      * @return 删除标签后的部门
      */
     Result<DepartmentDTO> removeLabel(
-            @NotNull(message = "The departmentId can't be null.")
-            @Positive(message = "The departmentId must be greater than 0.") Long departmentId,
-            @NotBlank(message = "The labelName can't be blank.")
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The label can't be blank.")
             @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of labelName must not be greater than "
-                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
+                    message = "The length of label must not be greater than "
+                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String label);
 
     /**
      * 获取部门
@@ -226,6 +207,34 @@ public interface DepartmentService {
      */
     Result<DepartmentDTO> updateLogo(@NotNull(message = "The updateDepartmentLogoPO can't be null.")
                                              UpdateDepartmentLogoPO updateDepartmentLogoPO);
+
+    /**
+     * 停用部门，只是标识为停用
+     * 无法再添加成员到该部门，无法创建招新报名
+     *
+     * @permission 该部门所属组织的所属用户必须是用户主体本身
+     *
+     * @errorCode InvalidParameter: 部门编号错误
+     *              InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *              OperationConflict: 部门已经被停用
+     *
+     * @param id 部门编号
+     * @return 停用后的部门对象
+     */
+    Result<DepartmentDTO> deactivateDepartment(@NotNull(message = "The id can't be null.")
+                                               @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 删除部门的标签，通过标签名
+     * 小心使用，一次性会删除所有的拥有该标签的部门的这个标签
+     *
+     * @private 内部方法
+     *
+     * @param label 标签名
+     * @return 被删除标签的部门数量
+     */
+    int removeLabels(String label);
 
     /**
      * 获取该部门所属组织的编号

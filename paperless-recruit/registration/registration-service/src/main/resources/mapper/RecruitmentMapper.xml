@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.registration.service.dao.RecruitmentMapper">
+
+    <resultMap id="recruitment" type="com.xiaohuashifu.recruit.registration.service.do0.RecruitmentDO">
+        <id property="id" column="id"/>
+        <result property="organizationId" column="organization_id"/>
+        <result property="recruitmentDepartmentIds" column="recruitment_department_ids"/>
+        <result property="positionName" column="position_name"/>
+        <result property="recruitmentNumbers" column="recruitment_numbers"/>
+        <result property="positionDuty" column="position_duty"/>
+        <result property="positionRequirement" column="position_requirement"/>
+        <result property="recruitmentGrades" column="recruitment_grades"/>
+        <result property="recruitmentCollegeIds" column="recruitment_college_ids"/>
+        <result property="recruitmentMajorIds" column="recruitment_major_ids"/>
+        <result property="releaseTime" column="release_time"/>
+        <result property="registrationTimeFrom" column="registration_time_from"/>
+        <result property="registrationTimeTo" column="registration_time_to"/>
+        <result property="recruitmentStatus" column="recruitment_status"/>
+        <result property="available" column="is_available"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="recruitment">
+        id, organization_id, recruitment_department_ids, position_name, recruitment_numbers, position_duty,
+        position_requirement, recruitment_grades, recruitment_college_ids, recruitment_major_ids, release_time,
+        registration_time_from, registration_time_to, recruitment_status, is_available, create_time, update_time
+    </sql>
+
+    <insert id="insertRecruitment" keyProperty="id">
+        insert into recruitment(organization_id, recruitment_department_ids, position_name, recruitment_numbers,
+                                position_duty, position_requirement, recruitment_grades, recruitment_college_ids,
+                                recruitment_major_ids, release_time, registration_time_from, registration_time_to,
+                                recruitment_status)
+        values(#{organizationId},
+               json_array(
+                <foreach item="recruitmentDepartmentId" collection="recruitmentDepartmentIds" separator="," >
+                    #{recruitmentDepartmentId}
+                </foreach>),
+               #{positionName}, #{recruitmentNumbers}, #{positionDuty}, #{positionRequirement},
+                json_array(
+                <foreach item="recruitmentGrade" collection="recruitmentGrades" separator="," >
+                    #{recruitmentGrade}
+                </foreach>),
+                json_array(
+                <foreach item="recruitmentCollegeId" collection="recruitmentCollegeIds" separator="," >
+                    #{recruitmentCollegeId}
+                </foreach>),
+                json_array(
+                <foreach item="recruitmentMajorId" collection="recruitmentMajorIds" separator="," >
+                    #{recruitmentMajorId}
+                </foreach>),
+                #{releaseTime}, #{registrationTimeFrom}, #{registrationTimeTo}, #{recruitmentStatus})
+    </insert>
+
+    <select id="getRecruitment" resultMap="recruitment">
+        select <include refid="recruitment"/>
+        from recruitment
+        where id = #{id}
+    </select>
+
+
+</mapper>

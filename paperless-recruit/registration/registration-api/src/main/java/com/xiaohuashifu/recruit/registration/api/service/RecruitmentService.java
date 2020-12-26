@@ -20,7 +20,7 @@ public interface RecruitmentService {
     /**
      * 创建一个招新
      *
-     * @permission 必须是该组织自身，recruitmentDepartmentIds 和 organizationId 都需要
+     * @permission 必须是组织所属主体用户本身
      *
      * @param createRecruitmentPO 创建招新参数对象
      * @return 创建结果
@@ -30,43 +30,43 @@ public interface RecruitmentService {
     /**
      * 添加招新学院，报名开始后无法添加
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
-     * @param collegeName 招新学院名，可以指定特殊值 "不限"
+     * @param collegeId 招新学院编号，若0表示将学院设置为不限，即清空招新学院
      * @return 添加结果
      */
-    Result<RecruitmentDTO> addRecruitmentColleges(Long id, String collegeName);
+    Result<RecruitmentDTO> addRecruitmentCollege(Long id, Long collegeId);
 
     /**
      * 添加招新专业，报名开始后无法添加
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
-     * @param majorName 招新专业名，可以指定特殊值 "不限"
+     * @param majorId 招新专业编号，若0表示将专业设置为不限，即清空招新专业
      * @return 添加结果
      */
-    Result<RecruitmentDTO> addRecruitmentMajors(Long id, String majorName);
+    Result<RecruitmentDTO> addRecruitmentMajor(Long id, String majorId);
 
     /**
      * 添加招新年级，报名开始后无法添加
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
-     * @param recruitmentGrade 招新年级
+     * @param recruitmentGrade 招新年级，若null表示将年招设置为不限，即清空招新年级
      * @return 添加结果
      */
-    Result<RecruitmentDTO> addRecruitmentGrades(Long id, GradeEnum recruitmentGrade);
+    Result<RecruitmentDTO> addRecruitmentGrade(Long id, GradeEnum recruitmentGrade);
 
     /**
      * 添加招新的部门，报名开始后无法添加
      *
-     * @permission 必须是该组织自身，id 和 departmentId 都需要
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
-     * @param departmentId 招新部门的编号
+     * @param departmentId 招新部门的编号，若0表示将部门设置为不限，即清空招新部门
      * @return 添加结果
      */
     Result<RecruitmentDTO> addRecruitmentDepartment(Long id, Long departmentId);
@@ -74,46 +74,54 @@ public interface RecruitmentService {
     /**
      * 移除招新学院，报名开始后无法移除
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
-     * @param collegeName 招新学院名，可以指定特殊值 "不限"
+     * @param collegeId 招新学院编号
      * @return 移除结果
      */
-    Result<RecruitmentDTO> removeRecruitmentColleges(Long id, String collegeName);
+    Result<RecruitmentDTO> removeRecruitmentCollege(Long id, Long collegeId);
 
     /**
      * 移除招新专业，报名开始后无法移除
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
-     * @param majorName 招新专业名，可以指定特殊值 "不限"
+     * @param majorId 招新专业编号
      * @return 移除结果
      */
-    Result<RecruitmentDTO> removeRecruitmentMajors(Long id, String majorName);
+    Result<RecruitmentDTO> removeRecruitmentMajor(Long id, Long majorId);
 
     /**
      * 移除招新年级，报名开始后无法移除
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param recruitmentGrade 招新年级
      * @return 移除结果
      */
-    Result<RecruitmentDTO> removeRecruitmentGrades(Long id, GradeEnum recruitmentGrade);
+    Result<RecruitmentDTO> removeRecruitmentGrade(Long id, GradeEnum recruitmentGrade);
 
     /**
      * 移除招新的部门，报名开始后无法移除
      *
-     * @permission 必须是该组织自身，id 和 departmentId 都需要
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param departmentId 招新部门的编号
      * @return 移除结果
      */
     Result<RecruitmentDTO> removeRecruitmentDepartment(Long id, Long departmentId);
+
+    /**
+     * 获取招新
+     *
+     * @param id 招新编号
+     * @return RecruitmentDTO
+     */
+    Result<RecruitmentDTO> getRecruitment(Long id);
 
     /**
      * 获取组织编号
@@ -128,7 +136,7 @@ public interface RecruitmentService {
     /**
      * 更新招新职位名，报名开始后无法更新
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param newPositionName 新招新职位名
@@ -139,7 +147,7 @@ public interface RecruitmentService {
     /**
      * 更新招新人数，报名开始后无法更新
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param newRecruitmentNumbers 新招新人数
@@ -150,7 +158,7 @@ public interface RecruitmentService {
     /**
      * 更新职位职责，报名开始后无法更新
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param newPositionDuty 新职位职责
@@ -161,7 +169,7 @@ public interface RecruitmentService {
     /**
      * 更新职位要求，报名开始后无法更新
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param newPositionRequirement 新职位要求
@@ -172,7 +180,7 @@ public interface RecruitmentService {
     /**
      * 更新发布时间，招新发布后无法更新
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param newReleaseTime 新发布时间
@@ -183,7 +191,7 @@ public interface RecruitmentService {
     /**
      * 更新报名的开始时间，报名开始后无法更新
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param newRegistrationTimeFrom 新报名开始时间
@@ -194,7 +202,7 @@ public interface RecruitmentService {
     /**
      * 更新报名截止时间，报名结束后无法更新
      *
-     * @permission id 必须是该组织自身
+     * @permission 必须是招新所属组织所属用户主体本身
      *
      * @param id 招新的编号
      * @param newRegistrationTimeTo 新报名截止时间

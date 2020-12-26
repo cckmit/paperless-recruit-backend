@@ -4,7 +4,7 @@ import com.xiaohuashifu.recruit.common.constant.GradeEnum;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：创建招新的参数对象
@@ -42,22 +42,22 @@ public class CreateRecruitmentPO implements Serializable {
     /**
      * 招新年级
      */
-    private List<GradeEnum> recruitmentGrades;
+    private Set<GradeEnum> recruitmentGrades;
 
     /**
      * 招新部门编号列表
      */
-    private List<Long> recruitmentDepartmentIds;
+    private Set<Long> recruitmentDepartmentIds;
 
     /**
-     * 招新学院列表，可以指定特殊值 “不限”
+     * 招新学院列表
      */
-    private List<String> recruitmentColleges;
+    private Set<Long> recruitmentCollegeIds;
 
     /**
-     * 招新专业列表，可以指定特殊值 “不限”
+     * 招新专业列表
      */
-    private List<String> recruitmentMajors;
+    private Set<Long> recruitmentMajorIds;
 
     /**
      * 招新发布时间
@@ -114,36 +114,36 @@ public class CreateRecruitmentPO implements Serializable {
         this.positionRequirement = positionRequirement;
     }
 
-    public List<GradeEnum> getRecruitmentGrades() {
+    public Set<GradeEnum> getRecruitmentGrades() {
         return recruitmentGrades;
     }
 
-    public void setRecruitmentGrades(List<GradeEnum> recruitmentGrades) {
+    public void setRecruitmentGrades(Set<GradeEnum> recruitmentGrades) {
         this.recruitmentGrades = recruitmentGrades;
     }
 
-    public List<Long> getRecruitmentDepartmentIds() {
+    public Set<Long> getRecruitmentDepartmentIds() {
         return recruitmentDepartmentIds;
     }
 
-    public void setRecruitmentDepartmentIds(List<Long> recruitmentDepartmentIds) {
+    public void setRecruitmentDepartmentIds(Set<Long> recruitmentDepartmentIds) {
         this.recruitmentDepartmentIds = recruitmentDepartmentIds;
     }
 
-    public List<String> getRecruitmentColleges() {
-        return recruitmentColleges;
+    public Set<Long> getRecruitmentCollegeIds() {
+        return recruitmentCollegeIds;
     }
 
-    public void setRecruitmentColleges(List<String> recruitmentColleges) {
-        this.recruitmentColleges = recruitmentColleges;
+    public void setRecruitmentCollegeIds(Set<Long> recruitmentCollegeIds) {
+        this.recruitmentCollegeIds = recruitmentCollegeIds;
     }
 
-    public List<String> getRecruitmentMajors() {
-        return recruitmentMajors;
+    public Set<Long> getRecruitmentMajorIds() {
+        return recruitmentMajorIds;
     }
 
-    public void setRecruitmentMajors(List<String> recruitmentMajors) {
-        this.recruitmentMajors = recruitmentMajors;
+    public void setRecruitmentMajorIds(Set<Long> recruitmentMajorIds) {
+        this.recruitmentMajorIds = recruitmentMajorIds;
     }
 
     public LocalDateTime getReleaseTime() {
@@ -180,8 +180,8 @@ public class CreateRecruitmentPO implements Serializable {
                 ", positionRequirement='" + positionRequirement + '\'' +
                 ", recruitmentGrades=" + recruitmentGrades +
                 ", recruitmentDepartmentIds=" + recruitmentDepartmentIds +
-                ", recruitmentColleges=" + recruitmentColleges +
-                ", recruitmentMajors=" + recruitmentMajors +
+                ", recruitmentCollegeIds=" + recruitmentCollegeIds +
+                ", recruitmentMajorIds=" + recruitmentMajorIds +
                 ", releaseTime=" + releaseTime +
                 ", registrationTimeFrom=" + registrationTimeFrom +
                 ", registrationTimeTo=" + registrationTimeTo +
@@ -194,10 +194,10 @@ public class CreateRecruitmentPO implements Serializable {
         private String recruitmentNumbers;
         private String positionDuty;
         private String positionRequirement;
-        private List<GradeEnum> recruitmentGrades;
-        private List<Long> recruitmentDepartmentIds;
-        private List<String> recruitmentColleges;
-        private List<String> recruitmentMajors;
+        private Set<GradeEnum> recruitmentGrades;
+        private Set<Long> recruitmentDepartmentIds;
+        private Set<Long> recruitmentCollegeIds;
+        private Set<Long> recruitmentMajorIds;
         private LocalDateTime releaseTime;
         private LocalDateTime registrationTimeFrom;
         private LocalDateTime registrationTimeTo;
@@ -227,23 +227,23 @@ public class CreateRecruitmentPO implements Serializable {
             return this;
         }
 
-        public Builder recruitmentGrades(List<GradeEnum> recruitmentGrades) {
+        public Builder recruitmentGrades(Set<GradeEnum> recruitmentGrades) {
             this.recruitmentGrades = recruitmentGrades;
             return this;
         }
 
-        public Builder recruitmentDepartmentIds(List<Long> recruitmentDepartmentIds) {
+        public Builder recruitmentDepartmentIds(Set<Long> recruitmentDepartmentIds) {
             this.recruitmentDepartmentIds = recruitmentDepartmentIds;
             return this;
         }
 
-        public Builder recruitmentColleges(List<String> recruitmentColleges) {
-            this.recruitmentColleges = recruitmentColleges;
+        public Builder recruitmentCollegeIds(Set<Long> recruitmentCollegeIds) {
+            this.recruitmentCollegeIds = recruitmentCollegeIds;
             return this;
         }
 
-        public Builder recruitmentMajors(List<String> recruitmentMajors) {
-            this.recruitmentMajors = recruitmentMajors;
+        public Builder recruitmentMajorIds(Set<Long> recruitmentMajorIds) {
+            this.recruitmentMajorIds = recruitmentMajorIds;
             return this;
         }
 
@@ -271,8 +271,8 @@ public class CreateRecruitmentPO implements Serializable {
             createRecruitmentPO.setPositionRequirement(positionRequirement);
             createRecruitmentPO.setRecruitmentGrades(recruitmentGrades);
             createRecruitmentPO.setRecruitmentDepartmentIds(recruitmentDepartmentIds);
-            createRecruitmentPO.setRecruitmentColleges(recruitmentColleges);
-            createRecruitmentPO.setRecruitmentMajors(recruitmentMajors);
+            createRecruitmentPO.setRecruitmentCollegeIds(recruitmentCollegeIds);
+            createRecruitmentPO.setRecruitmentMajorIds(recruitmentMajorIds);
             createRecruitmentPO.setReleaseTime(releaseTime);
             createRecruitmentPO.setRegistrationTimeFrom(registrationTimeFrom);
             createRecruitmentPO.setRegistrationTimeTo(registrationTimeTo);

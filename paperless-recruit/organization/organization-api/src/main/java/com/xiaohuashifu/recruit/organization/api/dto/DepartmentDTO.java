@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.organization.api.dto;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：部门传输对象
@@ -54,7 +54,7 @@ public class DepartmentDTO implements Serializable {
     /**
      * 部门标签
      */
-    private List<String> labels;
+    private Set<String> labels;
 
     public Long getId() {
         return id;
@@ -120,11 +120,11 @@ public class DepartmentDTO implements Serializable {
         this.deactivated = deactivated;
     }
 
-    public List<String> getLabels() {
+    public Set<String> getLabels() {
         return labels;
     }
 
-    public void setLabels(List<String> labels) {
+    public void setLabels(Set<String> labels) {
         this.labels = labels;
     }
 
@@ -152,7 +152,7 @@ public class DepartmentDTO implements Serializable {
         private String logoUrl;
         private String memberNumber;
         private Boolean deactivated;
-        private List<String> labels;
+        private Set<String> labels;
 
         public Builder id(Long id) {
             this.id = id;
@@ -194,7 +194,7 @@ public class DepartmentDTO implements Serializable {
             return this;
         }
 
-        public Builder labels(List<String> labels) {
+        public Builder labels(Set<String> labels) {
             this.labels = labels;
             return this;
         }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -12,7 +13,7 @@ import org.apache.ibatis.type.MappedTypes;
 
 import com.alibaba.fastjson.JSON;
 
-@MappedTypes({List.class})
+@MappedTypes({List.class, Set.class})
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     private final Class<T> type;

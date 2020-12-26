@@ -65,7 +65,6 @@ public class DepartmentServiceImplTest {
         System.out.println(departmentService.listDepartments(new DepartmentQuery.Builder()
                 .pageNum(1L)
                 .pageSize(50L)
-                .departmentName("自然")
                 .build()));
     }
 

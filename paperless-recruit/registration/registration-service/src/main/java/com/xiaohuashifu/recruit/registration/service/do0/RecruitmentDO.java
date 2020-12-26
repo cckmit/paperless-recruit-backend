@@ -1,8 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.do0;
 
-import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
-
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * 描述：招新数据对象
@@ -13,18 +12,19 @@ import java.time.LocalDateTime;
 public class RecruitmentDO {
     private Long id;
     private Long organizationId;
-    private Long organizationPositionId;
-    private Integer recruitNumbers;
+    private Set<Long> recruitmentDepartmentIds;
+    private String positionName;
+    private String recruitmentNumbers;
     private String positionDuty;
     private String positionRequirement;
+    private Set<String> recruitmentGrades;
+    private Set<Long> recruitmentCollegeIds;
+    private Set<Long> recruitmentMajorIds;
+    private LocalDateTime releaseTime;
     private LocalDateTime registrationTimeFrom;
     private LocalDateTime registrationTimeTo;
-    private LocalDateTime releaseTime;
-    private String recruitmentGrades;
-    private String recruitmentDepartmentIds;
-    private String recruitmentCollegeIds;
-    private String recruitmentMajorIds;
-    private RecruitmentStatusEnum recruitmentStatus;
+    private String recruitmentStatus;
+    private Boolean available;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
@@ -44,20 +44,28 @@ public class RecruitmentDO {
         this.organizationId = organizationId;
     }
 
-    public Long getOrganizationPositionId() {
-        return organizationPositionId;
+    public Set<Long> getRecruitmentDepartmentIds() {
+        return recruitmentDepartmentIds;
     }
 
-    public void setOrganizationPositionId(Long organizationPositionId) {
-        this.organizationPositionId = organizationPositionId;
+    public void setRecruitmentDepartmentIds(Set<Long> recruitmentDepartmentIds) {
+        this.recruitmentDepartmentIds = recruitmentDepartmentIds;
     }
 
-    public Integer getRecruitNumbers() {
-        return recruitNumbers;
+    public String getPositionName() {
+        return positionName;
     }
 
-    public void setRecruitNumbers(Integer recruitNumbers) {
-        this.recruitNumbers = recruitNumbers;
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
+    }
+
+    public String getRecruitmentNumbers() {
+        return recruitmentNumbers;
+    }
+
+    public void setRecruitmentNumbers(String recruitmentNumbers) {
+        this.recruitmentNumbers = recruitmentNumbers;
     }
 
     public String getPositionDuty() {
@@ -76,6 +84,38 @@ public class RecruitmentDO {
         this.positionRequirement = positionRequirement;
     }
 
+    public Set<String> getRecruitmentGrades() {
+        return recruitmentGrades;
+    }
+
+    public void setRecruitmentGrades(Set<String> recruitmentGrades) {
+        this.recruitmentGrades = recruitmentGrades;
+    }
+
+    public Set<Long> getRecruitmentCollegeIds() {
+        return recruitmentCollegeIds;
+    }
+
+    public void setRecruitmentCollegeIds(Set<Long> recruitmentCollegeIds) {
+        this.recruitmentCollegeIds = recruitmentCollegeIds;
+    }
+
+    public Set<Long> getRecruitmentMajorIds() {
+        return recruitmentMajorIds;
+    }
+
+    public void setRecruitmentMajorIds(Set<Long> recruitmentMajorIds) {
+        this.recruitmentMajorIds = recruitmentMajorIds;
+    }
+
+    public LocalDateTime getReleaseTime() {
+        return releaseTime;
+    }
+
+    public void setReleaseTime(LocalDateTime releaseTime) {
+        this.releaseTime = releaseTime;
+    }
+
     public LocalDateTime getRegistrationTimeFrom() {
         return registrationTimeFrom;
     }
@@ -92,52 +132,20 @@ public class RecruitmentDO {
         this.registrationTimeTo = registrationTimeTo;
     }
 
-    public LocalDateTime getReleaseTime() {
-        return releaseTime;
-    }
-
-    public void setReleaseTime(LocalDateTime releaseTime) {
-        this.releaseTime = releaseTime;
-    }
-
-    public String getRecruitmentGrades() {
-        return recruitmentGrades;
-    }
-
-    public void setRecruitmentGrades(String recruitmentGrades) {
-        this.recruitmentGrades = recruitmentGrades;
-    }
-
-    public String getRecruitmentDepartmentIds() {
-        return recruitmentDepartmentIds;
-    }
-
-    public void setRecruitmentDepartmentIds(String recruitmentDepartmentIds) {
-        this.recruitmentDepartmentIds = recruitmentDepartmentIds;
-    }
-
-    public String getRecruitmentCollegeIds() {
-        return recruitmentCollegeIds;
-    }
-
-    public void setRecruitmentCollegeIds(String recruitmentCollegeIds) {
-        this.recruitmentCollegeIds = recruitmentCollegeIds;
-    }
-
-    public String getRecruitmentMajorIds() {
-        return recruitmentMajorIds;
-    }
-
-    public void setRecruitmentMajorIds(String recruitmentMajorIds) {
-        this.recruitmentMajorIds = recruitmentMajorIds;
-    }
-
-    public RecruitmentStatusEnum getRecruitmentStatus() {
+    public String getRecruitmentStatus() {
         return recruitmentStatus;
     }
 
-    public void setRecruitmentStatus(RecruitmentStatusEnum recruitmentStatus) {
+    public void setRecruitmentStatus(String recruitmentStatus) {
         this.recruitmentStatus = recruitmentStatus;
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
     }
 
     public LocalDateTime getCreateTime() {
@@ -161,18 +169,19 @@ public class RecruitmentDO {
         return "RecruitmentDO{" +
                 "id=" + id +
                 ", organizationId=" + organizationId +
-                ", organizationPositionId=" + organizationPositionId +
-                ", recruitNumbers=" + recruitNumbers +
+                ", recruitmentDepartmentIds=" + recruitmentDepartmentIds +
+                ", positionName='" + positionName + '\'' +
+                ", recruitmentNumbers='" + recruitmentNumbers + '\'' +
                 ", positionDuty='" + positionDuty + '\'' +
                 ", positionRequirement='" + positionRequirement + '\'' +
+                ", recruitmentGrades=" + recruitmentGrades +
+                ", recruitmentCollegeIds=" + recruitmentCollegeIds +
+                ", recruitmentMajorIds=" + recruitmentMajorIds +
+                ", releaseTime=" + releaseTime +
                 ", registrationTimeFrom=" + registrationTimeFrom +
                 ", registrationTimeTo=" + registrationTimeTo +
-                ", releaseTime=" + releaseTime +
-                ", recruitmentGrades='" + recruitmentGrades + '\'' +
-                ", recruitmentDepartmentIds='" + recruitmentDepartmentIds + '\'' +
-                ", recruitmentCollegeIds='" + recruitmentCollegeIds + '\'' +
-                ", recruitmentMajorIds='" + recruitmentMajorIds + '\'' +
-                ", recruitmentStatus=" + recruitmentStatus +
+                ", recruitmentStatus='" + recruitmentStatus + '\'' +
+                ", available=" + available +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -181,18 +190,19 @@ public class RecruitmentDO {
     public static final class Builder {
         private Long id;
         private Long organizationId;
-        private Long organizationPositionId;
-        private Integer recruitNumbers;
+        private Set<Long> recruitmentDepartmentIds;
+        private String positionName;
+        private String recruitmentNumbers;
         private String positionDuty;
         private String positionRequirement;
+        private Set<String> recruitmentGrades;
+        private Set<Long> recruitmentCollegeIds;
+        private Set<Long> recruitmentMajorIds;
+        private LocalDateTime releaseTime;
         private LocalDateTime registrationTimeFrom;
         private LocalDateTime registrationTimeTo;
-        private LocalDateTime releaseTime;
-        private String recruitmentGrades;
-        private String recruitmentDepartmentIds;
-        private String recruitmentCollegeIds;
-        private String recruitmentMajorIds;
-        private RecruitmentStatusEnum recruitmentStatus;
+        private String recruitmentStatus;
+        private Boolean available;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -206,13 +216,18 @@ public class RecruitmentDO {
             return this;
         }
 
-        public Builder organizationPositionId(Long organizationPositionId) {
-            this.organizationPositionId = organizationPositionId;
+        public Builder recruitmentDepartmentIds(Set<Long> recruitmentDepartmentIds) {
+            this.recruitmentDepartmentIds = recruitmentDepartmentIds;
             return this;
         }
 
-        public Builder recruitNumbers(Integer recruitNumbers) {
-            this.recruitNumbers = recruitNumbers;
+        public Builder positionName(String positionName) {
+            this.positionName = positionName;
+            return this;
+        }
+
+        public Builder recruitmentNumbers(String recruitmentNumbers) {
+            this.recruitmentNumbers = recruitmentNumbers;
             return this;
         }
 
@@ -226,6 +241,26 @@ public class RecruitmentDO {
             return this;
         }
 
+        public Builder recruitmentGrades(Set<String> recruitmentGrades) {
+            this.recruitmentGrades = recruitmentGrades;
+            return this;
+        }
+
+        public Builder recruitmentCollegeIds(Set<Long> recruitmentCollegeIds) {
+            this.recruitmentCollegeIds = recruitmentCollegeIds;
+            return this;
+        }
+
+        public Builder recruitmentMajorIds(Set<Long> recruitmentMajorIds) {
+            this.recruitmentMajorIds = recruitmentMajorIds;
+            return this;
+        }
+
+        public Builder releaseTime(LocalDateTime releaseTime) {
+            this.releaseTime = releaseTime;
+            return this;
+        }
+
         public Builder registrationTimeFrom(LocalDateTime registrationTimeFrom) {
             this.registrationTimeFrom = registrationTimeFrom;
             return this;
@@ -236,33 +271,13 @@ public class RecruitmentDO {
             return this;
         }
 
-        public Builder releaseTime(LocalDateTime releaseTime) {
-            this.releaseTime = releaseTime;
-            return this;
-        }
-
-        public Builder recruitmentGrades(String recruitmentGrades) {
-            this.recruitmentGrades = recruitmentGrades;
-            return this;
-        }
-
-        public Builder recruitmentDepartmentIds(String recruitmentDepartmentIds) {
-            this.recruitmentDepartmentIds = recruitmentDepartmentIds;
-            return this;
-        }
-
-        public Builder recruitmentCollegeIds(String recruitmentCollegeIds) {
-            this.recruitmentCollegeIds = recruitmentCollegeIds;
-            return this;
-        }
-
-        public Builder recruitmentMajorIds(String recruitmentMajorIds) {
-            this.recruitmentMajorIds = recruitmentMajorIds;
-            return this;
-        }
-
-        public Builder recruitmentStatus(RecruitmentStatusEnum recruitmentStatus) {
+        public Builder recruitmentStatus(String recruitmentStatus) {
             this.recruitmentStatus = recruitmentStatus;
+            return this;
+        }
+
+        public Builder available(Boolean available) {
+            this.available = available;
             return this;
         }
 
@@ -280,18 +295,19 @@ public class RecruitmentDO {
             RecruitmentDO recruitmentDO = new RecruitmentDO();
             recruitmentDO.setId(id);
             recruitmentDO.setOrganizationId(organizationId);
-            recruitmentDO.setOrganizationPositionId(organizationPositionId);
-            recruitmentDO.setRecruitNumbers(recruitNumbers);
+            recruitmentDO.setRecruitmentDepartmentIds(recruitmentDepartmentIds);
+            recruitmentDO.setPositionName(positionName);
+            recruitmentDO.setRecruitmentNumbers(recruitmentNumbers);
             recruitmentDO.setPositionDuty(positionDuty);
             recruitmentDO.setPositionRequirement(positionRequirement);
-            recruitmentDO.setRegistrationTimeFrom(registrationTimeFrom);
-            recruitmentDO.setRegistrationTimeTo(registrationTimeTo);
-            recruitmentDO.setReleaseTime(releaseTime);
             recruitmentDO.setRecruitmentGrades(recruitmentGrades);
-            recruitmentDO.setRecruitmentDepartmentIds(recruitmentDepartmentIds);
             recruitmentDO.setRecruitmentCollegeIds(recruitmentCollegeIds);
             recruitmentDO.setRecruitmentMajorIds(recruitmentMajorIds);
+            recruitmentDO.setReleaseTime(releaseTime);
+            recruitmentDO.setRegistrationTimeFrom(registrationTimeFrom);
+            recruitmentDO.setRegistrationTimeTo(registrationTimeTo);
             recruitmentDO.setRecruitmentStatus(recruitmentStatus);
+            recruitmentDO.setAvailable(available);
             recruitmentDO.setCreateTime(createTime);
             recruitmentDO.setUpdateTime(updateTime);
             return recruitmentDO;

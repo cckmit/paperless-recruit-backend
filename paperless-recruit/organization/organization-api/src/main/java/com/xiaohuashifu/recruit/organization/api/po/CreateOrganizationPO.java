@@ -5,7 +5,7 @@ import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 
 import javax.validation.constraints.*;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：创建组织的参数
@@ -61,7 +61,7 @@ public class CreateOrganizationPO {
     @Size(max = OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER,
             message = "The number of labels must not be greater than "
                     + OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER + ".")
-    private List<String> labels;
+    private Set<String> labels;
 
     /**
      * 组织主体的邮箱，必须在该平台没有使用过
@@ -109,11 +109,11 @@ public class CreateOrganizationPO {
         this.logo = logo;
     }
 
-    public List<String> getLabels() {
+    public Set<String> getLabels() {
         return labels;
     }
 
-    public void setLabels(List<String> labels) {
+    public void setLabels(Set<String> labels) {
         this.labels = labels;
     }
 
@@ -153,7 +153,7 @@ public class CreateOrganizationPO {
         private String abbreviationOrganizationName;
         private String introduction;
         private byte[] logo;
-        private List<String> labels;
+        private Set<String> labels;
         private String email;
 
         public Builder organizationName(String organizationName) {
@@ -176,7 +176,7 @@ public class CreateOrganizationPO {
             return this;
         }
 
-        public Builder labels(List<String> labels) {
+        public Builder labels(Set<String> labels) {
             this.labels = labels;
             return this;
         }

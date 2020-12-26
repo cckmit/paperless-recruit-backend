@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.registration.api.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：招新数据传输对象
@@ -13,14 +13,14 @@ import java.util.List;
 public class RecruitmentDTO implements Serializable {
     private Long id;
     private Long organizationId;
-    private List<Long> recruitmentDepartmentIds;
+    private Set<Long> recruitmentDepartmentIds;
     private String positionName;
     private String recruitmentNumbers;
     private String positionDuty;
     private String positionRequirement;
-    private List<String> recruitmentGrades;
-    private List<String> recruitmentColleges;
-    private List<String> recruitmentMajors;
+    private Set<String> recruitmentGrades;
+    private Set<Long> recruitmentCollegeIds;
+    private Set<Long> recruitmentMajorIds;
     private LocalDateTime releaseTime;
     private LocalDateTime registrationTimeFrom;
     private LocalDateTime registrationTimeTo;
@@ -43,11 +43,11 @@ public class RecruitmentDTO implements Serializable {
         this.organizationId = organizationId;
     }
 
-    public List<Long> getRecruitmentDepartmentIds() {
+    public Set<Long> getRecruitmentDepartmentIds() {
         return recruitmentDepartmentIds;
     }
 
-    public void setRecruitmentDepartmentIds(List<Long> recruitmentDepartmentIds) {
+    public void setRecruitmentDepartmentIds(Set<Long> recruitmentDepartmentIds) {
         this.recruitmentDepartmentIds = recruitmentDepartmentIds;
     }
 
@@ -83,28 +83,28 @@ public class RecruitmentDTO implements Serializable {
         this.positionRequirement = positionRequirement;
     }
 
-    public List<String> getRecruitmentGrades() {
+    public Set<String> getRecruitmentGrades() {
         return recruitmentGrades;
     }
 
-    public void setRecruitmentGrades(List<String> recruitmentGrades) {
+    public void setRecruitmentGrades(Set<String> recruitmentGrades) {
         this.recruitmentGrades = recruitmentGrades;
     }
 
-    public List<String> getRecruitmentColleges() {
-        return recruitmentColleges;
+    public Set<Long> getRecruitmentCollegeIds() {
+        return recruitmentCollegeIds;
     }
 
-    public void setRecruitmentColleges(List<String> recruitmentColleges) {
-        this.recruitmentColleges = recruitmentColleges;
+    public void setRecruitmentCollegeIds(Set<Long> recruitmentCollegeIds) {
+        this.recruitmentCollegeIds = recruitmentCollegeIds;
     }
 
-    public List<String> getRecruitmentMajors() {
-        return recruitmentMajors;
+    public Set<Long> getRecruitmentMajorIds() {
+        return recruitmentMajorIds;
     }
 
-    public void setRecruitmentMajors(List<String> recruitmentMajors) {
-        this.recruitmentMajors = recruitmentMajors;
+    public void setRecruitmentMajorIds(Set<Long> recruitmentMajorIds) {
+        this.recruitmentMajorIds = recruitmentMajorIds;
     }
 
     public LocalDateTime getReleaseTime() {
@@ -158,8 +158,8 @@ public class RecruitmentDTO implements Serializable {
                 ", positionDuty='" + positionDuty + '\'' +
                 ", positionRequirement='" + positionRequirement + '\'' +
                 ", recruitmentGrades=" + recruitmentGrades +
-                ", recruitmentColleges=" + recruitmentColleges +
-                ", recruitmentMajors=" + recruitmentMajors +
+                ", recruitmentCollegeIds=" + recruitmentCollegeIds +
+                ", recruitmentMajorIds=" + recruitmentMajorIds +
                 ", releaseTime=" + releaseTime +
                 ", registrationTimeFrom=" + registrationTimeFrom +
                 ", registrationTimeTo=" + registrationTimeTo +
@@ -171,14 +171,14 @@ public class RecruitmentDTO implements Serializable {
     public static final class Builder {
         private Long id;
         private Long organizationId;
-        private List<Long> recruitmentDepartmentIds;
+        private Set<Long> recruitmentDepartmentIds;
         private String positionName;
         private String recruitmentNumbers;
         private String positionDuty;
         private String positionRequirement;
-        private List<String> recruitmentGrades;
-        private List<String> recruitmentColleges;
-        private List<String> recruitmentMajors;
+        private Set<String> recruitmentGrades;
+        private Set<Long> recruitmentCollegeIds;
+        private Set<Long> recruitmentMajorIds;
         private LocalDateTime releaseTime;
         private LocalDateTime registrationTimeFrom;
         private LocalDateTime registrationTimeTo;
@@ -195,7 +195,7 @@ public class RecruitmentDTO implements Serializable {
             return this;
         }
 
-        public Builder recruitmentDepartmentIds(List<Long> recruitmentDepartmentIds) {
+        public Builder recruitmentDepartmentIds(Set<Long> recruitmentDepartmentIds) {
             this.recruitmentDepartmentIds = recruitmentDepartmentIds;
             return this;
         }
@@ -220,18 +220,18 @@ public class RecruitmentDTO implements Serializable {
             return this;
         }
 
-        public Builder recruitmentGrades(List<String> recruitmentGrades) {
+        public Builder recruitmentGrades(Set<String> recruitmentGrades) {
             this.recruitmentGrades = recruitmentGrades;
             return this;
         }
 
-        public Builder recruitmentColleges(List<String> recruitmentColleges) {
-            this.recruitmentColleges = recruitmentColleges;
+        public Builder recruitmentCollegeIds(Set<Long> recruitmentCollegeIds) {
+            this.recruitmentCollegeIds = recruitmentCollegeIds;
             return this;
         }
 
-        public Builder recruitmentMajors(List<String> recruitmentMajors) {
-            this.recruitmentMajors = recruitmentMajors;
+        public Builder recruitmentMajorIds(Set<Long> recruitmentMajorIds) {
+            this.recruitmentMajorIds = recruitmentMajorIds;
             return this;
         }
 
@@ -270,8 +270,8 @@ public class RecruitmentDTO implements Serializable {
             recruitmentDTO.setPositionDuty(positionDuty);
             recruitmentDTO.setPositionRequirement(positionRequirement);
             recruitmentDTO.setRecruitmentGrades(recruitmentGrades);
-            recruitmentDTO.setRecruitmentColleges(recruitmentColleges);
-            recruitmentDTO.setRecruitmentMajors(recruitmentMajors);
+            recruitmentDTO.setRecruitmentCollegeIds(recruitmentCollegeIds);
+            recruitmentDTO.setRecruitmentMajorIds(recruitmentMajorIds);
             recruitmentDTO.setReleaseTime(releaseTime);
             recruitmentDTO.setRegistrationTimeFrom(registrationTimeFrom);
             recruitmentDTO.setRegistrationTimeTo(registrationTimeTo);

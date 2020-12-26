@@ -107,7 +107,7 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
         organizationLabelMapper.updateAvailable(id, false);
 
         // 删除社团的这个标签
-        int deletedNumber = organizationService.removeLabelsByLabelName(organizationLabelDO.getLabelName());
+        int deletedNumber = organizationService.removeLabels(organizationLabelDO.getLabelName());
 
         // 封装删除数量和禁用后的组织标签对象
         OrganizationLabelDTO organizationLabelDTO = getOrganizationLabel(id).getData();

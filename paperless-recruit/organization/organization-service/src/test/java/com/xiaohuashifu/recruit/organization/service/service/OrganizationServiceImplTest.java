@@ -38,17 +38,17 @@ public class OrganizationServiceImplTest {
     @Test
     public void createOrganization() {
         System.out.println(organizationService.createOrganization("827032783@qq.com",
-                "177674", "123456"));
+                "453669", "123456"));
     }
 
     @Test
     public void addLabel() {
-        System.out.println(organizationService.addLabel(2L, "竞赛"));
+        System.out.println(organizationService.addLabel(1L, "软件"));
     }
 
     @Test
     public void removeLabel() {
-        System.out.println(organizationService.removeLabel(1L, "竞赛"));
+        System.out.println(organizationService.removeLabel(1L, "创业"));
     }
 
     @Test

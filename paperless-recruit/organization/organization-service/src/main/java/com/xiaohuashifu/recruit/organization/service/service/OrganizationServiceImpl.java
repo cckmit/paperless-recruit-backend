@@ -13,7 +13,6 @@ import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelServic
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
-import com.xiaohuashifu.recruit.organization.service.do0.OrganizationOrganizationLabelDO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -130,54 +129,47 @@ public class OrganizationServiceImpl implements OrganizationService {
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
      *              OperationConflict.Lock: 获取组织标签的锁失败
      *
-     * @param organizationId 组织编号
-     * @param labelName 标签名
+     * @param id 组织编号
+     * @param label 标签名
      * @return 添加后的组织对象
      */
     @Override
-    @DistributedLock(value = ORGANIZATION_LABELS_LOCK_KEY_PATTERN, parameters = "#{#organizationId}",
+    @DistributedLock(value = ORGANIZATION_LABELS_LOCK_KEY_PATTERN, parameters = "#{#id}",
             errorMessage = "Failed to acquire organization labels lock.")
-    public Result<OrganizationDTO> addLabel(Long organizationId, String labelName) {
+    public Result<OrganizationDTO> addLabel(Long id, String label) {
         // 检查组织状态
-        Result<Object> checkResult = checkOrganizationStatus(organizationId);
+        Result<Object> checkResult = checkOrganizationStatus(id);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 判断该组织是否已经存在该标签
-        int count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
-                    "The organization already owns this label.");
-        }
-
         // 判断标签数量是否大于 MAX_ORGANIZATION_LABEL_NUMBER
-        count = organizationMapper.countLabelByOrganizationId(organizationId);
+        int count = organizationMapper.countLabels(id);
         if (count >= OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_OVER_LIMIT,
-                    "The number of label must not be greater than "
+                    "The number of labels must not be greater than "
                             + OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER + ".");
         }
 
         // 判断该标签是否可用
-        Result<Void> checkOrganizationLabelResult = organizationLabelService.isValidOrganizationLabel(labelName);
+        Result<Void> checkOrganizationLabelResult = organizationLabelService.isValidOrganizationLabel(label);
         if (!checkOrganizationLabelResult.isSuccess()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_AVAILABLE, "The label unavailable.");
         }
 
-        // 组织标签的引用数增加
-        organizationLabelService.increaseReferenceNumberOrSaveOrganizationLabel(labelName);
-
         // 添加组织的标签
-        OrganizationOrganizationLabelDO organizationOrganizationLabelDO =
-                new OrganizationOrganizationLabelDO.Builder()
-                        .organizationId(organizationId)
-                        .labelName(labelName)
-                        .build();
-        organizationMapper.insertLabel(organizationOrganizationLabelDO);
+        count = organizationMapper.addLabel(id, label);
+        // 如果失败表示该标签已经存在
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
+                    "The organization already owns this label.");
+        }
+
+        // 组织标签的引用数增加
+        organizationLabelService.increaseReferenceNumberOrSaveOrganizationLabel(label);
 
         // 获取添加标签后的组织对象
-        return getOrganization(organizationId);
+        return getOrganization(id);
     }
 
     /**
@@ -190,29 +182,27 @@ public class OrganizationServiceImpl implements OrganizationService {
      *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签不存在
      *
-     * @param organizationId 组织编号
-     * @param labelName 标签名
+     * @param id 组织编号
+     * @param label 标签名
      * @return 删除标签后的组织
      */
     @Override
-    public Result<OrganizationDTO> removeLabel(Long organizationId, String labelName) {
+    public Result<OrganizationDTO> removeLabel(Long id, String label) {
         // 检查组织状态
-        Result<Object> checkResult = checkOrganizationStatus(organizationId);
+        Result<Object> checkResult = checkOrganizationStatus(id);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 判断该组织是否拥有该标签
-        int count = organizationMapper.countLabelByOrganizationIdAndLabelName(organizationId, labelName);
+        // 删除标签
+        int count = organizationMapper.removeLabel(id, label);
+        // 如果删除失败表示该标签不存在
         if (count < 1) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label does not exist.");
         }
 
-        // 删除标签
-        organizationMapper.deleteLabelByOrganizationIdAndLabelName(organizationId, labelName);
-
         // 获取删除标签后的组织对象
-        return getOrganization(organizationId);
+        return getOrganization(id);
     }
 
     /**
@@ -375,7 +365,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
 
         // 获取组织 logoUrl
-        String logoUrl = organizationMapper.getOrganizationLogoUrlByOrganizationId(updateOrganizationLogoPO.getId());
+        String logoUrl = organizationMapper.getOrganizationLogoUrl(updateOrganizationLogoPO.getId());
         // 若原来的 logoUrl 为空，则随机产生一个
         boolean needUpdateLogoUrl = false;
         if (StringUtils.isBlank(logoUrl)) {
@@ -593,12 +583,12 @@ public class OrganizationServiceImpl implements OrganizationService {
      *
      * @private 内部方法
      *
-     * @param labelName 标签名
+     * @param label 标签名
      * @return 被删除标签的组织数量
      */
     @Override
-    public int removeLabelsByLabelName(String labelName) {
-        return organizationMapper.deleteLabelsByLabelName(labelName);
+    public int removeLabels(String label) {
+        return organizationMapper.removeLabels(label);
     }
 
     /**
@@ -608,7 +598,6 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @return OrganizationDTO
      */
     private OrganizationDTO organizationDO2OrganizationDTO(OrganizationDO organizationDO) {
-        List<String> labels = organizationMapper.listOrganizationLabelNamesByOrganizationId(organizationDO.getId());
         return new OrganizationDTO.Builder()
                 .id(organizationDO.getId())
                 .userId(organizationDO.getUserId())
@@ -617,7 +606,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .introduction(organizationDO.getIntroduction())
                 .logoUrl(organizationDO.getLogoUrl())
                 .memberNumber(organizationDO.getMemberNumber())
-                .labels(labels)
+                .labels(organizationDO.getLabels())
                 .available(organizationDO.getAvailable()).build();
     }
 

@@ -10,36 +10,21 @@
         <result property="introduction" column="introduction"/>
         <result property="logoUrl" column="logo_url"/>
         <result property="memberNumber" column="member_number"/>
+        <result property="labels" column="labels"/>
         <result property="available" column="is_available"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="organization">
-        id, user_id, organization_name, abbreviation_organization_name, introduction, logo_url, member_number,
+        id, user_id, organization_name, abbreviation_organization_name, introduction, logo_url, member_number, labels,
             is_available, create_time, update_time
     </sql>
 
     <insert id="insertOrganization" keyProperty="id">
-        insert into organization(user_id)
-        values(#{userId})
+        insert into organization(user_id, labels)
+        values(#{userId}, json_array())
     </insert>
-
-    <insert id="insertLabel">
-        insert into organization_organization_label(organization_id, label_name)
-        values(#{organizationId}, #{labelName})
-    </insert>
-
-    <delete id="deleteLabelsByLabelName">
-        delete from organization_organization_label
-        where label_name = #{labelName}
-    </delete>
-
-    <delete id="deleteLabelByOrganizationIdAndLabelName">
-        delete from organization_organization_label
-        where organization_id = #{organizationId}
-        and label_name = #{labelName}
-    </delete>
 
     <select id="getOrganization" resultMap="organization">
         select <include refid="organization"/>
@@ -47,7 +32,7 @@
         where id = #{id}
     </select>
 
-    <select id="getOrganizationLogoUrlByOrganizationId" resultType="string">
+    <select id="getOrganizationLogoUrl" resultType="string">
         select logo_url
         from organization
         where id = #{id}
@@ -131,12 +116,6 @@
         </if>
     </select>
 
-    <select id="listOrganizationLabelNamesByOrganizationId" resultType="string">
-        select label_name
-        from organization_organization_label
-        where organization_id = #{organizationId}
-    </select>
-
     <select id="count" resultType="int">
         select count(*)
         from organization
@@ -149,17 +128,17 @@
         where organization_name = #{organizationName}
     </select>
 
-    <select id="countLabelByOrganizationId" resultType="int">
-        select count(*)
-        from organization_organization_label
-        where organization_id = #{organizationId}
+    <select id="countLabels" resultType="int">
+        select json_length(labels)
+        from organization
+        where id = #{id}
     </select>
 
-    <select id="countLabelByOrganizationIdAndLabelName" resultType="int">
+    <select id="countByIdAndLabel" resultType="int">
         select count(*)
-        from organization_label
+        from organization
         where id = #{id}
-        and label_name = #{labelName}
+        and #{label} member of(labels)
     </select>
 
     <update id="updateOrganizationName">
@@ -191,6 +170,26 @@
         set is_available = #{available}
         where id = #{id}
     </update>
+
+    <update id="addLabel">
+        update organization
+        set labels = json_array_append(labels, '$', #{label})
+        where id = #{id}
+        and not #{label} member of(labels)
+    </update>
+
+    <update id="removeLabel">
+        update organization
+        set labels = json_remove(labels, replace(json_search(labels, 'one', #{label}), '"', ''))
+        where id = #{id}
+        and #{label} member of(labels)
+    </update>
+
+    <delete id="removeLabels">
+        update organization
+        set labels = json_remove(labels, replace(json_search(labels, 'one', #{label}), '"', ''))
+        where #{label} member of(labels)
+    </delete>
 
     <update id="increaseMemberNumber">
         update organization

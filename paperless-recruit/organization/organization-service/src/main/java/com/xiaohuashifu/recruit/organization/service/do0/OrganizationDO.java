@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.do0;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 描述：组织
@@ -16,6 +17,7 @@ public class OrganizationDO {
     private String introduction;
     private String logoUrl;
     private String memberNumber;
+    private List<String> labels;
     private Boolean available;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
@@ -76,6 +78,14 @@ public class OrganizationDO {
         this.memberNumber = memberNumber;
     }
 
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
+    }
+
     public Boolean getAvailable() {
         return available;
     }
@@ -110,6 +120,7 @@ public class OrganizationDO {
                 ", introduction='" + introduction + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", memberNumber='" + memberNumber + '\'' +
+                ", labels=" + labels +
                 ", available=" + available +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
@@ -124,6 +135,7 @@ public class OrganizationDO {
         private String introduction;
         private String logoUrl;
         private String memberNumber;
+        private List<String> labels;
         private Boolean available;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
@@ -163,6 +175,11 @@ public class OrganizationDO {
             return this;
         }
 
+        public Builder labels(List<String> labels) {
+            this.labels = labels;
+            return this;
+        }
+
         public Builder available(Boolean available) {
             this.available = available;
             return this;
@@ -187,6 +204,7 @@ public class OrganizationDO {
             organizationDO.setIntroduction(introduction);
             organizationDO.setLogoUrl(logoUrl);
             organizationDO.setMemberNumber(memberNumber);
+            organizationDO.setLabels(labels);
             organizationDO.setAvailable(available);
             organizationDO.setCreateTime(createTime);
             organizationDO.setUpdateTime(updateTime);

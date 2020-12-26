@@ -52,17 +52,16 @@ public interface OrganizationService {
      *              OperationConflict.OverLimit: 组织标签数量超过规定数量
      *              OperationConflict.Lock: 获取组织标签的锁失败
      *
-     * @param organizationId 组织编号
-     * @param labelName 标签名
+     * @param id 组织编号
+     * @param label 标签名
      * @return 添加后的组织对象
      */
     Result<OrganizationDTO> addLabel(
-            @NotNull(message = "The organizationId can't be null.")
-            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
-            @NotBlank(message = "The labelName can't be blank.")
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The label can't be blank.")
             @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of labelName must not be greater than "
-                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
+                    message = "The length of label must not be greater than "
+                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String label);
 
     /**
      * 删除组织的标签
@@ -74,17 +73,16 @@ public interface OrganizationService {
      *              Forbidden.Unavailable: 组织不可用
      *              OperationConflict: 该标签不存在
      *
-     * @param organizationId 组织编号
-     * @param labelName 标签名
+     * @param id 组织编号
+     * @param label 标签名
      * @return 删除标签后的组织
      */
     Result<OrganizationDTO> removeLabel(
-            @NotNull(message = "The organizationId can't be null.")
-            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
-            @NotBlank(message = "The labelName can't be blank.")
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The label can't be blank.")
             @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of labelName must not be greater than "
-                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
+                    message = "The length of label must not be greater than "
+                            + OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String label);
 
     /**
      * 获取组织
@@ -311,8 +309,8 @@ public interface OrganizationService {
      *
      * @private 内部方法
      *
-     * @param labelName 标签名
+     * @param label 标签名
      * @return 被删除标签的组织数量
      */
-    int removeLabelsByLabelName(String labelName);
+    int removeLabels(String label);
 }

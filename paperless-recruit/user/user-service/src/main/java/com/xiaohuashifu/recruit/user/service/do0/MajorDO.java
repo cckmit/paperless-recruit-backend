@@ -15,6 +15,8 @@ public class MajorDO {
 
     private String majorName;
 
+    private Boolean deactivated;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
@@ -43,6 +45,14 @@ public class MajorDO {
         this.majorName = majorName;
     }
 
+    public Boolean getDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(Boolean deactivated) {
+        this.deactivated = deactivated;
+    }
+
     public LocalDateTime getCreateTime() {
         return createTime;
     }
@@ -65,6 +75,7 @@ public class MajorDO {
                 "id=" + id +
                 ", collegeId=" + collegeId +
                 ", majorName='" + majorName + '\'' +
+                ", deactivated=" + deactivated +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -74,6 +85,7 @@ public class MajorDO {
         private Long id;
         private Long collegeId;
         private String majorName;
+        private Boolean deactivated;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -92,6 +104,11 @@ public class MajorDO {
             return this;
         }
 
+        public Builder deactivated(Boolean deactivated) {
+            this.deactivated = deactivated;
+            return this;
+        }
+
         public Builder createTime(LocalDateTime createTime) {
             this.createTime = createTime;
             return this;
@@ -107,6 +124,7 @@ public class MajorDO {
             majorDO.setId(id);
             majorDO.setCollegeId(collegeId);
             majorDO.setMajorName(majorName);
+            majorDO.setDeactivated(deactivated);
             majorDO.setCreateTime(createTime);
             majorDO.setUpdateTime(updateTime);
             return majorDO;

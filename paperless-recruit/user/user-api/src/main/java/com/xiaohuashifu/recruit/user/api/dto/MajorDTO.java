@@ -25,6 +25,11 @@ public class MajorDTO implements Serializable {
      */
     private String majorName;
 
+    /**
+     * 专业是否被停用
+     */
+    private Boolean deactivated;
+
     public Long getId() {
         return id;
     }
@@ -49,12 +54,21 @@ public class MajorDTO implements Serializable {
         this.majorName = majorName;
     }
 
+    public Boolean getDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(Boolean deactivated) {
+        this.deactivated = deactivated;
+    }
+
     @Override
     public String toString() {
         return "MajorDTO{" +
                 "id=" + id +
                 ", collegeId=" + collegeId +
                 ", majorName='" + majorName + '\'' +
+                ", deactivated=" + deactivated +
                 '}';
     }
 
@@ -62,6 +76,7 @@ public class MajorDTO implements Serializable {
         private Long id;
         private Long collegeId;
         private String majorName;
+        private Boolean deactivated;
 
         public Builder id(Long id) {
             this.id = id;
@@ -78,11 +93,17 @@ public class MajorDTO implements Serializable {
             return this;
         }
 
+        public Builder deactivated(Boolean deactivated) {
+            this.deactivated = deactivated;
+            return this;
+        }
+
         public MajorDTO build() {
             MajorDTO majorDTO = new MajorDTO();
             majorDTO.setId(id);
             majorDTO.setCollegeId(collegeId);
             majorDTO.setMajorName(majorName);
+            majorDTO.setDeactivated(deactivated);
             return majorDTO;
         }
     }

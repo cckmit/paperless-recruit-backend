@@ -1,12 +1,14 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
+import java.io.Serializable;
+
 /**
  * 描述：解禁权限的传输对象
  *
  * @author xhsf
  * @create 2020/12/14 16:48
  */
-public class EnablePermissionDTO {
+public class EnablePermissionDTO implements Serializable {
 
     /**
      * 权限

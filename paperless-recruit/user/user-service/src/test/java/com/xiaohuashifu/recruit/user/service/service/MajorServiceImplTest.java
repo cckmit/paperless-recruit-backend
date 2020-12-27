@@ -35,6 +35,7 @@ public class MajorServiceImplTest {
 
     @Test
     public void getMajor() {
+        System.out.println(majorService.getMajor(8L));
     }
 
     @Test
@@ -44,5 +45,15 @@ public class MajorServiceImplTest {
 
     @Test
     public void updateMajorName() {
+    }
+
+    @Test
+    public void deactivateMajor() {
+        System.out.println(majorService.deactivateMajor(9L));
+    }
+
+    @Test
+    public void checkMajorStatus() {
+        System.out.println(majorService.checkMajorStatus(10L));
     }
 }

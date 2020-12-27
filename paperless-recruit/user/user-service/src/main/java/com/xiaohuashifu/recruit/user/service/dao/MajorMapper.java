@@ -18,6 +18,8 @@ public interface MajorMapper {
 
     MajorDO getMajor(Long id);
 
+    Boolean getDeactivated(Long id);
+
     List<MajorDO> listMajorsByCollegeId(Long collegeId);
 
     List<MajorDO> listMajors(MajorQuery query);
@@ -26,4 +28,7 @@ public interface MajorMapper {
 
     int updateMajorName(@Param("id") Long id, @Param("majorName") String majorName);
 
+    int updateDeactivated(@Param("id") Long id, @Param("deactivated") Boolean deactivated);
+
+    int updateDeactivatedByCollegeId(@Param("collegeId") Long collegeId, @Param("deactivated") Boolean deactivated);
 }

@@ -50,4 +50,13 @@ public class CollegeServiceImplTest {
         System.out.println(collegeService.updateCollegeName(5L, "经济管理学院"));
     }
 
+    @Test
+    public void deactivateCollege() {
+        System.out.println(collegeService.deactivateCollege(5L));
+    }
+
+    @Test
+    public void checkCollegeStatus() {
+        System.out.println(collegeService.checkCollegeStatus(3L));
+    }
 }

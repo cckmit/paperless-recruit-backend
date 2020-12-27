@@ -6,12 +6,13 @@
         <id property="id" column="id"/>
         <result property="collegeId" column="college_id"/>
         <result property="majorName" column="major_name"/>
+        <result property="deactivated" column="is_deactivated"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="major">
-        id, college_id, major_name, create_time, update_time
+        id, college_id, major_name, is_deactivated, create_time, update_time
     </sql>
 
     <insert id="insertMajor" keyProperty="id">
@@ -32,6 +33,12 @@
 
     <select id="getMajor" resultMap="major">
         select <include refid="major"/>
+        from major
+        where id = #{id}
+    </select>
+
+    <select id="getDeactivated" resultType="boolean">
+        select is_deactivated
         from major
         where id = #{id}
     </select>
@@ -94,6 +101,20 @@
         update major
         set major_name = #{majorName}
         where id = #{id}
+    </update>
+
+    <update id="updateDeactivated">
+        update major
+        set is_deactivated = #{deactivated}
+        where id = #{id}
+          and is_deactivated = !#{deactivated}
+    </update>
+
+    <update id="updateDeactivatedByCollegeId">
+        update major
+        set is_deactivated = #{deactivated}
+        where college_id = #{collegeId}
+          and is_deactivated = !#{deactivated}
     </update>
 
 </mapper>

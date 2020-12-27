@@ -5,12 +5,13 @@
     <resultMap id="college" type="com.xiaohuashifu.recruit.user.service.do0.CollegeDO">
         <id property="id" column="id"/>
         <result property="collegeName" column="college_name"/>
+        <result property="deactivated" column="is_deactivated"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="college">
-        id, college_name, create_time, update_time
+        id, college_name, is_deactivated, create_time, update_time
     </sql>
 
     <insert id="insertCollege" keyProperty="id">
@@ -56,6 +57,12 @@
         where id = #{id}
     </select>
 
+    <select id="getDeactivated" resultType="boolean">
+        select is_deactivated
+        from college
+        where id = #{id}
+    </select>
+
     <select id="count" resultType="int">
         select count(*)
         from college
@@ -72,6 +79,13 @@
         update college
         set college_name = #{collegeName}
         where id = #{id}
+    </update>
+
+    <update id="updateDeactivated">
+        update college
+        set is_deactivated = #{deactivated}
+        where id = #{id}
+          and is_deactivated = !#{deactivated}
     </update>
 
 </mapper>

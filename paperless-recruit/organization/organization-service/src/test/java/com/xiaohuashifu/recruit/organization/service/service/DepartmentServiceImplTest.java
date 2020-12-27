@@ -104,4 +104,8 @@ public class DepartmentServiceImplTest {
         System.out.println(departmentService.decreaseMemberNumber(1L));
     }
 
+    @Test
+    public void checkDepartmentStatus() {
+        System.out.println(departmentService.checkDepartmentStatus(4L));
+    }
 }

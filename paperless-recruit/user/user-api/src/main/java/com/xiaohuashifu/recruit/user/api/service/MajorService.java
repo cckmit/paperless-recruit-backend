@@ -83,4 +83,47 @@ public interface MajorService {
             @Size(max = MajorConstants.MAX_MAJOR_NAME_LENGTH,
                     message = "The length of newMajorName must not be greater than "
                             + MajorConstants.MAX_MAJOR_NAME_LENGTH + ".") String newMajorName);
+
+    /**
+     * 停用专业
+     *
+     * @permission 需要 admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 专业不存在
+     *              OperationConflict.Deactivated: 该专业已经被停用
+     *
+     * @param id 专业编号
+     * @return 停用结果
+     */
+    Result<MajorDTO> deactivateMajor(@NotNull(message = "The id can't be null.")
+                                     @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 停用一个学院的所有专业
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
+     * @param collegeId 学院编号
+     * @return 被停用的专业数量
+     */
+    Result<Integer> deactivateMajorsByCollegeId(
+            @NotNull(message = "The collegeId can't be null.")
+            @Positive(message = "The collegeId must be greater than 0.") Long collegeId);
+
+    /**
+     * 检查专业状态
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 专业不存在
+     *              Forbidden.Deactivated: 专业被停用
+     *
+     * @param id 专业编号
+     * @return 检查结果
+     */
+    <T> Result<T> checkMajorStatus(Long id);
+
 }

@@ -1,12 +1,14 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
+import java.io.Serializable;
+
 /**
  * 描述：禁用角色的传输对象
  *
  * @author xhsf
  * @create 2020/12/14 16:48
  */
-public class DisableRoleDTO {
+public class DisableRoleDTO implements Serializable {
 
     /**
      * 角色

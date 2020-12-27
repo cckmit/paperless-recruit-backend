@@ -146,6 +146,83 @@ public class MajorServiceImpl implements MajorService {
     }
 
     /**
+     * 停用专业
+     *
+     * @permission 需要 admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 专业不存在
+     *              OperationConflict.Deactivated: 该专业已经被停用
+     *
+     * @param id 专业编号
+     * @return 停用结果
+     */
+    @Override
+    public Result<MajorDTO> deactivateMajor(Long id) {
+        // 判断专业是否存在
+        MajorDO majorDO = majorMapper.getMajor(id);
+        if (majorDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The major does not exist");
+        }
+
+        // 更新专业的为停用
+        int count = majorMapper.updateDeactivated(id, true);
+
+        // 如果更新失败表示该专业已经被停用了
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DEACTIVATED,
+                    "The major already deactivated.");
+        }
+
+        // 停用成功
+        return getMajor(id);
+    }
+
+    /**
+     * 停用一个学院的所有专业
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *
+     * @param collegeId 学院编号
+     * @return 被停用的专业数量
+     */
+    @Override
+    public Result<Integer> deactivateMajorsByCollegeId(Long collegeId) {
+        int count = majorMapper.updateDeactivatedByCollegeId(collegeId, true);
+        return Result.success(count);
+    }
+
+    /**
+     * 检查专业状态
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 专业不存在
+     *              Forbidden.Deactivated: 专业被停用
+     *
+     * @param id 专业编号
+     * @return 检查结果
+     */
+    @Override
+    public <T> Result<T> checkMajorStatus(Long id) {
+        // 判断专业是否存在
+        Boolean deactivated = majorMapper.getDeactivated(id);
+        if (deactivated == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The major does not exist.");
+        }
+
+        // 判断专业是否被停用
+        if (deactivated) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN_DEACTIVATED, "The major is deactivated.");
+        }
+
+        // 通过检查
+        return Result.success();
+    }
+
+    /**
      * MajorDO to MajorDTO
      *
      * @param majorDO MajorDO
@@ -156,6 +233,7 @@ public class MajorServiceImpl implements MajorService {
                 .id(majorDO.getId())
                 .collegeId(majorDO.getCollegeId())
                 .majorName(majorDO.getMajorName())
+                .deactivated(majorDO.getDeactivated())
                 .build();
     }
 

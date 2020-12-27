@@ -13,6 +13,8 @@ public class CollegeDO {
 
     private String collegeName;
 
+    private Boolean deactivated;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
@@ -31,6 +33,14 @@ public class CollegeDO {
 
     public void setCollegeName(String collegeName) {
         this.collegeName = collegeName;
+    }
+
+    public Boolean getDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(Boolean deactivated) {
+        this.deactivated = deactivated;
     }
 
     public LocalDateTime getCreateTime() {
@@ -54,6 +64,7 @@ public class CollegeDO {
         return "CollegeDO{" +
                 "id=" + id +
                 ", collegeName='" + collegeName + '\'' +
+                ", deactivated=" + deactivated +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -62,6 +73,7 @@ public class CollegeDO {
     public static final class Builder {
         private Long id;
         private String collegeName;
+        private Boolean deactivated;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
@@ -72,6 +84,11 @@ public class CollegeDO {
 
         public Builder collegeName(String collegeName) {
             this.collegeName = collegeName;
+            return this;
+        }
+
+        public Builder deactivated(Boolean deactivated) {
+            this.deactivated = deactivated;
             return this;
         }
 
@@ -89,6 +106,7 @@ public class CollegeDO {
             CollegeDO collegeDO = new CollegeDO();
             collegeDO.setId(id);
             collegeDO.setCollegeName(collegeName);
+            collegeDO.setDeactivated(deactivated);
             collegeDO.setCreateTime(createTime);
             collegeDO.setUpdateTime(updateTime);
             return collegeDO;

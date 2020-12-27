@@ -22,10 +22,14 @@ public interface CollegeMapper {
 
     String getCollegeName(Long id);
 
+    Boolean getDeactivated(Long id);
+
     int count(Long id);
 
     int countByCollegeName(String collegeName);
 
     int updateCollegeName(@Param("id") Long id, @Param("collegeName") String collegeName);
+
+    int updateDeactivated(@Param("id") Long id, @Param("deactivated") Boolean deactivated);
 
 }

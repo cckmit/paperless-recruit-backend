@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.constant.CollegeConstants;
 import com.xiaohuashifu.recruit.user.api.dto.CollegeDTO;
+import com.xiaohuashifu.recruit.user.api.dto.DeactivateCollegeDTO;
 import com.xiaohuashifu.recruit.user.api.query.CollegeQuery;
 
 import javax.validation.constraints.NotBlank;
@@ -92,4 +93,31 @@ public interface CollegeService {
                     message = "The length of newCollegeName must not be greater than "
                             + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".") String newCollegeName);
 
+    /**
+     * 停用学院，会停用该学院的所有专业
+     *
+     * @permission 需要 admin 权限
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotExist: 学院不存在
+     *              OperationConflict.Deactivated: 该学院已经被停用
+     *
+     * @param id 学院编号
+     * @return 停用结果，附带被停用的专业的数量
+     */
+    Result<DeactivateCollegeDTO> deactivateCollege(@NotNull(message = "The id can't be null.")
+                                                   @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 检查学院状态
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 学院不存在
+     *              Forbidden.Deactivated: 学院被停用
+     *
+     * @param id 学院编号
+     * @return 检查结果
+     */
+    <T> Result<T> checkCollegeStatus(Long id);
 }

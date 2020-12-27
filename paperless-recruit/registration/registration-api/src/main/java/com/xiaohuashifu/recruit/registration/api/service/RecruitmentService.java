@@ -22,10 +22,17 @@ public interface RecruitmentService {
      *
      * @permission 必须是组织所属主体用户本身
      *
+     * @errorCode InvalidParameter: 参数格式错误 | 招新发布时间小于招新开始时间 | 招新结束时间小于等于招新开始时间
+     *              InvalidParameter.NotExist: 组织不存在 | 部门不存在 | 学院不存在 | 专业不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *              Forbidden.Deactivated: 部门被停用 | 学院被停用 | 专业被停用
+     *              Forbidden: 部门不属于该组织
+     *
      * @param createRecruitmentPO 创建招新参数对象
      * @return 创建结果
      */
-    Result<RecruitmentDTO> createRecruitment(@NotNull CreateRecruitmentPO createRecruitmentPO);
+    Result<RecruitmentDTO> createRecruitment(@NotNull(message = "The createRecruitmentPO can't be null.")
+                                                     CreateRecruitmentPO createRecruitmentPO);
 
     /**
      * 添加招新学院，报名开始后无法添加

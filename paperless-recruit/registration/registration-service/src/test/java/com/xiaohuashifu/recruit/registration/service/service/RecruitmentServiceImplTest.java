@@ -43,7 +43,6 @@ public class RecruitmentServiceImplTest {
         recruitmentGrades.add(GradeEnum.FRESHMEN);
         recruitmentGrades.add(GradeEnum.SOPHOMORE);
         Set<Long> recruitmentDepartmentIds = new HashSet<>();
-        recruitmentDepartmentIds.add(1L);
         recruitmentDepartmentIds.add(2L);
         recruitmentDepartmentIds.add(3L);
         Set<Long> recruitmentCollegeIds = new HashSet<>();
@@ -52,7 +51,6 @@ public class RecruitmentServiceImplTest {
         Set<Long> recruitmentMajorIds = new HashSet<>();
         recruitmentMajorIds.add(2L);
         recruitmentMajorIds.add(3L);
-        recruitmentMajorIds.add(4L);
 
         CreateRecruitmentPO createRecruitmentPO = new CreateRecruitmentPO.Builder()
                 .organizationId(1L)
@@ -64,9 +62,9 @@ public class RecruitmentServiceImplTest {
                 .recruitmentDepartmentIds(recruitmentDepartmentIds)
                 .recruitmentCollegeIds(recruitmentCollegeIds)
                 .recruitmentMajorIds(recruitmentMajorIds)
-                .releaseTime(LocalDateTime.now().plusHours(2))
-                .registrationTimeFrom(LocalDateTime.now().plusHours(10))
-                .registrationTimeTo(LocalDateTime.now().plusHours(24)).build();
+                .releaseTime(null)
+                .registrationTimeFrom(null)
+                .registrationTimeTo(null).build();
         System.out.println(recruitmentService.createRecruitment(createRecruitmentPO));
     }
 

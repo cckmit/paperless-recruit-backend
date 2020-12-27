@@ -17,6 +17,8 @@ public interface RecruitmentMapper {
 
     Boolean getAvailable(Long id);
 
+    Long getOrganizationId(Long id);
+
     int count(Long id);
 
     int countRecruitmentCollegeIds(Long id);
@@ -24,5 +26,6 @@ public interface RecruitmentMapper {
     int addRecruitmentCollege(@Param("id") Long id, @Param("collegeId") Long collegeId);
 
     int clearRecruitmentCollegeIds(Long id);
+
 }
 

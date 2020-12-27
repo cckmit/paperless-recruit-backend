@@ -136,7 +136,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
             // 添加失败表示该学院已经存在
             if (count < 1) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE, "The college already exist.");
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE,
+                        "The college already exist.");
             }
         }
 
@@ -254,13 +255,14 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     /**
      * 获取组织编号
      *
+     * @private 内部方法
+     *
      * @param id 招新编号
      * @return 组织编号，若招新不存在则返回 null
-     * @private 内部方法
      */
     @Override
     public Long getOrganizationId(Long id) {
-        return null;
+        return recruitmentMapper.getOrganizationId(id);
     }
 
     /**

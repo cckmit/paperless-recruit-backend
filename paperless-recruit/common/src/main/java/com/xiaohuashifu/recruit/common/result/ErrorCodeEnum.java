@@ -74,13 +74,13 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.IsBlank", "The required parameter must be not blank."),
 
     /**
-     * 参数值超过限定范围， Number 类型
+     * 参数值超过限定范围
      */
     INVALID_PARAMETER_VALUE_EXCEEDED(HttpStatus.BAD_REQUEST,
             "InvalidParameter.ValueExceeded", "The name of {Parameter} exceeded, max: {Value}."),
 
     /**
-     * 参数值小于限定范围， Number 类型
+     * 参数值小于限定范围
      */
     INVALID_PARAMETER_VALUE_BELOW(HttpStatus.BAD_REQUEST,
             "InvalidParameter.ValueBelow", "The name of {Parameter} below, min: {Value}."),

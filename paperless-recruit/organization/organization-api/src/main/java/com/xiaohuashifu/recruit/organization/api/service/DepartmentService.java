@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 /**
  * 描述：部门服务
@@ -272,4 +273,16 @@ public interface DepartmentService {
     Result<DepartmentDTO> decreaseMemberNumber(@NotNull(message = "The id can't be null.")
                                                @Positive(message = "The id must be greater than 0.") Long id);
 
+    /**
+     * 检查部门的状态，检查部门是否存在和部门是否被停用
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Deactivated: 部门被停用
+     *
+     * @param id 部门编号
+     * @return 检查结果
+     */
+    <T> Result<T> checkDepartmentStatus(Long id);
 }

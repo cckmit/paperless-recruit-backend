@@ -164,6 +164,13 @@ public enum ErrorCodeEnum implements Serializable {
             "Forbidden.Unavailable", "Forbidden."),
 
     /**
+     * 被禁止，因为被停用
+     */
+    FORBIDDEN_DEACTIVATED(HttpStatus.FORBIDDEN,
+            "Forbidden.Deactivated", "Forbidden."),
+
+
+    /**
      * 未找到该参数对应的资源
      */
     INVALID_PARAMETER_NOT_FOUND(HttpStatus.NOT_FOUND,

@@ -19,6 +19,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -503,6 +504,34 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         // 减少成员数后的部门对象
         return getDepartment(id);
+    }
+
+    /**
+     * 检查部门的状态，检查部门是否存在和部门是否被停用
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 部门不存在
+     *              Forbidden.Deactivated: 部门被停用
+     *
+     * @param id 部门编号
+     * @return 检查结果
+     */
+    @Override
+    public <T> Result<T> checkDepartmentStatus(Long id) {
+        Boolean deactivated = departmentMapper.getDeactivated(id);
+        if (deactivated == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The department does not exist.");
+        }
+
+        // 判断部门是否被停用
+        if (deactivated) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN_DEACTIVATED, "The department is deactivated.");
+        }
+
+        // 通过检查
+        return Result.success();
     }
 
     /**

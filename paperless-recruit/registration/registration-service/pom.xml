@@ -93,6 +93,12 @@
 			<artifactId>registration-api</artifactId>
 		</dependency>
 
+		<!--    organization-api接口    -->
+		<dependency>
+			<groupId>com.xiaohuashifu.recruit</groupId>
+			<artifactId>organization-api</artifactId>
+		</dependency>
+
 		<!--   公共对象     -->
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>

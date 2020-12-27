@@ -75,12 +75,18 @@ public class CreateRecruitmentPO implements Serializable {
      * 招新学院列表，空表示不限
      */
     @NotNull(message = "The recruitmentCollegeIds can't be null.")
+    @Size(max = RecruitmentConstants.MAX_RECRUITMENT_COLLEGE_NUMBERS,
+            message = "The length of recruitmentCollegeIds must not be greater than "
+                    + RecruitmentConstants.MAX_RECRUITMENT_COLLEGE_NUMBERS + ".")
     private Set<Long> recruitmentCollegeIds;
 
     /**
      * 招新专业列表，空表示不限
      */
     @NotNull(message = "The recruitmentMajorIds can't be null.")
+    @Size(max = RecruitmentConstants.MAX_RECRUITMENT_MAJOR_NUMBERS,
+            message = "The length of recruitmentMajorIds must not be greater than "
+                    + RecruitmentConstants.MAX_RECRUITMENT_MAJOR_NUMBERS + ".")
     private Set<Long> recruitmentMajorIds;
 
     /**

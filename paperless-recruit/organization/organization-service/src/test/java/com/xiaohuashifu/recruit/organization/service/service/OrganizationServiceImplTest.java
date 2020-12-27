@@ -112,4 +112,8 @@ public class OrganizationServiceImplTest {
         System.out.println(organizationService.sendEmailAuthCodeForSignUp("827032783@qq.com"));
     }
 
+    @Test
+    public void checkOrganizationStatus() {
+        System.out.println(organizationService.checkOrganizationStatus(null));
+    }
 }

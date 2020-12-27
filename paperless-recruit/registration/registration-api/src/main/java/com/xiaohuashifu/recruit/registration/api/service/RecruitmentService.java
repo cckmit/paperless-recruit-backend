@@ -7,6 +7,8 @@ import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
 import com.xiaohuashifu.recruit.registration.api.po.CreateRecruitmentPO;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 /**
@@ -39,11 +41,23 @@ public interface RecruitmentService {
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在 | 学院不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Deactivated: 学院被停用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.OverLimit: 招新学院数量超过限制数量
+     *              OperationConflict.Duplicate: 招新学院已经存在
+     *              OperationConflict.Lock: 获取招新学院编号的锁失败
+     *
      * @param id 招新的编号
      * @param collegeId 招新学院编号，若0表示将学院设置为不限，即清空招新学院
      * @return 添加结果
      */
-    Result<RecruitmentDTO> addRecruitmentCollege(Long id, Long collegeId);
+    Result<RecruitmentDTO> addRecruitmentCollege(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The collegeId can't be null.")
+            @PositiveOrZero(message = "The collegeId must be greater than or equal to 0.") Long collegeId);
 
     /**
      * 添加招新专业，报名开始后无法添加
@@ -218,19 +232,6 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> updateRegistrationTimeTo(Long id, LocalDateTime newRegistrationTimeTo);
 
     /**
-     * 更新招新的状态，用于状态的转换
-     *
-     * @private 内部方法
-     *
-     * @param id 招新的编号
-     * @param oldRecruitmentStatus 原招新状态
-     * @param newRecruitmentStatus 新招新状态
-     * @return 更新结果
-     */
-    Result<Void> updateRecruitmentStatus(Long id, RecruitmentStatusEnum oldRecruitmentStatus,
-                                         RecruitmentStatusEnum newRecruitmentStatus);
-
-    /**
      * 禁用一个招新
      *
      * @permission 必须是 admin 权限
@@ -249,5 +250,31 @@ public interface RecruitmentService {
      * @return 解禁结果
      */
     Result<RecruitmentDTO> enableRecruitment(Long id);
+
+    /**
+     * 更新招新的状态，用于状态的转换
+     *
+     * @private 内部方法
+     *
+     * @param id 招新的编号
+     * @param oldRecruitmentStatus 原招新状态
+     * @param newRecruitmentStatus 新招新状态
+     * @return 更新结果
+     */
+    Result<Void> updateRecruitmentStatus(Long id, RecruitmentStatusEnum oldRecruitmentStatus,
+                                         RecruitmentStatusEnum newRecruitmentStatus);
+
+//    /**
+//     * 检查招新状态
+//     *
+//     * @private 内部方法
+//     *
+//     * @errorCode InvalidParameter.NotExist: 招新不存在
+//     *              Forbidden.Unauthorized: 招新不可用
+//     *
+//     * @param id 招新编号
+//     * @return 检查结果
+//     */
+//    <T> Result<T> checkRecruitmentStatus(Long id);
 
 }

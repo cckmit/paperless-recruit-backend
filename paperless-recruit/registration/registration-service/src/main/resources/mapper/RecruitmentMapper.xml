@@ -60,5 +60,35 @@
         where id = #{id}
     </select>
 
+    <select id="getAvailable" resultType="java.lang.Boolean">
+        select is_available
+        from recruitment
+        where id = #{id}
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*)
+        from recruitment
+        where id = #{id}
+    </select>
+
+    <select id="countRecruitmentCollegeIds" resultType="java.lang.Integer">
+        select json_length(recruitment_college_ids)
+        from recruitment
+        where id = #{id}
+    </select>
+
+    <update id="addRecruitmentCollege">
+        update recruitment
+        set recruitment_college_ids = json_array_append(recruitment_college_ids, '$', #{collegeId})
+        where id = #{id}
+        and not #{collegeId} member of(recruitment_college_ids->'$')
+    </update>
+
+    <update id="clearRecruitmentCollegeIds">
+        update recruitment
+        set recruitment_college_ids = json_array()
+        where id = #{id}
+    </update>
 
 </mapper>

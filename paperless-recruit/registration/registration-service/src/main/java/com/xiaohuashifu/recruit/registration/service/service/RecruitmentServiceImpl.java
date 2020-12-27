@@ -1,11 +1,13 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
+import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
 import com.xiaohuashifu.recruit.common.constant.MySqlConstants;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
+import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentConstants;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
 import com.xiaohuashifu.recruit.registration.api.po.CreateRecruitmentPO;
@@ -44,6 +46,11 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
     private final RecruitmentMapper recruitmentMapper;
 
+    /**
+     * 招新学院编号列表锁定键模式，{0}是招新编号
+     */
+    private static final String RECRUITMENT_COLLEGE_IDS_LOCK_KEY_PATTERN = "recruitment:{0}:recruitment-college-ids";
+
     public RecruitmentServiceImpl(RecruitmentMapper recruitmentMapper) {
         this.recruitmentMapper = recruitmentMapper;
     }
@@ -79,14 +86,62 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     /**
      * 添加招新学院，报名开始后无法添加
      *
-     * @param id        招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在 | 学院不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Deactivated: 学院被停用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.OverLimit: 招新学院数量超过限制数量
+     *              OperationConflict.Duplicate: 招新学院已经存在
+     *              OperationConflict.Lock: 获取招新学院编号的锁失败
+     *
+     * @param id 招新的编号
      * @param collegeId 招新学院编号，若0表示将学院设置为不限，即清空招新学院
      * @return 添加结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
+    @DistributedLock(value = RECRUITMENT_COLLEGE_IDS_LOCK_KEY_PATTERN, parameters = "#{#id}",
+            errorMessage = "Failed to acquire recruitmentCollegeIds lock.")
     @Override
     public Result<RecruitmentDTO> addRecruitmentCollege(Long id, Long collegeId) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.STARTED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 如果学院编号为0，则直接清空招新学院
+        if (Objects.equals(0L, collegeId)) {
+            recruitmentMapper.clearRecruitmentCollegeIds(id);
+        }
+        // 否则走正常的添加招新学院流程
+        else {
+            // 检查学院状态
+            Result<RecruitmentDTO> checkCollegeStatusResult = collegeService.checkCollegeStatus(collegeId);
+            if (checkCollegeStatusResult.isFailure()) {
+                return checkCollegeStatusResult;
+            }
+
+            // 判断招新学院数量是否超过限制
+            int count = recruitmentMapper.countRecruitmentCollegeIds(id);
+            if (count >= RecruitmentConstants.MAX_RECRUITMENT_COLLEGE_NUMBERS) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_OVER_LIMIT,
+                        "The number of recruitment colleges can't greater than "
+                                + RecruitmentConstants.MAX_RECRUITMENT_COLLEGE_NUMBERS + ".");
+            }
+
+            // 添加招新学院
+            count = recruitmentMapper.addRecruitmentCollege(id, collegeId);
+
+            // 添加失败表示该学院已经存在
+            if (count < 1) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE, "The college already exist.");
+            }
+        }
+
+        // 添加成功
+        return getRecruitment(id);
     }
 
     /**
@@ -335,6 +390,42 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Override
     public Result<RecruitmentDTO> enableRecruitment(Long id) {
         return null;
+    }
+
+    /**
+     * 检查招新状态
+     *
+     * @errorCode InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *
+     * @param id 招新编号
+     * @param followRecruitmentStatus 后续招新状态，当前状态必须小于该状态
+     * @return 检查结果
+     */
+    private Result<RecruitmentStatusEnum> checkRecruitmentStatus(
+            Long id, RecruitmentStatusEnum followRecruitmentStatus) {
+        // 检查招新存不存在
+        RecruitmentDO recruitmentDO = recruitmentMapper.getRecruitment(id);
+        if (recruitmentDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The recruitment does not exist.");
+        }
+
+        // 检查招新是否可用
+        if (!recruitmentDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.FORBIDDEN_UNAUTHORIZED, "The recruitment unavailable.");
+        }
+
+        // 检查招新状态是否在 followRecruitmentStatus 之前
+        RecruitmentStatusEnum recruitmentStatus = RecruitmentStatusEnum.valueOf(recruitmentDO.getRecruitmentStatus());
+        if (recruitmentStatus.getCode() >= followRecruitmentStatus.getCode()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
+                    "The recruitment status must be precede " + followRecruitmentStatus + ".");
+        }
+
+        // 通过检查
+        return Result.success(recruitmentStatus);
     }
 
     /**

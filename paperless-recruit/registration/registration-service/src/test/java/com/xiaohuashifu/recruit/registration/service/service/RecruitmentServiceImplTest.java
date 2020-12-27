@@ -70,6 +70,7 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void addRecruitmentCollege() {
+        System.out.println(recruitmentService.addRecruitmentCollege(3L, 0L));
     }
 
     @Test

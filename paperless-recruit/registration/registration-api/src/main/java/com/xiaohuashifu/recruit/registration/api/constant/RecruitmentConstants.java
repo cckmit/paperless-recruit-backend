@@ -19,6 +19,16 @@ public class RecruitmentConstants {
     public static final int MAX_RECRUITMENT_NUMBERS_LENGTH = 8;
 
     /**
+     * 招新学院最大个数
+     */
+    public static final int MAX_RECRUITMENT_COLLEGE_NUMBERS = 5;
+
+    /**
+     * 招新专业最大个数
+     */
+    public static final int MAX_RECRUITMENT_MAJOR_NUMBERS = 10;
+
+    /**
      * 职位职责最大长度
      */
     public static final int MAX_POSITION_DUTY_LENGTH = 400;

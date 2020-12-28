@@ -51,6 +51,12 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      */
     private static final String RECRUITMENT_COLLEGE_IDS_LOCK_KEY_PATTERN = "recruitment:{0}:recruitment-college-ids";
 
+    /**
+     * 招新专业编号列表锁定键模式，{0}是招新编号
+     */
+    private static final String RECRUITMENT_MAJOR_IDS_LOCK_KEY_PATTERN = "recruitment:{0}:recruitment-major-ids";
+
+
     public RecruitmentServiceImpl(RecruitmentMapper recruitmentMapper) {
         this.recruitmentMapper = recruitmentMapper;
     }
@@ -84,7 +90,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * 添加招新学院，报名开始后无法添加
+     * 添加招新学院，报名结束后无法添加
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
@@ -106,7 +112,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Override
     public Result<RecruitmentDTO> addRecruitmentCollege(Long id, Long collegeId) {
         // 检查招新状态
-        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.STARTED);
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
@@ -146,51 +152,175 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * 添加招新专业，报名开始后无法添加
+     * 添加招新专业，报名结束后无法添加
      *
-     * @param id      招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在 | 专业不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Deactivated: 专业被停用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.OverLimit: 招新专业数量超过限制数量
+     *              OperationConflict.Duplicate: 招新专业已经存在
+     *              OperationConflict.Lock: 获取招新专业编号的锁失败
+     *
+     * @param id 招新的编号
      * @param majorId 招新专业编号，若0表示将专业设置为不限，即清空招新专业
      * @return 添加结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
+    @DistributedLock(value = RECRUITMENT_MAJOR_IDS_LOCK_KEY_PATTERN, parameters = "#{#id}",
+            errorMessage = "Failed to acquire recruitmentMajorIds lock.")
     @Override
-    public Result<RecruitmentDTO> addRecruitmentMajor(Long id, String majorId) {
-        return null;
+    public Result<RecruitmentDTO> addRecruitmentMajor(Long id, Long majorId) {
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 如果专业编号为0，则直接清空招新专业
+        if (Objects.equals(0L, majorId)) {
+            recruitmentMapper.clearRecruitmentMajorIds(id);
+        }
+        // 否则走正常的添加招新专业流程
+        else {
+            // 检查专业状态
+            Result<RecruitmentDTO> checkMajorStatusResult = majorService.checkMajorStatus(majorId);
+            if (checkMajorStatusResult.isFailure()) {
+                return checkMajorStatusResult;
+            }
+
+            // 判断招新专业数量是否超过限制
+            int count = recruitmentMapper.countRecruitmentMajorIds(id);
+            if (count >= RecruitmentConstants.MAX_RECRUITMENT_MAJOR_NUMBERS) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_OVER_LIMIT,
+                        "The number of recruitment majors can't greater than "
+                                + RecruitmentConstants.MAX_RECRUITMENT_MAJOR_NUMBERS + ".");
+            }
+
+            // 添加招新专业
+            count = recruitmentMapper.addRecruitmentMajor(id, majorId);
+
+            // 添加失败表示该专业已经存在
+            if (count < 1) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE,
+                        "The major already exist.");
+            }
+        }
+
+        // 添加成功
+        return getRecruitment(id);
     }
 
     /**
-     * 添加招新年级，报名开始后无法添加
+     * 添加招新年级，报名结束后无法添加
      *
-     * @param id               招新的编号
-     * @param recruitmentGrade 招新年级，若null表示将年招设置为不限，即清空招新年级
-     * @return 添加结果
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Duplicate: 招新专业已经存在
+     *
+     * @param id 招新的编号
+     * @param recruitmentGrade 招新年级，若 null 表示将年招设置为不限，即清空招新年级
+     * @return 添加结果
      */
     @Override
     public Result<RecruitmentDTO> addRecruitmentGrade(Long id, GradeEnum recruitmentGrade) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 如果招新年级为 null，则直接清空招新年级
+        if (recruitmentGrade == null) {
+            recruitmentMapper.clearRecruitmentGrades(id);
+        }
+        // 否则走正常的添加招新年级流程
+        else {
+            // 添加招新年级
+            int count = recruitmentMapper.addRecruitmentGrade(id, recruitmentGrade.name());
+
+            // 添加失败表示该年级已经存在
+            if (count < 1) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE,
+                        "The grade already exist.");
+            }
+        }
+
+        // 添加成功
+        return getRecruitment(id);
     }
 
     /**
-     * 添加招新的部门，报名开始后无法添加
+     * 添加招新的部门，报名结束后无法添加
      *
-     * @param id           招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在 | 部门不存在
+     *              Forbidden: 部门不属于该组织的
+     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Deactivated: 部门被停用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Duplicate: 招新部门已经存在
+     *
+     * @param id 招新的编号
      * @param departmentId 招新部门的编号，若0表示将部门设置为不限，即清空招新部门
      * @return 添加结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> addRecruitmentDepartment(Long id, Long departmentId) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 如果部门编号为0，则直接清空招新部门
+        if (Objects.equals(0L, departmentId)) {
+            recruitmentMapper.clearRecruitmentDepartmentIds(id);
+        }
+        // 否则走正常的添加招新部门流程
+        else {
+            // 判断部门是否属于该组织的
+            Long organizationId = departmentService.getOrganizationId(departmentId);
+            if (!Objects.equals(organizationId, recruitmentMapper.getOrganizationId(id))) {
+                return Result.fail(ErrorCodeEnum.FORBIDDEN);
+            }
+
+            // 检查部门状态
+            Result<RecruitmentDTO> checkDepartmentStatusResult = departmentService.checkDepartmentStatus(departmentId);
+            if (checkDepartmentStatusResult.isFailure()) {
+                return checkDepartmentStatusResult;
+            }
+
+            // 添加招新部门
+            int count = recruitmentMapper.addRecruitmentDepartment(id, departmentId);
+
+            // 添加失败表示该部门已经存在
+            if (count < 1) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE,
+                        "The department already exist.");
+            }
+        }
+
+        // 添加成功
+        return getRecruitment(id);
     }
 
     /**
-     * 移除招新学院，报名开始后无法移除
+     * 移除招新学院，报名结束后无法移除
      *
-     * @param id        招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @param id 招新的编号
      * @param collegeId 招新学院编号
      * @return 移除结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> removeRecruitmentCollege(Long id, Long collegeId) {

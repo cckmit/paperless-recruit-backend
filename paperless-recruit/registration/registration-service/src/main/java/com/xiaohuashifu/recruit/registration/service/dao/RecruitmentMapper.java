@@ -23,9 +23,23 @@ public interface RecruitmentMapper {
 
     int countRecruitmentCollegeIds(Long id);
 
+    int countRecruitmentMajorIds(Long id);
+
     int addRecruitmentCollege(@Param("id") Long id, @Param("collegeId") Long collegeId);
 
+    int addRecruitmentMajor(@Param("id") Long id, @Param("majorId") Long majorId);
+
+    int addRecruitmentGrade(@Param("id") Long id, @Param("grade") String grade);
+
+    int addRecruitmentDepartment(@Param("id") Long id, @Param("departmentId") Long departmentId);
+
     int clearRecruitmentCollegeIds(Long id);
+
+    int clearRecruitmentMajorIds(Long id);
+
+    int clearRecruitmentGrades(Long id);
+
+    int clearRecruitmentDepartmentIds(Long id);
 
 }
 

@@ -75,14 +75,17 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void addRecruitmentMajor() {
+        System.out.println(recruitmentService.addRecruitmentMajor(3L, 0L));
     }
 
     @Test
     public void addRecruitmentGrade() {
+        System.out.println(recruitmentService.addRecruitmentGrade(3L, null));
     }
 
     @Test
     public void addRecruitmentDepartment() {
+        System.out.println(recruitmentService.addRecruitmentDepartment(3L, 3L));
     }
 
     @Test

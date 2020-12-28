@@ -84,6 +84,12 @@
         where id = #{id}
     </select>
 
+    <select id="countRecruitmentMajorIds" resultType="java.lang.Integer">
+        select json_length(recruitment_major_ids)
+        from recruitment
+        where id = #{id}
+    </select>
+
     <update id="addRecruitmentCollege">
         update recruitment
         set recruitment_college_ids = json_array_append(recruitment_college_ids, '$', #{collegeId})
@@ -91,9 +97,48 @@
         and not #{collegeId} member of(recruitment_college_ids->'$')
     </update>
 
+    <update id="addRecruitmentMajor">
+        update recruitment
+        set recruitment_major_ids = json_array_append(recruitment_major_ids, '$', #{majorId})
+        where id = #{id}
+        and not #{majorId} member of(recruitment_major_ids->'$')
+    </update>
+
+    <update id="addRecruitmentGrade">
+        update recruitment
+        set recruitment_grades = json_array_append(recruitment_grades, '$', #{grade})
+        where id = #{id}
+          and not #{grade} member of(recruitment_grades->'$')
+    </update>
+
+    <update id="addRecruitmentDepartment">
+        update recruitment
+        set recruitment_department_ids = json_array_append(recruitment_department_ids, '$', #{departmentId})
+        where id = #{id}
+          and not #{departmentId} member of(recruitment_department_ids->'$')
+    </update>
+
     <update id="clearRecruitmentCollegeIds">
         update recruitment
         set recruitment_college_ids = json_array()
+        where id = #{id}
+    </update>
+
+    <update id="clearRecruitmentMajorIds">
+        update recruitment
+        set recruitment_major_ids = json_array()
+        where id = #{id}
+    </update>
+
+    <update id="clearRecruitmentGrades">
+        update recruitment
+        set recruitment_grades = json_array()
+        where id = #{id}
+    </update>
+
+    <update id="clearRecruitmentDepartmentIds">
+        update recruitment
+        set recruitment_department_ids = json_array()
         where id = #{id}
     </update>
 

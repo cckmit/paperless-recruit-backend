@@ -37,7 +37,7 @@ public interface RecruitmentService {
                                                      CreateRecruitmentPO createRecruitmentPO);
 
     /**
-     * 添加招新学院，报名开始后无法添加
+     * 添加招新学院，报名结束后无法添加
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
@@ -60,31 +60,54 @@ public interface RecruitmentService {
             @PositiveOrZero(message = "The collegeId must be greater than or equal to 0.") Long collegeId);
 
     /**
-     * 添加招新专业，报名开始后无法添加
+     * 添加招新专业，报名结束后无法添加
      *
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在 | 专业不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Deactivated: 专业被停用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.OverLimit: 招新专业数量超过限制数量
+     *              OperationConflict.Duplicate: 招新专业已经存在
+     *              OperationConflict.Lock: 获取招新专业编号的锁失败
      *
      * @param id 招新的编号
      * @param majorId 招新专业编号，若0表示将专业设置为不限，即清空招新专业
      * @return 添加结果
      */
-    Result<RecruitmentDTO> addRecruitmentMajor(Long id, String majorId);
+    Result<RecruitmentDTO> addRecruitmentMajor(Long id, Long majorId);
 
     /**
-     * 添加招新年级，报名开始后无法添加
+     * 添加招新年级，报名结束后无法添加
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Duplicate: 招新专业已经存在
+     *
      * @param id 招新的编号
-     * @param recruitmentGrade 招新年级，若null表示将年招设置为不限，即清空招新年级
+     * @param recruitmentGrade 招新年级，若 null 表示将年招设置为不限，即清空招新年级
      * @return 添加结果
      */
     Result<RecruitmentDTO> addRecruitmentGrade(Long id, GradeEnum recruitmentGrade);
 
     /**
-     * 添加招新的部门，报名开始后无法添加
+     * 添加招新的部门，报名结束后无法添加
      *
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在 | 部门不存在
+     *              Forbidden: 部门不属于该组织的
+     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Deactivated: 部门被停用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Duplicate: 招新部门已经存在
      *
      * @param id 招新的编号
      * @param departmentId 招新部门的编号，若0表示将部门设置为不限，即清空招新部门
@@ -93,7 +116,7 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> addRecruitmentDepartment(Long id, Long departmentId);
 
     /**
-     * 移除招新学院，报名开始后无法移除
+     * 移除招新学院，报名结束后无法移除
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
@@ -104,7 +127,7 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> removeRecruitmentCollege(Long id, Long collegeId);
 
     /**
-     * 移除招新专业，报名开始后无法移除
+     * 移除招新专业，报名结束后无法移除
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
@@ -115,7 +138,7 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> removeRecruitmentMajor(Long id, Long majorId);
 
     /**
-     * 移除招新年级，报名开始后无法移除
+     * 移除招新年级，报名结束后无法移除
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
@@ -126,7 +149,7 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> removeRecruitmentGrade(Long id, GradeEnum recruitmentGrade);
 
     /**
-     * 移除招新的部门，报名开始后无法移除
+     * 移除招新的部门，报名结束后无法移除
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *

@@ -182,4 +182,8 @@ public class RecruitmentServiceImplTest {
     }
 
 
+    @Test
+    public void canRegistration() {
+        System.out.println(recruitmentService.canRegistration(8L));
+    }
 }

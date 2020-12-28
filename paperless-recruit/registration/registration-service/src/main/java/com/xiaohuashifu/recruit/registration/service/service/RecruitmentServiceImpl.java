@@ -318,52 +318,133 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 招新学院不存在
+     *
      * @param id 招新的编号
      * @param collegeId 招新学院编号
      * @return 移除结果
      */
     @Override
     public Result<RecruitmentDTO> removeRecruitmentCollege(Long id, Long collegeId) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 移除招新学院
+        int count = recruitmentMapper.removeRecruitmentCollege(id, collegeId);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The college does not exist.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
-     * 移除招新专业，报名开始后无法移除
+     * 移除招新专业，报名结束后无法移除
      *
-     * @param id      招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 招新专业不存在
+     *
+     * @param id 招新的编号
      * @param majorId 招新专业编号
      * @return 移除结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> removeRecruitmentMajor(Long id, Long majorId) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 移除招新专业
+        int count = recruitmentMapper.removeRecruitmentMajor(id, majorId);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED, "The major does not exist.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
-     * 移除招新年级，报名开始后无法移除
+     * 移除招新年级，报名结束后无法移除
      *
-     * @param id               招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 招新年级不存在
+     *
+     * @param id 招新的编号
      * @param recruitmentGrade 招新年级
      * @return 移除结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> removeRecruitmentGrade(Long id, GradeEnum recruitmentGrade) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 移除招新年级
+        int count = recruitmentMapper.removeRecruitmentGrade(id, recruitmentGrade.name());
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED, "The grade does not exist.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
-     * 移除招新的部门，报名开始后无法移除
+     * 移除招新的部门，报名结束后无法移除
      *
-     * @param id           招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 招新部门不存在
+     *
+     * @param id 招新的编号
      * @param departmentId 招新部门的编号
      * @return 移除结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> removeRecruitmentDepartment(Long id, Long departmentId) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 移除招新部门
+        int count = recruitmentMapper.removeRecruitmentDepartment(id, departmentId);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The department does not exist.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**

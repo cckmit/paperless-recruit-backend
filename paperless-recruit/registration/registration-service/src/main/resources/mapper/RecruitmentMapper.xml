@@ -92,16 +92,16 @@
 
     <update id="addRecruitmentCollege">
         update recruitment
-        set recruitment_college_ids = json_array_append(recruitment_college_ids, '$', #{collegeId})
+        set recruitment_college_ids = json_array_append(recruitment_college_ids, '$', cast(#{collegeId} as char))
         where id = #{id}
-        and not #{collegeId} member of(recruitment_college_ids->'$')
+        and not cast(#{collegeId} as char) member of(recruitment_college_ids->'$')
     </update>
 
     <update id="addRecruitmentMajor">
         update recruitment
-        set recruitment_major_ids = json_array_append(recruitment_major_ids, '$', #{majorId})
+        set recruitment_major_ids = json_array_append(recruitment_major_ids, '$', cast(#{majorId} as char))
         where id = #{id}
-        and not #{majorId} member of(recruitment_major_ids->'$')
+        and not cast(#{majorId} as char) member of(recruitment_major_ids->'$')
     </update>
 
     <update id="addRecruitmentGrade">
@@ -113,9 +113,42 @@
 
     <update id="addRecruitmentDepartment">
         update recruitment
-        set recruitment_department_ids = json_array_append(recruitment_department_ids, '$', #{departmentId})
+        set recruitment_department_ids =
+            json_array_append(recruitment_department_ids, '$', cast(#{departmentId} as char))
         where id = #{id}
-          and not #{departmentId} member of(recruitment_department_ids->'$')
+          and not cast(#{departmentId} as char) member of(recruitment_department_ids->'$')
+    </update>
+
+    <update id="removeRecruitmentCollege">
+        update recruitment
+        set recruitment_college_ids = json_remove(recruitment_college_ids,
+            replace(json_search(recruitment_college_ids, 'one', cast(#{collegeId} as char)), '"', ''))
+        where id = #{id}
+        and cast(#{collegeId} as char) member of(recruitment_college_ids->'$')
+    </update>
+
+    <update id="removeRecruitmentMajor">
+        update recruitment
+        set recruitment_major_ids = json_remove(recruitment_major_ids,
+            replace(json_search(recruitment_major_ids, 'one', cast(#{majorId} as char)), '"', ''))
+        where id = #{id}
+          and cast(#{majorId} as char) member of(recruitment_major_ids->'$')
+    </update>
+
+    <update id="removeRecruitmentGrade">
+        update recruitment
+        set recruitment_grades = json_remove(recruitment_grades,
+            replace(json_search(recruitment_grades, 'one', #{grade}), '"', ''))
+        where id = #{id}
+          and #{grade} member of(recruitment_grades->'$')
+    </update>
+
+    <update id="removeRecruitmentDepartment">
+        update recruitment
+        set recruitment_department_ids =json_remove(recruitment_department_ids,
+            replace(json_search(recruitment_department_ids, 'one', cast(#{departmentId} as char)), '"', ''))
+        where id = #{id}
+          and cast(#{departmentId} as char) member of(recruitment_department_ids->'$')
     </update>
 
     <update id="clearRecruitmentCollegeIds">

@@ -33,6 +33,14 @@ public interface RecruitmentMapper {
 
     int addRecruitmentDepartment(@Param("id") Long id, @Param("departmentId") Long departmentId);
 
+    int removeRecruitmentCollege(@Param("id") Long id, @Param("collegeId") Long collegeId);
+
+    int removeRecruitmentMajor(@Param("id") Long id, @Param("majorId") Long majorId);
+
+    int removeRecruitmentGrade(@Param("id") Long id, @Param("grade") String grade);
+
+    int removeRecruitmentDepartment(@Param("id") Long id, @Param("departmentId") Long departmentId);
+
     int clearRecruitmentCollegeIds(Long id);
 
     int clearRecruitmentMajorIds(Long id);
@@ -40,6 +48,5 @@ public interface RecruitmentMapper {
     int clearRecruitmentGrades(Long id);
 
     int clearRecruitmentDepartmentIds(Long id);
-
 }
 

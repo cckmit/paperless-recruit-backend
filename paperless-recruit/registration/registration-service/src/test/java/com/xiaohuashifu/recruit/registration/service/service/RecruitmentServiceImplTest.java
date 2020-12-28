@@ -70,12 +70,12 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void addRecruitmentCollege() {
-        System.out.println(recruitmentService.addRecruitmentCollege(3L, 0L));
+        System.out.println(recruitmentService.addRecruitmentCollege(3L, 4L));
     }
 
     @Test
     public void addRecruitmentMajor() {
-        System.out.println(recruitmentService.addRecruitmentMajor(3L, 0L));
+        System.out.println(recruitmentService.addRecruitmentMajor(3L, 3L));
     }
 
     @Test
@@ -85,23 +85,27 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void addRecruitmentDepartment() {
-        System.out.println(recruitmentService.addRecruitmentDepartment(3L, 3L));
+        System.out.println(recruitmentService.addRecruitmentDepartment(3L, 2L));
     }
 
     @Test
     public void removeRecruitmentCollege() {
+        System.out.println(recruitmentService.removeRecruitmentCollege(3L, 1L));
     }
 
     @Test
     public void removeRecruitmentMajor() {
+        System.out.println(recruitmentService.removeRecruitmentMajor(4L, 3L));
     }
 
     @Test
     public void removeRecruitmentGrade() {
+        System.out.println(recruitmentService.removeRecruitmentGrade(4L, GradeEnum.FRESHMEN));
     }
 
     @Test
     public void removeRecruitmentDepartment() {
+        System.out.println(recruitmentService.removeRecruitmentDepartment(4L, 2L));
     }
 
     @Test

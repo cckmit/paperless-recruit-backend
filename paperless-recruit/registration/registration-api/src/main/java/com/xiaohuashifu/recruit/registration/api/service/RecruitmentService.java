@@ -120,6 +120,12 @@ public interface RecruitmentService {
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 招新学院不存在
+     *
      * @param id 招新的编号
      * @param collegeId 招新学院编号
      * @return 移除结果
@@ -130,6 +136,12 @@ public interface RecruitmentService {
      * 移除招新专业，报名结束后无法移除
      *
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 招新专业不存在
      *
      * @param id 招新的编号
      * @param majorId 招新专业编号
@@ -142,6 +154,12 @@ public interface RecruitmentService {
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 招新年级不存在
+     *
      * @param id 招新的编号
      * @param recruitmentGrade 招新年级
      * @return 移除结果
@@ -152,6 +170,12 @@ public interface RecruitmentService {
      * 移除招新的部门，报名结束后无法移除
      *
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 招新部门不存在
      *
      * @param id 招新的编号
      * @param departmentId 招新部门的编号

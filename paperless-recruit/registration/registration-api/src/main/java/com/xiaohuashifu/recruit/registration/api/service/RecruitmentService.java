@@ -2,14 +2,12 @@ package com.xiaohuashifu.recruit.registration.api.service;
 
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentConstants;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
 import com.xiaohuashifu.recruit.registration.api.po.CreateRecruitmentPO;
 
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 /**
@@ -78,7 +76,10 @@ public interface RecruitmentService {
      * @param majorId 招新专业编号，若0表示将专业设置为不限，即清空招新专业
      * @return 添加结果
      */
-    Result<RecruitmentDTO> addRecruitmentMajor(Long id, Long majorId);
+    Result<RecruitmentDTO> addRecruitmentMajor(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The majorId can't be null.")
+            @PositiveOrZero(message = "The majorId must be greater than or equal to 0.") Long majorId);
 
     /**
      * 添加招新年级，报名结束后无法添加
@@ -95,7 +96,9 @@ public interface RecruitmentService {
      * @param recruitmentGrade 招新年级，若 null 表示将年招设置为不限，即清空招新年级
      * @return 添加结果
      */
-    Result<RecruitmentDTO> addRecruitmentGrade(Long id, GradeEnum recruitmentGrade);
+    Result<RecruitmentDTO> addRecruitmentGrade(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            GradeEnum recruitmentGrade);
 
     /**
      * 添加招新的部门，报名结束后无法添加
@@ -114,7 +117,10 @@ public interface RecruitmentService {
      * @param departmentId 招新部门的编号，若0表示将部门设置为不限，即清空招新部门
      * @return 添加结果
      */
-    Result<RecruitmentDTO> addRecruitmentDepartment(Long id, Long departmentId);
+    Result<RecruitmentDTO> addRecruitmentDepartment(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The departmentId can't be null.")
+            @PositiveOrZero(message = "The departmentId must be greater than or equal to 0.") Long departmentId);
 
     /**
      * 移除招新学院，报名结束后无法移除
@@ -131,7 +137,10 @@ public interface RecruitmentService {
      * @param collegeId 招新学院编号
      * @return 移除结果
      */
-    Result<RecruitmentDTO> removeRecruitmentCollege(Long id, Long collegeId);
+    Result<RecruitmentDTO> removeRecruitmentCollege(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The collegeId can't be null.")
+            @Positive(message = "The collegeId must be greater than 0.") Long collegeId);
 
     /**
      * 移除招新专业，报名结束后无法移除
@@ -148,7 +157,10 @@ public interface RecruitmentService {
      * @param majorId 招新专业编号
      * @return 移除结果
      */
-    Result<RecruitmentDTO> removeRecruitmentMajor(Long id, Long majorId);
+    Result<RecruitmentDTO> removeRecruitmentMajor(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The majorId can't be null.")
+            @Positive(message = "The majorId must be greater than 0.") Long majorId);
 
     /**
      * 移除招新年级，报名结束后无法移除
@@ -165,7 +177,9 @@ public interface RecruitmentService {
      * @param recruitmentGrade 招新年级
      * @return 移除结果
      */
-    Result<RecruitmentDTO> removeRecruitmentGrade(Long id, GradeEnum recruitmentGrade);
+    Result<RecruitmentDTO> removeRecruitmentGrade(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The recruitmentGrade can't be null.") GradeEnum recruitmentGrade);
 
     /**
      * 移除招新的部门，报名结束后无法移除
@@ -182,7 +196,10 @@ public interface RecruitmentService {
      * @param departmentId 招新部门的编号
      * @return 移除结果
      */
-    Result<RecruitmentDTO> removeRecruitmentDepartment(Long id, Long departmentId);
+    Result<RecruitmentDTO> removeRecruitmentDepartment(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The departmentId can't be null.")
+            @Positive(message = "The departmentId must be greater than 0.") Long departmentId);
 
     /**
      * 获取招新
@@ -190,7 +207,8 @@ public interface RecruitmentService {
      * @param id 招新编号
      * @return RecruitmentDTO
      */
-    Result<RecruitmentDTO> getRecruitment(Long id);
+    Result<RecruitmentDTO> getRecruitment(@NotNull(message = "The id can't be null.")
+                                          @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 更新招新职位名，报名结束后无法更新
@@ -207,7 +225,12 @@ public interface RecruitmentService {
      * @param newPositionName 新招新职位名
      * @return 更新结果
      */
-    Result<RecruitmentDTO> updatePositionName(Long id, String newPositionName);
+    Result<RecruitmentDTO> updatePositionName(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newPositionName can't be blank.")
+            @Size(max = RecruitmentConstants.MAX_POSITION_NAME_LENGTH,
+                    message = "The length of newPositionName must not be greater than "
+                            + RecruitmentConstants.MAX_POSITION_NAME_LENGTH + ".") String newPositionName);
 
     /**
      * 更新招新人数，报名结束后无法更新
@@ -224,7 +247,12 @@ public interface RecruitmentService {
      * @param newRecruitmentNumbers 新招新人数
      * @return 更新结果
      */
-    Result<RecruitmentDTO> updateRecruitmentNumbers(Long id, String newRecruitmentNumbers);
+    Result<RecruitmentDTO> updateRecruitmentNumbers(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newRecruitmentNumbers can't be blank.")
+            @Size(max = RecruitmentConstants.MAX_RECRUITMENT_NUMBERS_LENGTH,
+                    message = "The length of newRecruitmentNumbers must not be greater than "
+                            + RecruitmentConstants.MAX_RECRUITMENT_NUMBERS_LENGTH + ".") String newRecruitmentNumbers);
 
     /**
      * 更新职位职责，报名结束后无法更新
@@ -241,7 +269,12 @@ public interface RecruitmentService {
      * @param newPositionDuty 新职位职责
      * @return 更新结果
      */
-    Result<RecruitmentDTO> updatePositionDuty(Long id, String newPositionDuty);
+    Result<RecruitmentDTO> updatePositionDuty(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newPositionDuty can't be blank.")
+            @Size(max = RecruitmentConstants.MAX_POSITION_DUTY_LENGTH,
+                    message = "The length of newPositionDuty must not be greater than "
+                            + RecruitmentConstants.MAX_POSITION_DUTY_LENGTH + ".") String newPositionDuty);
 
     /**
      * 更新职位要求，报名结束后无法更新
@@ -258,7 +291,13 @@ public interface RecruitmentService {
      * @param newPositionRequirement 新职位要求
      * @return 更新结果
      */
-    Result<RecruitmentDTO> updatePositionRequirement(Long id, String newPositionRequirement);
+    Result<RecruitmentDTO> updatePositionRequirement(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotBlank(message = "The newPositionRequirement can't be blank.")
+            @Size(max = RecruitmentConstants.MAX_POSITION_REQUIREMENT_LENGTH,
+                    message = "The length of newPositionRequirement must not be greater than "
+                            + RecruitmentConstants.MAX_POSITION_REQUIREMENT_LENGTH + ".")
+                    String newPositionRequirement);
 
     /**
      * 更新发布时间，招新发布后无法更新
@@ -276,7 +315,7 @@ public interface RecruitmentService {
      * @return 更新结果
      */
     Result<RecruitmentDTO> updateReleaseTime(
-            Long id,
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
             @FutureOrPresent(message = "The newReleaseTime must be greater than the current time.")
                     LocalDateTime newReleaseTime);
 
@@ -295,7 +334,10 @@ public interface RecruitmentService {
      * @param newRegistrationTimeFrom 新报名开始时间，null 表示招新发布后立刻开始报名
      * @return 更新结果
      */
-    Result<RecruitmentDTO> updateRegistrationTimeFrom(Long id, LocalDateTime newRegistrationTimeFrom);
+    Result<RecruitmentDTO> updateRegistrationTimeFrom(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @FutureOrPresent(message = "The newRegistrationTimeFrom must be greater than the current time.")
+                    LocalDateTime newRegistrationTimeFrom);
 
     /**
      * 更新报名截止时间，报名结束后无法更新
@@ -312,7 +354,11 @@ public interface RecruitmentService {
      * @param newRegistrationTimeTo 新报名截止时间
      * @return 更新结果
      */
-    Result<RecruitmentDTO> updateRegistrationTimeTo(Long id, @NotNull LocalDateTime newRegistrationTimeTo);
+    Result<RecruitmentDTO> updateRegistrationTimeTo(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The newRegistrationTimeTo can't be null.")
+            @FutureOrPresent(message = "The newRegistrationTimeTo must be greater than the current time.")
+                    LocalDateTime newRegistrationTimeTo);
 
     /**
      * 结束一个招新的报名，必须是招新当前状态为 STARTED
@@ -328,7 +374,8 @@ public interface RecruitmentService {
      * @param id 招新的编号
      * @return 更新结果
      */
-    Result<RecruitmentDTO> endRegistration(Long id);
+    Result<RecruitmentDTO> endRegistration(@NotNull(message = "The id can't be null.")
+                                           @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 关闭一个招新
@@ -344,7 +391,8 @@ public interface RecruitmentService {
      * @param id 招新的编号
      * @return 更新结果
      */
-    Result<RecruitmentDTO> closeRecruitment(Long id);
+    Result<RecruitmentDTO> closeRecruitment(@NotNull(message = "The id can't be null.")
+                                            @Positive(message = "The id must be greater than 0.") Long id);
 
 
     /**
@@ -359,7 +407,8 @@ public interface RecruitmentService {
      * @param id 招新的编号
      * @return 禁用结果
      */
-    Result<RecruitmentDTO> disableRecruitment(Long id);
+    Result<RecruitmentDTO> disableRecruitment(@NotNull(message = "The id can't be null.")
+                                              @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 解禁一个招新
@@ -373,7 +422,8 @@ public interface RecruitmentService {
      * @param id 招新的编号
      * @return 解禁结果
      */
-    Result<RecruitmentDTO> enableRecruitment(Long id);
+    Result<RecruitmentDTO> enableRecruitment(@NotNull(message = "The id can't be null.")
+                                             @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 获取组织编号
@@ -398,7 +448,9 @@ public interface RecruitmentService {
      * @param newRecruitmentStatus 新招新状态
      * @return 更新结果
      */
-    Result<Void> updateRecruitmentStatus(Long id, RecruitmentStatusEnum oldRecruitmentStatus,
-                                         RecruitmentStatusEnum newRecruitmentStatus);
+    Result<Void> updateRecruitmentStatus(
+            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
+            @NotNull(message = "The oldRecruitmentStatus can't be null.") RecruitmentStatusEnum oldRecruitmentStatus,
+            @NotNull(message = "The newRecruitmentStatus can't be null.") RecruitmentStatusEnum newRecruitmentStatus);
 
 }

@@ -26,7 +26,12 @@ public enum RecruitmentStatusEnum {
     /**
      * 已结束
      */
-    ENDED(3, "已结束");
+    ENDED(3, "已结束"),
+
+    /**
+     * 被关闭
+     */
+    CLOSED(4, "被关闭");
 
     private final int code;
     private final String name;
@@ -42,28 +47,6 @@ public enum RecruitmentStatusEnum {
 
     public String getName() {
         return name;
-    }
-
-    /**
-     * 获取当前状态的前一个状态
-     *
-     * @param recruitmentStatus 当前状态，不能是 WAITING_FOR_RELEASE
-     * @return 前一个状态
-     */
-    public static RecruitmentStatusEnum getPreviousStatus(RecruitmentStatusEnum recruitmentStatus) {
-        if (recruitmentStatus == WAITING_FOR_RELEASE) {
-            throw new IllegalStateException("This status does not exist previous status.");
-        }
-
-        RecruitmentStatusEnum lastStatus = WAITING_FOR_RELEASE;
-        for (RecruitmentStatusEnum currentStatus : RecruitmentStatusEnum.values()) {
-            if (currentStatus == recruitmentStatus) {
-                return lastStatus;
-            }
-            lastStatus = currentStatus;
-        }
-
-        throw new IllegalStateException("This status does not exist previous status.");
     }
 
 }

@@ -239,4 +239,11 @@
           and recruitment_status = #{oldRecruitmentStatus}
     </update>
 
+    <update id="updateRecruitmentStatusWhenNotEqual">
+        update recruitment
+        set recruitment_status = #{recruitmentStatus}
+        where id = #{id}
+          and recruitment_status != #{recruitmentStatus}
+    </update>
+
 </mapper>

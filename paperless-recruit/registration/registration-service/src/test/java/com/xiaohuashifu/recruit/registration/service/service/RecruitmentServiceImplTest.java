@@ -125,7 +125,7 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void updateRecruitmentNumbers() {
-        System.out.println(recruitmentService.updateRecruitmentNumbers(3L, "50人"));
+        System.out.println(recruitmentService.updateRecruitmentNumbers(7L, "500人"));
     }
 
     @Test
@@ -146,7 +146,7 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void updateRegistrationTimeFrom() {
-        System.out.println(recruitmentService.updateRegistrationTimeFrom(3L, LocalDateTime.now().minusHours(1)));
+        System.out.println(recruitmentService.updateRegistrationTimeFrom(7L, LocalDateTime.now().minusHours(1)));
     }
 
     @Test
@@ -161,11 +161,22 @@ public class RecruitmentServiceImplTest {
     }
 
     @Test
+    public void endRegistration() {
+        System.out.println(recruitmentService.endRegistration(7L));
+    }
+
+    @Test
+    public void closeRecruitment() {
+        System.out.println(recruitmentService.closeRecruitment(7L));
+    }
+
+    @Test
     public void disableRecruitment() {
     }
 
     @Test
     public void enableRecruitment() {
     }
+
 
 }

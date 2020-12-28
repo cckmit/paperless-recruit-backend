@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.registration.service.dao;
 
-import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.service.do0.RecruitmentDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -71,5 +70,7 @@ public interface RecruitmentMapper {
 
     int updateRecruitmentStatus(@Param("id") Long id, @Param("oldRecruitmentStatus") String oldRecruitmentStatus,
                                 @Param("newRecruitmentStatus") String newRecruitmentStatus);
+
+    int updateRecruitmentStatusWhenNotEqual(@Param("id") Long id, @Param("recruitmentStatus") String recruitmentStatus);
 }
 

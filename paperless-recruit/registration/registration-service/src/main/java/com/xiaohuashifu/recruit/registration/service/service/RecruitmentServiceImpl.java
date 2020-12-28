@@ -96,7 +96,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在 | 学院不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              Forbidden.Deactivated: 学院被停用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.OverLimit: 招新学院数量超过限制数量
@@ -158,7 +158,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在 | 专业不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              Forbidden.Deactivated: 专业被停用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.OverLimit: 招新专业数量超过限制数量
@@ -220,7 +220,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Duplicate: 招新专业已经存在
      *
@@ -264,7 +264,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在 | 部门不存在
      *              Forbidden: 部门不属于该组织的
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              Forbidden.Deactivated: 部门被停用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Duplicate: 招新部门已经存在
@@ -320,7 +320,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 招新学院不存在
      *
@@ -354,7 +354,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 招新专业不存在
      *
@@ -387,7 +387,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 招新年级不存在
      *
@@ -420,7 +420,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 招新部门不存在
      *
@@ -470,7 +470,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 新旧职位名相同
      *
@@ -504,7 +504,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 新旧招新人数相同
      *
@@ -538,7 +538,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 新旧职位职责相同
      *
@@ -572,7 +572,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 新旧职位要求相同
      *
@@ -606,7 +606,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 新旧发布时间相同
      *
@@ -651,7 +651,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 新旧报名开始时间相同，或者是新报名开始时间小于发布时间
      *
@@ -700,7 +700,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *              OperationConflict.Unmodified: 新旧报名截止时间相同，或者是新报名截止时间小于或等于报名开始
      *
@@ -735,27 +735,73 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * 结束一个招新的报名，必须是招新当前状态为STARTED
+     * 结束一个招新的报名，必须是招新当前状态为 STARTED
+     *
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unavailable: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 当前状态不是 STARTED
      *
      * @param id 招新的编号
      * @return 更新结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> endRegistration(Long id) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 更新当前招新状态为 ENDED
+        int count = recruitmentMapper.updateRecruitmentStatus(
+                id, RecruitmentStatusEnum.STARTED.name(), RecruitmentStatusEnum.ENDED.name());
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The current status must be STARTED.");
+        }
+
+        // 更新 registrationTimeTo 为当前时间
+        recruitmentMapper.updateRegistrationTimeTo(id, LocalDateTime.now());
+
+        // 获取更新后的招新
+        return getRecruitment(id);
     }
 
     /**
      * 关闭一个招新
      *
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unavailable: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 当前状态必须不是 CLOSED
+     *
      * @param id 招新的编号
      * @return 更新结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> closeRecruitment(Long id) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.CLOSED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 更新当前招新状态为 CLOSED
+        int count = recruitmentMapper.updateRecruitmentStatusWhenNotEqual(id, RecruitmentStatusEnum.CLOSED.name());
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The current status already is CLOSED.");
+        }
+
+        // 获取更新后的招新
+        return getRecruitment(id);
     }
 
     /**
@@ -823,7 +869,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * 检查招新状态
      *
      * @errorCode InvalidParameter.NotExist: 招新不存在
-     *              Forbidden.Unauthorized: 招新不可用
+     *              Forbidden.Unavailable: 招新不可用
      *              OperationConflict.Status: 招新状态不允许
      *
      * @param id 招新编号
@@ -841,7 +887,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         // 检查招新是否可用
         if (!recruitmentDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.FORBIDDEN_UNAUTHORIZED, "The recruitment unavailable.");
+            return Result.fail(ErrorCodeEnum.FORBIDDEN_UNAVAILABLE, "The recruitment unavailable.");
         }
 
         // 检查招新状态是否在 followRecruitmentStatus 之前

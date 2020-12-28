@@ -246,4 +246,11 @@
           and recruitment_status != #{recruitmentStatus}
     </update>
 
+    <update id="updateAvailable">
+        update recruitment
+        set is_available = #{available}
+        where id = #{id}
+          and is_available = !#{available}
+    </update>
+
 </mapper>

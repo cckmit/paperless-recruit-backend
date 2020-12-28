@@ -807,25 +807,67 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     /**
      * 禁用一个招新
      *
+     * @permission 必须是 admin 权限
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              OperationConflict.Unmodified: 招新已经不可用
+     *
      * @param id 招新的编号
      * @return 禁用结果
-     * @permission 必须是 admin 权限
      */
     @Override
     public Result<RecruitmentDTO> disableRecruitment(Long id) {
-        return null;
+        // 检查招新存不存在
+        int count = recruitmentMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The recruitment does not exist.");
+        }
+
+        // 更新为不可用
+        count = recruitmentMapper.updateAvailable(id, false);
+        // 更新失败表示招新已经不可用
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The recruitment already is unavailable.");
+        }
+
+        // 获取更新后的招新
+        return getRecruitment(id);
     }
 
     /**
      * 解禁一个招新
      *
+     * @permission 必须是 admin 权限
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              OperationConflict.Unmodified: 招新已经可用
+     *
      * @param id 招新的编号
      * @return 解禁结果
-     * @permission 必须是 admin 权限
      */
     @Override
     public Result<RecruitmentDTO> enableRecruitment(Long id) {
-        return null;
+        // 检查招新存不存在
+        int count = recruitmentMapper.count(id);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The recruitment does not exist.");
+        }
+
+        // 更新为可用
+        count = recruitmentMapper.updateAvailable(id, true);
+        // 更新失败表示招新已经可用
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The recruitment already is available.");
+        }
+
+        // 获取更新后的招新
+        return getRecruitment(id);
     }
 
     /**

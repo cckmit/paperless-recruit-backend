@@ -116,6 +116,7 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void getOrganizationId() {
+        System.out.println(recruitmentService.getOrganizationId(3L));
     }
 
     @Test
@@ -172,10 +173,12 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void disableRecruitment() {
+        System.out.println(recruitmentService.disableRecruitment(3L));
     }
 
     @Test
     public void enableRecruitment() {
+        System.out.println(recruitmentService.enableRecruitment(3L));
     }
 
 

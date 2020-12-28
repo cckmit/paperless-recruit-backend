@@ -352,6 +352,10 @@ public interface RecruitmentService {
      *
      * @permission 必须是 admin 权限
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              OperationConflict.Unmodified: 招新已经不可用
+     *
      * @param id 招新的编号
      * @return 禁用结果
      */
@@ -361,6 +365,10 @@ public interface RecruitmentService {
      * 解禁一个招新
      *
      * @permission 必须是 admin 权限
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              OperationConflict.Unmodified: 招新已经可用
      *
      * @param id 招新的编号
      * @return 解禁结果
@@ -392,18 +400,5 @@ public interface RecruitmentService {
      */
     Result<Void> updateRecruitmentStatus(Long id, RecruitmentStatusEnum oldRecruitmentStatus,
                                          RecruitmentStatusEnum newRecruitmentStatus);
-
-//    /**
-//     * 检查招新状态
-//     *
-//     * @private 内部方法
-//     *
-//     * @errorCode InvalidParameter.NotExist: 招新不存在
-//     *              Forbidden.Unavailable: 招新不可用
-//     *
-//     * @param id 招新编号
-//     * @return 检查结果
-//     */
-//    <T> Result<T> checkRecruitmentStatus(Long id);
 
 }

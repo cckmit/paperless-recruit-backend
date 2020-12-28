@@ -72,5 +72,7 @@ public interface RecruitmentMapper {
                                 @Param("newRecruitmentStatus") String newRecruitmentStatus);
 
     int updateRecruitmentStatusWhenNotEqual(@Param("id") Long id, @Param("recruitmentStatus") String recruitmentStatus);
+
+    int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
 }
 

@@ -43,12 +43,12 @@ public class ApplicationFormDTO implements Serializable {
     /**
      * 第一部门
      */
-    private String firstDepartment;
+    private Long firstDepartmentId;
 
     /**
      * 第二部门
      */
-    private String secondDepartment;
+    private Long secondDepartmentId;
 
     /**
      * 邮箱
@@ -73,12 +73,12 @@ public class ApplicationFormDTO implements Serializable {
     /**
      * 学院
      */
-    private String college;
+    private Long collegeId;
 
     /**
      * 专业
      */
-    private String major;
+    private Long majorId;
 
     /**
      * 备注
@@ -133,20 +133,20 @@ public class ApplicationFormDTO implements Serializable {
         this.phone = phone;
     }
 
-    public String getFirstDepartment() {
-        return firstDepartment;
+    public Long getFirstDepartmentId() {
+        return firstDepartmentId;
     }
 
-    public void setFirstDepartment(String firstDepartment) {
-        this.firstDepartment = firstDepartment;
+    public void setFirstDepartmentId(Long firstDepartmentId) {
+        this.firstDepartmentId = firstDepartmentId;
     }
 
-    public String getSecondDepartment() {
-        return secondDepartment;
+    public Long getSecondDepartmentId() {
+        return secondDepartmentId;
     }
 
-    public void setSecondDepartment(String secondDepartment) {
-        this.secondDepartment = secondDepartment;
+    public void setSecondDepartmentId(Long secondDepartmentId) {
+        this.secondDepartmentId = secondDepartmentId;
     }
 
     public String getEmail() {
@@ -181,20 +181,20 @@ public class ApplicationFormDTO implements Serializable {
         this.studentNumber = studentNumber;
     }
 
-    public String getCollege() {
-        return college;
+    public Long getCollegeId() {
+        return collegeId;
     }
 
-    public void setCollege(String college) {
-        this.college = college;
+    public void setCollegeId(Long collegeId) {
+        this.collegeId = collegeId;
     }
 
-    public String getMajor() {
-        return major;
+    public Long getMajorId() {
+        return majorId;
     }
 
-    public void setMajor(String major) {
-        this.major = major;
+    public void setMajorId(Long majorId) {
+        this.majorId = majorId;
     }
 
     public String getNote() {
@@ -214,14 +214,14 @@ public class ApplicationFormDTO implements Serializable {
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", phone='" + phone + '\'' +
-                ", firstDepartment='" + firstDepartment + '\'' +
-                ", secondDepartment='" + secondDepartment + '\'' +
+                ", firstDepartmentId=" + firstDepartmentId +
+                ", secondDepartmentId=" + secondDepartmentId +
                 ", email='" + email + '\'' +
                 ", introduction='" + introduction + '\'' +
                 ", attachmentUrl='" + attachmentUrl + '\'' +
                 ", studentNumber='" + studentNumber + '\'' +
-                ", college='" + college + '\'' +
-                ", major='" + major + '\'' +
+                ", collegeId=" + collegeId +
+                ", majorId=" + majorId +
                 ", note='" + note + '\'' +
                 '}';
     }
@@ -233,14 +233,14 @@ public class ApplicationFormDTO implements Serializable {
         private String avatarUrl;
         private String fullName;
         private String phone;
-        private String firstDepartment;
-        private String secondDepartment;
+        private Long firstDepartmentId;
+        private Long secondDepartmentId;
         private String email;
         private String introduction;
         private String attachmentUrl;
         private String studentNumber;
-        private String college;
-        private String major;
+        private Long collegeId;
+        private Long majorId;
         private String note;
 
         public Builder id(Long id) {
@@ -273,13 +273,13 @@ public class ApplicationFormDTO implements Serializable {
             return this;
         }
 
-        public Builder firstDepartment(String firstDepartment) {
-            this.firstDepartment = firstDepartment;
+        public Builder firstDepartmentId(Long firstDepartmentId) {
+            this.firstDepartmentId = firstDepartmentId;
             return this;
         }
 
-        public Builder secondDepartment(String secondDepartment) {
-            this.secondDepartment = secondDepartment;
+        public Builder secondDepartmentId(Long secondDepartmentId) {
+            this.secondDepartmentId = secondDepartmentId;
             return this;
         }
 
@@ -303,13 +303,13 @@ public class ApplicationFormDTO implements Serializable {
             return this;
         }
 
-        public Builder college(String college) {
-            this.college = college;
+        public Builder collegeId(Long collegeId) {
+            this.collegeId = collegeId;
             return this;
         }
 
-        public Builder major(String major) {
-            this.major = major;
+        public Builder majorId(Long majorId) {
+            this.majorId = majorId;
             return this;
         }
 
@@ -326,14 +326,14 @@ public class ApplicationFormDTO implements Serializable {
             applicationFormDTO.setAvatarUrl(avatarUrl);
             applicationFormDTO.setFullName(fullName);
             applicationFormDTO.setPhone(phone);
-            applicationFormDTO.setFirstDepartment(firstDepartment);
-            applicationFormDTO.setSecondDepartment(secondDepartment);
+            applicationFormDTO.setFirstDepartmentId(firstDepartmentId);
+            applicationFormDTO.setSecondDepartmentId(secondDepartmentId);
             applicationFormDTO.setEmail(email);
             applicationFormDTO.setIntroduction(introduction);
             applicationFormDTO.setAttachmentUrl(attachmentUrl);
             applicationFormDTO.setStudentNumber(studentNumber);
-            applicationFormDTO.setCollege(college);
-            applicationFormDTO.setMajor(major);
+            applicationFormDTO.setCollegeId(collegeId);
+            applicationFormDTO.setMajorId(majorId);
             applicationFormDTO.setNote(note);
             return applicationFormDTO;
         }

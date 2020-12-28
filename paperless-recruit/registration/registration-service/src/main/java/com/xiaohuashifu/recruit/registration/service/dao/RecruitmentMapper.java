@@ -1,7 +1,10 @@
 package com.xiaohuashifu.recruit.registration.service.dao;
 
+import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.service.do0.RecruitmentDO;
 import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 
 /**
  * 描述：招新数据库映射层
@@ -56,5 +59,17 @@ public interface RecruitmentMapper {
     int updatePositionDuty(@Param("id") Long id, @Param("positionDuty") String positionDuty);
 
     int updatePositionRequirement(@Param("id") Long id, @Param("positionRequirement") String positionRequirement);
+
+    int updateReleaseTime(@Param("id") Long id, @Param("releaseTime") LocalDateTime releaseTime);
+
+    int updateRegistrationTimeFrom(@Param("id") Long id,
+                                   @Param("registrationTimeFrom") LocalDateTime registrationTimeFrom);
+
+    int updateRegistrationTimeFromToReleaseTime(Long id);
+
+    int updateRegistrationTimeTo(@Param("id") Long id, @Param("registrationTimeTo") LocalDateTime registrationTimeTo);
+
+    int updateRecruitmentStatus(@Param("id") Long id, @Param("oldRecruitmentStatus") String oldRecruitmentStatus,
+                                @Param("newRecruitmentStatus") String newRecruitmentStatus);
 }
 

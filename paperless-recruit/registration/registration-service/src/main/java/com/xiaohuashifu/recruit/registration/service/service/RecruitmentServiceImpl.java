@@ -602,39 +602,159 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     /**
      * 更新发布时间，招新发布后无法更新
      *
-     * @param id             招新的编号
-     * @param newReleaseTime 新发布时间
-     * @return 更新结果
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧发布时间相同
+     *
+     * @param id 招新的编号
+     * @param newReleaseTime 新发布时间，null 表示立即发布
+     * @return 更新结果
      */
     @Override
     public Result<RecruitmentDTO> updateReleaseTime(Long id, LocalDateTime newReleaseTime) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.WAITING_START);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 如果新发布时间为 null 则设置为当前时间
+        if (newReleaseTime == null) {
+            newReleaseTime = LocalDateTime.now();
+        }
+
+        // 招新发布时间不能大于数据库的上限
+        if (newReleaseTime.isAfter(MySqlConstants.DATE_TIME_MAX_VALUE)) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
+                    "The newReleaseTime must not be greater than 9999-12-31 23:59:59");
+        }
+
+        // 更新发布时间
+        int count = recruitmentMapper.updateReleaseTime(id, newReleaseTime);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The newReleaseTime can't be same as the oldReleaseTime.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
      * 更新报名的开始时间，报名开始后无法更新
      *
-     * @param id                      招新的编号
-     * @param newRegistrationTimeFrom 新报名开始时间
-     * @return 更新结果
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧报名开始时间相同，或者是新报名开始时间小于发布时间
+     *
+     * @param id 招新的编号
+     * @param newRegistrationTimeFrom 新报名开始时间，null 表示招新发布后立刻开始报名
+     * @return 更新结果
      */
     @Override
     public Result<RecruitmentDTO> updateRegistrationTimeFrom(Long id, LocalDateTime newRegistrationTimeFrom) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.STARTED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 更新报名开始时间
+        // 如果 newRegistrationTimeFrom == null 则更新为 releaseTime
+        if (newRegistrationTimeFrom == null) {
+            recruitmentMapper.updateRegistrationTimeFromToReleaseTime(id);
+        }
+        // 否则正常更新
+        else {
+            // 报名开始时间不能大于数据库的上限
+            if (newRegistrationTimeFrom.isAfter(MySqlConstants.DATE_TIME_MAX_VALUE)) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
+                        "The newRegistrationTimeFrom must not be greater than 9999-12-31 23:59:59");
+            }
+
+            // 更新报名开始时间
+            int count = recruitmentMapper.updateRegistrationTimeFrom(id, newRegistrationTimeFrom);
+            if (count < 1) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                        "The newRegistrationTimeFrom can't be same as the oldRegistrationTimeFrom, " +
+                                "or the newRegistrationTimeFrom is less than the releaseTime.");
+            }
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
      * 更新报名截止时间，报名结束后无法更新
      *
-     * @param id                    招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧报名截止时间相同，或者是新报名截止时间小于或等于报名开始
+     *
+     * @param id 招新的编号
      * @param newRegistrationTimeTo 新报名截止时间
+     * @return 更新结果
+     */
+    @Override
+    public Result<RecruitmentDTO> updateRegistrationTimeTo(Long id, LocalDateTime newRegistrationTimeTo) {
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 报名截止时间不能大于数据库的上限
+        if (newRegistrationTimeTo.isAfter(MySqlConstants.DATE_TIME_MAX_VALUE)) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
+                    "The newRegistrationTimeTo must not be greater than 9999-12-31 23:59:59");
+        }
+
+        // 更新报名截止时间
+        int count = recruitmentMapper.updateRegistrationTimeTo(id, newRegistrationTimeTo);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The newRegistrationTimeTo can't be same as the oldRegistrationTimeTo, " +
+                            "or the newRegistrationTimeTo is less than or equal to the registrationTimeFrom.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
+    }
+
+    /**
+     * 结束一个招新的报名，必须是招新当前状态为STARTED
+     *
+     * @param id 招新的编号
      * @return 更新结果
      * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
-    public Result<RecruitmentDTO> updateRegistrationTimeTo(Long id, LocalDateTime newRegistrationTimeTo) {
+    public Result<RecruitmentDTO> endRegistration(Long id) {
+        return null;
+    }
+
+    /**
+     * 关闭一个招新
+     *
+     * @param id 招新的编号
+     * @return 更新结果
+     * @permission 必须是招新所属组织所属用户主体本身
+     */
+    @Override
+    public Result<RecruitmentDTO> closeRecruitment(Long id) {
         return null;
     }
 
@@ -678,15 +798,25 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     /**
      * 更新招新的状态，用于状态的转换
      *
-     * @param id                   招新的编号
-     * @param oldRecruitmentStatus 原招新状态
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              OperationConflict.Unmodified: 修改失败，一般是由于招新编号不存在或者旧状态错误
+     *
+     * @param id 招新的编号
+     * @param oldRecruitmentStatus 旧招新状态
      * @param newRecruitmentStatus 新招新状态
      * @return 更新结果
-     * @private 内部方法
      */
     @Override
-    public Result<Void> updateRecruitmentStatus(Long id, RecruitmentStatusEnum oldRecruitmentStatus, RecruitmentStatusEnum newRecruitmentStatus) {
-        return null;
+    public Result<Void> updateRecruitmentStatus(Long id, RecruitmentStatusEnum oldRecruitmentStatus,
+                                                RecruitmentStatusEnum newRecruitmentStatus) {
+        int count = recruitmentMapper.updateRecruitmentStatus(
+                id, oldRecruitmentStatus.name(), newRecruitmentStatus.name());
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED);
+        }
+        return Result.success();
     }
 
     /**

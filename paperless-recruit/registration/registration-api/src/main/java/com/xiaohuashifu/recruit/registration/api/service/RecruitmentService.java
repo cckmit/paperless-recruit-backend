@@ -6,6 +6,7 @@ import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
 import com.xiaohuashifu.recruit.registration.api.po.CreateRecruitmentPO;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -264,19 +265,34 @@ public interface RecruitmentService {
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧发布时间相同
+     *
      * @param id 招新的编号
-     * @param newReleaseTime 新发布时间
+     * @param newReleaseTime 新发布时间，null 表示立即发布
      * @return 更新结果
      */
-    Result<RecruitmentDTO> updateReleaseTime(Long id, LocalDateTime newReleaseTime);
+    Result<RecruitmentDTO> updateReleaseTime(
+            Long id,
+            @FutureOrPresent(message = "The newReleaseTime must be greater than the current time.")
+                    LocalDateTime newReleaseTime);
 
     /**
      * 更新报名的开始时间，报名开始后无法更新
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧报名开始时间相同，或者是新报名开始时间小于发布时间
+     *
      * @param id 招新的编号
-     * @param newRegistrationTimeFrom 新报名开始时间
+     * @param newRegistrationTimeFrom 新报名开始时间，null 表示招新发布后立刻开始报名
      * @return 更新结果
      */
     Result<RecruitmentDTO> updateRegistrationTimeFrom(Long id, LocalDateTime newRegistrationTimeFrom);
@@ -286,11 +302,38 @@ public interface RecruitmentService {
      *
      * @permission 必须是招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧报名截止时间相同，或者是新报名截止时间小于或等于报名开始
+     *
      * @param id 招新的编号
      * @param newRegistrationTimeTo 新报名截止时间
      * @return 更新结果
      */
-    Result<RecruitmentDTO> updateRegistrationTimeTo(Long id, LocalDateTime newRegistrationTimeTo);
+    Result<RecruitmentDTO> updateRegistrationTimeTo(Long id, @NotNull LocalDateTime newRegistrationTimeTo);
+
+    /**
+     * 结束一个招新的报名，必须是招新当前状态为STARTED
+     *
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @param id 招新的编号
+     * @return 更新结果
+     */
+    Result<RecruitmentDTO> endRegistration(Long id);
+
+    /**
+     * 关闭一个招新
+     *
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @param id 招新的编号
+     * @return 更新结果
+     */
+    Result<RecruitmentDTO> closeRecruitment(Long id);
+
 
     /**
      * 禁用一个招新
@@ -327,8 +370,11 @@ public interface RecruitmentService {
      *
      * @private 内部方法
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              OperationConflict.Unmodified: 修改失败，一般是由于招新编号不存在或者旧状态错误
+     *
      * @param id 招新的编号
-     * @param oldRecruitmentStatus 原招新状态
+     * @param oldRecruitmentStatus 旧招新状态
      * @param newRecruitmentStatus 新招新状态
      * @return 更新结果
      */

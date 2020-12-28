@@ -203,4 +203,40 @@
           and position_requirement != #{positionRequirement}
     </update>
 
+    <update id="updateReleaseTime">
+        update recruitment
+        set release_time = #{releaseTime}
+        where id = #{id}
+          and release_time != #{releaseTime}
+    </update>
+
+    <update id="updateRegistrationTimeFrom">
+        update recruitment
+        set registration_time_from = #{registrationTimeFrom}
+        where id = #{id}
+          and registration_time_from != #{registrationTimeFrom}
+        and #{registrationTimeFrom} >= release_time
+    </update>
+
+    <update id="updateRegistrationTimeFromToReleaseTime">
+        update recruitment
+        set registration_time_from = release_time
+        where id = #{id}
+    </update>
+
+    <update id="updateRegistrationTimeTo">
+        update recruitment
+        set registration_time_to = #{registrationTimeTo}
+        where id = #{id}
+          and registration_time_to != #{registrationTimeTo}
+          and #{registrationTimeTo} > registration_time_from
+    </update>
+
+    <update id="updateRecruitmentStatus">
+        update recruitment
+        set recruitment_status = #{newRecruitmentStatus}
+        where id = #{id}
+          and recruitment_status = #{oldRecruitmentStatus}
+    </update>
+
 </mapper>

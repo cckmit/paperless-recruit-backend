@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
+import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.po.CreateRecruitmentPO;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -139,18 +140,24 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void updateReleaseTime() {
+        System.out.println(recruitmentService.updateReleaseTime(3L,null));
+
     }
 
     @Test
     public void updateRegistrationTimeFrom() {
+        System.out.println(recruitmentService.updateRegistrationTimeFrom(3L, LocalDateTime.now().minusHours(1)));
     }
 
     @Test
     public void updateRegistrationTimeTo() {
+        System.out.println(recruitmentService.updateRegistrationTimeTo(3L, LocalDateTime.now()));
+
     }
 
     @Test
     public void updateRecruitmentStatus() {
+        System.out.println(recruitmentService.updateRecruitmentStatus(3L, RecruitmentStatusEnum.WAITING_FOR_RELEASE, RecruitmentStatusEnum.STARTED));
     }
 
     @Test

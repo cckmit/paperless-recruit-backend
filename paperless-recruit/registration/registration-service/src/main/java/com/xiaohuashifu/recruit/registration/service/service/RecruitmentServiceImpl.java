@@ -464,68 +464,139 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * 获取组织编号
+     * 更新招新职位名，报名结束后无法更新
      *
-     * @private 内部方法
+     * @permission 必须是招新所属组织所属用户主体本身
      *
-     * @param id 招新编号
-     * @return 组织编号，若招新不存在则返回 null
-     */
-    @Override
-    public Long getOrganizationId(Long id) {
-        return recruitmentMapper.getOrganizationId(id);
-    }
-
-    /**
-     * 更新招新职位名，报名开始后无法更新
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧职位名相同
      *
-     * @param id              招新的编号
+     * @param id 招新的编号
      * @param newPositionName 新招新职位名
      * @return 更新结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> updatePositionName(Long id, String newPositionName) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 更新职位名
+        int count = recruitmentMapper.updatePositionName(id, newPositionName);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The newPositionName can't be same as the oldPositionName.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
-     * 更新招新人数，报名开始后无法更新
+     * 更新招新人数，报名结束后无法更新
      *
-     * @param id                    招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧招新人数相同
+     *
+     * @param id 招新的编号
      * @param newRecruitmentNumbers 新招新人数
      * @return 更新结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> updateRecruitmentNumbers(Long id, String newRecruitmentNumbers) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 更新招新人数
+        int count = recruitmentMapper.updateRecruitmentNumbers(id, newRecruitmentNumbers);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The newRecruitmentNumbers can't be same as the oldRecruitmentNumbers.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
-     * 更新职位职责，报名开始后无法更新
+     * 更新职位职责，报名结束后无法更新
      *
-     * @param id              招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧职位职责相同
+     *
+     * @param id 招新的编号
      * @param newPositionDuty 新职位职责
      * @return 更新结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> updatePositionDuty(Long id, String newPositionDuty) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 更新职位职责
+        int count = recruitmentMapper.updatePositionDuty(id, newPositionDuty);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The newPositionDuty can't be same as the oldPositionDuty.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
-     * 更新职位要求，报名开始后无法更新
+     * 更新职位要求，报名结束后无法更新
      *
-     * @param id                     招新的编号
+     * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧职位要求相同
+     *
+     * @param id 招新的编号
      * @param newPositionRequirement 新职位要求
      * @return 更新结果
-     * @permission 必须是招新所属组织所属用户主体本身
      */
     @Override
     public Result<RecruitmentDTO> updatePositionRequirement(Long id, String newPositionRequirement) {
-        return null;
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkResult = checkRecruitmentStatus(id, RecruitmentStatusEnum.ENDED);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+
+        // 更新职位要求
+        int count = recruitmentMapper.updatePositionRequirement(id, newPositionRequirement);
+        if (count < 1) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
+                    "The newPositionRequirement can't be same as the oldPositionRequirement.");
+        }
+
+        // 更新后的招新
+        return getRecruitment(id);
     }
 
     /**
@@ -568,20 +639,6 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * 更新招新的状态，用于状态的转换
-     *
-     * @param id                   招新的编号
-     * @param oldRecruitmentStatus 原招新状态
-     * @param newRecruitmentStatus 新招新状态
-     * @return 更新结果
-     * @private 内部方法
-     */
-    @Override
-    public Result<Void> updateRecruitmentStatus(Long id, RecruitmentStatusEnum oldRecruitmentStatus, RecruitmentStatusEnum newRecruitmentStatus) {
-        return null;
-    }
-
-    /**
      * 禁用一个招新
      *
      * @param id 招新的编号
@@ -602,6 +659,33 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      */
     @Override
     public Result<RecruitmentDTO> enableRecruitment(Long id) {
+        return null;
+    }
+
+    /**
+     * 获取组织编号
+     *
+     * @private 内部方法
+     *
+     * @param id 招新编号
+     * @return 组织编号，若招新不存在则返回 null
+     */
+    @Override
+    public Long getOrganizationId(Long id) {
+        return recruitmentMapper.getOrganizationId(id);
+    }
+
+    /**
+     * 更新招新的状态，用于状态的转换
+     *
+     * @param id                   招新的编号
+     * @param oldRecruitmentStatus 原招新状态
+     * @param newRecruitmentStatus 新招新状态
+     * @return 更新结果
+     * @private 内部方法
+     */
+    @Override
+    public Result<Void> updateRecruitmentStatus(Long id, RecruitmentStatusEnum oldRecruitmentStatus, RecruitmentStatusEnum newRecruitmentStatus) {
         return null;
     }
 

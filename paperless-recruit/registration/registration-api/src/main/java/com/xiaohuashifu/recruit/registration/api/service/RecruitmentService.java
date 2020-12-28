@@ -192,19 +192,15 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> getRecruitment(Long id);
 
     /**
-     * 获取组织编号
-     *
-     * @private 内部方法
-     *
-     * @param id 招新编号
-     * @return 组织编号，若招新不存在则返回 null
-     */
-    Long getOrganizationId(Long id);
-
-    /**
-     * 更新招新职位名，报名开始后无法更新
+     * 更新招新职位名，报名结束后无法更新
      *
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧职位名相同
      *
      * @param id 招新的编号
      * @param newPositionName 新招新职位名
@@ -213,9 +209,15 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> updatePositionName(Long id, String newPositionName);
 
     /**
-     * 更新招新人数，报名开始后无法更新
+     * 更新招新人数，报名结束后无法更新
      *
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧招新人数相同
      *
      * @param id 招新的编号
      * @param newRecruitmentNumbers 新招新人数
@@ -224,9 +226,15 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> updateRecruitmentNumbers(Long id, String newRecruitmentNumbers);
 
     /**
-     * 更新职位职责，报名开始后无法更新
+     * 更新职位职责，报名结束后无法更新
      *
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧职位职责相同
      *
      * @param id 招新的编号
      * @param newPositionDuty 新职位职责
@@ -235,9 +243,15 @@ public interface RecruitmentService {
     Result<RecruitmentDTO> updatePositionDuty(Long id, String newPositionDuty);
 
     /**
-     * 更新职位要求，报名开始后无法更新
+     * 更新职位要求，报名结束后无法更新
      *
      * @permission 必须是招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unauthorized: 招新不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Unmodified: 新旧职位要求相同
      *
      * @param id 招新的编号
      * @param newPositionRequirement 新职位要求
@@ -297,6 +311,16 @@ public interface RecruitmentService {
      * @return 解禁结果
      */
     Result<RecruitmentDTO> enableRecruitment(Long id);
+
+    /**
+     * 获取组织编号
+     *
+     * @private 内部方法
+     *
+     * @param id 招新编号
+     * @return 组织编号，若招新不存在则返回 null
+     */
+    Long getOrganizationId(Long id);
 
     /**
      * 更新招新的状态，用于状态的转换

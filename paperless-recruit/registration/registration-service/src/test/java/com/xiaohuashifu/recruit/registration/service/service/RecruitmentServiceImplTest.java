@@ -119,18 +119,22 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void updatePositionName() {
+        System.out.println(recruitmentService.updatePositionName(3L, "部长"));
     }
 
     @Test
     public void updateRecruitmentNumbers() {
+        System.out.println(recruitmentService.updateRecruitmentNumbers(3L, "50人"));
     }
 
     @Test
     public void updatePositionDuty() {
+        System.out.println(recruitmentService.updatePositionDuty(3L, "参与项目研发"));
     }
 
     @Test
     public void updatePositionRequirement() {
+        System.out.println(recruitmentService.updatePositionRequirement(3L, "熟悉Java"));
     }
 
     @Test

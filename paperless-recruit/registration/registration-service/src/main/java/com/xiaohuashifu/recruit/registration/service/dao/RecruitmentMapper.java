@@ -48,5 +48,13 @@ public interface RecruitmentMapper {
     int clearRecruitmentGrades(Long id);
 
     int clearRecruitmentDepartmentIds(Long id);
+
+    int updatePositionName(@Param("id") Long id, @Param("positionName") String positionName);
+
+    int updateRecruitmentNumbers(@Param("id") Long id, @Param("recruitmentNumbers") String recruitmentNumbers);
+
+    int updatePositionDuty(@Param("id") Long id, @Param("positionDuty") String positionDuty);
+
+    int updatePositionRequirement(@Param("id") Long id, @Param("positionRequirement") String positionRequirement);
 }
 

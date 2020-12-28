@@ -175,4 +175,32 @@
         where id = #{id}
     </update>
 
+    <update id="updatePositionName">
+        update recruitment
+        set position_name = #{positionName}
+        where id = #{id}
+        and position_name != #{positionName}
+    </update>
+
+    <update id="updateRecruitmentNumbers">
+        update recruitment
+        set recruitment_numbers = #{recruitmentNumbers}
+        where id = #{id}
+          and recruitment_numbers != #{recruitmentNumbers}
+    </update>
+
+    <update id="updatePositionDuty">
+        update recruitment
+        set position_duty = #{positionDuty}
+        where id = #{id}
+          and position_duty != #{positionDuty}
+    </update>
+
+    <update id="updatePositionRequirement">
+        update recruitment
+        set position_requirement = #{positionRequirement}
+        where id = #{id}
+          and position_requirement != #{positionRequirement}
+    </update>
+
 </mapper>

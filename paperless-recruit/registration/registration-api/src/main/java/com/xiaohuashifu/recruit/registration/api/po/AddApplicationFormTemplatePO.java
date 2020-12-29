@@ -88,6 +88,8 @@ public class AddApplicationFormTemplatePO extends ApplicationFormTemplatePO impl
         private Boolean major;
         private Boolean note;
 
+        private Builder() {}
+
         public Builder recruitmentId(Long recruitmentId) {
             this.recruitmentId = recruitmentId;
             return this;

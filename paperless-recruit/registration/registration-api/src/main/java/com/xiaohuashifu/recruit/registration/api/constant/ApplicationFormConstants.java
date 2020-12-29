@@ -23,5 +23,15 @@ public class ApplicationFormConstants {
      */
     public static final int MAX_ATTACHMENT_NAME_LENGTH = 50;
 
+    /**
+     * 最大个人简介长度
+     */
+    public static final int MAX_INTRODUCTION_LENGTH = 400;
+
+    /**
+     * 最大备注长度
+     */
+    public static final int MAX_NOTE_LENGTH = 100;
+
 
 }

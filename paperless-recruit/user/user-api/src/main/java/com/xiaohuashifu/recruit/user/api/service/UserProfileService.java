@@ -2,6 +2,8 @@ package com.xiaohuashifu.recruit.user.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.validator.annotation.FullName;
+import com.xiaohuashifu.recruit.common.validator.annotation.StudentNumber;
 import com.xiaohuashifu.recruit.user.api.constant.UserProfileConstants;
 import com.xiaohuashifu.recruit.user.api.dto.UserProfileDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
@@ -82,10 +84,7 @@ public interface UserProfileService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newFullName can't be blank.")
-            @Size(min = UserProfileConstants.MIN_FULL_NAME_LENGTH, max = UserProfileConstants.MAX_FULL_NAME_LENGTH,
-                    message = "The length of newFullName must be between "
-                            + UserProfileConstants.MIN_FULL_NAME_LENGTH + " and "
-                            + UserProfileConstants.MAX_FULL_NAME_LENGTH + ".") String newFullName);
+            @FullName String newFullName);
 
     /**
      * 更新学号
@@ -106,8 +105,7 @@ public interface UserProfileService {
             @NotNull(message = "The id can't be null.")
             @Positive(message = "The id must be greater than 0.") Long id,
             @NotBlank(message = "The newStudentNumber can't be blank.")
-            @Pattern(regexp = UserProfileConstants.STUDENT_NUMBER_REGEXP,
-                    message = "The newStudentNumber format error.") String newStudentNumber);
+            @StudentNumber String newStudentNumber);
 
     /**
      * 更新学院专业通过专业的编号

@@ -1,110 +1,101 @@
-package com.xiaohuashifu.recruit.registration.api.po;
+package com.xiaohuashifu.recruit.registration.service.do0;
 
-import com.xiaohuashifu.recruit.common.validator.annotation.FullName;
-import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
-import com.xiaohuashifu.recruit.common.validator.annotation.StudentNumber;
-import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormConstants;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * 描述：创建报名表的参数对象
+ * 描述：报名表的数据对象
  *
  * @author xhsf
  * @create 2020/12/23 21:23
  */
-public class CreateApplicationFormPO implements Serializable {
+public class ApplicationFormDO {
+
+    /**
+     * 报名表模板编号
+     */
+    private Long id;
 
     /**
      * 报名者用户编号
      */
-    @NotNull(message = "The userId can't be null.")
-    @Positive(message = "The userId must be greater than 0.")
     private Long userId;
 
     /**
      * 招新编号
      */
-    @NotNull(message = "The recruitmentId can't be null.")
-    @Positive(message = "The recruitmentId must be greater than 0.")
     private Long recruitmentId;
 
     /**
-     * 头像
+     * 头像地址
      */
-    private ApplicationFormAvatarPO avatar;
+    private String avatarUrl;
 
     /**
      * 姓名
      */
-    @FullName
     private String fullName;
 
     /**
      * 手机号码
      */
-    @Phone
     private String phone;
 
     /**
      * 第一部门
      */
-    @Positive(message = "The firstDepartmentId must be greater than 0.")
     private Long firstDepartmentId;
 
     /**
      * 第二部门
      */
-    @Positive(message = "The secondDepartmentId must be greater than 0.")
     private Long secondDepartmentId;
 
     /**
      * 邮箱
      */
-    @Email
     private String email;
 
     /**
      * 个人简介
      */
-    @Size(max = ApplicationFormConstants.MAX_INTRODUCTION_LENGTH,
-            message = "The length of introduction must not be greater than "
-                    + ApplicationFormConstants.MAX_INTRODUCTION_LENGTH + ".")
     private String introduction;
 
     /**
-     * 附件
+     * 附件地址
      */
-    private ApplicationFormAttachmentPO attachment;
+    private String attachmentUrl;
 
     /**
      * 学号
      */
-    @StudentNumber
     private String studentNumber;
 
     /**
-     * 学院编号
+     * 学院
      */
-    @Positive(message = "The collegeId must be greater than 0.")
     private Long collegeId;
 
     /**
-     * 专业编号
+     * 专业
      */
-    @Positive(message = "The majorId must be greater than 0.")
     private Long majorId;
 
     /**
      * 备注
      */
-    @Size(max = ApplicationFormConstants.MAX_NOTE_LENGTH,
-            message = "The length of note must not be greater than " + ApplicationFormConstants.MAX_NOTE_LENGTH + ".")
     private String note;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getUserId() {
         return userId;
@@ -122,12 +113,12 @@ public class CreateApplicationFormPO implements Serializable {
         this.recruitmentId = recruitmentId;
     }
 
-    public ApplicationFormAvatarPO getAvatar() {
-        return avatar;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatar(ApplicationFormAvatarPO avatar) {
-        this.avatar = avatar;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getFullName() {
@@ -178,12 +169,12 @@ public class CreateApplicationFormPO implements Serializable {
         this.introduction = introduction;
     }
 
-    public ApplicationFormAttachmentPO getAttachment() {
-        return attachment;
+    public String getAttachmentUrl() {
+        return attachmentUrl;
     }
 
-    public void setAttachment(ApplicationFormAttachmentPO attachment) {
-        this.attachment = attachment;
+    public void setAttachmentUrl(String attachmentUrl) {
+        this.attachmentUrl = attachmentUrl;
     }
 
     public String getStudentNumber() {
@@ -218,23 +209,42 @@ public class CreateApplicationFormPO implements Serializable {
         this.note = note;
     }
 
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
-        return "CreateApplicationFormPO{" +
-                "userId=" + userId +
+        return "ApplicationFormDO{" +
+                "id=" + id +
+                ", userId=" + userId +
                 ", recruitmentId=" + recruitmentId +
-                ", avatar=" + avatar +
+                ", avatarUrl='" + avatarUrl + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", firstDepartmentId=" + firstDepartmentId +
                 ", secondDepartmentId=" + secondDepartmentId +
                 ", email='" + email + '\'' +
                 ", introduction='" + introduction + '\'' +
-                ", attachment=" + attachment +
+                ", attachmentUrl='" + attachmentUrl + '\'' +
                 ", studentNumber='" + studentNumber + '\'' +
                 ", collegeId=" + collegeId +
                 ", majorId=" + majorId +
                 ", note='" + note + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -243,22 +253,30 @@ public class CreateApplicationFormPO implements Serializable {
     }
 
     public static final class Builder {
+        private Long id;
         private Long userId;
         private Long recruitmentId;
-        private ApplicationFormAvatarPO avatar;
+        private String avatarUrl;
         private String fullName;
         private String phone;
         private Long firstDepartmentId;
         private Long secondDepartmentId;
         private String email;
         private String introduction;
-        private ApplicationFormAttachmentPO attachment;
+        private String attachmentUrl;
         private String studentNumber;
         private Long collegeId;
         private Long majorId;
         private String note;
+        private LocalDateTime createTime;
+        private LocalDateTime updateTime;
 
-        Builder() {}
+        private Builder() {}
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder userId(Long userId) {
             this.userId = userId;
@@ -270,8 +288,8 @@ public class CreateApplicationFormPO implements Serializable {
             return this;
         }
 
-        public Builder avatar(ApplicationFormAvatarPO avatar) {
-            this.avatar = avatar;
+        public Builder avatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
             return this;
         }
 
@@ -305,8 +323,8 @@ public class CreateApplicationFormPO implements Serializable {
             return this;
         }
 
-        public Builder attachment(ApplicationFormAttachmentPO attachment) {
-            this.attachment = attachment;
+        public Builder attachmentUrl(String attachmentUrl) {
+            this.attachmentUrl = attachmentUrl;
             return this;
         }
 
@@ -330,23 +348,36 @@ public class CreateApplicationFormPO implements Serializable {
             return this;
         }
 
-        public CreateApplicationFormPO build() {
-            CreateApplicationFormPO createApplicationFormPO = new CreateApplicationFormPO();
-            createApplicationFormPO.setUserId(userId);
-            createApplicationFormPO.setRecruitmentId(recruitmentId);
-            createApplicationFormPO.setAvatar(avatar);
-            createApplicationFormPO.setFullName(fullName);
-            createApplicationFormPO.setPhone(phone);
-            createApplicationFormPO.setFirstDepartmentId(firstDepartmentId);
-            createApplicationFormPO.setSecondDepartmentId(secondDepartmentId);
-            createApplicationFormPO.setEmail(email);
-            createApplicationFormPO.setIntroduction(introduction);
-            createApplicationFormPO.setAttachment(attachment);
-            createApplicationFormPO.setStudentNumber(studentNumber);
-            createApplicationFormPO.setCollegeId(collegeId);
-            createApplicationFormPO.setMajorId(majorId);
-            createApplicationFormPO.setNote(note);
-            return createApplicationFormPO;
+        public Builder createTime(LocalDateTime createTime) {
+            this.createTime = createTime;
+            return this;
+        }
+
+        public Builder updateTime(LocalDateTime updateTime) {
+            this.updateTime = updateTime;
+            return this;
+        }
+
+        public ApplicationFormDO build() {
+            ApplicationFormDO applicationFormDO = new ApplicationFormDO();
+            applicationFormDO.setId(id);
+            applicationFormDO.setUserId(userId);
+            applicationFormDO.setRecruitmentId(recruitmentId);
+            applicationFormDO.setAvatarUrl(avatarUrl);
+            applicationFormDO.setFullName(fullName);
+            applicationFormDO.setPhone(phone);
+            applicationFormDO.setFirstDepartmentId(firstDepartmentId);
+            applicationFormDO.setSecondDepartmentId(secondDepartmentId);
+            applicationFormDO.setEmail(email);
+            applicationFormDO.setIntroduction(introduction);
+            applicationFormDO.setAttachmentUrl(attachmentUrl);
+            applicationFormDO.setStudentNumber(studentNumber);
+            applicationFormDO.setCollegeId(collegeId);
+            applicationFormDO.setMajorId(majorId);
+            applicationFormDO.setNote(note);
+            applicationFormDO.setCreateTime(createTime);
+            applicationFormDO.setUpdateTime(updateTime);
+            return applicationFormDO;
         }
     }
 }

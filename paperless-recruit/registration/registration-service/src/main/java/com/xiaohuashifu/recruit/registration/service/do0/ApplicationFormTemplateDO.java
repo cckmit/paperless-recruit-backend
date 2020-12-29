@@ -286,7 +286,7 @@ public class ApplicationFormTemplateDO {
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
 
-        Builder() {}
+        private Builder() {}
 
         public Builder id(Long id) {
             this.id = id;

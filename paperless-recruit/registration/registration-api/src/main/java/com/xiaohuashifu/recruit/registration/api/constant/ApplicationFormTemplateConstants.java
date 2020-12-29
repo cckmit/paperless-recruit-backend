@@ -13,4 +13,9 @@ public class ApplicationFormTemplateConstants {
      */
     public static final int MAX_PROMPT_LENGTH = 100;
 
+    /**
+     * 最少报名表模板域个数
+     */
+    public static final int MIN_APPLICATION_FORM_TEMPLATE_FIELD_NUMBERS = 5;
+
 }

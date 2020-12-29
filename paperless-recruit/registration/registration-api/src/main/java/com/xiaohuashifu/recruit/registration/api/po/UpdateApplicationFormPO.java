@@ -3,12 +3,12 @@ package com.xiaohuashifu.recruit.registration.api.po;
 import java.io.Serializable;
 
 /**
- * 描述：创建报名表的参数对象
+ * 描述：更新报名表的参数对象
  *
  * @author xhsf
  * @create 2020/12/23 21:23
  */
-public class CreateApplicationFormPO implements Serializable {
+public class UpdateApplicationFormPO implements Serializable {
 
     /**
      * 报名者用户编号
@@ -298,8 +298,8 @@ public class CreateApplicationFormPO implements Serializable {
             return this;
         }
 
-        public CreateApplicationFormPO build() {
-            CreateApplicationFormPO createApplicationFormPO = new CreateApplicationFormPO();
+        public UpdateApplicationFormPO build() {
+            UpdateApplicationFormPO createApplicationFormPO = new UpdateApplicationFormPO();
             createApplicationFormPO.setUserId(userId);
             createApplicationFormPO.setRecruitmentId(recruitmentId);
             createApplicationFormPO.setAvatar(avatar);

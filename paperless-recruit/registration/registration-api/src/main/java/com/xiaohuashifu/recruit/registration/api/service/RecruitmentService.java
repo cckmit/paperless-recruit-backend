@@ -452,20 +452,20 @@ public interface RecruitmentService {
             @NotNull(message = "The oldRecruitmentStatus can't be null.") RecruitmentStatusEnum oldRecruitmentStatus,
             @NotNull(message = "The newRecruitmentStatus can't be null.") RecruitmentStatusEnum newRecruitmentStatus);
 
+
     /**
-     * 判断一个招新是否可以报名
+     * 检查招新状态
      *
      * @private 内部方法
      *
-     * @errorCode InvalidParameter.NotExist: 招新不存在 | 报名表模板不存在
+     * @errorCode InvalidParameter.NotExist: 招新不存在
      *              Forbidden.Unavailable: 招新不可用 | 组织不可用
-     *               Forbidden.Deactivated: 报名表模板被停用
-     *              OperationConflict.Status: 招新的状态必须是 STARTED
+     *              OperationConflict.Status: 招新状态不允许
      *
      * @param id 招新编号
-     * @return 是否可以报名
+     * @param followRecruitmentStatus 后续招新状态，当前状态必须小于该状态
+     * @return 检查结果，检查成功返回当前招新的状态
      */
-    <T> Result<T> canRegistration(@NotNull(message = "The id can't be null.")
-                                  @Positive(message = "The id must be greater than 0.") Long id);
+    Result<RecruitmentStatusEnum> checkRecruitmentStatus(Long id, RecruitmentStatusEnum followRecruitmentStatus);
 
 }

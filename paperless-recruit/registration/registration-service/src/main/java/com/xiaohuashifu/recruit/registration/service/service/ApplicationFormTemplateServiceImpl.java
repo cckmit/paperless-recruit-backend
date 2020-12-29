@@ -1,16 +1,24 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
+import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormTemplateConstants;
+import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormTemplateDTO;
 import com.xiaohuashifu.recruit.registration.api.po.AddApplicationFormTemplatePO;
+import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormTemplatePO;
 import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormTemplatePO;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
+import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
+import com.xiaohuashifu.recruit.registration.service.dao.ApplicationFormTemplateMapper;
+import com.xiaohuashifu.recruit.registration.service.do0.ApplicationFormTemplateDO;
+import com.xiaohuashifu.recruit.registration.service.do0.RecruitmentDO;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * 描述：报名表模板服务实现
@@ -20,38 +28,124 @@ import javax.validation.constraints.Size;
  */
 @Service
 public class ApplicationFormTemplateServiceImpl implements ApplicationFormTemplateService {
+
+    @Reference
+    private RecruitmentService recruitmentService;
+
+    private final ApplicationFormTemplateMapper applicationFormTemplateMapper;
+
     /**
-     * 给一个招新添加报名表模板
+     * 添加报名表模板的锁定键模式，{0}是招新编号
+     */
+    private static final String ADD_APPLICATION_FORM_TEMPLATE_LOCK_KEY_PATTERN =
+            "application-form-template:add-application-form-template:recruitment-id:{0}";
+
+    public ApplicationFormTemplateServiceImpl(ApplicationFormTemplateMapper applicationFormTemplateMapper) {
+        this.applicationFormTemplateMapper = applicationFormTemplateMapper;
+    }
+
+    /**
+     * 给一个招新添加报名表模板，必须是招新状态是 ENDED 之前才可以添加
+     *
+     * @permission 需要是该招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.Number: 报名表模板的域个数小于最少限制
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              OperationConflict.Duplicate: 报名表模板已经存在
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Lock: 获取报名表模板的锁失败
      *
      * @param addApplicationFormTemplatePO 添加的参数对象
      * @return ApplicationFormTemplateDTO 报名表模板
-     * @permission 需要是该招新所属组织所属用户主体本身
      */
+    @DistributedLock(value = ADD_APPLICATION_FORM_TEMPLATE_LOCK_KEY_PATTERN,
+            parameters = "#{#addApplicationFormTemplatePO.recruitmentId}",
+            errorMessage = "Failed to acquire applicationFormTemplate lock.")
     @Override
-    public Result<ApplicationFormTemplateDTO> addApplicationFormTemplate(@NotNull(message = "The addApplicationFormTemplatePO can't be null.") AddApplicationFormTemplatePO addApplicationFormTemplatePO) {
-        return null;
+    public Result<ApplicationFormTemplateDTO> addApplicationFormTemplate(
+            AddApplicationFormTemplatePO addApplicationFormTemplatePO) {
+        // 判断报名表模板的字段是否小于最低限制
+        int count = countApplicationFormTemplateFields(addApplicationFormTemplatePO);
+        if (count < ApplicationFormTemplateConstants.MIN_APPLICATION_FORM_TEMPLATE_FIELD_NUMBERS) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NUMBER,
+                    "The number of applicationFormTemplate fields must not be less than " +
+                            ApplicationFormTemplateConstants.MIN_APPLICATION_FORM_TEMPLATE_FIELD_NUMBERS + ".");
+        }
+
+        // 判断报名表模板是否存在
+        Long recruitmentId = addApplicationFormTemplatePO.getRecruitmentId();
+        count = applicationFormTemplateMapper.countByRecruitmentId(recruitmentId);
+        if (count > 0) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE,
+                    "The applicationFormTemplate already exist.");
+        }
+
+        // 判断招新状态
+        Result<RecruitmentStatusEnum> checkRecruitmentStatusResult =
+                recruitmentService.checkRecruitmentStatus(recruitmentId, RecruitmentStatusEnum.ENDED);
+        if (checkRecruitmentStatusResult.isFailure()) {
+            return Result.fail(checkRecruitmentStatusResult);
+        }
+
+        // 添加报名表模板
+        ApplicationFormTemplateDO applicationFormTemplateDO = ApplicationFormTemplateDO.builder()
+                .recruitmentId(addApplicationFormTemplatePO.getRecruitmentId())
+                .prompt(addApplicationFormTemplatePO.getPrompt())
+                .avatar(addApplicationFormTemplatePO.getAvatar())
+                .fullName(addApplicationFormTemplatePO.getFullName())
+                .phone(addApplicationFormTemplatePO.getPhone())
+                .firstDepartment(addApplicationFormTemplatePO.getFirstDepartment())
+                .secondDepartment(addApplicationFormTemplatePO.getSecondDepartment())
+                .email(addApplicationFormTemplatePO.getEmail())
+                .introduction(addApplicationFormTemplatePO.getIntroduction())
+                .attachment(addApplicationFormTemplatePO.getAttachment())
+                .studentNumber(addApplicationFormTemplatePO.getStudentNumber())
+                .college(addApplicationFormTemplatePO.getCollege())
+                .major(addApplicationFormTemplatePO.getMajor())
+                .note(addApplicationFormTemplatePO.getNote())
+                .build();
+        applicationFormTemplateMapper.insertApplicationFormTemplate(applicationFormTemplateDO);
+        return getApplicationFormTemplate(applicationFormTemplateDO.getId());
     }
 
     /**
      * 获取报名表模板，通过招新编号
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotFound: 找不到该招新编号的报名表模板
+     *
      * @param recruitmentId 招新编号
      * @return 报名表模板
      */
     @Override
-    public Result<ApplicationFormTemplateDTO> getApplicationFormTemplateByRecruitmentId(@NotNull(message = "The recruitmentId can't be null.") @Positive(message = "The recruitmentId must be greater than 0.") Long recruitmentId) {
-        return null;
+    public Result<ApplicationFormTemplateDTO> getApplicationFormTemplateByRecruitmentId(Long recruitmentId) {
+        ApplicationFormTemplateDO applicationFormTemplateDO =
+                applicationFormTemplateMapper.getApplicationFormTemplateByRecruitmentId(recruitmentId);
+        if (applicationFormTemplateDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND,
+                    "The applicationFormTemplate not found.");
+        }
+
+        // 封装成DTO
+        ApplicationFormTemplateDTO applicationFormTemplateDTO =
+                applicationFormTemplateDO2ApplicationFormTemplateDTO(applicationFormTemplateDO);
+        return Result.success(applicationFormTemplateDTO);
     }
 
     /**
      * 更新报名表模板
      *
+     * @permission 需要是该报名表模板所属招新所属组织所属用户主体本身
+     *
      * @param updateApplicationFormTemplatePO 更新的参数对象
      * @return 更新后的报名表模板
-     * @permission 需要是该报名表模板所属招新所属组织所属用户主体本身
      */
     @Override
-    public Result<ApplicationFormTemplateDTO> updateApplicationFormTemplate(@NotNull(message = "The updateApplicationFormTemplatePO can't be null.") UpdateApplicationFormTemplatePO updateApplicationFormTemplatePO) {
+    public Result<ApplicationFormTemplateDTO> updateApplicationFormTemplate(
+            UpdateApplicationFormTemplatePO updateApplicationFormTemplatePO) {
+//        checkApplicationFormTemplateStatusForUpdate
         return null;
     }
 
@@ -64,7 +158,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
      * @permission 需要是该报名表模板所属招新所属组织所属用户主体本身
      */
     @Override
-    public Result<ApplicationFormTemplateDTO> updatePrompt(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotBlank(message = "The prompt can't be blank.") String prompt) {
+    public Result<ApplicationFormTemplateDTO> updatePrompt(Long id, String prompt) {
         return null;
     }
 
@@ -76,7 +170,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
      * @permission 需要是该报名表模板所属招新所属组织所属用户主体本身
      */
     @Override
-    public Result<ApplicationFormTemplateDTO> deactivateApplicationFormTemplate(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id) {
+    public Result<ApplicationFormTemplateDTO> deactivateApplicationFormTemplate(Long id) {
         return null;
     }
 
@@ -88,33 +182,160 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
      * @permission 需要是该报名表模板所属招新所属组织所属用户主体本身
      */
     @Override
-    public Result<ApplicationFormTemplateDTO> enableApplicationFormTemplate(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id) {
+    public Result<ApplicationFormTemplateDTO> enableApplicationFormTemplate(Long id) {
         return null;
+    }
+
+    /**
+     * 判断一个招新是否可以报名
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在 | 报名表模板不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
+     *
+     * @param recruitmentId 招新编号
+     * @return 是否可以报名
+     */
+    @Override
+    public <T> Result<T> canRegistration(Long recruitmentId) {
+        // 检查招新状态
+        Result<RecruitmentStatusEnum> checkRecruitmentStatusResult =
+                recruitmentService.checkRecruitmentStatus(recruitmentId, RecruitmentStatusEnum.ENDED);
+        if (checkRecruitmentStatusResult.isFailure()) {
+            return Result.fail(checkRecruitmentStatusResult);
+        }
+
+        // 判断当前状态是否为 STARTED
+        RecruitmentStatusEnum recruitmentStatus = checkRecruitmentStatusResult.getData();
+        if (recruitmentStatus !=  RecruitmentStatusEnum.STARTED) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
+                    "The recruitment status must be STARTED.");
+        }
+
+        // 判断报名表模板是否存在
+        Boolean deactivated = applicationFormTemplateMapper.getDeactivatedByRecruitmentId(recruitmentId);
+        if (deactivated == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The applicationFormTemplate does not exist.");
+        }
+
+        // 检查报名表模板的状态
+        if (deactivated) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DEACTIVATED,
+                    "The applicationFormTemplate already deactivated.");
+        }
+
+        // 可以报名
+        return Result.success();
     }
 
     /**
      * 获取招新编号
      *
+     * @private 内部方法
+     *
      * @param id 报名表模板编号
      * @return 招新编号，如果该报名表不存在则返回 null
-     * @private 内部方法
      */
     @Override
     public Long getRecruitmentId(Long id) {
-        return null;
+        return applicationFormTemplateMapper.getRecruitmentId(id);
     }
 
     /**
-     * 检查报名表模板的状态，检查报名表模板是否存在，报名表模板是否被停用
+     * 检查报名表模板的状态，为了更新
      *
-     * @param recruitmentId 招新编号
-     * @return 检查结果
-     * @private 内部方法
      * @errorCode InvalidParameter.NotExist: 报名表模板不存在
-     * Forbidden.Deactivated: 报名表模板被停用
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              OperationConflict.Status: 招新状态不允许
+     *
+     * @param id 报名表模板编号
+     * @param followRecruitmentStatus 招新的后续状态，必须在这个状态之前
+     * @return 检查结果
      */
-    @Override
-    public <T> Result<T> checkApplicationFormTemplateStatusByRecruitmentId(Long recruitmentId) {
+    private <T> Result<T> checkApplicationFormTemplateStatusForUpdate(
+            Long id, RecruitmentStatusEnum followRecruitmentStatus) {
+        // 判断报名表模板是否存在
+        Long recruitmentId = applicationFormTemplateMapper.getRecruitmentId(id);
+        if (recruitmentId == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The applicationFormTemplate does not exist.");
+        }
+
+        // 判断招新状态
+        Result<RecruitmentStatusEnum> checkRecruitmentStatusResult =
+                recruitmentService.checkRecruitmentStatus(recruitmentId, followRecruitmentStatus);
+        if (checkRecruitmentStatusResult.isFailure()) {
+            return Result.fail(checkRecruitmentStatusResult);
+        }
+
+        // 通过检查
         return Result.success();
     }
+
+    /**
+     * 计算一个报名表模板的字段数量
+     *
+     * @param applicationFormTemplatePO 报名表模板参数对象
+     * @return 字段数量
+     */
+    private int countApplicationFormTemplateFields(ApplicationFormTemplatePO applicationFormTemplatePO) {
+        int count = 0;
+        for (Field declaredField : ApplicationFormTemplatePO.class.getDeclaredFields()) {
+            declaredField.setAccessible(true);
+            Boolean value;
+            try {
+                value = (Boolean) declaredField.get(applicationFormTemplatePO);
+                if (value != null && value) {
+                    count++;
+                }
+            } catch (IllegalAccessException ignored) {}
+        }
+        return count;
+    }
+
+    /**
+     * 获取报名表模板
+     *
+     * @param id 报名表模板编号
+     * @return 报名表模板
+     */
+    private Result<ApplicationFormTemplateDTO> getApplicationFormTemplate(Long id) {
+        ApplicationFormTemplateDO applicationFormTemplateDO =
+                applicationFormTemplateMapper.getApplicationFormTemplate(id);
+        ApplicationFormTemplateDTO applicationFormTemplateDTO =
+                applicationFormTemplateDO2ApplicationFormTemplateDTO(applicationFormTemplateDO);
+        return Result.success(applicationFormTemplateDTO);
+    }
+
+    /**
+     * ApplicationFormTemplateDO to ApplicationFormTemplateDTO
+     *
+     * @param applicationFormTemplateDO ApplicationFormTemplateDO
+     * @return ApplicationFormTemplateDTO
+     */
+    private ApplicationFormTemplateDTO applicationFormTemplateDO2ApplicationFormTemplateDTO(
+            ApplicationFormTemplateDO applicationFormTemplateDO) {
+        return ApplicationFormTemplateDTO.builder()
+                .id(applicationFormTemplateDO.getId())
+                .recruitmentId(applicationFormTemplateDO.getRecruitmentId())
+                .prompt(applicationFormTemplateDO.getPrompt())
+                .avatar(applicationFormTemplateDO.getAvatar())
+                .fullName(applicationFormTemplateDO.getFullName())
+                .phone(applicationFormTemplateDO.getPhone())
+                .firstDepartment(applicationFormTemplateDO.getFirstDepartment())
+                .secondDepartment(applicationFormTemplateDO.getSecondDepartment())
+                .email(applicationFormTemplateDO.getEmail())
+                .introduction(applicationFormTemplateDO.getIntroduction())
+                .attachment(applicationFormTemplateDO.getAttachment())
+                .studentNumber(applicationFormTemplateDO.getStudentNumber())
+                .college(applicationFormTemplateDO.getCollege())
+                .major(applicationFormTemplateDO.getMajor())
+                .note(applicationFormTemplateDO.getNote())
+                .deactivated(applicationFormTemplateDO.getDeactivated())
+                .build();
+    }
+
 }

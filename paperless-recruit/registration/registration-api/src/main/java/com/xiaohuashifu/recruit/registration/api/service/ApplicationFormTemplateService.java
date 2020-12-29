@@ -20,9 +20,17 @@ import javax.validation.constraints.Size;
 public interface ApplicationFormTemplateService {
 
     /**
-     * 给一个招新添加报名表模板
+     * 给一个招新添加报名表模板，必须是招新状态是 ENDED 之前才可以添加
      *
      * @permission 需要是该招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.Number: 报名表模板的域个数小于最少限制
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              OperationConflict.Duplicate: 报名表模板已经存在
+     *              OperationConflict.Status: 招新状态不允许
+     *              OperationConflict.Lock: 获取报名表模板的锁失败
      *
      * @param addApplicationFormTemplatePO 添加的参数对象
      * @return ApplicationFormTemplateDTO 报名表模板
@@ -33,6 +41,9 @@ public interface ApplicationFormTemplateService {
 
     /**
      * 获取报名表模板，通过招新编号
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotFound: 找不到该招新编号的报名表模板
      *
      * @param recruitmentId 招新编号
      * @return 报名表模板
@@ -92,6 +103,21 @@ public interface ApplicationFormTemplateService {
             @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
+     * 判断一个招新是否可以报名
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在 | 报名表模板不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
+     *
+     * @param recruitmentId 招新编号
+     * @return 是否可以报名
+     */
+    <T> Result<T> canRegistration(@NotNull(message = "The recruitmentId can't be null.")
+                                  @Positive(message = "The recruitmentId must be greater than 0.") Long recruitmentId);
+
+    /**
      * 获取招新编号
      *
      * @private 内部方法
@@ -101,16 +127,4 @@ public interface ApplicationFormTemplateService {
      */
     Long getRecruitmentId(Long id);
 
-    /**
-     * 检查报名表模板的状态，检查报名表模板是否存在，报名表模板是否被停用
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter.NotExist: 报名表模板不存在
-     *              Forbidden.Deactivated: 报名表模板被停用
-     *
-     * @param recruitmentId 招新编号
-     * @return 检查结果
-     */
-    <T> Result<T> checkApplicationFormTemplateStatusByRecruitmentId(Long recruitmentId);
 }

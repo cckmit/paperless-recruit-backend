@@ -1,14 +1,14 @@
-package com.xiaohuashifu.recruit.registration.api.dto;
+package com.xiaohuashifu.recruit.registration.service.do0;
 
-import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * 描述：报名表模板的数据传输对象
+ * 描述：报名表模板的数据对象
  *
  * @author xhsf
  * @create 2020/12/23 21:23
  */
-public class ApplicationFormTemplateDTO implements Serializable {
+public class ApplicationFormTemplateDO {
 
     /**
      * 报名表模板编号
@@ -89,6 +89,10 @@ public class ApplicationFormTemplateDTO implements Serializable {
      * 该报名表模板是否被停用
      */
     private Boolean deactivated;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
 
     public Long getId() {
         return id;
@@ -218,9 +222,25 @@ public class ApplicationFormTemplateDTO implements Serializable {
         this.deactivated = deactivated;
     }
 
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
-        return "ApplicationFormTemplateDTO{" +
+        return "ApplicationFormTemplateDO{" +
                 "id=" + id +
                 ", recruitmentId=" + recruitmentId +
                 ", prompt='" + prompt + '\'' +
@@ -237,6 +257,8 @@ public class ApplicationFormTemplateDTO implements Serializable {
                 ", major=" + major +
                 ", note=" + note +
                 ", deactivated=" + deactivated +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
 
@@ -261,6 +283,8 @@ public class ApplicationFormTemplateDTO implements Serializable {
         private Boolean major;
         private Boolean note;
         private Boolean deactivated;
+        private LocalDateTime createTime;
+        private LocalDateTime updateTime;
 
         Builder() {}
 
@@ -344,25 +368,37 @@ public class ApplicationFormTemplateDTO implements Serializable {
             return this;
         }
 
-        public ApplicationFormTemplateDTO build() {
-            ApplicationFormTemplateDTO applicationFormTemplateDTO = new ApplicationFormTemplateDTO();
-            applicationFormTemplateDTO.setId(id);
-            applicationFormTemplateDTO.setRecruitmentId(recruitmentId);
-            applicationFormTemplateDTO.setPrompt(prompt);
-            applicationFormTemplateDTO.setAvatar(avatar);
-            applicationFormTemplateDTO.setFullName(fullName);
-            applicationFormTemplateDTO.setPhone(phone);
-            applicationFormTemplateDTO.setFirstDepartment(firstDepartment);
-            applicationFormTemplateDTO.setSecondDepartment(secondDepartment);
-            applicationFormTemplateDTO.setEmail(email);
-            applicationFormTemplateDTO.setIntroduction(introduction);
-            applicationFormTemplateDTO.setAttachment(attachment);
-            applicationFormTemplateDTO.setStudentNumber(studentNumber);
-            applicationFormTemplateDTO.setCollege(college);
-            applicationFormTemplateDTO.setMajor(major);
-            applicationFormTemplateDTO.setNote(note);
-            applicationFormTemplateDTO.setDeactivated(deactivated);
-            return applicationFormTemplateDTO;
+        public Builder createTime(LocalDateTime createTime) {
+            this.createTime = createTime;
+            return this;
+        }
+
+        public Builder updateTime(LocalDateTime updateTime) {
+            this.updateTime = updateTime;
+            return this;
+        }
+
+        public ApplicationFormTemplateDO build() {
+            ApplicationFormTemplateDO applicationFormTemplateDO = new ApplicationFormTemplateDO();
+            applicationFormTemplateDO.setId(id);
+            applicationFormTemplateDO.setRecruitmentId(recruitmentId);
+            applicationFormTemplateDO.setPrompt(prompt);
+            applicationFormTemplateDO.setAvatar(avatar);
+            applicationFormTemplateDO.setFullName(fullName);
+            applicationFormTemplateDO.setPhone(phone);
+            applicationFormTemplateDO.setFirstDepartment(firstDepartment);
+            applicationFormTemplateDO.setSecondDepartment(secondDepartment);
+            applicationFormTemplateDO.setEmail(email);
+            applicationFormTemplateDO.setIntroduction(introduction);
+            applicationFormTemplateDO.setAttachment(attachment);
+            applicationFormTemplateDO.setStudentNumber(studentNumber);
+            applicationFormTemplateDO.setCollege(college);
+            applicationFormTemplateDO.setMajor(major);
+            applicationFormTemplateDO.setNote(note);
+            applicationFormTemplateDO.setDeactivated(deactivated);
+            applicationFormTemplateDO.setCreateTime(createTime);
+            applicationFormTemplateDO.setUpdateTime(updateTime);
+            return applicationFormTemplateDO;
         }
     }
 }

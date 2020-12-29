@@ -911,46 +911,9 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * 判断一个招新是否可以报名
+     * 检查招新状态
      *
      * @private 内部方法
-     *
-     * @errorCode InvalidParameter.NotExist: 招新不存在 | 报名表模板不存在
-     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
-     *               Forbidden.Deactivated: 报名表模板被停用
-     *              OperationConflict.Status: 招新的状态必须是 STARTED
-     *
-     * @param id 招新编号
-     * @return 是否可以报名
-     */
-    @Override
-    public <T> Result<T> canRegistration(Long id) {
-        // 检查招新状态
-        Result<RecruitmentDO> checkRecruitmentStatusResult = checkRecruitmentStatus(id);
-        if (checkRecruitmentStatusResult.isFailure()) {
-            return Result.fail(checkRecruitmentStatusResult);
-        }
-
-        // 判断当前状态是否为 STARTED
-        RecruitmentDO recruitmentDO = checkRecruitmentStatusResult.getData();
-        if (!Objects.equals(recruitmentDO.getRecruitmentStatus(), RecruitmentStatusEnum.STARTED.name())) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
-                    "The recruitment status must be STARTED.");
-        }
-
-        // 检查报名表模板的状态
-        Result<T> checkApplicationFormTemplateStatusResult =
-                applicationFormTemplateService.checkApplicationFormTemplateStatusByRecruitmentId(id);
-        if (checkApplicationFormTemplateStatusResult.isFailure()) {
-            return checkApplicationFormTemplateStatusResult;
-        }
-
-        // 可以报名
-        return Result.success();
-    }
-
-    /**
-     * 检查招新状态
      *
      * @errorCode InvalidParameter.NotExist: 招新不存在
      *              Forbidden.Unavailable: 招新不可用 | 组织不可用
@@ -958,9 +921,10 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      *
      * @param id 招新编号
      * @param followRecruitmentStatus 后续招新状态，当前状态必须小于该状态
-     * @return 检查结果
+     * @return 检查结果，检查成功返回当前招新的状态
      */
-    private Result<RecruitmentStatusEnum> checkRecruitmentStatus(
+    @Override
+    public Result<RecruitmentStatusEnum> checkRecruitmentStatus(
             Long id, RecruitmentStatusEnum followRecruitmentStatus) {
         // 检查招新状态
         Result<RecruitmentDO> checkResult = checkRecruitmentStatus(id);

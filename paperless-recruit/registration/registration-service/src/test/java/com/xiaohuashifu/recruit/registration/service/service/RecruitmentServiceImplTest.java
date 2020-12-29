@@ -181,9 +181,4 @@ public class RecruitmentServiceImplTest {
         System.out.println(recruitmentService.enableRecruitment(3L));
     }
 
-
-    @Test
-    public void canRegistration() {
-        System.out.println(recruitmentService.canRegistration(8L));
-    }
 }

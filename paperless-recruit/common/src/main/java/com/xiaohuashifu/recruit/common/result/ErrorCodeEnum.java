@@ -92,10 +92,16 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.Value", "The parameter of {Parameter} is invalid."),
 
     /**
-     * 参数长度不在规定范围内，String 或集合类型
+     * 参数长度不正确
      */
     INVALID_PARAMETER_SIZE(HttpStatus.BAD_REQUEST,
             "InvalidParameter.Size", "The size of {Parameter} must be from {Min} to {Max}."),
+
+    /**
+     * 参数个数不正确
+     */
+    INVALID_PARAMETER_NUMBER(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.Number", "The number of {Parameter} must be from {Min} to {Max}."),
 
     /**
      * 非法参数，不存在

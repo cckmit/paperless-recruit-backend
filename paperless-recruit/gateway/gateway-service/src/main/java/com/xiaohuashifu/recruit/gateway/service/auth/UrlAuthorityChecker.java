@@ -7,7 +7,6 @@ import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,6 @@ import java.util.Map;
  * @create 2020/11/26 15:10
  */
 @Component
-@EnableScheduling
 public class UrlAuthorityChecker {
 
     private static final Logger logger = LoggerFactory.getLogger(UrlAuthorityChecker.class);

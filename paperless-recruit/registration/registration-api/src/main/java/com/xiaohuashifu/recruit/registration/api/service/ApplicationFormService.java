@@ -19,10 +19,11 @@ public interface ApplicationFormService {
      *
      * @permission 必须是用户本身
      *
-     * @return
+     * @return 创建的报名表
      */
-    Result<ApplicationFormDTO> createApplicationForm(@NotNull CreateApplicationFormPO createApplicationFormPO);
+    Result<ApplicationFormDTO> createApplicationForm(@NotNull(message = "The createApplicationFormPO can't be null.")
+                                                             CreateApplicationFormPO createApplicationFormPO);
 
-    
+
 
 }

@@ -226,6 +226,10 @@ public class ApplicationFormDTO implements Serializable {
                 '}';
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static final class Builder {
         private Long id;
         private Long userId;
@@ -242,6 +246,8 @@ public class ApplicationFormDTO implements Serializable {
         private Long collegeId;
         private Long majorId;
         private String note;
+
+        Builder() {}
 
         public Builder id(Long id) {
             this.id = id;

@@ -212,6 +212,10 @@ public class CreateApplicationFormPO implements Serializable {
                 '}';
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static final class Builder {
         private Long userId;
         private Long recruitmentId;
@@ -227,6 +231,8 @@ public class CreateApplicationFormPO implements Serializable {
         private Long collegeId;
         private Long majorId;
         private String note;
+
+        Builder() {}
 
         public Builder userId(Long userId) {
             this.userId = userId;

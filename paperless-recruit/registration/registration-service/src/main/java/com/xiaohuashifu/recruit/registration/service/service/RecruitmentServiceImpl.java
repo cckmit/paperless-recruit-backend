@@ -19,9 +19,7 @@ import com.xiaohuashifu.recruit.user.api.service.CollegeService;
 import com.xiaohuashifu.recruit.user.api.service.MajorService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -34,8 +32,6 @@ import java.util.stream.Collectors;
  * @create 2020/12/26 20:34
  */
 @Service
-@Component
-@EnableScheduling
 public class RecruitmentServiceImpl implements RecruitmentService {
 
     @Reference

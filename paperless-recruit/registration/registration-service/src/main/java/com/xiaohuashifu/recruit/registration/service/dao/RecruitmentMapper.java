@@ -74,5 +74,18 @@ public interface RecruitmentMapper {
     int updateRecruitmentStatusWhenNotEqual(@Param("id") Long id, @Param("recruitmentStatus") String recruitmentStatus);
 
     int updateAvailable(@Param("id") Long id, @Param("available") Boolean available);
+
+    int updateRecruitmentStatusWhenReleaseTimeLessThan(@Param("time") LocalDateTime time,
+                                                       @Param("oldRecruitmentStatus") String oldRecruitmentStatus,
+                                                       @Param("newRecruitmentStatus") String newRecruitmentStatus);
+
+    int updateRecruitmentStatusWhenRegistrationTimeFromLessThan(
+            @Param("time") LocalDateTime time, @Param("oldRecruitmentStatus") String oldRecruitmentStatus,
+            @Param("newRecruitmentStatus") String newRecruitmentStatus);
+
+    int updateRecruitmentStatusWhenRegistrationTimeToLessThan(
+            @Param("time") LocalDateTime time, @Param("oldRecruitmentStatus") String oldRecruitmentStatus,
+            @Param("newRecruitmentStatus") String newRecruitmentStatus);
+
 }
 

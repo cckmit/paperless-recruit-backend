@@ -253,4 +253,25 @@
           and is_available = !#{available}
     </update>
 
+    <update id="updateRecruitmentStatusWhenReleaseTimeLessThan">
+        update recruitment
+        set recruitment_status = #{newRecruitmentStatus}
+        where recruitment_status = #{oldRecruitmentStatus}
+          and release_time &lt; #{time}
+    </update>
+
+    <update id="updateRecruitmentStatusWhenRegistrationTimeFromLessThan">
+        update recruitment
+        set recruitment_status = #{newRecruitmentStatus}
+        where recruitment_status = #{oldRecruitmentStatus}
+          and registration_time_from &lt; #{time}
+    </update>
+
+    <update id="updateRecruitmentStatusWhenRegistrationTimeToLessThan">
+        update recruitment
+        set recruitment_status = #{newRecruitmentStatus}
+        where recruitment_status = #{oldRecruitmentStatus}
+          and registration_time_to &lt; #{time}
+    </update>
+
 </mapper>

@@ -19,6 +19,9 @@ import com.xiaohuashifu.recruit.user.api.service.CollegeService;
 import com.xiaohuashifu.recruit.user.api.service.MajorService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -31,6 +34,8 @@ import java.util.stream.Collectors;
  * @create 2020/12/26 20:34
  */
 @Service
+@Component
+@EnableScheduling
 public class RecruitmentServiceImpl implements RecruitmentService {
 
     @Reference
@@ -60,6 +65,15 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      */
     private static final String RECRUITMENT_MAJOR_IDS_LOCK_KEY_PATTERN = "recruitment:{0}:recruitment-major-ids";
 
+    /**
+     * 更新招新状态的初始延迟
+     */
+    private static final long UPDATE_RECRUITMENT_STATUS_INITIAL_DELAY = 10000;
+
+    /**
+     * 更新招新状态的固定延迟
+     */
+    private static final long UPDATE_RECRUITMENT_STATUS_FIXED_DELAY = 30000;
 
     public RecruitmentServiceImpl(RecruitmentMapper recruitmentMapper) {
         this.recruitmentMapper = recruitmentMapper;
@@ -942,6 +956,24 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         // 通过检查
         return Result.success(recruitmentStatus);
+    }
+
+    /**
+     * 更新招新的状态
+     */
+    @Scheduled(initialDelay = UPDATE_RECRUITMENT_STATUS_INITIAL_DELAY,
+            fixedDelay = UPDATE_RECRUITMENT_STATUS_FIXED_DELAY)
+    protected void updateRecruitmentStatus() {
+        System.out.println("开始任务了");
+        // 把已经可以发布的招新发布了
+        recruitmentMapper.updateRecruitmentStatusWhenReleaseTimeLessThan(LocalDateTime.now(),
+                RecruitmentStatusEnum.WAITING_FOR_RELEASE.name(), RecruitmentStatusEnum.WAITING_START.name());
+        // 把已经可以开始报名的招新开始了
+        recruitmentMapper.updateRecruitmentStatusWhenRegistrationTimeFromLessThan(LocalDateTime.now(),
+                RecruitmentStatusEnum.WAITING_START.name(), RecruitmentStatusEnum.STARTED.name());
+        // 把已经结束报名的招新结束了
+        recruitmentMapper.updateRecruitmentStatusWhenRegistrationTimeToLessThan(LocalDateTime.now(),
+                RecruitmentStatusEnum.STARTED.name(), RecruitmentStatusEnum.ENDED.name());
     }
 
     /**

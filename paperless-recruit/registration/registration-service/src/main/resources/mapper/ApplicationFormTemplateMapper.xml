@@ -68,5 +68,26 @@
         where recruitment_id = #{recruitmentId}
     </select>
 
+    <update id="updateApplicationFormTemplate">
+        update application_form_template
+        set is_avatar = #{avatar}, is_full_name = #{fullName}, is_phone = #{phone},
+            is_first_department = #{firstDepartment}, is_second_department = #{secondDepartment}, is_email = #{email},
+            is_introduction = #{introduction}, is_attachment = #{attachment}, is_student_number = #{studentNumber},
+            is_college = #{college}, is_major = #{major}, is_note = #{note}
+        where id = #{id}
+    </update>
+
+    <update id="updatePrompt">
+        update application_form_template
+        set prompt = #{prompt}
+        where id = #{id}
+    </update>
+
+    <update id="updateDeactivated">
+        update application_form_template
+        set is_deactivated = #{deactivated}
+        where id = #{id}
+        and is_deactivated = !#{deactivated}
+    </update>
 
 </mapper>

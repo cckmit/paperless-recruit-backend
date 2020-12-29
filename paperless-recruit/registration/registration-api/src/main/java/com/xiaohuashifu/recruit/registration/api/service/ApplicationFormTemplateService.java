@@ -57,6 +57,13 @@ public interface ApplicationFormTemplateService {
      *
      * @permission 需要是该报名表模板所属招新所属组织所属用户主体本身
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.Number: 报名表模板的域个数小于最少限制
+     *              InvalidParameter.NotExist: 报名表模板不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              OperationConflict.Status: 招新状态不是 STARTED 之前
+     *              OperationConflict.Lock: 获取报名表模板的锁失败
+     *
      * @param updateApplicationFormTemplatePO 更新的参数对象
      * @return 更新后的报名表模板
      */
@@ -81,9 +88,15 @@ public interface ApplicationFormTemplateService {
                             + ApplicationFormTemplateConstants.MAX_PROMPT_LENGTH + ".") String prompt);
 
     /**
-     * 停用报名表模板
+     * 停用报名表模板，停用之后无法报名，可以再次启用
      *
      * @permission 需要是该报名表模板所属招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 报名表模板不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              OperationConflict.Status: 招新状态不是 ENDED 之前
+     *              OperationConflict.Unmodified: 报名表模板已经被停用
      *
      * @param id 报名表模板编号
      * @return 停用后的报名表模板
@@ -95,6 +108,12 @@ public interface ApplicationFormTemplateService {
      * 启用报名表模板
      *
      * @permission 需要是该报名表模板所属招新所属组织所属用户主体本身
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 报名表模板不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              OperationConflict.Status: 招新状态不是 ENDED 之前
+     *              OperationConflict.Unmodified: 报名表模板已经被启用
      *
      * @param id 报名表模板编号
      * @return 启用后的报名表模板

@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.dao;
 
 import com.xiaohuashifu.recruit.registration.service.do0.ApplicationFormTemplateDO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 描述：报名表模板数据库映射层
@@ -22,6 +23,10 @@ public interface ApplicationFormTemplateMapper {
 
     int countByRecruitmentId(Long recruitmentId);
 
+    int updateApplicationFormTemplate(ApplicationFormTemplateDO applicationFormTemplateDO);
 
+    int updatePrompt(@Param("id") Long id, @Param("prompt") String prompt);
+
+    int updateDeactivated(@Param("id") Long id, @Param("deactivated") Boolean deactivated);
 }
 

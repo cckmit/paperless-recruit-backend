@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.registration.api.po.AddApplicationFormTemplatePO;
+import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormTemplatePO;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -70,22 +71,42 @@ public class ApplicationFormTemplateServiceImplTest {
 
     @Test
     public void getApplicationFormTemplateByRecruitmentId() {
+        System.out.println(applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(4L));
     }
 
     @Test
     public void updateApplicationFormTemplate() {
+        System.out.println(applicationFormTemplateService.updateApplicationFormTemplate(
+                UpdateApplicationFormTemplatePO.builder()
+                .id(1L)
+                .avatar(true)
+                .fullName(true)
+                .phone(true)
+                .firstDepartment(true)
+                .secondDepartment(false)
+                .email(false)
+                .introduction(false)
+                .attachment(true)
+                .studentNumber(false)
+                .college(false)
+                .major(false)
+                .note(false)
+                .build()));
     }
 
     @Test
     public void updatePrompt() {
+        System.out.println(applicationFormTemplateService.updatePrompt(1L, "各位加油噢，冲冲冲！"));
     }
 
     @Test
     public void deactivateApplicationFormTemplate() {
+        System.out.println(applicationFormTemplateService.deactivateApplicationFormTemplate(1L));
     }
 
     @Test
     public void enableApplicationFormTemplate() {
+        System.out.println(applicationFormTemplateService.enableApplicationFormTemplate(3L));
     }
 
     @Test

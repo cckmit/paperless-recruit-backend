@@ -40,7 +40,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
      * @return 上传结果
      */
     @Override
-    public Result<Void> putObject(String objectName, byte[] object) {
+    public <T> Result<T> putObject(String objectName, byte[] object) {
         // 对象名不能为空
         if (StringUtils.isBlank(objectName)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The object name can't be blank.");
@@ -77,7 +77,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
      * @return 删除结果
      */
     @Override
-    public Result<Void> deleteObject(String objectName) {
+    public <T> Result<T> deleteObject(String objectName) {
         if (!objectStorageManager.deleteObject(objectName)) {
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR, "Delete object failed.");
         }

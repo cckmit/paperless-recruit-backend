@@ -30,7 +30,7 @@ public interface ObjectStorageService {
      * @param object 对象
      * @return 上传结果
      */
-    Result<Void> putObject(String objectName, byte[] object);
+    <T> Result<T> putObject(String objectName, byte[] object);
 
     /**
      * 删除对象
@@ -43,7 +43,7 @@ public interface ObjectStorageService {
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 删除结果
      */
-    Result<Void> deleteObject(@NotBlank(message = "The objectName can't be blank.")
+    <T> Result<T> deleteObject(@NotBlank(message = "The objectName can't be blank.")
                               @ObjectName String objectName);
 
     /**

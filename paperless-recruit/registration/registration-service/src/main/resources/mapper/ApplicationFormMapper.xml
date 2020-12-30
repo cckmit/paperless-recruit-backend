@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.registration.service.dao.ApplicationFormMapper">
+
+    <resultMap id="applicationForm" type="com.xiaohuashifu.recruit.registration.service.do0.ApplicationFormDO">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="recruitmentId" column="recruitment_id"/>
+        <result property="avatarUrl" column="avatar_url"/>
+        <result property="fullName" column="full_name"/>
+        <result property="phone" column="phone"/>
+        <result property="firstDepartmentId" column="first_department_id"/>
+        <result property="secondDepartmentId" column="second_department_id"/>
+        <result property="email" column="email"/>
+        <result property="introduction" column="introduction"/>
+        <result property="attachmentUrl" column="attachment_url"/>
+        <result property="studentNumber" column="student_number"/>
+        <result property="collegeId" column="college_id"/>
+        <result property="majorId" column="major_id"/>
+        <result property="note" column="note"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="applicationForm">
+        id, user_id, recruitment_id, avatar_url, full_name, phone, first_department_id, second_department_id, email,
+        introduction, attachment_url, student_number, college_id, major_id, note, create_time, update_time
+    </sql>
+
+    <insert id="insertApplicationForm" keyProperty="id">
+        insert into application_form
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            user_id, recruitment_id,
+            <if test="avatarUrl != null" >
+                avatar_url,
+            </if>
+            <if test="fullName != null" >
+                full_name,
+            </if>
+            <if test="phone != null" >
+                phone,
+            </if>
+            <if test="firstDepartmentId != null" >
+                first_department_id,
+            </if>
+            <if test="secondDepartmentId != null" >
+                second_department_id,
+            </if>
+            <if test="email != null" >
+                email,
+            </if>
+            <if test="introduction != null" >
+                introduction,
+            </if>
+            <if test="attachmentUrl != null" >
+                attachment_url,
+            </if>
+            <if test="studentNumber != null" >
+                student_number,
+            </if>
+            <if test="collegeId != null" >
+                college_id,
+            </if>
+            <if test="majorId != null" >
+                major_id,
+            </if>
+            <if test="note != null" >
+                note,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            #{userId}, #{recruitmentId},
+            <if test="avatarUrl != null" >
+                #{avatarUrl},
+            </if>
+            <if test="fullName != null" >
+                #{fullName},
+            </if>
+            <if test="phone != null" >
+                #{phone},
+            </if>
+            <if test="firstDepartmentId != null" >
+                #{firstDepartmentId},
+            </if>
+            <if test="secondDepartmentId != null" >
+                #{secondDepartmentId},
+            </if>
+            <if test="email != null" >
+                #{email},
+            </if>
+            <if test="introduction != null" >
+                #{introduction},
+            </if>
+            <if test="attachmentUrl != null" >
+                #{attachmentUrl},
+            </if>
+            <if test="studentNumber != null" >
+                #{studentNumber},
+            </if>
+            <if test="collegeId != null" >
+                #{collegeId},
+            </if>
+            <if test="majorId != null" >
+                #{majorId},
+            </if>
+            <if test="note != null" >
+                #{note},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getApplicationForm" resultMap="applicationForm">
+        select <include refid="applicationForm"/>
+        from application_form
+        where id = #{id}
+    </select>
+
+    <select id="countByUserIdAndRecruitmentId" resultType="java.lang.Integer">
+        select count(*)
+        from application_form
+        where user_id = #{userId}
+        and recruitment_id = #{recruitmentId}
+    </select>
+
+</mapper>

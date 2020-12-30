@@ -27,6 +27,8 @@ public interface ApplicationFormService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 部门不存在
+     *              InvalidParameter.NotContain: 学院不被包含 | 专业不被包含 | 部门不被包含
+     *              InvalidParameter.Mismatch: 组织不包含该部门
      *              Forbidden.Deactivated: 学院被停用 | 专业被停用 | 部门被停用
      *              OperationConflict.Duplicate: 报名表已经存在
      *              OperationConflict.Lock: 获取报名表的锁失败

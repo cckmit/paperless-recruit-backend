@@ -1059,13 +1059,18 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         // 检查招新发布时间
         RecruitmentStatusEnum recruitmentStatus = RecruitmentStatusEnum.WAITING_FOR_RELEASE;
+        LocalDateTime currentTime = LocalDateTime.now();
         if (createRecruitmentPO.getReleaseTime() == null) {
-            createRecruitmentPO.setReleaseTime(LocalDateTime.now());
+            createRecruitmentPO.setReleaseTime(currentTime);
+        }
+
+        // 如果招新发布时间小于等于当前时间则直接发布
+        LocalDateTime releaseTime = createRecruitmentPO.getReleaseTime();
+        if (releaseTime.isBefore(currentTime) || releaseTime.isEqual(currentTime)) {
             recruitmentStatus = RecruitmentStatusEnum.WAITING_START;
         }
 
         // 招新发布时间不能大于数据库的上限
-        LocalDateTime releaseTime = createRecruitmentPO.getReleaseTime();
         if (releaseTime.isAfter(MySqlConstants.DATE_TIME_MAX_VALUE)) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                     "The releaseTime must not be greater than 9999-12-31 23:59:59");
@@ -1089,8 +1094,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
                     "The registrationTimeFrom must be greater than or equal to releaseTime.");
         }
 
-        // 报名开始时间等于招新发布时间，则直接开始报名
-        if (registrationTimeFrom.isEqual(releaseTime)) {
+        // 报名开始时间小于等于当前时间，则直接开始报名
+        if (registrationTimeFrom.isBefore(currentTime) || registrationTimeFrom.isEqual(currentTime)) {
             recruitmentStatus = RecruitmentStatusEnum.STARTED;
         }
 
@@ -1144,6 +1149,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         return new RecruitmentDTO.Builder()
                 .id(recruitmentDO.getId())
                 .organizationId(recruitmentDO.getOrganizationId())
+                .recruitmentDepartmentIds(recruitmentDO.getRecruitmentDepartmentIds())
                 .recruitmentCollegeIds(recruitmentDO.getRecruitmentCollegeIds())
                 .positionName(recruitmentDO.getPositionName())
                 .recruitmentNumbers(recruitmentDO.getRecruitmentNumbers())

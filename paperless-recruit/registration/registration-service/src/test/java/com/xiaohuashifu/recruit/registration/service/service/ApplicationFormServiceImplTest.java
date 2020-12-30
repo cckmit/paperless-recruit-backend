@@ -70,12 +70,19 @@ public class ApplicationFormServiceImplTest {
         System.out.println(applicationFormService.createApplicationForm(
                 CreateApplicationFormPO.builder()
                         .userId(1L)
-        .recruitmentId(8L)
+        .recruitmentId(14L)
         .avatar(applicationFormAvatarPO)
         .fullName("吴嘉贤")
         .phone("13333333333")
         .firstDepartmentId(2L)
+                        .secondDepartmentId(4L)
+                        .email("827032783@qq.com")
+                        .introduction("我是吴嘉贤")
         .attachment(applicationFormAttachmentPO)
+                        .studentNumber("201734020124")
+                        .collegeId(1L)
+                        .majorId(3L)
+                        .note("请选我")
         .build()));
     }
 

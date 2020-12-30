@@ -15,6 +15,11 @@ public interface ApplicationFormMapper {
 
     ApplicationFormDO getApplicationForm(Long id);
 
+    Long getRecruitmentId(Long id);
+
+    Long getUserId(Long id);
+
     int countByUserIdAndRecruitmentId(@Param("userId") Long userId, @Param("recruitmentId") Long recruitmentId);
+
 }
 

@@ -52,20 +52,20 @@ public class ApplicationFormTemplateServiceImplTest {
 //        private Boolean note;
         System.out.println(applicationFormTemplateService.addApplicationFormTemplate(
                 AddApplicationFormTemplatePO.builder()
-                        .recruitmentId(8L)
+                        .recruitmentId(14L)
                         .prompt("请各位报名者在附件里添加个人作品。")
                         .avatar(true)
                         .fullName(true)
                         .phone(true)
                         .firstDepartment(true)
-                        .secondDepartment(false)
-                        .email(false)
+                        .secondDepartment(true)
+                        .email(true)
                         .introduction(false)
                         .attachment(true)
-                        .studentNumber(false)
-                        .college(false)
-                        .major(false)
-                        .note(false)
+                        .studentNumber(true)
+                        .college(true)
+                        .major(true)
+                        .note(true)
                         .build()));
     }
 

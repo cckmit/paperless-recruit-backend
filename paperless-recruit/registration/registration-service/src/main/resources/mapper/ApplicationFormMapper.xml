@@ -116,6 +116,18 @@
         where id = #{id}
     </select>
 
+    <select id="getRecruitmentId" resultType="java.lang.Long">
+        select recruitment_id
+        from application_form
+        where id = #{id}
+    </select>
+
+    <select id="getUserId" resultType="java.lang.Long">
+        select user_id
+        from application_form
+        where id = #{id}
+    </select>
+
     <select id="countByUserIdAndRecruitmentId" resultType="java.lang.Integer">
         select count(*)
         from application_form

@@ -3,16 +3,18 @@ package com.xiaohuashifu.recruit.registration.service.service;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.validator.annotation.FullName;
+import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
+import com.xiaohuashifu.recruit.common.validator.annotation.StudentNumber;
 import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormTemplateDTO;
-import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormAttachmentPO;
-import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormAvatarPO;
-import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
-import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormAvatarPO;
+import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
+import com.xiaohuashifu.recruit.registration.api.po.*;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
+import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.dao.ApplicationFormMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.ApplicationFormDO;
 import com.xiaohuashifu.recruit.user.api.service.CollegeService;
@@ -20,9 +22,10 @@ import com.xiaohuashifu.recruit.user.api.service.MajorService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.text.MessageFormat;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 描述：报名表服务实现
@@ -47,6 +50,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
     @Reference
     private ObjectStorageService objectStorageService;
+
+    @Reference
+    private RecruitmentService recruitmentService;
 
     private final ApplicationFormMapper applicationFormMapper;
 
@@ -79,6 +85,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 部门不存在
+     *              InvalidParameter.NotContain: 学院不被包含 | 专业不被包含 | 部门不被包含
+     *              InvalidParameter.Mismatch: 组织不包含该部门
      *              Forbidden.Deactivated: 学院被停用 | 专业被停用 | 部门被停用
      *              OperationConflict.Duplicate: 报名表已经存在
      *              OperationConflict.Lock: 获取报名表的锁失败
@@ -150,40 +158,262 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         return Result.success(applicationFormDTO);
     }
 
+    /**
+     * 更新头像
+     *
+     * @permission 必须是该报名表所属用户
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 报名表不存在
+     *              InvalidParameter.NotRequired: 不需要该参数
+     *              OperationConflict.Lock: 获取报名表头像的锁失败
+     *              InternalError: 上传文件失败
+     *
+     * @param updateApplicationFormAvatarPO 更新头像参数
+     * @return 更新后的报名表
+     */
     @Override
     public Result<ApplicationFormDTO> updateAvatar(UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO) {
         return null;
     }
 
     /**
+     * 更新姓名
+     *
+     * @param id       报名表编号
+     * @param fullName 姓名
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateFullName(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotBlank(message = "The fullName can't be blank.") @FullName String fullName) {
+        return null;
+    }
+
+    /**
+     * 更新手机号码
+     *
+     * @param id    报名表编号
+     * @param phone 手机号码
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updatePhone(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotBlank(message = "The phone can't be blank.") @Phone String phone) {
+        return null;
+    }
+
+    /**
+     * 更新第一部门
+     *
+     * @param id                报名表编号
+     * @param firstDepartmentId 第一部门
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateFirstDepartment(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotNull(message = "The firstDepartmentId can't be null.") @Positive(message = "The firstDepartmentId must be greater than 0.") Long firstDepartmentId) {
+        return null;
+    }
+
+    /**
+     * 更新第二部门
+     *
+     * @param id                 报名表编号
+     * @param secondDepartmentId 第二部门
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateSecondDepartment(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotNull(message = "The secondDepartmentId can't be null.") @Positive(message = "The secondDepartmentId must be greater than 0.") Long secondDepartmentId) {
+        return null;
+    }
+
+    /**
+     * 更新邮箱
+     *
+     * @param id    报名表编号
+     * @param email 邮箱
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateEmail(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotBlank(message = "The email can't be blank.") @Email String email) {
+        return null;
+    }
+
+    /**
+     * 更新个人简介
+     *
+     * @param id           报名表编号
+     * @param introduction 个人简介
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateIntroduction(Long id, String introduction) {
+        return null;
+    }
+
+    /**
+     * 更新附件
+     *
+     * @param updateApplicationFormAttachmentPO 更新附件参数
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     * OperationConflict.Lock: 获取报名表附件的锁失败
+     * InternalError: 上传文件失败
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateAttachment(@NotNull(message = "The updateApplicationFormAttachmentPO can't be null.") UpdateApplicationFormAttachmentPO updateApplicationFormAttachmentPO) {
+        return null;
+    }
+
+    /**
+     * 更新学号
+     *
+     * @param id            报名表编号
+     * @param studentNumber 学号
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateStudentNumber(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotBlank(message = "The studentNumber can't be blank.") @StudentNumber String studentNumber) {
+        return null;
+    }
+
+    /**
+     * 更新学院
+     *
+     * @param id        报名表编号
+     * @param collegeId 学院
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateCollege(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotNull(message = "The collegeId can't be null.") @Positive(message = "The collegeId must be greater than 0.") Long collegeId) {
+        return null;
+    }
+
+    /**
+     * 更新专业
+     *
+     * @param id      报名表编号
+     * @param majorId 专业
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateMajor(@NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id, @NotNull(message = "The majorId can't be null.") @Positive(message = "The majorId must be greater than 0.") Long majorId) {
+        return null;
+    }
+
+    /**
+     * 更新备注
+     *
+     * @param id   报名表编号
+     * @param note 备注
+     * @return 更新后的报名表
+     * @permission 必须是该报名表所属用户
+     * @errorCode InvalidParameter: 参数格式错误
+     * InvalidParameter.NotExist: 报名表不存在
+     * InvalidParameter.NotRequired: 不需要该参数
+     */
+    @Override
+    public Result<ApplicationFormDTO> updateNote(Long id, String note) {
+        return null;
+    }
+
+    /**
      * 获取报名表所属招新的编号
+     *
+     * @private 内部方法
      *
      * @param id 报名表编号
      * @return 招新编号，若找不到可能返回 null
-     * @private 内部方法
      */
     @Override
     public Long getRecruitmentId(Long id) {
-        return null;
+        return applicationFormMapper.getRecruitmentId(id);
     }
 
     /**
      * 获取报名表所属用户的编号
      *
+     * @private 内部方法
+     *
      * @param id 报名表编号
      * @return 用户编号，若找不到可能返回 null
-     * @private 内部方法
      */
     @Override
     public Long getUserId(Long id) {
-        return null;
+        return applicationFormMapper.getUserId(id);
     }
 
     /**
+     * ApplicationFormDO to ApplicationFormDTO
+     *
+     * @param applicationFormDO ApplicationFormDO
+     * @return ApplicationFormDTO
+     */
+    private ApplicationFormDTO applicationFormDO2ApplicationFormDTO(ApplicationFormDO applicationFormDO) {
+        return ApplicationFormDTO.builder()
+                .id(applicationFormDO.getId())
+                .userId(applicationFormDO.getUserId())
+                .recruitmentId(applicationFormDO.getRecruitmentId())
+                .avatarUrl(applicationFormDO.getAvatarUrl())
+                .fullName(applicationFormDO.getFullName())
+                .phone(applicationFormDO.getPhone())
+                .firstDepartmentId(applicationFormDO.getFirstDepartmentId())
+                .secondDepartmentId(applicationFormDO.getSecondDepartmentId())
+                .email(applicationFormDO.getEmail())
+                .introduction(applicationFormDO.getIntroduction())
+                .attachmentUrl(applicationFormDO.getAttachmentUrl())
+                .studentNumber(applicationFormDO.getStudentNumber())
+                .collegeId(applicationFormDO.getCollegeId())
+                .majorId(applicationFormDO.getMajorId())
+                .note(applicationFormDO.getNote())
+                .build();
+    }
+
+    /**
+     * 这段代码比较长，但是也不知道这么改
      * CreateApplicationFormPO to ApplicationFormDO
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 部门不存在
+     *              InvalidParameter.NotContain: 学院不被包含 | 专业不被包含 | 部门不被包含
+     *              InvalidParameter.Mismatch: 组织不包含该部门
      *              Forbidden.Deactivated: 学院被停用 | 专业被停用 | 部门被停用
      *              InternalError: 上传文件失败
      *
@@ -243,69 +473,122 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         }
 
         // 判断是否需要 college
+        Long recruitmentId = createApplicationFormPO.getRecruitmentId();
+        Result<RecruitmentDTO> recruitment = recruitmentService.getRecruitment(recruitmentId);
+        RecruitmentDTO recruitmentDTO = recruitment.getData();
         if (applicationFormTemplateDTO.getCollege()) {
-            if (createApplicationFormPO.getCollegeId() == null) {
+            Long collegeId = createApplicationFormPO.getCollegeId();
+            if (collegeId == null) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The collegeId can't be null.");
             }
 
+            // 判断招新学院列表是否包含该学院
+            Set<Long> recruitmentCollegeIds = recruitmentDTO.getRecruitmentCollegeIds()
+                    .stream().map(collegeId0->Long.valueOf(collegeId0 + "")).collect(Collectors.toSet());
+            System.out.println(recruitmentCollegeIds.size() != 0);
+            System.out.println(!recruitmentCollegeIds.contains(String.valueOf(collegeId)));
+            System.out.println(!recruitmentCollegeIds.contains(collegeId));
+            if ((recruitmentCollegeIds.size() != 0) && (!recruitmentCollegeIds.contains(collegeId))) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
+                        "The college does not contain in this recruitment.");
+            }
+
             // 判断学院状态
-            Result<ApplicationFormDO> checkCollegeStatusResult =
-                    collegeService.checkCollegeStatus(createApplicationFormPO.getCollegeId());
+            Result<ApplicationFormDO> checkCollegeStatusResult = collegeService.checkCollegeStatus(collegeId);
             if (checkCollegeStatusResult.isFailure()) {
                 return checkCollegeStatusResult;
             }
 
-            applicationFormDOBuilder.collegeId(createApplicationFormPO.getCollegeId());
+            applicationFormDOBuilder.collegeId(collegeId);
         }
 
         // 判断是否需要 major
         if (applicationFormTemplateDTO.getMajor()) {
-            if (createApplicationFormPO.getMajorId() == null) {
+            Long majorId = createApplicationFormPO.getMajorId();
+            if (majorId == null) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The majorId can't be null.");
             }
 
+            // 判断招新专业列表是否包含该专业
+            Set<Long> recruitmentMajorIds = recruitmentDTO.getRecruitmentMajorIds();
+            if (recruitmentMajorIds.size() != 0 && !recruitmentMajorIds.contains(majorId)) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
+                        "The major does not contain in this recruitment.");
+            }
+
             // 判断专业状态
-            Result<ApplicationFormDO> checkMajorStatusResult =
-                    majorService.checkMajorStatus(createApplicationFormPO.getMajorId());
+            Result<ApplicationFormDO> checkMajorStatusResult = majorService.checkMajorStatus(majorId);
             if (checkMajorStatusResult.isFailure()) {
                 return checkMajorStatusResult;
             }
 
-            applicationFormDOBuilder.majorId(createApplicationFormPO.getMajorId());
+            applicationFormDOBuilder.majorId(majorId);
         }
 
         // 判断是否需要 firstDepartment
         if (applicationFormTemplateDTO.getFirstDepartment()) {
-            if (createApplicationFormPO.getFirstDepartmentId() == null) {
+            Long firstDepartmentId = createApplicationFormPO.getFirstDepartmentId();
+            if (firstDepartmentId == null) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                         "The firstDepartmentId can't be null.");
             }
 
+            // 判断招新部门列表是否包含该部门
+            Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
+            if (recruitmentDepartmentIds.size() != 0 && !recruitmentDepartmentIds.contains(firstDepartmentId)) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
+                        "The firstDepartment does not contain in this recruitment.");
+            }
+
+            // 判断该部门是否是该组织的
+            Long organizationIdByRecruitmentId = recruitmentService.getOrganizationId(recruitmentId);
+            Long organizationIdByDepartmentId = departmentService.getOrganizationId(firstDepartmentId);
+            if (!Objects.equals(organizationIdByRecruitmentId, organizationIdByDepartmentId)) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
+                        "The department does not belong to this organization.");
+            }
+
             // 判断第一部门状态
             Result<ApplicationFormDO> checkDepartmentStatusResult =
-                    departmentService.checkDepartmentStatus(createApplicationFormPO.getFirstDepartmentId());
+                    departmentService.checkDepartmentStatus(firstDepartmentId);
             if (checkDepartmentStatusResult.isFailure()) {
                 return checkDepartmentStatusResult;
             }
 
-            applicationFormDOBuilder.firstDepartmentId(createApplicationFormPO.getFirstDepartmentId());
+            applicationFormDOBuilder.firstDepartmentId(firstDepartmentId);
         }
 
         // 判断是否需要 secondDepartment
         if (applicationFormTemplateDTO.getSecondDepartment()) {
-            if (createApplicationFormPO.getSecondDepartmentId() == null) {
+            Long secondDepartmentId = createApplicationFormPO.getSecondDepartmentId();
+            if (secondDepartmentId == null) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
                         "The secondDepartmentId can't be null.");
             }
 
+            // 判断招新部门列表是否包含该部门
+            Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
+            if (recruitmentDepartmentIds.size() != 0 && !recruitmentDepartmentIds.contains(secondDepartmentId)) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
+                        "The firstDepartment does not contain in this recruitment.");
+            }
+
+            // 判断该部门是否是该组织的
+            Long organizationIdByRecruitmentId = recruitmentService.getOrganizationId(recruitmentId);
+            Long organizationIdByDepartmentId = departmentService.getOrganizationId(secondDepartmentId);
+            if (!Objects.equals(organizationIdByRecruitmentId, organizationIdByDepartmentId)) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
+                        "The department does not belong to this organization.");
+            }
+
             // 判断第二部门状态
             Result<ApplicationFormDO> checkDepartmentStatusResult =
-                    departmentService.checkDepartmentStatus(createApplicationFormPO.getSecondDepartmentId());
+                    departmentService.checkDepartmentStatus(secondDepartmentId);
             if (checkDepartmentStatusResult.isFailure()) {
                 return checkDepartmentStatusResult;
             }
 
-            applicationFormDOBuilder.secondDepartmentId(createApplicationFormPO.getSecondDepartmentId());
+            applicationFormDOBuilder.secondDepartmentId(secondDepartmentId);
         }
 
         // 判断是否需要 avatar
@@ -357,29 +640,4 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
                 .build());
     }
 
-    /**
-     * ApplicationFormDO to ApplicationFormDTO
-     *
-     * @param applicationFormDO ApplicationFormDO
-     * @return ApplicationFormDTO
-     */
-    private ApplicationFormDTO applicationFormDO2ApplicationFormDTO(ApplicationFormDO applicationFormDO) {
-        return ApplicationFormDTO.builder()
-                .id(applicationFormDO.getId())
-                .userId(applicationFormDO.getUserId())
-                .recruitmentId(applicationFormDO.getRecruitmentId())
-                .avatarUrl(applicationFormDO.getAvatarUrl())
-                .fullName(applicationFormDO.getFullName())
-                .phone(applicationFormDO.getPhone())
-                .firstDepartmentId(applicationFormDO.getFirstDepartmentId())
-                .secondDepartmentId(applicationFormDO.getSecondDepartmentId())
-                .email(applicationFormDO.getEmail())
-                .introduction(applicationFormDO.getIntroduction())
-                .attachmentUrl(applicationFormDO.getAttachmentUrl())
-                .studentNumber(applicationFormDO.getStudentNumber())
-                .collegeId(applicationFormDO.getCollegeId())
-                .majorId(applicationFormDO.getMajorId())
-                .note(applicationFormDO.getNote())
-                .build();
-    }
 }

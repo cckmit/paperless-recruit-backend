@@ -36,7 +36,7 @@
         values(#{organizationId},
                json_array(
                 <foreach item="recruitmentDepartmentId" collection="recruitmentDepartmentIds" separator="," >
-                    #{recruitmentDepartmentId}
+                    cast(#{recruitmentDepartmentId} as char)
                 </foreach>),
                #{positionName}, #{recruitmentNumbers}, #{positionDuty}, #{positionRequirement},
                 json_array(
@@ -45,11 +45,11 @@
                 </foreach>),
                 json_array(
                 <foreach item="recruitmentCollegeId" collection="recruitmentCollegeIds" separator="," >
-                    #{recruitmentCollegeId}
+                    cast(#{recruitmentCollegeId} as char)
                 </foreach>),
                 json_array(
                 <foreach item="recruitmentMajorId" collection="recruitmentMajorIds" separator="," >
-                    #{recruitmentMajorId}
+                    cast(#{recruitmentMajorId} as char)
                 </foreach>),
                 #{releaseTime}, #{registrationTimeFrom}, #{registrationTimeTo}, #{recruitmentStatus})
     </insert>

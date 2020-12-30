@@ -128,6 +128,12 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.NotRequired", "The resource of this parameter is not required."),
 
     /**
+     * 非法参数，不包含
+     */
+    INVALID_PARAMETER_NOT_CONTAIN(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.NotContain", "The resource of this parameter is not contain."),
+
+    /**
      * 未知错误
      */
     UNKNOWN_ERROR(HttpStatus.BAD_REQUEST,

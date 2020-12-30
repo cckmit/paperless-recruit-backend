@@ -64,8 +64,8 @@ public class RecruitmentServiceImplTest {
                 .recruitmentCollegeIds(recruitmentCollegeIds)
                 .recruitmentMajorIds(recruitmentMajorIds)
                 .releaseTime(LocalDateTime.now().plusMinutes(1L))
-                .registrationTimeFrom(LocalDateTime.now().plusMinutes(2L))
-                .registrationTimeTo(LocalDateTime.now().plusMinutes(3L))
+                .registrationTimeFrom(null)
+                .registrationTimeTo(LocalDateTime.now().plusMinutes(100L))
                 .build();
         System.out.println(recruitmentService.createRecruitment(createRecruitmentPO));
     }
@@ -112,7 +112,7 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void getRecruitment() {
-        System.out.println(recruitmentService.getRecruitment(3L));
+        System.out.println(recruitmentService.getRecruitment(12L));
     }
 
     @Test

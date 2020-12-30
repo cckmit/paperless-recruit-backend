@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.registration.api.service;
 
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
 import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
@@ -44,5 +45,12 @@ public interface ApplicationFormService {
      * @return 报名表
      */
     Result<ApplicationFormDTO> getApplicationForm(Long id);
+
+    /**
+     * 获取一个招新的报名表
+     * 
+     * @return
+     */
+    Result<PageInfo<ApplicationFormDTO>> listApplicationFormsByRecruitment();
 
 }

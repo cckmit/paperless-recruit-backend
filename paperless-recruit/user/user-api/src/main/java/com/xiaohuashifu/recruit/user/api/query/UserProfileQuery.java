@@ -28,8 +28,8 @@ public class UserProfileQuery implements Serializable {
      */
     @NotNull(message = "The pageSize can't be null.")
     @Positive(message = "The pageSize must be greater than 0.")
-    @Max(value = QueryConstants.DEFAULT_PAGE_SIZE,
-            message = "The pageSize must be less than or equal to " + QueryConstants.DEFAULT_PAGE_SIZE + ".")
+    @Max(value = QueryConstants.MAX_PAGE_SIZE,
+            message = "The pageSize must be less than or equal to " + QueryConstants.MAX_PAGE_SIZE + ".")
     private Long pageSize;
 
     /**

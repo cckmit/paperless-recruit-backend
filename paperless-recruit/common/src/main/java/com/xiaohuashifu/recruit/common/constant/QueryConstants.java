@@ -9,8 +9,8 @@ package com.xiaohuashifu.recruit.common.constant;
 public class QueryConstants {
 
     /**
-     * 默认页条数
+     * 最大页条数
      */
-    public static final int DEFAULT_PAGE_SIZE = 50;
+    public static final int MAX_PAGE_SIZE = 50;
 
 }

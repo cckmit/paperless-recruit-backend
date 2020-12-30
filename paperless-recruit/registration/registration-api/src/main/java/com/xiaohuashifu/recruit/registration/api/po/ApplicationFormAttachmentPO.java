@@ -22,7 +22,7 @@ public class ApplicationFormAttachmentPO implements Serializable {
     @NotNull(message = "The avatar can't be null.")
     @Size(max = ApplicationFormConstants.MAX_ATTACHMENT_LENGTH, message = "The attachment must not be greater than "
             + ApplicationFormConstants.MAX_ATTACHMENT_LENGTH + ".")
-    private byte[] attachment;
+    protected byte[] attachment;
 
     /**
      * 附件的名字
@@ -31,7 +31,9 @@ public class ApplicationFormAttachmentPO implements Serializable {
     @Size(max = ApplicationFormConstants.MAX_ATTACHMENT_NAME_LENGTH,
             message = "The attachmentName must not be greater than "
                     + ApplicationFormConstants.MAX_ATTACHMENT_NAME_LENGTH + ".")
-    private String attachmentName;
+    protected String attachmentName;
+
+    public ApplicationFormAttachmentPO() {}
 
     public ApplicationFormAttachmentPO(byte[] attachment, String attachmentName) {
         this.attachment = attachment;

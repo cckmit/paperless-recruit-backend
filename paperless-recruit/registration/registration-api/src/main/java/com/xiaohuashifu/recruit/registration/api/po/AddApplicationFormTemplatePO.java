@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 
 /**
  * 描述：创建报名表模板的参数对象
@@ -14,7 +13,7 @@ import java.io.Serializable;
  * @author xhsf
  * @create 2020/12/23 21:23
  */
-public class AddApplicationFormTemplatePO extends ApplicationFormTemplatePO implements Serializable {
+public class AddApplicationFormTemplatePO extends ApplicationFormTemplatePO {
 
     /**
      * 招新编号

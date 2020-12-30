@@ -10,6 +10,7 @@ import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormTemplateDTO;
 import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormAttachmentPO;
 import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormAvatarPO;
 import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
+import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormAvatarPO;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import com.xiaohuashifu.recruit.registration.service.dao.ApplicationFormMapper;
@@ -19,6 +20,7 @@ import com.xiaohuashifu.recruit.user.api.service.MajorService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
+import javax.validation.constraints.NotNull;
 import java.text.MessageFormat;
 import java.util.UUID;
 
@@ -146,6 +148,35 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         // 封装成 DTO
         ApplicationFormDTO applicationFormDTO = applicationFormDO2ApplicationFormDTO(applicationFormDO);
         return Result.success(applicationFormDTO);
+    }
+
+    @Override
+    public Result<ApplicationFormDTO> updateAvatar(UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO) {
+        return null;
+    }
+
+    /**
+     * 获取报名表所属招新的编号
+     *
+     * @param id 报名表编号
+     * @return 招新编号，若找不到可能返回 null
+     * @private 内部方法
+     */
+    @Override
+    public Long getRecruitmentId(Long id) {
+        return null;
+    }
+
+    /**
+     * 获取报名表所属用户的编号
+     *
+     * @param id 报名表编号
+     * @return 用户编号，若找不到可能返回 null
+     * @private 内部方法
+     */
+    @Override
+    public Long getUserId(Long id) {
+        return null;
     }
 
     /**

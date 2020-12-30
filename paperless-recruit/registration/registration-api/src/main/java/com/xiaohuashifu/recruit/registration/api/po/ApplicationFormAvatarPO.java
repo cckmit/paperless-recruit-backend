@@ -23,14 +23,17 @@ public class ApplicationFormAvatarPO implements Serializable {
     @NotNull(message = "The avatar can't be null.")
     @Size(max = ApplicationFormConstants.MAX_AVATAR_LENGTH, message = "The avatar must not be greater than "
             + ApplicationFormConstants.MAX_AVATAR_LENGTH + ".")
-    private byte[] avatar;
+    protected byte[] avatar;
 
     /**
      * 头像的扩展名
      */
     @NotBlank(message = "The extensionName can't be blank.")
     @ImageExtensionName
-    private String extensionName;
+    protected String extensionName;
+
+    public ApplicationFormAvatarPO() {
+    }
 
     public ApplicationFormAvatarPO(byte[] avatar, String extensionName) {
         this.avatar = avatar;

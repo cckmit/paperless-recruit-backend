@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.registration.service.service;
 import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormAttachmentPO;
 import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormAvatarPO;
 import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
+import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormAvatarPO;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -80,5 +81,16 @@ public class ApplicationFormServiceImplTest {
 
     @Test
     public void getApplicationForm() {
+        System.out.println(applicationFormService.getApplicationForm(1L));
+    }
+
+
+    @Test
+    public void updateAvatar() {
+        System.out.println(applicationFormService.updateAvatar(
+                UpdateApplicationFormAvatarPO.builder()
+                        .id(1L)
+                        .extensionName(".jpg")
+                        .avatar(null).build()));
     }
 }

@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.registration.api.po;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.io.Serializable;
 
 /**
  * 描述：更新报名表模板的参数对象
@@ -10,7 +9,7 @@ import java.io.Serializable;
  * @author xhsf
  * @create 2020/12/23 21:23
  */
-public class UpdateApplicationFormTemplatePO extends ApplicationFormTemplatePO implements Serializable {
+public class UpdateApplicationFormTemplatePO extends ApplicationFormTemplatePO {
 
     /**
      * 报名表模板编号

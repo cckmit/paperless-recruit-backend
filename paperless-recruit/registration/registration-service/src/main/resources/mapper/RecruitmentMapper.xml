@@ -5,14 +5,17 @@
     <resultMap id="recruitment" type="com.xiaohuashifu.recruit.registration.service.do0.RecruitmentDO">
         <id property="id" column="id"/>
         <result property="organizationId" column="organization_id"/>
-        <result property="recruitmentDepartmentIds" column="recruitment_department_ids"/>
+        <result property="recruitmentDepartmentIds" column="recruitment_department_ids"
+                typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.LongSetTypeHandler"/>
         <result property="positionName" column="position_name"/>
         <result property="recruitmentNumbers" column="recruitment_numbers"/>
         <result property="positionDuty" column="position_duty"/>
         <result property="positionRequirement" column="position_requirement"/>
         <result property="recruitmentGrades" column="recruitment_grades"/>
-        <result property="recruitmentCollegeIds" column="recruitment_college_ids"/>
-        <result property="recruitmentMajorIds" column="recruitment_major_ids"/>
+        <result property="recruitmentCollegeIds" column="recruitment_college_ids"
+                typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.LongSetTypeHandler"/>
+        <result property="recruitmentMajorIds" column="recruitment_major_ids"
+                typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.LongSetTypeHandler"/>
         <result property="releaseTime" column="release_time"/>
         <result property="registrationTimeFrom" column="registration_time_from"/>
         <result property="registrationTimeTo" column="registration_time_to"/>

@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
@@ -22,10 +24,15 @@ import com.xiaohuashifu.recruit.user.api.service.MajorService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.text.MessageFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * 描述：报名表服务实现
@@ -35,6 +42,12 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ApplicationFormServiceImpl implements ApplicationFormService {
+
+    public static void main(String[] args) {
+        TypeReference<List<Long>> type = new TypeReference<>() {};
+        List<Long> result = JSON.parseObject("[\"2\", \"3\"]", type);
+        System.out.println(result.getClass());
+    }
 
     @Reference
     private ApplicationFormTemplateService applicationFormTemplateService;
@@ -84,10 +97,12 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * @permission 必须是用户本身
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 部门不存在
+     *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 部门不存在 | 招新不存在 | 报名表模板不存在
      *              InvalidParameter.NotContain: 学院不被包含 | 专业不被包含 | 部门不被包含
      *              InvalidParameter.Mismatch: 组织不包含该部门
-     *              Forbidden.Deactivated: 学院被停用 | 专业被停用 | 部门被停用
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 学院被停用 | 专业被停用 | 部门被停用 | 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *              OperationConflict.Duplicate: 报名表已经存在
      *              OperationConflict.Lock: 获取报名表的锁失败
      *              InternalError: 上传文件失败
@@ -106,6 +121,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE,
                     "The applicationForm already exist.");
         }
+
+        // 判断用户状态
 
         // 判断该招新是否可以报名
         Long recruitmentId = createApplicationFormPO.getRecruitmentId();
@@ -174,6 +191,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      */
     @Override
     public Result<ApplicationFormDTO> updateAvatar(UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO) {
+
+
         return null;
     }
 
@@ -424,7 +443,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     private Result<ApplicationFormDO> createApplicationFormPO2ApplicationFormDO(
             CreateApplicationFormPO createApplicationFormPO, ApplicationFormTemplateDTO applicationFormTemplateDTO) {
         // 判断是否需要 note
-        ApplicationFormDO.Builder applicationFormDOBuilder = ApplicationFormDO.builder();
+        ApplicationFormDO.ApplicationFormDOBuilder<?, ?> applicationFormDOBuilder = ApplicationFormDO.builder();
         if (applicationFormTemplateDTO.getNote()) {
             if (createApplicationFormPO.getNote() == null) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The note can't be null.");
@@ -483,11 +502,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             }
 
             // 判断招新学院列表是否包含该学院
-            Set<Long> recruitmentCollegeIds = recruitmentDTO.getRecruitmentCollegeIds()
-                    .stream().map(collegeId0->Long.valueOf(collegeId0 + "")).collect(Collectors.toSet());
-            System.out.println(recruitmentCollegeIds.size() != 0);
-            System.out.println(!recruitmentCollegeIds.contains(String.valueOf(collegeId)));
-            System.out.println(!recruitmentCollegeIds.contains(collegeId));
+            Set<Long> recruitmentCollegeIds = recruitmentDTO.getRecruitmentCollegeIds();
             if ((recruitmentCollegeIds.size() != 0) && (!recruitmentCollegeIds.contains(collegeId))) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
                         "The college does not contain in this recruitment.");
@@ -570,7 +585,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
             if (recruitmentDepartmentIds.size() != 0 && !recruitmentDepartmentIds.contains(secondDepartmentId)) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                        "The firstDepartment does not contain in this recruitment.");
+                        "The secondDepartment does not contain in this recruitment.");
             }
 
             // 判断该部门是否是该组织的

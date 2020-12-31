@@ -1,12 +1,15 @@
 package com.xiaohuashifu.recruit.registration.api.po;
 
 import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormConstants;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * 描述：报名表附件参数对象
@@ -14,6 +17,10 @@ import java.util.Arrays;
  * @author xhsf
  * @create 2020/12/28 22:08
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@SuperBuilder
 public class ApplicationFormAttachmentPO implements Serializable {
 
     /**
@@ -32,35 +39,4 @@ public class ApplicationFormAttachmentPO implements Serializable {
             message = "The attachmentName must not be greater than "
                     + ApplicationFormConstants.MAX_ATTACHMENT_NAME_LENGTH + ".")
     protected String attachmentName;
-
-    public ApplicationFormAttachmentPO() {}
-
-    public ApplicationFormAttachmentPO(byte[] attachment, String attachmentName) {
-        this.attachment = attachment;
-        this.attachmentName = attachmentName;
-    }
-
-    public byte[] getAttachment() {
-        return attachment;
-    }
-
-    public void setAttachment(byte[] attachment) {
-        this.attachment = attachment;
-    }
-
-    public String getAttachmentName() {
-        return attachmentName;
-    }
-
-    public void setAttachmentName(String attachmentName) {
-        this.attachmentName = attachmentName;
-    }
-
-    @Override
-    public String toString() {
-        return "ApplicationFormAttachmentPO{" +
-                "attachment=" + Arrays.toString(attachment) +
-                ", attachmentName='" + attachmentName + '\'' +
-                '}';
-    }
 }

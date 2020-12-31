@@ -52,7 +52,7 @@ public class ApplicationFormTemplateServiceImplTest {
 //        private Boolean note;
         System.out.println(applicationFormTemplateService.addApplicationFormTemplate(
                 AddApplicationFormTemplatePO.builder()
-                        .recruitmentId(14L)
+                        .recruitmentId(19L)
                         .prompt("请各位报名者在附件里添加个人作品。")
                         .avatar(true)
                         .fullName(true)
@@ -78,20 +78,20 @@ public class ApplicationFormTemplateServiceImplTest {
     public void updateApplicationFormTemplate() {
         System.out.println(applicationFormTemplateService.updateApplicationFormTemplate(
                 UpdateApplicationFormTemplatePO.builder()
-                .id(1L)
-                .avatar(true)
-                .fullName(true)
-                .phone(true)
-                .firstDepartment(true)
-                .secondDepartment(false)
-                .email(false)
-                .introduction(false)
-                .attachment(true)
-                .studentNumber(false)
-                .college(false)
-                .major(false)
-                .note(false)
-                .build()));
+                        .id(1L)
+                        .avatar(true)
+                        .fullName(true)
+                        .phone(true)
+                        .firstDepartment(true)
+                        .secondDepartment(false)
+                        .email(false)
+                        .introduction(false)
+                        .attachment(true)
+                        .studentNumber(false)
+                        .college(false)
+                        .major(false)
+                        .note(false)
+                        .build()));
     }
 
     @Test

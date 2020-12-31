@@ -22,6 +22,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -1118,7 +1119,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         }
 
         // 通过检查
-        RecruitmentDO recruitmentDO = new RecruitmentDO.Builder()
+        RecruitmentDO recruitmentDO = RecruitmentDO.builder()
                 .organizationId(createRecruitmentPO.getOrganizationId())
                 .positionName(createRecruitmentPO.getPositionName())
                 .recruitmentNumbers(createRecruitmentPO.getRecruitmentNumbers())
@@ -1146,18 +1147,18 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * @return RecruitmentDTO
      */
     private RecruitmentDTO recruitmentDO2RecruitmentDTO(RecruitmentDO recruitmentDO) {
-        return new RecruitmentDTO.Builder()
+        return RecruitmentDTO.builder()
                 .id(recruitmentDO.getId())
                 .organizationId(recruitmentDO.getOrganizationId())
-                .recruitmentDepartmentIds(recruitmentDO.getRecruitmentDepartmentIds())
-                .recruitmentCollegeIds(recruitmentDO.getRecruitmentCollegeIds())
+                .recruitmentDepartmentIds(new HashSet<>(recruitmentDO.getRecruitmentDepartmentIds()))
+                .recruitmentCollegeIds(new HashSet<>(recruitmentDO.getRecruitmentCollegeIds()))
                 .positionName(recruitmentDO.getPositionName())
                 .recruitmentNumbers(recruitmentDO.getRecruitmentNumbers())
                 .positionDuty(recruitmentDO.getPositionDuty())
                 .positionRequirement(recruitmentDO.getPositionRequirement())
-                .recruitmentGrades(recruitmentDO.getRecruitmentGrades())
-                .recruitmentCollegeIds(recruitmentDO.getRecruitmentCollegeIds())
-                .recruitmentMajorIds(recruitmentDO.getRecruitmentMajorIds())
+                .recruitmentGrades(new HashSet<>(recruitmentDO.getRecruitmentGrades()))
+                .recruitmentCollegeIds(new HashSet<>(recruitmentDO.getRecruitmentCollegeIds()))
+                .recruitmentMajorIds(new HashSet<>(recruitmentDO.getRecruitmentMajorIds()))
                 .releaseTime(recruitmentDO.getReleaseTime())
                 .registrationTimeFrom(recruitmentDO.getRegistrationTimeFrom())
                 .registrationTimeTo(recruitmentDO.getRegistrationTimeTo())

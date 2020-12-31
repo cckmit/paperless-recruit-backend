@@ -53,7 +53,7 @@ public class RecruitmentServiceImplTest {
         recruitmentMajorIds.add(2L);
         recruitmentMajorIds.add(3L);
 
-        CreateRecruitmentPO createRecruitmentPO = new CreateRecruitmentPO.Builder()
+        CreateRecruitmentPO createRecruitmentPO = CreateRecruitmentPO.builder()
                 .organizationId(1L)
                 .positionName("干事")
                 .recruitmentNumbers("约30人")

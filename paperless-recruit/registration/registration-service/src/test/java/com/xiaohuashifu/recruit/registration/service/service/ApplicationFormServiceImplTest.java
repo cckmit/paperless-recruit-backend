@@ -46,12 +46,17 @@ public class ApplicationFormServiceImplTest {
                 "\\u=3686185393,469536043&fm=26&gp=0.jpg");
         FileInputStream fileInputStream = new FileInputStream(file);
         byte[] bytes = fileInputStream.readAllBytes();
-        ApplicationFormAvatarPO applicationFormAvatarPO = new ApplicationFormAvatarPO(bytes, ".jpg");
+        ApplicationFormAvatarPO applicationFormAvatarPO =
+                ApplicationFormAvatarPO.builder().avatar(bytes).extensionName(".jpg").build();
 
         file = new File("D:\\Github\\DocumentAndCode\\MySQL\\druid连接池文档.md");
         fileInputStream = new FileInputStream(file);
         bytes = fileInputStream.readAllBytes();
-        ApplicationFormAttachmentPO applicationFormAttachmentPO = new ApplicationFormAttachmentPO(bytes, "druid连接池文档.md");
+        ApplicationFormAttachmentPO applicationFormAttachmentPO =
+                ApplicationFormAttachmentPO.builder()
+                .attachment(bytes)
+                .attachmentName("druid连接池文档.md")
+                .build();
 
 //        userId
 //                recruitmentId
@@ -69,13 +74,13 @@ public class ApplicationFormServiceImplTest {
 //                note
         System.out.println(applicationFormService.createApplicationForm(
                 CreateApplicationFormPO.builder()
-                        .userId(1L)
-        .recruitmentId(14L)
+                        .userId(5L)
+        .recruitmentId(19L)
         .avatar(applicationFormAvatarPO)
         .fullName("吴嘉贤")
         .phone("13333333333")
         .firstDepartmentId(2L)
-                        .secondDepartmentId(4L)
+                        .secondDepartmentId(3L)
                         .email("827032783@qq.com")
                         .introduction("我是吴嘉贤")
         .attachment(applicationFormAttachmentPO)

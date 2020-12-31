@@ -1,5 +1,10 @@
 package com.xiaohuashifu.recruit.registration.api.po;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -9,6 +14,10 @@ import java.io.Serializable;
  * @author xhsf
  * @create 2020/12/23 21:23
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@SuperBuilder
 public class ApplicationFormTemplatePO implements Serializable {
 
     /**
@@ -82,119 +91,4 @@ public class ApplicationFormTemplatePO implements Serializable {
      */
     @NotNull(message = "The note can't be null.")
     protected Boolean note;
-
-    public Boolean getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(Boolean avatar) {
-        this.avatar = avatar;
-    }
-
-    public Boolean getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(Boolean fullName) {
-        this.fullName = fullName;
-    }
-
-    public Boolean getPhone() {
-        return phone;
-    }
-
-    public void setPhone(Boolean phone) {
-        this.phone = phone;
-    }
-
-    public Boolean getFirstDepartment() {
-        return firstDepartment;
-    }
-
-    public void setFirstDepartment(Boolean firstDepartment) {
-        this.firstDepartment = firstDepartment;
-    }
-
-    public Boolean getSecondDepartment() {
-        return secondDepartment;
-    }
-
-    public void setSecondDepartment(Boolean secondDepartment) {
-        this.secondDepartment = secondDepartment;
-    }
-
-    public Boolean getEmail() {
-        return email;
-    }
-
-    public void setEmail(Boolean email) {
-        this.email = email;
-    }
-
-    public Boolean getIntroduction() {
-        return introduction;
-    }
-
-    public void setIntroduction(Boolean introduction) {
-        this.introduction = introduction;
-    }
-
-    public Boolean getAttachment() {
-        return attachment;
-    }
-
-    public void setAttachment(Boolean attachment) {
-        this.attachment = attachment;
-    }
-
-    public Boolean getStudentNumber() {
-        return studentNumber;
-    }
-
-    public void setStudentNumber(Boolean studentNumber) {
-        this.studentNumber = studentNumber;
-    }
-
-    public Boolean getCollege() {
-        return college;
-    }
-
-    public void setCollege(Boolean college) {
-        this.college = college;
-    }
-
-    public Boolean getMajor() {
-        return major;
-    }
-
-    public void setMajor(Boolean major) {
-        this.major = major;
-    }
-
-    public Boolean getNote() {
-        return note;
-    }
-
-    public void setNote(Boolean note) {
-        this.note = note;
-    }
-
-    @Override
-    public String toString() {
-        return "ApplicationFormTemplatePO{" +
-                "avatar=" + avatar +
-                ", fullName=" + fullName +
-                ", phone=" + phone +
-                ", firstDepartment=" + firstDepartment +
-                ", secondDepartment=" + secondDepartment +
-                ", email=" + email +
-                ", introduction=" + introduction +
-                ", attachment=" + attachment +
-                ", studentNumber=" + studentNumber +
-                ", college=" + college +
-                ", major=" + major +
-                ", note=" + note +
-                '}';
-    }
-
 }

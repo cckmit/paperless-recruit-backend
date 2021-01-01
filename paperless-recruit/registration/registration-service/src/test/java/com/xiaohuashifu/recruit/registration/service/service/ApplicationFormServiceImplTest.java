@@ -67,13 +67,13 @@ public class ApplicationFormServiceImplTest {
 //                note
         System.out.println(applicationFormService.createApplicationForm(
                 CreateApplicationFormPO.builder()
-                        .userId(5L)
-        .recruitmentId(21L)
+                        .userId(21L)
+        .recruitmentId(22L)
         .avatar(applicationFormAvatarPO)
         .fullName("吴嘉贤")
         .phone("13333333333")
         .firstDepartmentId(2L)
-                        .secondDepartmentId(3L)
+                        .secondDepartmentId(4L)
                         .email("827032783@qq.com")
                         .introduction("我是吴嘉贤")
         .attachment(applicationFormAttachmentPO)
@@ -102,7 +102,7 @@ public class ApplicationFormServiceImplTest {
 
     @Test
     public void updateFullName() {
-        System.out.println(applicationFormService.updateFullName(8L, "呜呜呜"));
+        System.out.println(applicationFormService.updateFullName(10L, "呜333呜"));
     }
 
     @Test
@@ -112,17 +112,17 @@ public class ApplicationFormServiceImplTest {
 
     @Test
     public void updateFirstDepartment() {
-        System.out.println(applicationFormService.updateFirstDepartment(8L, 3L));
+        System.out.println(applicationFormService.updateFirstDepartment(9L, 4L));
     }
 
     @Test
     public void updateSecondDepartment() {
-        System.out.println(applicationFormService.updateSecondDepartment(8L, 2L));
+        System.out.println(applicationFormService.updateSecondDepartment(10L, 2L));
     }
 
     @Test
     public void updateEmail() {
-        System.out.println(applicationFormService.updateEmail(8L, "888888888888@qq.com"));
+        System.out.println(applicationFormService.updateEmail(10L, "888888888888@qq.com"));
     }
 
     @Test

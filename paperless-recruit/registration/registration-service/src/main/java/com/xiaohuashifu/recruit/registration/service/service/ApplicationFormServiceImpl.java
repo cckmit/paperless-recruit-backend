@@ -20,6 +20,7 @@ import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
+import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Set;
@@ -95,8 +96,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * @permission 必须是用户本身
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 部门不存在 | 招新不存在 | 报名表模板不存在
-     *                                          | 用户不存在
+     *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 招新不存在 | 报名表模板不存在 | 用户不存在
      *              InvalidParameter.NotContain: 学院不被包含 | 专业不被包含 | 部门不被包含
      *              InvalidParameter.Mismatch: 组织不包含该部门
      *              Forbidden.User: 用户不可用
@@ -202,19 +202,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     public Result<ApplicationFormDTO> updateAvatar(UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO) {
         // 检查是否可以更新
         Long id = updateApplicationFormAvatarPO.getId();
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "avatar");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
-        }
-
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getAvatar()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The avatar is not required.");
         }
 
         // 更新头像
@@ -249,19 +239,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateFullName(Long id, String fullName) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "fullName");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
-        }
-
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getFullName()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The fullName is not required.");
         }
 
         // 更新姓名
@@ -290,19 +270,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updatePhone(Long id, String phone) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "phone");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
-        }
-
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getPhone()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The phone is not required.");
         }
 
         // 更新手机
@@ -332,43 +302,19 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateFirstDepartment(Long id, Long firstDepartmentId) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "firstDepartment");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getFirstDepartment()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The firstDepartment is not required.");
-        }
-
         // 判断招新部门列表是否包含该部门
+        Long recruitmentId = checkResult.getData();
         Result<RecruitmentDTO> getRecruitmentResult = recruitmentService.getRecruitment(recruitmentId);
         RecruitmentDTO recruitmentDTO = getRecruitmentResult.getData();
-        Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
-        if (recruitmentDepartmentIds.size() != 0 && !recruitmentDepartmentIds.contains(firstDepartmentId)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                    "The firstDepartment does not contain in this recruitment.");
-        }
-
-        // 判断该部门是否是该组织的
-        Long organizationIdByRecruitmentId = recruitmentService.getOrganizationId(recruitmentId);
-        Long organizationIdByDepartmentId = departmentService.getOrganizationId(firstDepartmentId);
-        if (!Objects.equals(organizationIdByRecruitmentId, organizationIdByDepartmentId)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
-                    "The department does not belong to this organization.");
-        }
-
-        // 判断第一部门状态
-        Result<ApplicationFormDTO> checkDepartmentStatusResult =
-                departmentService.checkDepartmentStatus(firstDepartmentId);
-        if (checkDepartmentStatusResult.isFailure()) {
-            return checkDepartmentStatusResult;
+        Result<ApplicationFormDTO> checkDepartmentResult = checkDepartmentStatus(firstDepartmentId, recruitmentId,
+                recruitmentDTO.getRecruitmentDepartmentIds(), "firstDepartment");
+        if (checkDepartmentResult.isFailure()) {
+            return checkDepartmentResult;
         }
 
         // 更新第一部门
@@ -398,43 +344,19 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateSecondDepartment(Long id, Long secondDepartmentId) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "secondDepartment");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getSecondDepartment()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The secondDepartment is not required.");
-        }
-
         // 判断招新部门列表是否包含该部门
+        Long recruitmentId = checkResult.getData();
         Result<RecruitmentDTO> getRecruitmentResult = recruitmentService.getRecruitment(recruitmentId);
         RecruitmentDTO recruitmentDTO = getRecruitmentResult.getData();
-        Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
-        if (recruitmentDepartmentIds.size() != 0 && !recruitmentDepartmentIds.contains(secondDepartmentId)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                    "The secondDepartment does not contain in this recruitment.");
-        }
-
-        // 判断该部门是否是该组织的
-        Long organizationIdByRecruitmentId = recruitmentService.getOrganizationId(recruitmentId);
-        Long organizationIdByDepartmentId = departmentService.getOrganizationId(secondDepartmentId);
-        if (!Objects.equals(organizationIdByRecruitmentId, organizationIdByDepartmentId)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
-                    "The department does not belong to this organization.");
-        }
-
-        // 判断第二部门状态
-        Result<ApplicationFormDTO> checkDepartmentStatusResult =
-                departmentService.checkDepartmentStatus(secondDepartmentId);
-        if (checkDepartmentStatusResult.isFailure()) {
-            return checkDepartmentStatusResult;
+        Result<ApplicationFormDTO> checkDepartmentResult = checkDepartmentStatus(secondDepartmentId, recruitmentId,
+                recruitmentDTO.getRecruitmentDepartmentIds(), "secondDepartment");
+        if (checkDepartmentResult.isFailure()) {
+            return checkDepartmentResult;
         }
 
         // 更新第二部门
@@ -463,19 +385,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateEmail(Long id, String email) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "email");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
-        }
-
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getEmail()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The email is not required.");
         }
 
         // 更新邮箱
@@ -504,19 +416,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateIntroduction(Long id, String introduction) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "introduction");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
-        }
-
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getIntroduction()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The introduction is not required.");
         }
 
         // 更新个人简介
@@ -550,22 +452,13 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             UpdateApplicationFormAttachmentPO updateApplicationFormAttachmentPO) {
         // 检查是否可以更新
         Long id = updateApplicationFormAttachmentPO.getId();
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "attachment");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getAttachment()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The attachment is not required.");
-        }
-
         // 更新附件
+        Long recruitmentId = checkResult.getData();
         Long userId = applicationFormMapper.getUserId(id);
         String newPath = MessageFormat.format(APPLICATION_FORM_ATTACHMENT_PATH_PATTERN, recruitmentId, userId,
                 updateApplicationFormAttachmentPO.getAttachmentName());
@@ -604,19 +497,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateStudentNumber(Long id, String studentNumber) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "studentNumber");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
-        }
-
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getStudentNumber()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The studentNumber is not required.");
         }
 
         // 更新学号
@@ -646,32 +529,17 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateCollege(Long id, Long collegeId) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "college");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 检查该字段是否是需要的
+        // 检查学院状态
         Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getCollege()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The college is not required.");
-        }
-
-        // 判断招新学院列表是否包含该学院
         Result<RecruitmentDTO> getRecruitmentResult = recruitmentService.getRecruitment(recruitmentId);
         RecruitmentDTO recruitmentDTO = getRecruitmentResult.getData();
-        Set<Long> recruitmentCollegeIds = recruitmentDTO.getRecruitmentCollegeIds();
-        if ((recruitmentCollegeIds.size() != 0) && (!recruitmentCollegeIds.contains(collegeId))) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                    "The college does not contain in this recruitment.");
-        }
-
-        // 判断学院状态
-        Result<ApplicationFormDTO> checkCollegeStatusResult = collegeService.checkCollegeStatus(collegeId);
+        Result<ApplicationFormDTO> checkCollegeStatusResult =
+                checkCollegeStatus(collegeId, recruitmentDTO.getRecruitmentCollegeIds());
         if (checkCollegeStatusResult.isFailure()) {
             return checkCollegeStatusResult;
         }
@@ -703,32 +571,17 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateMajor(Long id, Long majorId) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "major");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 检查该字段是否是需要的
+        // 判断状态状态
         Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getMajor()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
-                    "The major is not required.");
-        }
-
-        // 判断招新专业列表是否包含该专业
         Result<RecruitmentDTO> getRecruitmentResult = recruitmentService.getRecruitment(recruitmentId);
         RecruitmentDTO recruitmentDTO = getRecruitmentResult.getData();
-        Set<Long> recruitmentMajorIds = recruitmentDTO.getRecruitmentMajorIds();
-        if (recruitmentMajorIds.size() != 0 && !recruitmentMajorIds.contains(majorId)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                    "The major does not contain in this recruitment.");
-        }
-
-        // 判断专业状态
-        Result<ApplicationFormDTO> checkMajorStatusResult = majorService.checkMajorStatus(majorId);
+        Result<ApplicationFormDTO> checkMajorStatusResult =
+                checkMajorStatus(majorId, recruitmentDTO.getRecruitmentMajorIds());
         if (checkMajorStatusResult.isFailure()) {
             return checkMajorStatusResult;
         }
@@ -759,18 +612,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public Result<ApplicationFormDTO> updateNote(Long id, String note) {
         // 检查是否可以更新
-        Result<Long> checkResult = checkForUpdate(id);
+        Result<Long> checkResult = checkForUpdate(id, "note");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
-        }
-
-        // 检查该字段是否是需要的
-        Long recruitmentId = checkResult.getData();
-        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
-                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
-        if (!applicationFormTemplateDTO.getNote()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED, "The note is not required.");
         }
 
         // 更新备注
@@ -810,6 +654,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * 检查是否可以更新
      *
      * @errorCode InvalidParameter.NotExist: 报名表不存在
+     *              InvalidParameter.NotRequired: 不需要该字段
      *              Forbidden.Unavailable: 招新不可用 | 组织不可用
      *              Forbidden.Deactivated: 报名表模板被停用
      *              OperationConflict.Status: 招新的状态必须是 STARTED
@@ -817,7 +662,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * @param id 报名表编号
      * @return 检查结果，通过检查返回招新编号
      */
-    private Result<Long> checkForUpdate(Long id) {
+    private Result<Long> checkForUpdate(Long id, String fieldName) {
         // 判断报名表是否存在
         Long recruitmentId = applicationFormMapper.getRecruitmentId(id);
         if (recruitmentId == null) {
@@ -830,6 +675,20 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         if (canRegistration.isFailure()) {
             return canRegistration;
         }
+
+        // 检查该字段是否是需要的
+        Result<ApplicationFormTemplateDTO> getApplicationFormTemplateResult =
+                applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(recruitmentId);
+        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplateResult.getData();
+        try {
+            Field field = ApplicationFormTemplateDTO.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            Boolean required = (Boolean) field.get(applicationFormTemplateDTO);
+            if (!required) {
+                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_REQUIRED,
+                        "The " + fieldName + " is not required.");
+            }
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {}
 
         // 通过检查
         return Result.success(recruitmentId);
@@ -866,7 +725,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * CreateApplicationFormPO to ApplicationFormDO
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 部门不存在
+     *              InvalidParameter.NotExist: 学院不存在 | 专业不存在
      *              InvalidParameter.NotContain: 学院不被包含 | 专业不被包含 | 部门不被包含
      *              InvalidParameter.Mismatch: 组织不包含该部门
      *              Forbidden.Deactivated: 学院被停用 | 专业被停用 | 部门被停用
@@ -932,20 +791,10 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         Result<RecruitmentDTO> recruitment = recruitmentService.getRecruitment(recruitmentId);
         RecruitmentDTO recruitmentDTO = recruitment.getData();
         if (applicationFormTemplateDTO.getCollege()) {
-            Long collegeId = createApplicationFormPO.getCollegeId();
-            if (collegeId == null) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The collegeId can't be null.");
-            }
-
-            // 判断招新学院列表是否包含该学院
-            Set<Long> recruitmentCollegeIds = recruitmentDTO.getRecruitmentCollegeIds();
-            if ((recruitmentCollegeIds.size() != 0) && (!recruitmentCollegeIds.contains(collegeId))) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                        "The college does not contain in this recruitment.");
-            }
-
             // 判断学院状态
-            Result<ApplicationFormDO> checkCollegeStatusResult = collegeService.checkCollegeStatus(collegeId);
+            Long collegeId = createApplicationFormPO.getCollegeId();
+            Result<ApplicationFormDO> checkCollegeStatusResult =
+                    checkCollegeStatus(collegeId, recruitmentDTO.getRecruitmentCollegeIds());
             if (checkCollegeStatusResult.isFailure()) {
                 return checkCollegeStatusResult;
             }
@@ -955,20 +804,10 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
         // 判断是否需要 major
         if (applicationFormTemplateDTO.getMajor()) {
-            Long majorId = createApplicationFormPO.getMajorId();
-            if (majorId == null) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The majorId can't be null.");
-            }
-
-            // 判断招新专业列表是否包含该专业
-            Set<Long> recruitmentMajorIds = recruitmentDTO.getRecruitmentMajorIds();
-            if (recruitmentMajorIds.size() != 0 && !recruitmentMajorIds.contains(majorId)) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                        "The major does not contain in this recruitment.");
-            }
-
             // 判断专业状态
-            Result<ApplicationFormDO> checkMajorStatusResult = majorService.checkMajorStatus(majorId);
+            Long majorId = createApplicationFormPO.getMajorId();
+            Result<ApplicationFormDO> checkMajorStatusResult =
+                    checkMajorStatus(majorId, recruitmentDTO.getRecruitmentMajorIds());
             if (checkMajorStatusResult.isFailure()) {
                 return checkMajorStatusResult;
             }
@@ -978,32 +817,12 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
         // 判断是否需要 firstDepartment
         if (applicationFormTemplateDTO.getFirstDepartment()) {
+            // 检查部门状态
             Long firstDepartmentId = createApplicationFormPO.getFirstDepartmentId();
-            if (firstDepartmentId == null) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
-                        "The firstDepartmentId can't be null.");
-            }
-
-            // 判断招新部门列表是否包含该部门
-            Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
-            if (recruitmentDepartmentIds.size() != 0 && !recruitmentDepartmentIds.contains(firstDepartmentId)) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                        "The firstDepartment does not contain in this recruitment.");
-            }
-
-            // 判断该部门是否是该组织的
-            Long organizationIdByRecruitmentId = recruitmentService.getOrganizationId(recruitmentId);
-            Long organizationIdByDepartmentId = departmentService.getOrganizationId(firstDepartmentId);
-            if (!Objects.equals(organizationIdByRecruitmentId, organizationIdByDepartmentId)) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
-                        "The department does not belong to this organization.");
-            }
-
-            // 判断第一部门状态
-            Result<ApplicationFormDO> checkDepartmentStatusResult =
-                    departmentService.checkDepartmentStatus(firstDepartmentId);
-            if (checkDepartmentStatusResult.isFailure()) {
-                return checkDepartmentStatusResult;
+            Result<ApplicationFormDO> checkResult = checkDepartmentStatus(firstDepartmentId, recruitmentId,
+                    recruitmentDTO.getRecruitmentDepartmentIds(), "firstDepartment");
+            if (checkResult.isFailure()) {
+                return checkResult;
             }
 
             applicationFormDOBuilder.firstDepartmentId(firstDepartmentId);
@@ -1011,32 +830,12 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
         // 判断是否需要 secondDepartment
         if (applicationFormTemplateDTO.getSecondDepartment()) {
+            // 检查部门状态
             Long secondDepartmentId = createApplicationFormPO.getSecondDepartmentId();
-            if (secondDepartmentId == null) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
-                        "The secondDepartmentId can't be null.");
-            }
-
-            // 判断招新部门列表是否包含该部门
-            Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
-            if (recruitmentDepartmentIds.size() != 0 && !recruitmentDepartmentIds.contains(secondDepartmentId)) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
-                        "The secondDepartment does not contain in this recruitment.");
-            }
-
-            // 判断该部门是否是该组织的
-            Long organizationIdByRecruitmentId = recruitmentService.getOrganizationId(recruitmentId);
-            Long organizationIdByDepartmentId = departmentService.getOrganizationId(secondDepartmentId);
-            if (!Objects.equals(organizationIdByRecruitmentId, organizationIdByDepartmentId)) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
-                        "The department does not belong to this organization.");
-            }
-
-            // 判断第二部门状态
-            Result<ApplicationFormDO> checkDepartmentStatusResult =
-                    departmentService.checkDepartmentStatus(secondDepartmentId);
-            if (checkDepartmentStatusResult.isFailure()) {
-                return checkDepartmentStatusResult;
+            Result<ApplicationFormDO> checkResult = checkDepartmentStatus(secondDepartmentId, recruitmentId,
+                    recruitmentDTO.getRecruitmentDepartmentIds(), "secondDepartment");
+            if (checkResult.isFailure()) {
+                return checkResult;
             }
 
             applicationFormDOBuilder.secondDepartmentId(secondDepartmentId);
@@ -1091,4 +890,107 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
                 .build());
     }
 
+    /**
+     * 检查部门状态
+     *
+     * @errorCode InvalidParameter: 部门编号为 null
+     *              InvalidParameter.NotContain: 部门不被包含在此招新
+     *              InvalidParameter.Mismatch: 组织不包含该部门
+     *              Forbidden.Deactivated: 部门被停用
+     *
+     * @param departmentId 部门编号
+     * @param recruitmentId 招新编号
+     * @param recruitmentDepartmentIds 招新部门编号列表
+     * @param firstOrSecondDepartment 是第一部门还是第二部门，作为错误提示的一部分
+     * @return 检查结果
+     */
+    private <T> Result<T> checkDepartmentStatus(Long departmentId, Long recruitmentId,
+                                                Set<Long> recruitmentDepartmentIds, String firstOrSecondDepartment) {
+        // 判断部门编号是否为 null
+        if (departmentId == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
+                    "The " + firstOrSecondDepartment + " can't be null.");
+        }
+
+        // 判断招新部门列表是否包含该部门
+        if (recruitmentDepartmentIds.size() != 0 && !recruitmentDepartmentIds.contains(departmentId)) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
+                    "The " + firstOrSecondDepartment + " does not contain in this recruitment.");
+        }
+
+        // 判断该部门是否是该组织的
+        Long organizationIdByRecruitmentId = recruitmentService.getOrganizationId(recruitmentId);
+        Long organizationIdByDepartmentId = departmentService.getOrganizationId(departmentId);
+        if (!Objects.equals(organizationIdByRecruitmentId, organizationIdByDepartmentId)) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
+                    "The " + firstOrSecondDepartment + " does not belong to this organization.");
+        }
+
+        // 判断部门状态
+        Result<T> checkDepartmentStatusResult = departmentService.checkDepartmentStatus(departmentId);
+        if (checkDepartmentStatusResult.isFailure()) {
+            return checkDepartmentStatusResult;
+        }
+
+        // 通过判断
+        return Result.success();
+    }
+
+    /**
+     * 判断学院状态
+     *
+     * @param collegeId 学院编号
+     * @param recruitmentCollegeIds 招新学院编号列表
+     * @return 检查结果
+     */
+    private <T> Result<T> checkCollegeStatus(Long collegeId, Set<Long> recruitmentCollegeIds) {
+        // 判断学院编号是否为 null
+        if (collegeId == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The collegeId can't be null.");
+        }
+
+        // 判断招新学院列表是否包含该学院
+        if ((recruitmentCollegeIds.size() != 0) && (!recruitmentCollegeIds.contains(collegeId))) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
+                    "The college does not contain in this recruitment.");
+        }
+
+        // 判断学院状态
+        Result<T> checkCollegeStatusResult = collegeService.checkCollegeStatus(collegeId);
+        if (checkCollegeStatusResult.isFailure()) {
+            return checkCollegeStatusResult;
+        }
+
+        // 通过检查
+        return Result.success();
+    }
+
+    /**
+     * 检查专业状态
+     *
+     * @param majorId 专业编号
+     * @param recruitmentMajorIds 招新专业编号列表
+     * @return 检查结果
+     */
+    private <T> Result<T> checkMajorStatus(Long majorId, Set<Long> recruitmentMajorIds) {
+        // 判断专业编号是否为 null
+        if (majorId == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The majorId can't be null.");
+        }
+
+        // 判断招新专业列表是否包含该专业
+        if (recruitmentMajorIds.size() != 0 && !recruitmentMajorIds.contains(majorId)) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_CONTAIN,
+                    "The major does not contain in this recruitment.");
+        }
+
+        // 判断专业状态
+        Result<T> checkMajorStatusResult = majorService.checkMajorStatus(majorId);
+        if (checkMajorStatusResult.isFailure()) {
+            return checkMajorStatusResult;
+        }
+
+        // 通过检查
+        return Result.success();
+    }
 }

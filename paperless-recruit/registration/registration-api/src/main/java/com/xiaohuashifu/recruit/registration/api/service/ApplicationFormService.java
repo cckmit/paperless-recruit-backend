@@ -26,10 +26,13 @@ public interface ApplicationFormService {
      * @permission 必须是用户本身
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 部门不存在
+     *              InvalidParameter.NotExist: 学院不存在 | 专业不存在 | 招新不存在 | 报名表模板不存在 | 用户不存在
      *              InvalidParameter.NotContain: 学院不被包含 | 专业不被包含 | 部门不被包含
      *              InvalidParameter.Mismatch: 组织不包含该部门
-     *              Forbidden.Deactivated: 学院被停用 | 专业被停用 | 部门被停用
+     *              Forbidden.User: 用户不可用
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 学院被停用 | 专业被停用 | 部门被停用 | 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *              OperationConflict.Duplicate: 报名表已经存在
      *              OperationConflict.Lock: 获取报名表的锁失败
      *              InternalError: 上传文件失败

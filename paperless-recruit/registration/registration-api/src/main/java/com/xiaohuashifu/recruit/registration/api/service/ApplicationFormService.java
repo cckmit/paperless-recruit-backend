@@ -61,6 +61,9 @@ public interface ApplicationFormService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 报名表不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *              OperationConflict.Lock: 获取报名表头像的锁失败
      *              InternalError: 上传文件失败
      *
@@ -78,6 +81,9 @@ public interface ApplicationFormService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 报名表不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param fullName 姓名
@@ -95,6 +101,9 @@ public interface ApplicationFormService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 报名表不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param phone 手机号码
@@ -110,8 +119,12 @@ public interface ApplicationFormService {
      * @permission 必须是该报名表所属用户
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 报名表不存在
+     *              InvalidParameter.NotExist: 报名表不存在 | 部门不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              InvalidParameter.NotContain: 该招新不包含该部门
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用 | 部门被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param firstDepartmentId 第一部门
@@ -128,8 +141,12 @@ public interface ApplicationFormService {
      * @permission 必须是该报名表所属用户
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 报名表不存在
+     *              InvalidParameter.NotExist: 报名表不存在 | 部门不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              InvalidParameter.NotContain: 该招新不包含该部门
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用 | 部门被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param secondDepartmentId 第二部门
@@ -148,6 +165,9 @@ public interface ApplicationFormService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 报名表不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param email 邮箱
@@ -165,6 +185,9 @@ public interface ApplicationFormService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 报名表不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param introduction 个人简介
@@ -185,6 +208,9 @@ public interface ApplicationFormService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 报名表不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *              OperationConflict.Lock: 获取报名表附件的锁失败
      *              InternalError: 上传文件失败
      *
@@ -203,6 +229,9 @@ public interface ApplicationFormService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 报名表不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param studentNumber 学号
@@ -218,8 +247,12 @@ public interface ApplicationFormService {
      * @permission 必须是该报名表所属用户
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 报名表不存在
+     *              InvalidParameter.NotExist: 报名表不存在 | 学院不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              InvalidParameter.NotContain: 该招新不包含该学院
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用 | 学院被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param collegeId 学院
@@ -236,8 +269,12 @@ public interface ApplicationFormService {
      * @permission 必须是该报名表所属用户
      *
      * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 报名表不存在
+     *              InvalidParameter.NotExist: 报名表不存在 | 专业不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              InvalidParameter.NotContain: 该招新不包含该专业
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用 | 专业被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param majorId 专业
@@ -256,6 +293,9 @@ public interface ApplicationFormService {
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 报名表不存在
      *              InvalidParameter.NotRequired: 不需要该参数
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              Forbidden.Deactivated: 报名表模板被停用
+     *              OperationConflict.Status: 招新的状态必须是 STARTED
      *
      * @param id 报名表编号
      * @param note 备注

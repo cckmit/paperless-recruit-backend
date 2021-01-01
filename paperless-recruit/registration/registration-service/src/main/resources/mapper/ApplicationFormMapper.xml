@@ -128,11 +128,89 @@
         where id = #{id}
     </select>
 
+    <select id="getAvatarUrl" resultType="string">
+        select avatar_url
+        from application_form
+        where id = #{id}
+    </select>
+
+    <select id="getAttachmentUrl" resultType="string">
+        select attachment_url
+        from application_form
+        where id = #{id}
+    </select>
+
     <select id="countByUserIdAndRecruitmentId" resultType="java.lang.Integer">
         select count(*)
         from application_form
         where user_id = #{userId}
         and recruitment_id = #{recruitmentId}
     </select>
+
+    <update id="updateAttachmentUrl">
+        update application_form
+        set attachment_url = #{attachmentUrl}
+        where id = #{id}
+    </update>
+
+    <update id="updateFullName">
+        update application_form
+        set full_name = #{fullName}
+        where id = #{id}
+    </update>
+
+    <update id="updatePhone">
+        update application_form
+        set phone = #{phone}
+        where id = #{id}
+    </update>
+
+    <update id="updateEmail">
+        update application_form
+        set email = #{email}
+        where id = #{id}
+    </update>
+
+    <update id="updateIntroduction">
+        update application_form
+        set introduction = #{introduction}
+        where id = #{id}
+    </update>
+
+    <update id="updateStudentNumber">
+        update application_form
+        set student_number = #{studentNumber}
+        where id = #{id}
+    </update>
+
+    <update id="updateNote">
+        update application_form
+        set note = #{note}
+        where id = #{id}
+    </update>
+
+    <update id="updateFirstDepartmentId">
+        update application_form
+        set first_department_id = #{firstDepartmentId}
+        where id = #{id}
+    </update>
+
+    <update id="updateSecondDepartmentId">
+        update application_form
+        set second_department_id = #{secondDepartmentId}
+        where id = #{id}
+    </update>
+
+    <update id="updateCollegeId">
+        update application_form
+        set college_id = #{collegeId}
+        where id = #{id}
+    </update>
+
+    <update id="updateMajor">
+        update application_form
+        set major_id = #{majorId}
+        where id = #{id}
+    </update>
 
 </mapper>

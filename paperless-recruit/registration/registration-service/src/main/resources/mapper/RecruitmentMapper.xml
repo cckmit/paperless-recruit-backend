@@ -11,7 +11,8 @@
         <result property="recruitmentNumbers" column="recruitment_numbers"/>
         <result property="positionDuty" column="position_duty"/>
         <result property="positionRequirement" column="position_requirement"/>
-        <result property="recruitmentGrades" column="recruitment_grades"/>
+        <result property="recruitmentGrades" column="recruitment_grades"
+                typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.StringSetTypeHandler"/>
         <result property="recruitmentCollegeIds" column="recruitment_college_ids"
                 typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.LongSetTypeHandler"/>
         <result property="recruitmentMajorIds" column="recruitment_major_ids"

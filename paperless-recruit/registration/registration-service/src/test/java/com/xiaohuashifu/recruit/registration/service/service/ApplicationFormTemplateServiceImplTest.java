@@ -52,7 +52,7 @@ public class ApplicationFormTemplateServiceImplTest {
 //        private Boolean note;
         System.out.println(applicationFormTemplateService.addApplicationFormTemplate(
                 AddApplicationFormTemplatePO.builder()
-                        .recruitmentId(19L)
+                        .recruitmentId(21L)
                         .prompt("请各位报名者在附件里添加个人作品。")
                         .avatar(true)
                         .fullName(true)
@@ -60,7 +60,7 @@ public class ApplicationFormTemplateServiceImplTest {
                         .firstDepartment(true)
                         .secondDepartment(true)
                         .email(true)
-                        .introduction(false)
+                        .introduction(true)
                         .attachment(true)
                         .studentNumber(true)
                         .college(true)

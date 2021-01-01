@@ -10,7 +10,8 @@
         <result property="introduction" column="introduction"/>
         <result property="logoUrl" column="logo_url"/>
         <result property="memberNumber" column="member_number"/>
-        <result property="labels" column="labels"/>
+        <result property="labels" column="labels"
+                typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.StringSetTypeHandler"/>
         <result property="deactivated" column="is_deactivated"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>

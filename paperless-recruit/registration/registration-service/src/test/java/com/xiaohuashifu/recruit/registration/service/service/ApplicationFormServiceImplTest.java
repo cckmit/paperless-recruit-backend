@@ -1,11 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormAttachmentPO;
-import com.xiaohuashifu.recruit.registration.api.po.ApplicationFormAvatarPO;
-import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
-import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormAvatarPO;
+import com.xiaohuashifu.recruit.registration.api.po.*;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
-import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
@@ -13,10 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -75,7 +68,7 @@ public class ApplicationFormServiceImplTest {
         System.out.println(applicationFormService.createApplicationForm(
                 CreateApplicationFormPO.builder()
                         .userId(5L)
-        .recruitmentId(19L)
+        .recruitmentId(21L)
         .avatar(applicationFormAvatarPO)
         .fullName("吴嘉贤")
         .phone("13333333333")
@@ -96,13 +89,85 @@ public class ApplicationFormServiceImplTest {
         System.out.println(applicationFormService.getApplicationForm(1L));
     }
 
+    @Test
+    public void updateAvatar() throws IOException {
+        File file = new File("D:\\Github\\SpecializedCourseCode\\文档\\毕设相关文档\\图片\\毕设原型图片" +
+                "\\u=336497710,1373556175&fm=26&gp=0.jpg");
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] bytes = fileInputStream.readAllBytes();
+        UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO =
+                UpdateApplicationFormAvatarPO.builder().id(6L).avatar(bytes).extensionName(".jpg").build();
+        System.out.println(applicationFormService.updateAvatar(updateApplicationFormAvatarPO));
+    }
 
     @Test
-    public void updateAvatar() {
-        System.out.println(applicationFormService.updateAvatar(
-                UpdateApplicationFormAvatarPO.builder()
-                        .id(1L)
-                        .extensionName(".jpg")
-                        .avatar(null).build()));
+    public void updateFullName() {
+        System.out.println(applicationFormService.updateFullName(8L, "呜呜呜"));
+    }
+
+    @Test
+    public void updatePhone() {
+        System.out.println(applicationFormService.updatePhone(8L, "15555555555"));
+    }
+
+    @Test
+    public void updateFirstDepartment() {
+        System.out.println(applicationFormService.updateFirstDepartment(8L, 3L));
+    }
+
+    @Test
+    public void updateSecondDepartment() {
+        System.out.println(applicationFormService.updateSecondDepartment(8L, 2L));
+    }
+
+    @Test
+    public void updateEmail() {
+        System.out.println(applicationFormService.updateEmail(8L, "888888888888@qq.com"));
+    }
+
+    @Test
+    public void updateIntroduction() {
+        System.out.println(applicationFormService.updateIntroduction(8L, "我是吴嘉贤"));
+    }
+
+    @Test
+    public void updateAttachment() throws IOException {
+        File file = new File("D:\\Github\\SpecializedCourseCode\\文档\\毕设相关文档\\图片\\系统整体架构.png");
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] bytes = fileInputStream.readAllBytes();
+        UpdateApplicationFormAttachmentPO updateApplicationFormAttachmentPO =
+                UpdateApplicationFormAttachmentPO.builder()
+                        .id(7L).attachment(bytes).attachmentName("系统整体架构1.png").build();
+        System.out.println(applicationFormService.updateAttachment(updateApplicationFormAttachmentPO));
+    }
+
+    @Test
+    public void updateStudentNumber() {
+        System.out.println(applicationFormService.updateStudentNumber(8L, "201734020122"));
+    }
+
+    @Test
+    public void updateCollege() {
+        System.out.println(applicationFormService.updateCollege(8L, 2L));
+    }
+
+    @Test
+    public void updateMajor() {
+        System.out.println(applicationFormService.updateMajor(8L, 4L));
+    }
+
+    @Test
+    public void updateNote() {
+        System.out.println(applicationFormService.updateNote(8L, "啦啦啦"));
+    }
+
+    @Test
+    public void getRecruitmentId() {
+        System.out.println(applicationFormService.getRecruitmentId(8L));
+    }
+
+    @Test
+    public void getUserId() {
+        System.out.println(applicationFormService.getUserId(8L));
     }
 }

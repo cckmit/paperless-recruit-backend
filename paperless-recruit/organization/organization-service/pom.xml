@@ -109,6 +109,21 @@
 			<artifactId>redisson-spring-data-22</artifactId>
 		</dependency>
 		<!--    Redisson    -->
+
+		<!--	rocketmq	-->
+		<dependency>
+			<groupId>org.apache.rocketmq</groupId>
+			<artifactId>rocketmq-client</artifactId>
+			<version>4.8.0</version>
+		</dependency>
+
+		<!--     lombok       -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.16</version>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 </project>

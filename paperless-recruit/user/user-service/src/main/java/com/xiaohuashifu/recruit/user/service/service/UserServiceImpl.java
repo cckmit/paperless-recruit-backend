@@ -24,6 +24,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -196,6 +197,7 @@ public class UserServiceImpl implements UserService {
      * @param password 密码
      * @return 新创建的用户
      */
+    @Transactional
     @Override
     public Result<UserDTO> signUpUser(String username, String password) {
         // 判断用户名是否存在
@@ -991,6 +993,7 @@ public class UserServiceImpl implements UserService {
      * @return Result<UserDTO>
      */
     private Result<UserDTO> saveUser(UserDO userDO) {
+        // 保存用户
         userMapper.insertUser(userDO);
 
         // 为新账号赋予最基本的权限

@@ -50,7 +50,7 @@ public class UserServiceImplTest {
     @Test
     public void signUpUser() {
         final Result<UserDTO> saveUserResult = userService.signUpUser(
-                "profiletest3", "123456");
+                "profiletest8", "123456");
         System.out.println(saveUserResult);
     }
 

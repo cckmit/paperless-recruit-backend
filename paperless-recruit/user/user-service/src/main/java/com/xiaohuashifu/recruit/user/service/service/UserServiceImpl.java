@@ -20,11 +20,14 @@ import com.xiaohuashifu.recruit.user.api.service.UserProfileService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.service.do0.UserDO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +39,7 @@ import java.util.stream.Collectors;
  * @author: xhsf
  * @create: 2020/10/30 15:05
  */
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -53,6 +57,10 @@ public class UserServiceImpl implements UserService {
 
     @Reference
     private UserProfileService userProfileService;
+
+    private final PlatformTransactionManager transactionManager;
+
+    private final TransactionDefinition transactionDefinition;
 
     private final UserMapper userMapper;
 
@@ -179,7 +187,10 @@ public class UserServiceImpl implements UserService {
     private static final String UPDATE_PASSWORD_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
             "user:update-password:email-auth-code:{0}";
 
-    public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate) {
+    public UserServiceImpl(PlatformTransactionManager transactionManager, TransactionDefinition transactionDefinition,
+                           UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate) {
+        this.transactionManager = transactionManager;
+        this.transactionDefinition = transactionDefinition;
         this.userMapper = userMapper;
         this.mapper = mapper;
         this.redisTemplate = redisTemplate;
@@ -197,21 +208,29 @@ public class UserServiceImpl implements UserService {
      * @param password 密码
      * @return 新创建的用户
      */
-    @Transactional
     @Override
     public Result<UserDTO> signUpUser(String username, String password) {
-        // 判断用户名是否存在
-        int count = userMapper.countByUsername(username);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The username already exist.");
-        }
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+        try {
+            // 判断用户名是否存在
+            int count = userMapper.countByUsername(username);
+            if (count > 0) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The username already exist.");
+            }
 
-        // 添加到数据库
-        UserDO userDO = new UserDO.Builder()
-                .username(username)
-                .password(passwordService.encodePassword(password))
-                .build();
-        return saveUser(userDO);
+            // 添加到数据库
+            UserDO userDO = new UserDO.Builder()
+                    .username(username)
+                    .password(passwordService.encodePassword(password))
+                    .build();
+            Result<UserDTO> userDTOResult = saveUser(userDO);
+            transactionManager.commit(transactionStatus);
+            return userDTOResult;
+        } catch (RuntimeException e) {
+            log.error("Sign up error. username=" + username + ".", e);
+            transactionManager.rollback(transactionStatus);
+            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        }
     }
 
     /**

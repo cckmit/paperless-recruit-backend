@@ -23,6 +23,9 @@ public interface InterviewService {
      * @permission 必须是招新所属组织所属用户主体
      *
      * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              OperationConflict.Lock: 获取创建 interview 的锁失败
      *
      * @param recruitmentId 招新编号
      * @param title 面试标题

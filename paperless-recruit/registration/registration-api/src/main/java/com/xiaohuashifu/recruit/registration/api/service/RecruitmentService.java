@@ -452,7 +452,6 @@ public interface RecruitmentService {
             @NotNull(message = "The oldRecruitmentStatus can't be null.") RecruitmentStatusEnum oldRecruitmentStatus,
             @NotNull(message = "The newRecruitmentStatus can't be null.") RecruitmentStatusEnum newRecruitmentStatus);
 
-
     /**
      * 检查招新状态
      *
@@ -468,4 +467,16 @@ public interface RecruitmentService {
      */
     Result<RecruitmentStatusEnum> checkRecruitmentStatus(Long id, RecruitmentStatusEnum followRecruitmentStatus);
 
+    /**
+     * 检查招新状态
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *
+     * @param id 招新编号
+     * @return 检查结果
+     */
+    <T> Result<T> checkRecruitmentStatus(Long id);
 }

@@ -802,7 +802,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Override
     public Result<RecruitmentDTO> closeRecruitment(Long id) {
         // 检查招新状态
-        Result<RecruitmentDO> checkResult = checkRecruitmentStatus(id);
+        Result<RecruitmentDO> checkResult = checkRecruitmentStatusInternal(id);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
@@ -938,7 +938,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     public Result<RecruitmentStatusEnum> checkRecruitmentStatus(
             Long id, RecruitmentStatusEnum followRecruitmentStatus) {
         // 检查招新状态
-        Result<RecruitmentDO> checkResult = checkRecruitmentStatus(id);
+        Result<RecruitmentDO> checkResult = checkRecruitmentStatusInternal(id);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
@@ -953,6 +953,26 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         // 通过检查
         return Result.success(recruitmentStatus);
+    }
+
+    /**
+     * 检查招新状态
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter.NotExist: 招新不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *
+     * @param id 招新编号
+     * @return 检查结果
+     */
+    @Override
+    public  <T> Result<T> checkRecruitmentStatus(Long id) {
+        Result<RecruitmentDO> checkResult = checkRecruitmentStatusInternal(id);
+        if (checkResult.isFailure()) {
+            return Result.fail(checkResult);
+        }
+        return Result.success();
     }
 
     /**
@@ -982,7 +1002,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * @param id 招新编号
      * @return 检查结果
      */
-    private Result<RecruitmentDO> checkRecruitmentStatus(Long id) {
+    private Result<RecruitmentDO> checkRecruitmentStatusInternal(Long id) {
         // 检查招新存不存在
         RecruitmentDO recruitmentDO = recruitmentMapper.getRecruitment(id);
         if (recruitmentDO == null) {

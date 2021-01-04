@@ -44,7 +44,7 @@ public class InterviewerServiceImpl implements InterviewerService {
     private static final Long INTERVIEWER_ROLE_ID = 3L;
 
     /**
-     * 更新面试官 available 状态的锁定键模式
+     * 更新面试官 available 状态的锁定键模式，{0}是面试官编号
      */
     private static final String UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN = "interviewer:{0}:update-available";
 
@@ -68,6 +68,7 @@ public class InterviewerServiceImpl implements InterviewerService {
      * @return 面试官对象
      */
     @Override
+    // TODO: 2021/1/5 发送被设置为面试官的系统通知
     public Result<InterviewerDTO> saveInterviewer(Long organizationId, Long organizationMemberId) {
         // 判断组织状态
         Result<InterviewerDTO> checkOrganizationStatusResult =
@@ -119,6 +120,7 @@ public class InterviewerServiceImpl implements InterviewerService {
     @DistributedLock(value = UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}",
             errorMessage = "Failed to acquire update available interviewer lock.")
     @Override
+    // TODO: 2021/1/5 添加被取消面试官资格的系统通知
     public Result<InterviewerDTO> disableInterviewer(Long id) {
         // 判断面试官是否存在
         int count = interviewerMapper.count(id);
@@ -161,6 +163,7 @@ public class InterviewerServiceImpl implements InterviewerService {
     @DistributedLock(value = UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}",
             errorMessage = "Failed to acquire update available interviewer lock.")
     @Override
+    // TODO: 2021/1/5 添加被恢复面试官资格的系统通知
     public Result<InterviewerDTO> enableInterviewer(Long id) {
         // 判断面试官是否存在
         int count = interviewerMapper.count(id);

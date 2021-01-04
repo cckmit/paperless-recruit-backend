@@ -110,7 +110,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * @return 创建的报名表
      */
     @DistributedLock(value = CREATE_APPLICATION_FORM_LOCK_KEY_PATTERN,
-            parameters = {"createApplicationFormPO.userId", "createApplicationFormPO.recruitmentId"},
+            parameters = {"#{#createApplicationFormPO.userId}", "#{#createApplicationFormPO.recruitmentId}"},
             errorMessage = "Failed to acquire applicationForm lock.")
     @Override
     public Result<ApplicationFormDTO> createApplicationForm(CreateApplicationFormPO createApplicationFormPO) {
@@ -196,7 +196,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * @param updateApplicationFormAvatarPO 更新头像参数
      * @return 更新后的报名表
      */
-    @DistributedLock(value = UPDATE_AVATAR_LOCK_KEY_PATTERN, parameters = "updateApplicationFormAvatarPO.id",
+    @DistributedLock(value = UPDATE_AVATAR_LOCK_KEY_PATTERN, parameters = "#{#updateApplicationFormAvatarPO.id}",
             errorMessage = "Failed to acquire avatar lock.")
     @Override
     public Result<ApplicationFormDTO> updateAvatar(UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO) {
@@ -445,7 +445,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * @param updateApplicationFormAttachmentPO 更新附件参数
      * @return 更新后的报名表
      */
-    @DistributedLock(value = UPDATE_ATTACHMENT_LOCK_KEY_PATTERN, parameters = "updateApplicationFormAttachmentPO.id",
+    @DistributedLock(value = UPDATE_ATTACHMENT_LOCK_KEY_PATTERN,
+            parameters = "#{#updateApplicationFormAttachmentPO.id}",
             errorMessage = "Failed to acquire attachment lock.")
     @Override
     public Result<ApplicationFormDTO> updateAttachment(

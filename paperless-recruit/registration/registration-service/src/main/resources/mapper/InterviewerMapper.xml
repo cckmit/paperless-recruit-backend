@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.registration.service.dao.InterviewerMapper">
+
+    <resultMap id="interviewer" type="com.xiaohuashifu.recruit.registration.service.do0.InterviewerDO">
+        <id property="id" column="id"/>
+        <result property="organizationMemberId" column="organization_member_id"/>
+        <result property="organizationId" column="organization_id"/>
+        <result property="available" column="is_available"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="interviewer">
+        id, organization_member_id, organization_id, is_available, create_time, update_time
+    </sql>
+
+    <insert id="insertInterviewer" keyProperty="id">
+        insert into interviewer(organization_member_id, organization_id)
+        values(#{organizationMemberId}, #{organizationId})
+    </insert>
+
+    <select id="getInterviewer" resultMap="interviewer">
+        select <include refid="interviewer"/>
+        from interviewer
+        where id = #{id}
+    </select>
+
+    <select id="getOrganizationId" resultType="java.lang.Long">
+        select organization_id
+        from interviewer
+        where id = #{id}
+    </select>
+
+    <select id="getOrganizationMemberId" resultType="java.lang.Long">
+        select organization_member_id
+        from interviewer
+        where id = #{id}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*)
+        from interviewer
+        where id = #{id}
+    </select>
+
+    <select id="countByOrganizationMemberId" resultType="java.lang.Integer">
+        select count(*)
+        from interviewer
+        where organization_member_id = #{organizationMemberId}
+    </select>
+
+    <update id="updateAvailable">
+        update interviewer
+        set is_available = #{available}
+        where id = #{id}
+          and is_available = !#{available}
+    </update>
+
+</mapper>

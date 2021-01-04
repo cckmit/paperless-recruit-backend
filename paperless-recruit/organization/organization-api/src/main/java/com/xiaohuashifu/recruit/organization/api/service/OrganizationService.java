@@ -251,6 +251,17 @@ public interface OrganizationService {
     Long getUserId(Long id);
 
     /**
+     * 验证组织的主体
+     *
+     * @private 内部方法
+     *
+     * @param id 组织编号
+     * @param userId 主体编号
+     * @return 若是返回 true，不是返回 false
+     */
+    Boolean authenticatePrincipal(Long id, Long userId);
+
+    /**
      * 通过组织编号判断组织是否存在
      *
      * @private 内部方法

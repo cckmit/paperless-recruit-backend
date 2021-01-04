@@ -252,12 +252,12 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
      *
      * @private 内部方法
      *
-     * @param id 组织成员邀请编号
-     * @return 用户编号，若组织成员邀请不存在返回 null
+     * @param id 组织成员编号
+     * @return 用户编号，若组织成员不存在返回 null
      */
     @Override
     public Long getUserId(Long id) {
-        return organizationMemberInvitationMapper.getUserId(id);
+        return organizationMemberMapper.getUserId(id);
     }
 
     /**

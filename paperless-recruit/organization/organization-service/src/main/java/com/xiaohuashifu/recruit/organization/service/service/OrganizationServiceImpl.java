@@ -21,6 +21,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -479,6 +480,20 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Long getUserId(Long id) {
         return organizationMapper.getUserId(id);
+    }
+
+    /**
+     * 验证组织的主体
+     *
+     * @private 内部方法
+     *
+     * @param id 组织编号
+     * @param userId 主体编号
+     * @return 若是返回 true，不是返回 false
+     */
+    @Override
+    public Boolean authenticatePrincipal(Long id, Long userId) {
+        return Objects.equals(organizationMapper.getUserId(id), userId);
     }
 
     /**

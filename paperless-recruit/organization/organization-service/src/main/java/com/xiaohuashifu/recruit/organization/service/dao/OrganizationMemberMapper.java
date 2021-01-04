@@ -22,7 +22,9 @@ public interface OrganizationMemberMapper {
     List<OrganizationMemberDO> listOrganizationMembers(OrganizationMemberQuery query);
 
     Long getOrganizationId(Long id);
-    
+
+    Long getUserId(Long id);
+
     int countByOrganizationIdAndUserId(@Param("organizationId") Long organizationId, @Param("userId") Long userId);
 
     int updateDepartment(@Param("id") Long id, @Param("departmentId") Long departmentId);

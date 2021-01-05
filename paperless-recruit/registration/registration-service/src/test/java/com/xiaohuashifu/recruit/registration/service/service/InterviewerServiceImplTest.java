@@ -33,7 +33,7 @@ public class InterviewerServiceImplTest {
 
     @Test
     public void saveInterviewer() {
-        System.out.println(interviewerService.saveInterviewer(1L, 2L));
+        System.out.println(interviewerService.saveInterviewer(1L, 3L));
     }
 
     @Test

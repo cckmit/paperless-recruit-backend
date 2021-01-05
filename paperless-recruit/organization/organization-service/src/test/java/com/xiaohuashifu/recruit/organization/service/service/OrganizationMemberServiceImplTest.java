@@ -33,12 +33,12 @@ public class OrganizationMemberServiceImplTest {
 
     @Test
     public void sendInvitation() {
-        System.out.println(organizationMemberService.sendInvitation(1L, "xiaohuashifu"));
+        System.out.println(organizationMemberService.sendInvitation(1L, "scau_recruit_0983189606"));
     }
 
     @Test
     public void acceptInvitation() {
-        System.out.println(organizationMemberService.acceptInvitation(7L));
+        System.out.println(organizationMemberService.acceptInvitation(8L));
     }
 
     @Test

@@ -18,6 +18,16 @@ public enum SystemNotificationTypeEnum implements Serializable {
     /**
      * 组织邀请通知
      */
-    ORGANIZATION_INVITATION
+    ORGANIZATION_INVITATION,
+
+    /**
+     * 面试通知
+     */
+    INTERVIEW,
+
+    /**
+     * 面试官通知
+     */
+    INTERVIEWER
 
 }

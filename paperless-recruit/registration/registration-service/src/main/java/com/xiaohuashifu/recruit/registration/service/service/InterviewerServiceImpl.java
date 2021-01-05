@@ -1,8 +1,13 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
+import com.xiaohuashifu.recruit.notification.api.po.SendSystemNotificationPO;
+import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
+import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewerDTO;
@@ -38,6 +43,9 @@ public class InterviewerServiceImpl implements InterviewerService {
     @Reference
     private RoleService roleService;
 
+    @Reference
+    private SystemNotificationService systemNotificationService;
+
     /**
      * 面试官角色的编号
      */
@@ -68,7 +76,6 @@ public class InterviewerServiceImpl implements InterviewerService {
      * @return 面试官对象
      */
     @Override
-    // TODO: 2021/1/5 发送被设置为面试官的系统通知
     public Result<InterviewerDTO> saveInterviewer(Long organizationId, Long organizationMemberId) {
         // 判断组织状态
         Result<InterviewerDTO> checkOrganizationStatusResult =
@@ -100,6 +107,9 @@ public class InterviewerServiceImpl implements InterviewerService {
         Long userId = organizationMemberService.getUserId(organizationMemberId);
         roleService.saveUserRole(userId, INTERVIEWER_ROLE_ID);
 
+        // 发送成为面试官的系统通知
+        sendBecomeInterviewerSystemNotification(userId, organizationId);
+
         // 获取创建的面试官对象
         return getInterviewer(interviewerDO.getId());
     }
@@ -120,7 +130,6 @@ public class InterviewerServiceImpl implements InterviewerService {
     @DistributedLock(value = UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}",
             errorMessage = "Failed to acquire update available interviewer lock.")
     @Override
-    // TODO: 2021/1/5 添加被取消面试官资格的系统通知
     public Result<InterviewerDTO> disableInterviewer(Long id) {
         // 判断面试官是否存在
         int count = interviewerMapper.count(id);
@@ -143,6 +152,9 @@ public class InterviewerServiceImpl implements InterviewerService {
         Long userId = organizationMemberService.getUserId(organizationMemberId);
         roleService.removeUserRole(userId, INTERVIEWER_ROLE_ID);
 
+        // 发送取消面试官的系统通知
+        sendDisableOrEnableInterviewerSystemNotification(userId, organizationMemberId, "取消");
+
         // 获取禁用后的面试官
         return getInterviewer(id);
     }
@@ -163,7 +175,6 @@ public class InterviewerServiceImpl implements InterviewerService {
     @DistributedLock(value = UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}",
             errorMessage = "Failed to acquire update available interviewer lock.")
     @Override
-    // TODO: 2021/1/5 添加被恢复面试官资格的系统通知
     public Result<InterviewerDTO> enableInterviewer(Long id) {
         // 判断面试官是否存在
         int count = interviewerMapper.count(id);
@@ -185,6 +196,9 @@ public class InterviewerServiceImpl implements InterviewerService {
         Long organizationMemberId = interviewerMapper.getOrganizationMemberId(id);
         Long userId = organizationMemberService.getUserId(organizationMemberId);
         roleService.saveUserRole(userId, INTERVIEWER_ROLE_ID);
+
+        // 发送恢复面试官的系统通知
+        sendDisableOrEnableInterviewerSystemNotification(userId, organizationMemberId, "恢复");
 
         // 获取解禁后的面试官
         return getInterviewer(id);
@@ -240,5 +254,55 @@ public class InterviewerServiceImpl implements InterviewerService {
     private Result<InterviewerDTO> getInterviewer(Long id) {
         InterviewerDO interviewerDO = interviewerMapper.getInterviewer(id);
         return Result.success(interviewerAssembler.toDTO(interviewerDO));
+    }
+
+    /**
+     * 发送成为面试官的系统通知
+     *
+     * @param userId 用户编号
+     * @param organizationId 组织编号
+     */
+    private void sendBecomeInterviewerSystemNotification(Long userId, Long organizationId) {
+        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+        String notificationTitle = abbreviationOrganizationName + "已将您设置为的面试官";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("message", notificationTitle + "。您现在可以查看" + abbreviationOrganizationName
+                + "的报名表，并进行面试工作啦！");
+        jsonObject.put("organizationId", organizationId);
+        String notificationContent = jsonObject.toJSONString();
+        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+                .userId(userId)
+                .notificationType(SystemNotificationTypeEnum.INTERVIEWER)
+                .notificationTitle(notificationTitle)
+                .notificationContent(notificationContent)
+                .build();
+        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+    }
+
+    /**
+     * 发送取消或回复面试官资格的系统通知
+     *
+     * @param userId 用户编号
+     * @param organizationMemberId 组织成员编号
+     * @param disableOrEnable "取消" or "恢复"
+     */
+    private void sendDisableOrEnableInterviewerSystemNotification(
+            Long userId, Long organizationMemberId, String disableOrEnable) {
+        Long organizationId = organizationMemberService.getOrganizationId(organizationMemberId);
+        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+        String notificationTitle = abbreviationOrganizationName + "已" + disableOrEnable+ "您的面试官资格";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("message", notificationTitle);
+        jsonObject.put("organizationId", organizationId);
+        String notificationContent = jsonObject.toJSONString();
+        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+                .userId(userId)
+                .notificationType(SystemNotificationTypeEnum.INTERVIEWER)
+                .notificationTitle(notificationTitle)
+                .notificationContent(notificationContent)
+                .build();
+        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
     }
 }

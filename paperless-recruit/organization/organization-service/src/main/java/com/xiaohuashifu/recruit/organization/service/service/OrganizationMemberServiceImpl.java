@@ -515,7 +515,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         String notificationContent = notificationContentJsonObject.toJSONString();
 
         // 发送通知
-        SendSystemNotificationPO sendSystemNotificationPO = new SendSystemNotificationPO.Builder()
+        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
                 .userId(userId)
                 .notificationType(SystemNotificationTypeEnum.ORGANIZATION_INVITATION)
                 .notificationTitle(notificationTitle)

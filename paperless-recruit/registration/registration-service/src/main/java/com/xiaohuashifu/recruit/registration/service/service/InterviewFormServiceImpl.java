@@ -1,8 +1,13 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
+import com.xiaohuashifu.recruit.notification.api.po.SendSystemNotificationPO;
+import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
+import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewFormDTO;
 import com.xiaohuashifu.recruit.registration.api.po.SaveInterviewFormPO;
@@ -35,6 +40,9 @@ public class InterviewFormServiceImpl implements InterviewFormService {
 
     @Reference
     private ApplicationFormService applicationFormService;
+
+    @Reference
+    private SystemNotificationService systemNotificationService;
 
     /**
      * 保存面试表锁定键模式，{0}是面试编号，{1}是报名表编号
@@ -99,6 +107,23 @@ public class InterviewFormServiceImpl implements InterviewFormService {
                 .interviewStatus(InterviewStatusEnum.WAITING_INTERVIEW.name())
                 .build();
         interviewFormMapper.insertInterviewForm(interviewFormDO);
+
+        // 发送面试通知
+//        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+//        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+//        String notificationTitle = abbreviationOrganizationName + "已将您设置为的面试官";
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("message", notificationTitle + "。您现在可以查看" + abbreviationOrganizationName
+//                + "的报名表，并进行面试工作啦！");
+//        jsonObject.put("organizationId", organizationId);
+//        String notificationContent = jsonObject.toJSONString();
+//        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+//                .userId(userId)
+//                .notificationType(SystemNotificationTypeEnum.INTERVIEWER)
+//                .notificationTitle(notificationTitle)
+//                .notificationContent(notificationContent)
+//                .build();
+//        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
 
         // 获取创建的面试表
         return getInterviewForm(interviewFormDO.getId());

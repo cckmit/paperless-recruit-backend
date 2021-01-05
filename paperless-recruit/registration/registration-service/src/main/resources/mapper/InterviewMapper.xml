@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.registration.service.dao.InterviewMapper">
+
+    <resultMap id="interview" type="com.xiaohuashifu.recruit.registration.service.do0.InterviewDO">
+        <id property="id" column="id"/>
+        <result property="recruitmentId" column="recruitment_id"/>
+        <result property="round" column="round"/>
+        <result property="title" column="title"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="interview">
+        id, recruitment_id, round, title, create_time, update_time
+    </sql>
+
+    <insert id="insertInterview" keyProperty="id">
+        insert into interview(recruitment_id, round, title)
+        values(#{recruitmentId}, #{round}, #{title})
+    </insert>
+
+    <select id="getInterview" resultMap="interview">
+        select <include refid="interview"/>
+        from interview
+        where id = #{id}
+    </select>
+
+    <select id="getRecruitmentId" resultType="java.lang.Long">
+        select recruitment_id
+        from interview
+        where id = #{id}
+    </select>
+
+    <select id="getMaxRoundByRecruitmentId" resultType="java.lang.Integer">
+        select max(round)
+        from interview
+        where recruitment_id = #{recruitmentId}
+    </select>
+
+    <update id="updateTitle">
+        update interview
+        set title = #{title}
+        where id = #{id}
+    </update>
+
+</mapper>

@@ -435,6 +435,17 @@ public interface RecruitmentService {
     Long getOrganizationId(Long id);
 
     /**
+     * 验证招新的主体，也就是组织的主体
+     *
+     * @private 内部方法
+     *
+     * @param id 招新编号
+     * @param userId 主体编号
+     * @return 若是返回 true，不是返回 false
+     */
+    Boolean authenticatePrincipal(Long id, Long userId);
+
+    /**
      * 更新招新的状态，用于状态的转换
      *
      * @private 内部方法

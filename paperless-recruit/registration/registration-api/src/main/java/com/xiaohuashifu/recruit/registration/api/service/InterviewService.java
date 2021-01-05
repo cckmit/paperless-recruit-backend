@@ -20,7 +20,7 @@ public interface InterviewService {
     /**
      * 创建一个面试
      *
-     * @permission 必须是招新所属组织所属用户主体
+     * @permission 必须是招新所属主体
      *
      * @errorCode InvalidParameter: 参数格式错误
      *              InvalidParameter.NotExist: 招新不存在
@@ -44,6 +44,10 @@ public interface InterviewService {
      *
      * @permission 必须是面试所属的主体
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *
      * @param id 面试编号
      * @param title 面试标题
      * @return 更新后的面试对象
@@ -56,6 +60,21 @@ public interface InterviewService {
                             + InterviewConstants.MAX_TITLE_LENGTH + ".") String title);
 
     /**
+     * 获取下一个轮次
+     *
+     * @permission 必须是招新所属的主体
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              OperationConflict.OverLimit: 超过轮次限制
+     *
+     * @param recruitmentId 招新编号
+     * @return 下一个轮次
+     */
+    Result<Integer> getNextRound(
+            @NotNull(message = "The recruitmentId can't be null.")
+            @Positive(message = "The recruitmentId must be greater than 0.") Long recruitmentId);
+
+    /**
      * 获取面试所属的招新
      *
      * @private 内部方法
@@ -66,7 +85,7 @@ public interface InterviewService {
     Long getRecruitmentId(Long id);
 
     /**
-     * 验证面试的主体
+     * 验证面试的主体，也就是招新的主体
      *
      * @private 内部方法
      *

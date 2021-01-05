@@ -898,6 +898,24 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
+     * 验证招新的主体，也就是组织的主体
+     *
+     * @private 内部方法
+     *
+     * @param id 招新编号
+     * @param userId 主体编号
+     * @return 若是返回 true，不是返回 false
+     */
+    @Override
+    public Boolean authenticatePrincipal(Long id, Long userId) {
+        Long organizationId = recruitmentMapper.getOrganizationId(id);
+        if (organizationId == null) {
+            return false;
+        }
+        return organizationService.authenticatePrincipal(organizationId, userId);
+    }
+
+    /**
      * 更新招新的状态，用于状态的转换
      *
      * @private 内部方法

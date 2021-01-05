@@ -8,12 +8,15 @@ import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationType
 import com.xiaohuashifu.recruit.notification.api.po.SendSystemNotificationPO;
 import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
+import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
+import com.xiaohuashifu.recruit.registration.api.dto.InterviewDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewFormDTO;
 import com.xiaohuashifu.recruit.registration.api.po.SaveInterviewFormPO;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewFormService;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewService;
+import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.assembler.InterviewFormAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.InterviewFormMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.InterviewFormDO;
@@ -44,6 +47,12 @@ public class InterviewFormServiceImpl implements InterviewFormService {
     @Reference
     private SystemNotificationService systemNotificationService;
 
+    @Reference
+    private RecruitmentService recruitmentService;
+
+    @Reference
+    private OrganizationService organizationService;
+
     /**
      * 保存面试表锁定键模式，{0}是面试编号，{1}是报名表编号
      */
@@ -69,7 +78,6 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      * @param saveInterviewFormPO 保存面试表的参数对象
      * @return 创建的面试表
      */
-    // TODO: 2021/1/5 发送系统通知，通知面试者组织已经发送面试通知了
     @DistributedLock(value = SAVE_INTERVIEW_FORM_LOCK_KEY_PATTERN,
             parameters = {"#{#saveInterviewFormPO.interviewId}", "#{#saveInterviewFormPO.applicationFormId}"},
             errorMessage = "Failed to acquire save interview form lock.")
@@ -91,9 +99,9 @@ public class InterviewFormServiceImpl implements InterviewFormService {
         }
 
         // 判断面试和报名表是否是同一个招新的
-        Long recruitmentIdFromInterview = interviewService.getRecruitmentId(interviewId);
+        InterviewDTO interviewDTO = interviewService.getInterview(interviewId).getData();
         Long recruitmentIdFromApplicationForm = applicationFormService.getRecruitmentId(applicationFormId);
-        if (!Objects.equals(recruitmentIdFromInterview, recruitmentIdFromApplicationForm)) {
+        if (!Objects.equals(interviewDTO.getRecruitmentId(), recruitmentIdFromApplicationForm)) {
             return Result.fail(ErrorCodeEnum.FORBIDDEN);
         }
 
@@ -109,24 +117,11 @@ public class InterviewFormServiceImpl implements InterviewFormService {
         interviewFormMapper.insertInterviewForm(interviewFormDO);
 
         // 发送面试通知
-//        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
-//        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
-//        String notificationTitle = abbreviationOrganizationName + "已将您设置为的面试官";
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("message", notificationTitle + "。您现在可以查看" + abbreviationOrganizationName
-//                + "的报名表，并进行面试工作啦！");
-//        jsonObject.put("organizationId", organizationId);
-//        String notificationContent = jsonObject.toJSONString();
-//        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
-//                .userId(userId)
-//                .notificationType(SystemNotificationTypeEnum.INTERVIEWER)
-//                .notificationTitle(notificationTitle)
-//                .notificationContent(notificationContent)
-//                .build();
-//        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+        Long interviewFormDOId = interviewFormDO.getId();
+        sendInterviewSystemNotification(interviewDTO, interviewFormDOId, applicationFormId);
 
         // 获取创建的面试表
-        return getInterviewForm(interviewFormDO.getId());
+        return getInterviewForm(interviewFormDOId);
     }
 
     /**
@@ -142,7 +137,6 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      * @param interviewTime 面试时间
      * @return 更新后的面试表
      */
-    // TODO: 2021/1/5 给面试者发送面试时间已经修改的信息
     @Override
     public Result<InterviewFormDTO> updateInterviewTime(Long id, String interviewTime) {
         // 检查面试表状态
@@ -153,6 +147,9 @@ public class InterviewFormServiceImpl implements InterviewFormService {
 
         // 更新面试时间
         interviewFormMapper.updateInterviewTime(id, interviewTime);
+
+        // 发送更新面试时间通知
+        sendUpdateInterviewFormSystemNotification(id, "面试时间");
 
         // 获取更新后的面试表
         return getInterviewForm(id);
@@ -171,7 +168,6 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      * @param interviewLocation 面试地点
      * @return 更新后的面试表
      */
-    // TODO: 2021/1/5 给面试者发送面试地点已经修改的信息
     @Override
     public Result<InterviewFormDTO> updateInterviewLocation(Long id, String interviewLocation) {
         // 检查面试表状态
@@ -182,6 +178,9 @@ public class InterviewFormServiceImpl implements InterviewFormService {
 
         // 更新面试地点
         interviewFormMapper.updateInterviewLocation(id, interviewLocation);
+
+        // 发送更新面试地点通知
+        sendUpdateInterviewFormSystemNotification(id, "面试地点");
 
         // 获取更新后的面试表
         return getInterviewForm(id);
@@ -200,7 +199,6 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      * @param note 备注
      * @return 更新后的面试表
      */
-    // TODO: 2021/1/5 给面试者发送备注已经修改的信息
     @Override
     public Result<InterviewFormDTO> updateNote(Long id, String note) {
         // 检查面试表状态
@@ -211,6 +209,9 @@ public class InterviewFormServiceImpl implements InterviewFormService {
 
         // 更新备注
         interviewFormMapper.updateNote(id, note);
+
+        // 发送更新备注通知
+        sendUpdateInterviewFormSystemNotification(id, "备注");
 
         // 获取更新后的面试表
         return getInterviewForm(id);
@@ -231,7 +232,6 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      * @param newInterviewStatus 新面试状态
      * @return 更新后的面试表
      */
-    // TODO: 2021/1/5 给面试者发送面试状态已经修改的信息
     @Override
     public Result<InterviewFormDTO> updateInterviewStatus(Long id, InterviewStatusEnum oldInterviewStatus,
                                                           InterviewStatusEnum newInterviewStatus) {
@@ -256,6 +256,9 @@ public class InterviewFormServiceImpl implements InterviewFormService {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
                     "The oldInterviewStatus does not is " + oldInterviewStatus.name() + ".");
         }
+
+        // 发送更新面试结果通知
+        sendInterviewResultSystemNotification(id, newInterviewStatus);
 
         // 获取更新后的面试表
         return getInterviewForm(id);
@@ -342,6 +345,120 @@ public class InterviewFormServiceImpl implements InterviewFormService {
 
         // 通过检查
         return Result.success();
+    }
+
+    /**
+     * 发送面试的系统通知
+     *
+     * @param interviewDTO 面试对象
+     * @param interviewFormId 面试表编号
+     * @param applicationFormId 报名表编号
+     */
+    private void sendInterviewSystemNotification(InterviewDTO interviewDTO, Long interviewFormId,
+                                                 Long applicationFormId) {
+        Long organizationId = recruitmentService.getOrganizationId(interviewDTO.getRecruitmentId());
+        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+
+        String notificationTitle = interviewDTO.getTitle() + "通知";
+        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("message", "【" + abbreviationOrganizationName + "】邀请您参加面试：" + interviewDTO.getTitle()
+                + "。请注意好面试要求，准时参加面试。");
+        jsonObject.put("interviewId", interviewDTO.getId());
+        jsonObject.put("interviewFormId", interviewFormId);
+        jsonObject.put("organizationId", organizationId);
+        String notificationContent = jsonObject.toJSONString();
+
+        Long userId = applicationFormService.getUserId(applicationFormId);
+        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+                .userId(userId)
+                .notificationType(SystemNotificationTypeEnum.INTERVIEW)
+                .notificationTitle(notificationTitle)
+                .notificationContent(notificationContent)
+                .build();
+        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+    }
+
+    /**
+     * 更新面试表的系统通知
+     *
+     * @param id 面试表编号
+     * @param field 更新的字段
+     */
+    private void sendUpdateInterviewFormSystemNotification(Long id, String field) {
+        InterviewFormDO interviewFormDO = interviewFormMapper.getInterviewForm(id);
+        Long interviewId = interviewFormDO.getInterviewId();
+        InterviewDTO interviewDTO = interviewService.getInterview(interviewId).getData();
+        Long recruitmentId = interviewDTO.getRecruitmentId();
+        Long organizationId = recruitmentService.getOrganizationId(recruitmentId);
+        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+
+        String notificationTitle = interviewDTO.getTitle() + "更新了" + field;
+        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("message", "【" + abbreviationOrganizationName + "】更新了面试【" + notificationTitle + "】的"
+                + field + "。请查看最新的面试要求，以免错过面试。");
+        jsonObject.put("interviewId", interviewId);
+        jsonObject.put("interviewFormId", id);
+        jsonObject.put("organizationId", organizationId);
+        String notificationContent = jsonObject.toJSONString();
+
+        Long applicationFormId = interviewFormDO.getApplicationFormId();
+        Long userId = applicationFormService.getUserId(applicationFormId);
+        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+                .userId(userId)
+                .notificationType(SystemNotificationTypeEnum.INTERVIEW)
+                .notificationTitle(notificationTitle)
+                .notificationContent(notificationContent)
+                .build();
+        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+    }
+
+    /**
+     * 更新面试表的系统通知
+     *
+     * @param id 面试表编号
+     * @param interviewStatus 新面试结果
+     */
+    private void sendInterviewResultSystemNotification(Long id, InterviewStatusEnum interviewStatus) {
+        InterviewFormDO interviewFormDO = interviewFormMapper.getInterviewForm(id);
+        Long interviewId = interviewFormDO.getInterviewId();
+        InterviewDTO interviewDTO = interviewService.getInterview(interviewId).getData();
+        Long recruitmentId = interviewDTO.getRecruitmentId();
+        Long organizationId = recruitmentService.getOrganizationId(recruitmentId);
+        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("interviewId", interviewId);
+        jsonObject.put("interviewFormId", id);
+        jsonObject.put("organizationId", organizationId);
+        String notificationTitle;
+        if (interviewStatus == InterviewStatusEnum.PENDING) {
+            notificationTitle = "【面试结果】【" + interviewDTO.getTitle() + "】待定";
+            String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+            jsonObject.put("message", "【" + abbreviationOrganizationName + "】您参加的【" + interviewDTO.getTitle()
+                    + "】目前处于待定状态。");
+        } else if (interviewStatus == InterviewStatusEnum.NOT_PASS) {
+            notificationTitle = "【面试结果】【" + interviewDTO.getTitle() + "】未通过";
+            String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+            jsonObject.put("message", "【" + abbreviationOrganizationName + "】很遗憾您未通过【" + interviewDTO.getTitle()
+                    + "】。");
+        } else {
+            notificationTitle = "【面试结果】【" + interviewDTO.getTitle() + "】通过";
+            String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+            jsonObject.put("message", "【" + abbreviationOrganizationName + "】恭喜您通过了【" + interviewDTO.getTitle()
+                    + "】。");
+        }
+
+        String notificationContent = jsonObject.toJSONString();
+        Long applicationFormId = interviewFormDO.getApplicationFormId();
+        Long userId = applicationFormService.getUserId(applicationFormId);
+        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+                .userId(userId)
+                .notificationType(SystemNotificationTypeEnum.INTERVIEW)
+                .notificationTitle(notificationTitle)
+                .notificationContent(notificationContent)
+                .build();
+        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
     }
 
 }

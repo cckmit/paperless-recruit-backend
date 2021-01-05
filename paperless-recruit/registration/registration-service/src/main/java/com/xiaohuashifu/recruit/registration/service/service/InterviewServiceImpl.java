@@ -82,6 +82,24 @@ public class InterviewServiceImpl implements InterviewService {
     }
 
     /**
+     * 获取面试
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotFound: 不存在该面试
+     *
+     * @param id 面试编号
+     * @return 面试
+     */
+    @Override
+    public Result<InterviewDTO> getInterview(Long id) {
+        InterviewDO interviewDO = interviewMapper.getInterview(id);
+        if (interviewDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND, "The interview does not exist.");
+        }
+        return Result.success(interviewAssembler.toDTO(interviewDO));
+    }
+
+    /**
      * 更新面试标题
      *
      * @permission 必须是面试所属的主体
@@ -191,17 +209,6 @@ public class InterviewServiceImpl implements InterviewService {
             return false;
         }
         return recruitmentService.authenticatePrincipal(recruitmentId, userId);
-    }
-
-    /**
-     * 获取面试
-     *
-     * @param id 面试编号
-     * @return 面试
-     */
-    private Result<InterviewDTO> getInterview(Long id) {
-        InterviewDO interviewDO = interviewMapper.getInterview(id);
-        return Result.success(interviewAssembler.toDTO(interviewDO));
     }
 
 }

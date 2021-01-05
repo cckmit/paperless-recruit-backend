@@ -33,7 +33,7 @@ public class InterviewServiceImplTest {
 
     @Test
     public void createInterview() {
-        System.out.println(interviewService.createInterview(21L, "技术人员第一轮面试"));
+        System.out.println(interviewService.createInterview(22L, "消息服务面试"));
     }
 
     @Test

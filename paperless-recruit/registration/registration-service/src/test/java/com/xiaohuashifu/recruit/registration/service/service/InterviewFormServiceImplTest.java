@@ -36,7 +36,7 @@ public class InterviewFormServiceImplTest {
     @Test
     public void saveInterviewForm() {
         System.out.println(interviewFormService.saveInterviewForm(SaveInterviewFormPO.builder()
-                .interviewId(8L)
+                .interviewId(9L)
                 .applicationFormId(10L)
                 .interviewLocation("创客空间")
                 .interviewTime("1月6号下午 1点-3点")
@@ -46,23 +46,23 @@ public class InterviewFormServiceImplTest {
 
     @Test
     public void updateInterviewTime() {
-        System.out.println(interviewFormService.updateInterviewTime(1L, "1月7号下午 4-5点"));
+        System.out.println(interviewFormService.updateInterviewTime(2L, "1月8号 晚上4-5点"));
     }
 
     @Test
     public void updateInterviewLocation() {
-        System.out.println(interviewFormService.updateInterviewLocation(1L, "数信5楼"));
+        System.out.println(interviewFormService.updateInterviewLocation(2L, "数信5楼"));
     }
 
     @Test
     public void updateNote() {
-        System.out.println(interviewFormService.updateNote(1L, "带上电脑和纸币"));
+        System.out.println(interviewFormService.updateNote(3L, "带上电脑和纸币"));
     }
 
     @Test
     public void updateInterviewStatus() {
         System.out.println(interviewFormService.updateInterviewStatus(
-                1L, InterviewStatusEnum.PENDING, InterviewStatusEnum.PASS));
+                3L, InterviewStatusEnum.WAITING_INTERVIEW, InterviewStatusEnum.PASS));
     }
 
     @Test

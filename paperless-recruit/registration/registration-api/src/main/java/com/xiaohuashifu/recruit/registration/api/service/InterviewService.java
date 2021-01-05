@@ -40,6 +40,17 @@ public interface InterviewService {
                             + InterviewConstants.MAX_TITLE_LENGTH + ".") String title);
 
     /**
+     * 获取面试
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotFound: 不存在该面试
+     *
+     * @param id 面试编号
+     * @return 面试
+     */
+    Result<InterviewDTO> getInterview(Long id);
+
+    /**
      * 更新面试标题
      *
      * @permission 必须是面试所属的主体

@@ -237,6 +237,32 @@ public class InterviewFormServiceImpl implements InterviewFormService {
     }
 
     /**
+     * 获取面试编号
+     *
+     * @private 内部方法
+     *
+     * @param id 面试表编号
+     * @return 面试编号，若不存在返回 null
+     */
+    @Override
+    public Long getInterviewId(Long id) {
+        return interviewFormMapper.getInterviewId(id);
+    }
+
+    /**
+     * 获取面试状态
+     *
+     * @private 内部方法
+     *
+     * @param id 面试表编号
+     * @return 面试状态，若不存在返回 null
+     */
+    @Override
+    public String getInterviewStatus(Long id) {
+        return interviewFormMapper.getInterviewStatus(id);
+    }
+
+    /**
      * 验证面试表的主体
      *
      * @private 内部方法

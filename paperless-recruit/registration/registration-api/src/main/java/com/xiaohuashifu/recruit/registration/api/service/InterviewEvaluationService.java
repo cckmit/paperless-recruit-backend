@@ -21,7 +21,14 @@ public interface InterviewEvaluationService {
     /**
      * 保存面试评价
      *
-     * @permission 必须是面试官的主体
+     * @permission 必须是面试官->组织成员->用户的主体
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试表不存在 | 面试官不存在
+     *              Forbidden: 面试官和面试表不是同一个组织的
+     *              OperationConflict.Status: 面试表状态已经在 PENDING 之后，不可评价
+     *              OperationConflict.Duplicate: 面试评价已经存在
+     *              OperationConflict.Lock: 获取保存面试评价的锁失败
      *
      * @param saveInterviewEvaluationPO 保存面试评价的参数对象
      * @return 新创建的面试评价
@@ -35,6 +42,10 @@ public interface InterviewEvaluationService {
      *
      * @permission 必须是面试评价的主体
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试评价不存在
+     *              OperationConflict.Status: 面试表状态已经在 PENDING 之后，不可评价
+     *
      * @param id 面试评价编号
      * @param evaluation 评价
      * @return 更新后的评价
@@ -47,7 +58,7 @@ public interface InterviewEvaluationService {
                             + InterviewEvaluationConstants.MAX_EVALUATION_LENGTH + ".") String evaluation);
 
     /**
-     * 验证面试评价的主体，也就是面试官的主体
+     * 验证面试评价的主体，也就是面试评价->面试官->组织成员->用户的主体
      *
      * @private 内部方法
      *

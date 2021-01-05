@@ -78,6 +78,16 @@ public interface InterviewerService {
     Long getOrganizationId(Long id);
 
     /**
+     * 获取组织成员编号
+     *
+     * @private 内部方法
+     *
+     * @param id 面试官编号
+     * @return 组织成员编号，若找不到返回 null
+     */
+    Long getOrganizationMemberId(Long id);
+
+    /**
      * 验证面试官的主体，也就是组织的主体
      *
      * @private 内部方法

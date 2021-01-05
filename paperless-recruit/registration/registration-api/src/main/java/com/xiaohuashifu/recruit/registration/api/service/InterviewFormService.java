@@ -24,6 +24,13 @@ public interface InterviewFormService {
      *
      * @permission 必须是所属面试的主体
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试不存在
+     *              Forbidden: 面试和报名表不是同一个招新的
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *              OperationConflict.Lock: 获取保存面试表的锁失败
+     *              OperationConflict.Duplicate: 面试表已经存在
+     *
      * @param saveInterviewFormPO 保存面试表的参数对象
      * @return 创建的面试表
      */
@@ -34,6 +41,10 @@ public interface InterviewFormService {
      * 更新面试时间
      *
      * @permission 必须是面试表的主体
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试表不存在
+     *              OperationConflict.Status: 面试表的状态不是 WAITING_INTERVIEW
      *
      * @param id 面试表编号
      * @param interviewTime 面试时间
@@ -51,6 +62,10 @@ public interface InterviewFormService {
      *
      * @permission 必须是面试表的主体
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试表不存在
+     *              OperationConflict.Status: 面试表的状态不是 WAITING_INTERVIEW
+     *
      * @param id 面试表编号
      * @param interviewLocation 面试地点
      * @return 更新后的面试表
@@ -67,6 +82,10 @@ public interface InterviewFormService {
      *
      * @permission 必须是面试表的主体
      *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试表不存在
+     *              OperationConflict.Status: 面试表的状态不是 WAITING_INTERVIEW
+     *
      * @param id 面试表编号
      * @param note 备注
      * @return 更新后的面试表
@@ -82,6 +101,11 @@ public interface InterviewFormService {
      * 更新面试状态
      *
      * @permission 必须是面试表的主体
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试表不存在
+     *              InvalidParameter.Mismatch: 旧面试状态已经改变了
+     *              OperationConflict.Status: 旧面试状态必须小于新模式状态
      *
      * @param id 面试表编号
      * @param oldInterviewStatus 旧面试状态

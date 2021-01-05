@@ -31,10 +31,9 @@ public class InterviewServiceImplTest {
         interviewService = reference.get();
     }
 
-
     @Test
     public void createInterview() {
-        System.out.println(interviewService.createInterview(5L, "宣传部第一轮面试"));
+        System.out.println(interviewService.createInterview(21L, "技术人员第一轮面试"));
     }
 
     @Test

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.recruit.registration.service.dao.InterviewFormMapper">
+
+    <resultMap id="interviewForm" type="com.xiaohuashifu.recruit.registration.service.do0.InterviewFormDO">
+        <id property="id" column="id"/>
+        <result property="interviewId" column="interview_id"/>
+        <result property="applicationFormId" column="application_form_id"/>
+        <result property="interviewTime" column="interview_time"/>
+        <result property="interviewLocation" column="interview_location"/>
+        <result property="note" column="note"/>
+        <result property="interviewStatus" column="interview_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="interviewForm">
+        id, interview_id, application_form_id, interview_time, interview_location, note, interview_status,
+        create_time, update_time
+    </sql>
+
+    <insert id="insertInterviewForm" keyProperty="id">
+        insert into interview_form(interview_id, application_form_id, interview_time, interview_location, note,
+                                   interview_status)
+        values(#{interviewId}, #{applicationFormId}, #{interviewTime}, #{interviewLocation}, #{note}, #{interviewStatus})
+    </insert>
+
+    <select id="getInterviewForm" resultMap="interviewForm">
+        select <include refid="interviewForm"/>
+        from interview_form
+        where id = #{id}
+    </select>
+
+    <select id="getInterviewId" resultType="java.lang.Long">
+        select interview_id
+        from interview_form
+        where id = #{id}
+    </select>
+
+    <select id="getInterviewStatus" resultType="java.lang.String">
+        select interview_status
+        from interview_form
+        where id = #{id}
+    </select>
+
+    <select id="countByInterviewIdAndApplicationFormId" resultType="java.lang.Integer">
+        select count(*)
+        from interview_form
+        where interview_id = #{interviewId}
+        and application_form_id = #{applicationFormId}
+    </select>
+
+    <update id="updateInterviewTime">
+        update interview_form
+        set interview_time = #{interviewTime}
+        where id = #{id}
+    </update>
+
+    <update id="updateInterviewLocation">
+        update interview_form
+        set interview_location = #{interviewLocation}
+        where id = #{id}
+    </update>
+
+    <update id="updateNote">
+        update interview_form
+        set note = #{note}
+        where id = #{id}
+    </update>
+
+    <update id="updateInterviewStatus">
+        update interview_form
+        set interview_status = #{newInterviewStatus}
+        where id = #{id}
+        and interview_status = #{oldInterviewStatus}
+    </update>
+
+</mapper>

@@ -96,15 +96,8 @@ public class InterviewServiceImpl implements InterviewService {
      */
     @Override
     public Result<InterviewDTO> updateTitle(Long id, String title) {
-        // 判断面试是否存在
-        Long recruitmentId = interviewMapper.getRecruitmentId(id);
-        if (recruitmentId == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The interview does not exist.");
-        }
-
-        // 检查招新状态
-        Result<InterviewDTO> checkResult = recruitmentService.checkRecruitmentStatus(recruitmentId);
+        // 检查面试状态
+        Result<InterviewDTO> checkResult = checkInterviewStatus(id);
         if (checkResult.isFailure()) {
             return checkResult;
         }
@@ -136,6 +129,37 @@ public class InterviewServiceImpl implements InterviewService {
                     "The round can't be greater than " + InterviewConstants.MAX_ROUND + ".");
         }
         return Result.success(nextRound);
+    }
+
+    /**
+     * 检查面试状态
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *
+     * @param id 面试编号
+     * @return 检查结果
+     */
+    @Override
+    public <T> Result<T> checkInterviewStatus(Long id) {
+        // 判断面试是否存在
+        Long recruitmentId = interviewMapper.getRecruitmentId(id);
+        if (recruitmentId == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
+                    "The interview does not exist.");
+        }
+
+        // 检查招新状态
+        Result<T> checkResult = recruitmentService.checkRecruitmentStatus(recruitmentId);
+        if (checkResult.isFailure()) {
+            return checkResult;
+        }
+
+        // 通过检查
+        return Result.success();
     }
 
     /**

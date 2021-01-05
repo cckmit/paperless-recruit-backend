@@ -75,6 +75,21 @@ public interface InterviewService {
             @Positive(message = "The recruitmentId must be greater than 0.") Long recruitmentId);
 
     /**
+     * 检查面试状态
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 面试不存在
+     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
+     *
+     * @param id 面试编号
+     * @return 检查结果
+     */
+    <T> Result<T> checkInterviewStatus(@NotNull(message = "The id can't be null.")
+                                       @Positive(message = "The id must be greater than 0.")  Long id);
+
+    /**
      * 获取面试所属的招新
      *
      * @private 内部方法

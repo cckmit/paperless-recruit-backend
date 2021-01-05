@@ -14,29 +14,27 @@ public enum InterviewStatusEnum {
     /**
      * 等待面试
      */
-    WAITING_INTERVIEW(0, "等待面试"),
+    WAITING_INTERVIEW(0),
 
     /**
      * 待定
      */
-    PENDING(1, "待定"),
+    PENDING(1),
 
     /**
      * 未通过
      */
-    NOT_PASS(2, "未通过"),
+    NOT_PASS(2),
 
     /**
      * 通过
      */
-    PASS(2, "通过");
+    PASS(2);
 
     private final int code;
-    private final String name;
 
-    InterviewStatusEnum(int code, String name) {
+    InterviewStatusEnum(int code) {
         this.code = code;
-        this.name = name;
     }
 
 }

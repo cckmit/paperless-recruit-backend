@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.pay.service.service;
 import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.kernel.Config;
 import com.alipay.easysdk.kernel.util.ResponseChecker;
+import com.alipay.easysdk.payment.common.models.AlipayTradeQueryResponse;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
 
 /**
@@ -18,11 +19,13 @@ public class PayServiceImpl0 {
         try {
             // 2. 发起API调用（以创建当面付收款二维码为例）
             AlipayTradePrecreateResponse response = Factory.Payment.FaceToFace()
-                    .preCreate("Apple iPhone11 128G", "2234567892", "0.01");
+                    .preCreate("Apple iPhone11 128G", "2234567894", "0.01");
             // 3. 处理响应或异常
             if (ResponseChecker.success(response)) {
                 System.out.println(response.getQrCode());
                 System.out.println("调用成功");
+                AlipayTradeQueryResponse queryResponse = Factory.Payment.Common().query("2234567894");
+                System.out.println(queryResponse.getBody());
             } else {
                 System.err.println("调用失败，原因：" + response.msg + "，" + response.subMsg);
             }

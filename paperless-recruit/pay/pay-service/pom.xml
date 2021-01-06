@@ -140,11 +140,6 @@
 		<!--    MapStruct    -->
 
 		<!--	阿里支付	-->
-<!--		<dependency>-->
-<!--			<groupId>com.alipay.sdk</groupId>-->
-<!--			<artifactId>alipay-sdk-java</artifactId>-->
-<!--			<version>4.11.8.ALL</version>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>com.alipay.sdk</groupId>
 			<artifactId>alipay-easysdk</artifactId>

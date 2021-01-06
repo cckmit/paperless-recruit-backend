@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.xiaohuashifu.recruit</groupId>
-		<artifactId>registration</artifactId>
+		<artifactId>pay</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>registration-service</artifactId>
-	<name>registration-service</name>
+	<artifactId>pay-service</artifactId>
+	<name>pay-service</name>
 
 	<dependencies>
 		<dependency>
@@ -103,6 +103,12 @@
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>
 			<artifactId>notification-api</artifactId>
+		</dependency>
+
+		<!--    pay-api接口    -->
+		<dependency>
+			<groupId>com.xiaohuashifu.recruit</groupId>
+			<artifactId>pay-api</artifactId>
 		</dependency>
 
 		<!--   公共对象     -->

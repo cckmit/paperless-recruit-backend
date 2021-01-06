@@ -7,11 +7,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="pay-service" />
         <module name="notification-api" />
         <module name="facade-service" />
         <module name="registration-service" />
         <module name="external-api" />
         <module name="gateway-api" />
+        <module name="pay-api" />
         <module name="user-service" />
         <module name="organization-api" />
         <module name="facade-api" />
@@ -46,6 +48,7 @@
       <module name="gateway-service" options="" />
       <module name="login" options="" />
       <module name="organization-service" options="" />
+      <module name="pay-service" options="" />
       <module name="registration-api" options="" />
       <module name="registration-service" options="" />
       <module name="user" options="" />

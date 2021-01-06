@@ -18,6 +18,7 @@
         <module>organization</module>
         <module>notification</module>
         <module>registration</module>
+        <module>pay</module>
     </modules>
 
     <!--  项目自定义常量  -->
@@ -187,6 +188,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!--    pay-api接口    -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>pay-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- 阿里云库 -->
             <dependency>
                 <groupId>com.aliyun</groupId>
@@ -241,6 +249,19 @@
                 <version>1.18.16</version>
                 <optional>true</optional>
             </dependency>
+
+            <!--    MapStruct    -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>1.4.1.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>1.4.1.Final</version>
+            </dependency>
+            <!--    MapStruct    -->
         </dependencies>
     </dependencyManagement>
 

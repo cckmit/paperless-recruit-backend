@@ -1,5 +1,4 @@
-package com.xiaohuashifu.recruit.pay.service.service;
-
+package com.xiaohuashifu.recruit.pay.api.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.pay.api.request.TradeCancelRequest;
@@ -10,18 +9,15 @@ import com.xiaohuashifu.recruit.pay.api.response.TradeCancelResponse;
 import com.xiaohuashifu.recruit.pay.api.response.TradePreCreateResponse;
 import com.xiaohuashifu.recruit.pay.api.response.TradeQueryResponse;
 import com.xiaohuashifu.recruit.pay.api.response.TradeRefundResponse;
-import com.xiaohuashifu.recruit.pay.api.service.PayService;
 import lombok.NonNull;
-import org.apache.dubbo.config.annotation.Service;
 
 /**
  * 描述：支付服务
  *
  * @author xhsf
- * @create 2021/1/6 15:45
+ * @create 2021/1/7 13:32
  */
-@Service
-public class PayServiceImpl implements PayService {
+public interface PayService {
 
     /**
      * 预下单
@@ -31,45 +27,35 @@ public class PayServiceImpl implements PayService {
      * @param request 预下单参数
      * @return 二维码
      */
-    @Override
-    public Result<TradePreCreateResponse> preCreate(TradePreCreateRequest request) {
-//        request.getPaymentMethod()
-        return null;
-    }
+    Result<TradePreCreateResponse> preCreate(@NonNull TradePreCreateRequest request);
 
     /**
      * 查询订单
      *
+     * @private 内部方法
+     *
      * @param request 查询参数
      * @return 查询结果
-     * @private 内部方法
      */
-    @Override
-    public Result<TradeQueryResponse> query(@NonNull TradeQueryRequest request) {
-        return null;
-    }
+    Result<TradeQueryResponse> query(@NonNull TradeQueryRequest request);
 
     /**
      * 撤销订单
      *
+     * @private 内部方法
+     *
      * @param request 撤销订单请求
      * @return 撤销结果
-     * @private 内部方法
      */
-    @Override
-    public Result<TradeCancelResponse> cancel(@NonNull TradeCancelRequest request) {
-        return null;
-    }
+    Result<TradeCancelResponse> cancel(@NonNull TradeCancelRequest request);
 
     /**
      * 退款
      *
+     * @private 内部方法
+     *
      * @param request 退款请求
      * @return 退款结果
-     * @private 内部方法
      */
-    @Override
-    public Result<TradeRefundResponse> refund(@NonNull TradeRefundRequest request) {
-        return null;
-    }
+    Result<TradeRefundResponse> refund(@NonNull TradeRefundRequest request);
 }

@@ -9,11 +9,6 @@ package com.xiaohuashifu.recruit.pay.api.constant;
 public class PayConstants {
 
     /**
-     * 订单主题最小长度
-     */
-    public static final int MIN_ORDER_SUBJECT_LENGTH = 1;
-
-    /**
      * 订单主题最大长度
      */
     public static final int MAX_ORDER_SUBJECT_LENGTH = 128;

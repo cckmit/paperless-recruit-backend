@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.pay.service.service;
 
 import com.xiaohuashifu.recruit.pay.api.constant.PaymentMethodEnum;
-import com.xiaohuashifu.recruit.pay.api.domain.*;
 import com.xiaohuashifu.recruit.pay.api.request.TradeCancelRequest;
 import com.xiaohuashifu.recruit.pay.api.request.TradePreCreateRequest;
 import com.xiaohuashifu.recruit.pay.api.request.TradeQueryRequest;
@@ -11,8 +10,6 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.time.LocalDateTime;
 
 /**
  * 描述：
@@ -36,19 +33,14 @@ public class PayServiceImplTest {
         payService = reference.get();
     }
 
-
     @Test
     public void preCreate() {
-        BusinessNumber businessNumber = new BusinessNumber(1);
-        CompactTime time = new CompactTime(LocalDateTime.now());
-        OrderSerialNumber orderSerialNumber = new OrderSerialNumber("00001");
-        OrderNumber orderNumber = new OrderNumber(businessNumber, time, orderSerialNumber);
         TradePreCreateRequest tradePreCreateRequest =
                 TradePreCreateRequest.builder()
                         .paymentMethod(PaymentMethodEnum.ALIPAY)
                         .totalAmount(1)
-                        .orderNumber(orderNumber.getValue())
-                        .expireTime(100)
+                        .orderNumber("12345672021010820511312350")
+                        .expireTime(2)
                         .subject("苹果1斤")
                         .build();
         System.out.println(tradePreCreateRequest);
@@ -59,7 +51,7 @@ public class PayServiceImplTest {
     public void query() {
         System.out.println(payService.query(TradeQueryRequest.builder()
                 .paymentMethod(PaymentMethodEnum.ALIPAY)
-                .orderNumber("00000012021010817083400001")
+                .orderNumber("12345672021010820511312345")
                 .build()));
     }
 
@@ -67,7 +59,7 @@ public class PayServiceImplTest {
     public void cancel() {
         System.out.println(payService.cancel(TradeCancelRequest.builder()
                 .paymentMethod(PaymentMethodEnum.ALIPAY)
-                .orderNumber("00000012021010817065500001")
+                .orderNumber("02200012021010811293700001")
                 .build()));
     }
 

@@ -28,10 +28,28 @@
         values(#{orderNumber}, #{totalAmount}, #{tradeSubject}, #{expireTime}, #{paymentMethod}, #{tradeStatus})
     </insert>
 
+    <select id="getTradeLog" resultMap="tradeLog">
+        select <include refid="tradeLog"/>
+        from trade_log
+        where id = #{id}
+    </select>
+
     <select id="getTradeLogByOrderNumber" resultMap="tradeLog">
         select <include refid="tradeLog"/>
         from trade_log
         where order_number = #{orderNumber}
+    </select>
+
+    <select id="listTradeLogsByTradeStatus" resultMap="tradeLog">
+        select <include refid="tradeLog"/>
+        from trade_log
+        where trade_status = #{tradeStatus}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*)
+        from trade_log
+        where id = #{id}
     </select>
 
     <select id="countByOrderNumber" resultType="java.lang.Integer">
@@ -50,6 +68,13 @@
         update trade_log
         set trade_status = #{tradeStatus}
         where id = #{id}
+    </update>
+
+    <update id="updateTradeStatus0">
+        update trade_log
+        set trade_status = #{newTradeStatus}
+        where id = #{id}
+        and trade_status = #{oldTradeStatus}
     </update>
 
     <update id="updateCancelAction">

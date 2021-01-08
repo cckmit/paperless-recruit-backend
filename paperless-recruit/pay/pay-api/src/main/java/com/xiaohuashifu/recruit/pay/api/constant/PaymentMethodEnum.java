@@ -13,11 +13,6 @@ public enum PaymentMethodEnum implements Serializable {
     /**
      * 支付宝
      */
-    ALIPAY,
-
-    /**
-     * 微信支付
-     */
-    WECHAT_PAY
+    ALIPAY
 
 }

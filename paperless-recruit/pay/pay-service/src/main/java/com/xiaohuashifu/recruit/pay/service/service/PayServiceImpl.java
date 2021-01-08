@@ -243,7 +243,7 @@ public class PayServiceImpl implements PayService {
         }
 
         // 更新订单日志
-        tradeLogMapper.updateTradeStatus(tradeLogDO.getId(), TradeStatusEnum.TRADE_FINISHED.name());
+        tradeLogMapper.updateTradeStatus(tradeLogDO.getId(), TradeStatusEnum.TRADE_CLOSED.name());
 
         // 封装退款结果
         RefundResultDTO refundResultDTO = refundResult.getData();

@@ -12,7 +12,14 @@ import org.apache.ibatis.annotations.Param;
 public interface TradeLogMapper {
     int insertTradeLog(TradeLogDO tradeLogDO);
 
+    TradeLogDO getTradeLogByOrderNumber(String orderNumber);
+
     int countByOrderNumber(String orderNumber);
 
     int updateQrCode(@Param("id") Long id, @Param("qrCode") String qrCode);
+
+    int updateTradeStatus(@Param("id") Long id, @Param("tradeStatus") String tradeStatus);
+
+    int updateCancelAction(@Param("id") Long id, @Param("cancelAction") String cancelAction);
+
 }

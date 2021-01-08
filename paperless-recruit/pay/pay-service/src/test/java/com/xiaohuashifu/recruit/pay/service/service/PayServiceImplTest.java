@@ -2,7 +2,10 @@ package com.xiaohuashifu.recruit.pay.service.service;
 
 import com.xiaohuashifu.recruit.pay.api.constant.PaymentMethodEnum;
 import com.xiaohuashifu.recruit.pay.api.domain.*;
+import com.xiaohuashifu.recruit.pay.api.request.TradeCancelRequest;
 import com.xiaohuashifu.recruit.pay.api.request.TradePreCreateRequest;
+import com.xiaohuashifu.recruit.pay.api.request.TradeQueryRequest;
+import com.xiaohuashifu.recruit.pay.api.request.TradeRefundRequest;
 import com.xiaohuashifu.recruit.pay.api.service.PayService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -43,7 +46,7 @@ public class PayServiceImplTest {
         TradePreCreateRequest tradePreCreateRequest =
                 TradePreCreateRequest.builder()
                         .paymentMethod(PaymentMethodEnum.ALIPAY)
-                        .totalAmount(1000000000)
+                        .totalAmount(1)
                         .orderNumber(orderNumber.getValue())
                         .expireTime(100)
                         .subject("苹果1斤")
@@ -54,13 +57,26 @@ public class PayServiceImplTest {
 
     @Test
     public void query() {
+        System.out.println(payService.query(TradeQueryRequest.builder()
+                .paymentMethod(PaymentMethodEnum.ALIPAY)
+                .orderNumber("00000012021010817083400001")
+                .build()));
     }
 
     @Test
     public void cancel() {
+        System.out.println(payService.cancel(TradeCancelRequest.builder()
+                .paymentMethod(PaymentMethodEnum.ALIPAY)
+                .orderNumber("00000012021010817065500001")
+                .build()));
     }
 
     @Test
     public void refund() {
+        System.out.println(payService.refund(TradeRefundRequest.builder()
+                .paymentMethod(PaymentMethodEnum.ALIPAY)
+                .orderNumber("00000012021010818363300001")
+                .refundAmount(1)
+                .build()));
     }
 }

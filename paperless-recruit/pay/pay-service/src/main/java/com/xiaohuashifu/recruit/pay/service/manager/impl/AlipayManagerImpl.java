@@ -132,6 +132,7 @@ public class AlipayManagerImpl implements PayManager {
                 .totalAmount(RmbUtils.yuan2Fen(response.getTotalAmount()))
                 .buyerPayAmount(RmbUtils.yuan2Fen(response.getBuyerPayAmount()))
                 .tradeStatus(response.getTradeStatus())
+                .tradeNumber(response.getTradeNo())
                 .build();
         return Result.success(queryResultDTO);
     }
@@ -201,6 +202,9 @@ public class AlipayManagerImpl implements PayManager {
             alipayTradeRefundModel.setTradeNo(refundDTO.getTradeNumber());
         }
         alipayTradeRefundModel.setRefundAmount(RmbUtils.fen2Yuan(refundDTO.getRefundAmount()));
+        if (refundDTO.getRefundNumber() != null) {
+            alipayTradeRefundModel.setOutRequestNo(refundDTO.getRefundNumber());
+        }
         request.setBizModel(alipayTradeRefundModel);
 
         // 发送请求

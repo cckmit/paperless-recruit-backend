@@ -23,6 +23,7 @@ public class TradeLogDO {
     private String qrCode;
     private String tradeNumber;
     private Integer buyerPayAmount;
+    private String cancelAction;
     private String tradeStatus;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

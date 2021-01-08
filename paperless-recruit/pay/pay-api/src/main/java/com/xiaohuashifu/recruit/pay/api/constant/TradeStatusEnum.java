@@ -11,6 +11,11 @@ import com.xiaohuashifu.recruit.common.domain.Domain;
 public enum TradeStatusEnum implements Domain {
 
     /**
+     * 等待买家扫码
+     */
+    WAIT_BUYER_SCAN,
+
+    /**
      * 交易创建，等待买家付款
      */
     WAIT_BUYER_PAY,

@@ -1,8 +1,13 @@
 package com.xiaohuashifu.recruit.pay.api.request;
 
+import com.xiaohuashifu.recruit.common.validator.annotation.OrderNumber;
 import com.xiaohuashifu.recruit.pay.api.constant.PaymentMethodEnum;
-import com.xiaohuashifu.recruit.pay.api.domain.*;
-import lombok.NonNull;
+import lombok.Builder;
+import lombok.Data;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * 描述：订单退款请求
@@ -10,42 +15,28 @@ import lombok.NonNull;
  * @author xhsf
  * @create 2021/1/6 21:36
  */
-public class TradeRefundRequest extends QueryableTradeRequest {
+@Data
+@Builder
+public class TradeRefundRequest implements Serializable {
+
+    /**
+     * 支付方式
+     */
+    @NotNull(message = "The paymentMethod can't be null.")
+    private PaymentMethodEnum paymentMethod;
+
+    /**
+     * 订单号，{7位业务号}{yyyyMMddHHmmss}{5位1秒内的自增序号} 共26位，全数字
+     */
+    @NotNull(message = "The orderNumber can't be null.")
+    @OrderNumber
+    private String orderNumber;
 
     /**
      * 退款金额
      */
-    private final Money refundAmount;
-
-    /**
-     * 退款号
-     */
-    private final RefundNumber refundNumber;
-
-    public TradeRefundRequest(PaymentMethodEnum paymentMethod, OrderNumber orderNumber, @NonNull Money refundAmount) {
-        super(paymentMethod, orderNumber);
-        this.refundAmount = refundAmount;
-        this.refundNumber = null;
-    }
-
-    public TradeRefundRequest(TradeNumber tradeNumber, @NonNull Money refundAmount) {
-        super(tradeNumber);
-        this.refundAmount = refundAmount;
-        this.refundNumber = null;
-    }
-
-    public TradeRefundRequest(PaymentMethodEnum paymentMethod, OrderNumber orderNumber, @NonNull Money refundAmount,
-                              @NonNull RefundNumber refundNumber) {
-        super(paymentMethod, orderNumber);
-        this.refundAmount = refundAmount;
-        this.refundNumber = refundNumber;
-    }
-
-    public TradeRefundRequest(TradeNumber tradeNumber, @NonNull Money refundAmount,
-                              @NonNull RefundNumber refundNumber) {
-        super(tradeNumber);
-        this.refundAmount = refundAmount;
-        this.refundNumber = refundNumber;
-    }
+    @NotNull(message = "The refundAmount can't be null.")
+    @Min(value = 0, message = "The refundAmount must be greater than 0.")
+    private Integer refundAmount;
 
 }

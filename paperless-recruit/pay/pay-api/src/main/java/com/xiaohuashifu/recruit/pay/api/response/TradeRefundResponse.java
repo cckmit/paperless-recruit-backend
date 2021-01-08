@@ -1,9 +1,9 @@
 package com.xiaohuashifu.recruit.pay.api.response;
 
-import com.xiaohuashifu.recruit.common.response.Response;
-import com.xiaohuashifu.recruit.pay.api.domain.Money;
 import lombok.Builder;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 描述：订单退款响应
@@ -13,16 +13,16 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class TradeRefundResponse implements Response {
+public class TradeRefundResponse implements Serializable {
 
     /**
      * 本次退款是否发生了资金变化
      */
-    private final Boolean fundChange;
+    private Boolean fundChange;
 
     /**
      * 该笔交易已退款的总金额
      */
-    private final Money refundFee;
+    private Integer refundFee;
 
 }

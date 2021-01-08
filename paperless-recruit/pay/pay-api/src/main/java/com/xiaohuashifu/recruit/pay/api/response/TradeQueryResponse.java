@@ -1,11 +1,9 @@
 package com.xiaohuashifu.recruit.pay.api.response;
 
-import com.xiaohuashifu.recruit.common.response.Response;
-import com.xiaohuashifu.recruit.pay.api.domain.Money;
-import com.xiaohuashifu.recruit.pay.api.domain.TradeNumber;
-import com.xiaohuashifu.recruit.pay.api.constant.TradeStatusEnum;
 import lombok.Builder;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 描述：订单查询响应
@@ -15,26 +13,26 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class TradeQueryResponse implements Response {
+public class TradeQueryResponse implements Serializable {
 
     /**
      * 平台订单号
      */
-    private final TradeNumber tradeNumber;
+    private String tradeNumber;
 
     /**
      * 买家付款金额
      */
-    private final Money buyerPayAmount;
+    private Integer buyerPayAmount;
 
     /**
      * 总金额
      */
-    private final Money totalAmount;
+    private Integer totalAmount;
 
     /**
      * 订单状态
      */
-    private final TradeStatusEnum tradeStatus;
+    private String tradeStatus;
 
 }

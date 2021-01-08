@@ -19,6 +19,9 @@ import java.io.Serializable;
 @Builder
 public class TradePreCreateRequest implements Serializable {
 
+    /**
+     * 支付方式
+     */
     @NotNull(message = "The paymentMethod can't be null.")
     private PaymentMethodEnum paymentMethod;
 
@@ -33,7 +36,7 @@ public class TradePreCreateRequest implements Serializable {
      * 订单总金额
      */
     @NotNull(message = "The totalAmount can't be null.")
-    @Min(value = 0, message = "The totalAmount must be greater than 0.")
+    @Min(value = 0, message = "The totalAmount must not be less than 0.")
     private Integer totalAmount;
 
     /**

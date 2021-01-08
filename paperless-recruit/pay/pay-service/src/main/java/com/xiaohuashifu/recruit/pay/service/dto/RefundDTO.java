@@ -24,6 +24,11 @@ public class RefundDTO {
     private String tradeNumber;
 
     /**
+     * 退款号
+     */
+    private String refundNumber;
+
+    /**
      * 退款金额
      */
     private Integer refundAmount;

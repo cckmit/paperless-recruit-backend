@@ -14,6 +14,11 @@ import lombok.Data;
 public class QueryResultDTO {
 
     /**
+     * 平台订单号
+     */
+    private String tradeNumber;
+
+    /**
      * 买家实付金额
      */
     private Integer buyerPayAmount;

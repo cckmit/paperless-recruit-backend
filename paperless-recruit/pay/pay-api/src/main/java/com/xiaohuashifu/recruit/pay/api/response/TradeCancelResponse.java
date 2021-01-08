@@ -1,9 +1,9 @@
 package com.xiaohuashifu.recruit.pay.api.response;
 
-import com.xiaohuashifu.recruit.common.response.Response;
-import com.xiaohuashifu.recruit.pay.api.constant.CancelActionEnum;
 import lombok.Builder;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 描述：订单撤销响应
@@ -13,16 +13,11 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class TradeCancelResponse implements Response {
-
-    /**
-     * 是否需要重试
-     */
-    private final Boolean needRetry;
+public class TradeCancelResponse implements Serializable {
 
     /**
      * 撤销订单时的行为
      */
-    private final CancelActionEnum action;
+    private String action;
 
 }

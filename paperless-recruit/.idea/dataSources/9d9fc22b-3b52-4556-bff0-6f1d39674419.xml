@@ -3211,32 +3211,34 @@ permission_id</ColNames>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
     </column>
-    <column id="743" parent="316" name="trade_status">
+    <column id="743" parent="316" name="cancel_action">
       <Position>10</Position>
+      <Comment>撤销订单时的动作</Comment>
+      <DataType>varchar(20)|0s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;&apos;</DefaultExpression>
+    </column>
+    <column id="744" parent="316" name="trade_status">
+      <Position>11</Position>
       <Comment>订单状态</Comment>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="744" parent="316" name="create_time">
-      <Position>11</Position>
+    <column id="745" parent="316" name="create_time">
+      <Position>12</Position>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
     </column>
-    <column id="745" parent="316" name="update_time">
-      <Position>12</Position>
+    <column id="746" parent="316" name="update_time">
+      <Position>13</Position>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
     </column>
-    <index id="746" parent="316" name="uk_order_number">
+    <index id="747" parent="316" name="uk_order_number">
       <ColNames>order_number</ColNames>
-      <Unique>1</Unique>
-      <Type>btree</Type>
-    </index>
-    <index id="747" parent="316" name="uk_trade_number">
-      <ColNames>trade_number</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
@@ -3256,78 +3258,82 @@ permission_id</ColNames>
       <ColNames>payment_method</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="752" parent="316" name="idx_trade_status">
+    <index id="752" parent="316" name="idx_trade_number">
+      <ColNames>trade_number</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="753" parent="316" name="idx_cancel_action">
+      <ColNames>cancel_action</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="754" parent="316" name="idx_trade_status">
       <ColNames>trade_status</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="753" parent="316" name="idx_create_time">
+    <index id="755" parent="316" name="idx_create_time">
       <ColNames>create_time</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="754" parent="316" name="idx_update_time">
+    <index id="756" parent="316" name="idx_update_time">
       <ColNames>update_time</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="755" parent="316" name="PRIMARY">
+    <key id="757" parent="316" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="756" parent="316" name="uk_order_number">
+    <key id="758" parent="316" name="uk_order_number">
       <ColNames>order_number</ColNames>
       <UnderlyingIndexName>uk_order_number</UnderlyingIndexName>
     </key>
-    <key id="757" parent="316" name="uk_trade_number">
-      <ColNames>trade_number</ColNames>
-      <UnderlyingIndexName>uk_trade_number</UnderlyingIndexName>
-    </key>
-    <column id="758" parent="317" name="id">
+    <column id="759" parent="317" name="id">
       <Position>1</Position>
       <DataType>bigint unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>null</SequenceIdentity>
     </column>
-    <column id="759" parent="317" name="username">
+    <column id="760" parent="317" name="username">
       <Position>2</Position>
       <Comment>用户名</Comment>
       <DataType>varchar(32)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="760" parent="317" name="pwd">
+    <column id="761" parent="317" name="pwd">
       <Position>3</Position>
       <Comment>密码，这里不使用 password 是避免使用 MySQL 关键词 password</Comment>
       <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="761" parent="317" name="phone">
+    <column id="762" parent="317" name="phone">
       <Position>4</Position>
       <Comment>用户手机</Comment>
       <DataType>char(11)|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
     </column>
-    <column id="762" parent="317" name="email">
+    <column id="763" parent="317" name="email">
       <Position>5</Position>
       <Comment>用户邮箱</Comment>
       <DataType>varchar(320)|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
     </column>
-    <column id="763" parent="317" name="is_available">
+    <column id="764" parent="317" name="is_available">
       <Position>6</Position>
       <Comment>表示该用户是否可用</Comment>
       <DataType>tinyint unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;1&apos;</DefaultExpression>
     </column>
-    <column id="764" parent="317" name="create_time">
+    <column id="765" parent="317" name="create_time">
       <Position>7</Position>
       <Comment>创建时间</Comment>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
     </column>
-    <column id="765" parent="317" name="update_time">
+    <column id="766" parent="317" name="update_time">
       <Position>8</Position>
       <Comment>更新时间</Comment>
       <DataType>datetime|0s</DataType>
@@ -3335,95 +3341,95 @@ permission_id</ColNames>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
     </column>
-    <index id="766" parent="317" name="uk_username">
+    <index id="767" parent="317" name="uk_username">
       <ColNames>username</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="767" parent="317" name="idx_phone">
+    <index id="768" parent="317" name="idx_phone">
       <ColNames>phone</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="768" parent="317" name="idx_email">
+    <index id="769" parent="317" name="idx_email">
       <ColNames>email</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="769" parent="317" name="idx_is_available">
+    <index id="770" parent="317" name="idx_is_available">
       <ColNames>is_available</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="770" parent="317" name="idx_create_time">
+    <index id="771" parent="317" name="idx_create_time">
       <ColNames>create_time</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="771" parent="317" name="idx_update_time">
+    <index id="772" parent="317" name="idx_update_time">
       <ColNames>update_time</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="772" parent="317" name="PRIMARY">
+    <key id="773" parent="317" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="773" parent="317" name="uk_username">
+    <key id="774" parent="317" name="uk_username">
       <ColNames>username</ColNames>
       <UnderlyingIndexName>uk_username</UnderlyingIndexName>
     </key>
-    <column id="774" parent="318" name="id">
+    <column id="775" parent="318" name="id">
       <Position>1</Position>
       <DataType>bigint unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>null</SequenceIdentity>
     </column>
-    <column id="775" parent="318" name="user_id">
+    <column id="776" parent="318" name="user_id">
       <Position>2</Position>
       <Comment>与此用户简介相关的用户编号</Comment>
       <DataType>bigint unsigned|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="776" parent="318" name="full_name">
+    <column id="777" parent="318" name="full_name">
       <Position>3</Position>
       <Comment>用户姓名</Comment>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
     </column>
-    <column id="777" parent="318" name="student_number">
+    <column id="778" parent="318" name="student_number">
       <Position>4</Position>
       <Comment>学号</Comment>
       <DataType>char(12)|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
     </column>
-    <column id="778" parent="318" name="college_id">
+    <column id="779" parent="318" name="college_id">
       <Position>5</Position>
       <Comment>学院</Comment>
       <DataType>bigint unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
     </column>
-    <column id="779" parent="318" name="major_id">
+    <column id="780" parent="318" name="major_id">
       <Position>6</Position>
       <Comment>专业</Comment>
       <DataType>bigint|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>0</DefaultExpression>
     </column>
-    <column id="780" parent="318" name="introduction">
+    <column id="781" parent="318" name="introduction">
       <Position>7</Position>
       <Comment>简介</Comment>
       <DataType>varchar(400)|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
     </column>
-    <column id="781" parent="318" name="create_time">
+    <column id="782" parent="318" name="create_time">
       <Position>8</Position>
       <Comment>创建时间</Comment>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
     </column>
-    <column id="782" parent="318" name="update_time">
+    <column id="783" parent="318" name="update_time">
       <Position>9</Position>
       <Comment>更新时间</Comment>
       <DataType>datetime|0s</DataType>
@@ -3431,172 +3437,172 @@ permission_id</ColNames>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
     </column>
-    <index id="783" parent="318" name="uk_user_id">
+    <index id="784" parent="318" name="uk_user_id">
       <ColNames>user_id</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="784" parent="318" name="idx_full_name">
+    <index id="785" parent="318" name="idx_full_name">
       <ColNames>full_name</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="785" parent="318" name="idx_student_number">
+    <index id="786" parent="318" name="idx_student_number">
       <ColNames>student_number</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="786" parent="318" name="idx_college">
+    <index id="787" parent="318" name="idx_college">
       <ColNames>college_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="787" parent="318" name="idx_major">
+    <index id="788" parent="318" name="idx_major">
       <ColNames>major_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="788" parent="318" name="idx_create_time">
+    <index id="789" parent="318" name="idx_create_time">
       <ColNames>create_time</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="789" parent="318" name="idx_update_time">
+    <index id="790" parent="318" name="idx_update_time">
       <ColNames>update_time</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="790" parent="318" name="PRIMARY">
+    <key id="791" parent="318" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="791" parent="318" name="uk_user_id">
+    <key id="792" parent="318" name="uk_user_id">
       <ColNames>user_id</ColNames>
       <UnderlyingIndexName>uk_user_id</UnderlyingIndexName>
     </key>
-    <column id="792" parent="319" name="id">
+    <column id="793" parent="319" name="id">
       <Position>1</Position>
       <DataType>bigint unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>null</SequenceIdentity>
     </column>
-    <column id="793" parent="319" name="user_id">
+    <column id="794" parent="319" name="user_id">
       <Position>2</Position>
       <DataType>bigint unsigned|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="794" parent="319" name="role_id">
+    <column id="795" parent="319" name="role_id">
       <Position>3</Position>
       <DataType>bigint unsigned|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="795" parent="319" name="create_time">
+    <column id="796" parent="319" name="create_time">
       <Position>4</Position>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
     </column>
-    <index id="796" parent="319" name="uk_user_id_role_id">
+    <index id="797" parent="319" name="uk_user_id_role_id">
       <ColNames>user_id
 role_id</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="797" parent="319" name="idx_role_id">
+    <index id="798" parent="319" name="idx_role_id">
       <ColNames>role_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="798" parent="319" name="idx_create_time">
+    <index id="799" parent="319" name="idx_create_time">
       <ColNames>create_time</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="799" parent="319" name="PRIMARY">
+    <key id="800" parent="319" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="800" parent="319" name="uk_user_id_role_id">
+    <key id="801" parent="319" name="uk_user_id_role_id">
       <ColNames>user_id
 role_id</ColNames>
       <UnderlyingIndexName>uk_user_id_role_id</UnderlyingIndexName>
     </key>
-    <column id="801" parent="320" name="id">
+    <column id="802" parent="320" name="id">
       <Position>1</Position>
       <DataType>bigint unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>null</SequenceIdentity>
     </column>
-    <column id="802" parent="320" name="app_name">
+    <column id="803" parent="320" name="app_name">
       <Position>2</Position>
       <Comment>具体的微信小程序</Comment>
       <DataType>enum(&apos;SCAU_RECRUIT_INTERVIEWEE_MP&apos;, &apos;SCAU_RECRUIT_INTERVIEWER_MP&apos;)|0e</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="803" parent="320" name="template_id">
+    <column id="804" parent="320" name="template_id">
       <Position>3</Position>
       <Comment>模板编号</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="804" parent="320" name="title">
+    <column id="805" parent="320" name="title">
       <Position>4</Position>
       <Comment>模板标题</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="805" parent="320" name="template_type">
+    <column id="806" parent="320" name="template_type">
       <Position>5</Position>
       <Comment>类目</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="806" parent="320" name="description">
+    <column id="807" parent="320" name="description">
       <Position>6</Position>
       <Comment>说明</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="807" parent="320" name="template_status">
+    <column id="808" parent="320" name="template_status">
       <Position>7</Position>
       <Comment>模板的状态</Comment>
       <DataType>enum(&apos;AVAILABLE&apos;, &apos;DEPRECATED&apos;, &apos;UNAVAILABLE&apos;)|0e</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="808" parent="320" name="create_time">
+    <column id="809" parent="320" name="create_time">
       <Position>8</Position>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
     </column>
-    <column id="809" parent="320" name="update_time">
+    <column id="810" parent="320" name="update_time">
       <Position>9</Position>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
     </column>
-    <index id="810" parent="320" name="uk_template_id">
+    <index id="811" parent="320" name="uk_template_id">
       <ColNames>template_id</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="811" parent="320" name="idx_title">
+    <index id="812" parent="320" name="idx_title">
       <ColNames>title</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="812" parent="320" name="idx_template_status">
+    <index id="813" parent="320" name="idx_template_status">
       <ColNames>template_status</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="813" parent="320" name="idx_create_time">
+    <index id="814" parent="320" name="idx_create_time">
       <ColNames>create_time</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="814" parent="320" name="idx_update_time">
+    <index id="815" parent="320" name="idx_update_time">
       <ColNames>update_time</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="815" parent="320" name="PRIMARY">
+    <key id="816" parent="320" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="816" parent="320" name="uk_template_id">
+    <key id="817" parent="320" name="uk_template_id">
       <ColNames>template_id</ColNames>
       <UnderlyingIndexName>uk_template_id</UnderlyingIndexName>
     </key>

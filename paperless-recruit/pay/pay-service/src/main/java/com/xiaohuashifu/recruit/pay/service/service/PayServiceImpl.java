@@ -1,9 +1,9 @@
 package com.xiaohuashifu.recruit.pay.service.service;
 
-
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.pay.api.constant.CancelActionEnum;
 import com.xiaohuashifu.recruit.pay.api.constant.TradeStatusEnum;
 import com.xiaohuashifu.recruit.pay.api.request.TradeCancelRequest;
 import com.xiaohuashifu.recruit.pay.api.request.TradePreCreateRequest;
@@ -16,10 +16,9 @@ import com.xiaohuashifu.recruit.pay.api.response.TradeRefundResponse;
 import com.xiaohuashifu.recruit.pay.api.service.PayService;
 import com.xiaohuashifu.recruit.pay.service.dao.TradeLogMapper;
 import com.xiaohuashifu.recruit.pay.service.do0.TradeLogDO;
-import com.xiaohuashifu.recruit.pay.service.dto.PreCreateDTO;
+import com.xiaohuashifu.recruit.pay.service.dto.*;
 import com.xiaohuashifu.recruit.pay.service.manager.PayManager;
 import com.xiaohuashifu.recruit.pay.service.manager.impl.AlipayManagerImpl;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -45,9 +44,9 @@ public class PayServiceImpl implements PayService {
     private final PayManager alipayManager;
 
     /**
-     * 预下单的锁定键模式，{0}是订单号
+     * 订单的锁定键模式，{0}是订单号
      */
-    private static final String PRE_CREATE_LOCK_KEY_PATTERN = "pay:pre-create:order-number:{0}";
+    private static final String LOCK_KEY_PATTERN = "pay:order-number:{0}";
 
     public PayServiceImpl(TradeLogMapper tradeLogMapper, PlatformTransactionManager transactionManager,
                           TransactionDefinition transactionDefinition, AlipayManagerImpl alipayManager) {
@@ -70,7 +69,7 @@ public class PayServiceImpl implements PayService {
      * @param request 预下单参数
      * @return 二维码
      */
-    @DistributedLock(value = PRE_CREATE_LOCK_KEY_PATTERN, parameters = "#{#request.orderNumber}",
+    @DistributedLock(value = LOCK_KEY_PATTERN, parameters = "#{#request.orderNumber}",
             errorMessage = "Failed to acquire orderNumber lock.")
     @Override
     public Result<TradePreCreateResponse> preCreate(TradePreCreateRequest request) {
@@ -90,7 +89,7 @@ public class PayServiceImpl implements PayService {
                     .totalAmount(request.getTotalAmount())
                     .tradeSubject(request.getSubject())
                     .expireTime(request.getExpireTime())
-                    .tradeStatus(TradeStatusEnum.WAIT_BUYER_PAY.name())
+                    .tradeStatus(TradeStatusEnum.WAIT_BUYER_SCAN.name())
                     .build();
             tradeLogMapper.insertTradeLog(tradeLogDO);
 
@@ -127,36 +126,132 @@ public class PayServiceImpl implements PayService {
     /**
      * 查询订单
      *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              UnknownError: 查询失败
+     *
      * @param request 查询参数
      * @return 查询结果
-     * @private 内部方法
      */
     @Override
-    public Result<TradeQueryResponse> query(@NonNull TradeQueryRequest request) {
-        return null;
+    public Result<TradeQueryResponse> query(TradeQueryRequest request) {
+        // 查询
+        Result<QueryResultDTO> queryResult = alipayManager.query(request.getOrderNumber(), null);
+        if (queryResult.isFailure()) {
+            return Result.fail(queryResult);
+        }
+
+        // 封装查询结果
+        QueryResultDTO queryResultDTO = queryResult.getData();
+        TradeQueryResponse tradeQueryResponse = TradeQueryResponse.builder()
+                .tradeNumber(queryResultDTO.getTradeNumber())
+                .buyerPayAmount(queryResultDTO.getBuyerPayAmount())
+                .totalAmount(queryResultDTO.getTotalAmount())
+                .tradeStatus(queryResultDTO.getTradeStatus())
+                .build();
+        return Result.success(tradeQueryResponse);
     }
 
     /**
      * 撤销订单
      *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 订单不存在
+     *              OperationConflict.Status: 订单已经关闭
+     *              OperationConflict.Lock: 获取订单号的锁失败
+     *              UnknownError: 撤销失败
+     *
      * @param request 撤销订单请求
      * @return 撤销结果
-     * @private 内部方法
      */
+    @DistributedLock(value = LOCK_KEY_PATTERN, parameters = "#{#request.orderNumber}",
+            errorMessage = "Failed to acquire orderNumber lock.")
     @Override
-    public Result<TradeCancelResponse> cancel(@NonNull TradeCancelRequest request) {
-        return null;
+    public Result<TradeCancelResponse> cancel(TradeCancelRequest request) {
+        // 判断订单号存不存在
+        TradeLogDO tradeLogDO = tradeLogMapper.getTradeLogByOrderNumber(request.getOrderNumber());
+        if (tradeLogDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The trade does not exist.");
+        }
+
+        // 判断订单是否已经关闭
+        if (TradeStatusEnum.TRADE_CLOSED.name().equals(tradeLogDO.getTradeStatus())) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS, "The trade already cancel.");
+        }
+
+        // 撤销订单
+        Result<CancelResultDTO> cancelResult = alipayManager.cancel(request.getOrderNumber(), null);
+        if (cancelResult.isFailure()) {
+            return Result.fail(cancelResult);
+        }
+
+        // 更新订单日志
+        tradeLogMapper.updateTradeStatus(tradeLogDO.getId(), TradeStatusEnum.TRADE_CLOSED.name());
+
+        // 更新撤销时的动作
+        CancelResultDTO cancelResultDTO = cancelResult.getData();
+        String action = CancelActionEnum.getActionName(cancelResultDTO.getAction());
+        tradeLogMapper.updateCancelAction(tradeLogDO.getId(), action);
+
+        // 封装撤销订单结果
+        TradeCancelResponse tradeCancelResponse = TradeCancelResponse.builder()
+                .action(action)
+                .build();
+        return Result.success(tradeCancelResponse);
     }
 
     /**
      * 退款
      *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 参数格式错误
+     *              InvalidParameter.NotExist: 订单不存在
+     *              OperationConflict.Status: 订单状态不是 TRADE_SUCCESS
+     *              OperationConflict.Lock: 获取订单号的锁失败
+     *              UnknownError: 退款失败
+     *
      * @param request 退款请求
      * @return 退款结果
-     * @private 内部方法
      */
+    @DistributedLock(value = LOCK_KEY_PATTERN, parameters = "#{#request.orderNumber}",
+            errorMessage = "Failed to acquire orderNumber lock.")
     @Override
-    public Result<TradeRefundResponse> refund(@NonNull TradeRefundRequest request) {
-        return null;
+    public Result<TradeRefundResponse> refund(TradeRefundRequest request) {
+        // 判断订单号存不存在
+        TradeLogDO tradeLogDO = tradeLogMapper.getTradeLogByOrderNumber(request.getOrderNumber());
+        if (tradeLogDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The trade does not exist.");
+        }
+
+        // 判断订单是不是 TRADE_SUCCESS
+        if (!TradeStatusEnum.TRADE_SUCCESS.name().equals(tradeLogDO.getTradeStatus())) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
+                    "The status of trade must be TRADE_SUCCESS.");
+        }
+
+        // 撤销订单
+        RefundDTO refundDTO = RefundDTO.builder()
+                .orderNumber(request.getOrderNumber())
+                .refundAmount(request.getRefundAmount()).build();
+        Result<RefundResultDTO> refundResult = alipayManager.refund(refundDTO);
+        if (refundResult.isFailure()) {
+            return Result.fail(refundResult);
+        }
+
+        // 更新订单日志
+        tradeLogMapper.updateTradeStatus(tradeLogDO.getId(), TradeStatusEnum.TRADE_FINISHED.name());
+
+        // 封装退款结果
+        RefundResultDTO refundResultDTO = refundResult.getData();
+        TradeRefundResponse tradeRefundResponse = TradeRefundResponse.builder()
+                .fundChange(refundResultDTO.getFundChange())
+                .refundFee(refundResultDTO.getRefundFee())
+                .build();
+        return Result.success(tradeRefundResponse);
     }
+
 }

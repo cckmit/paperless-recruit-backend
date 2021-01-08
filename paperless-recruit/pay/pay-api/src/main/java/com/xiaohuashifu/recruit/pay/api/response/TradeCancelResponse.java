@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.pay.api.response;
 
 import com.xiaohuashifu.recruit.common.response.Response;
-import com.xiaohuashifu.recruit.pay.api.domain.CancelAction;
+import com.xiaohuashifu.recruit.pay.api.constant.CancelActionEnum;
 import lombok.Builder;
 import lombok.Data;
 
@@ -23,6 +23,6 @@ public class TradeCancelResponse implements Response {
     /**
      * 撤销订单时的行为
      */
-    private final CancelAction action;
+    private final CancelActionEnum action;
 
 }

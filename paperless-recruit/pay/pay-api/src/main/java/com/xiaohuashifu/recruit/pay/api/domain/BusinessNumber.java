@@ -1,11 +1,11 @@
 package com.xiaohuashifu.recruit.pay.api.domain;
 
-import com.xiaohuashifu.recruit.common.domain.Domain;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.ValidationException;
+import java.io.Serializable;
 
 /**
  * 描述：业务号
@@ -14,8 +14,9 @@ import javax.validation.ValidationException;
  * @author xhsf
  * @create 2021/1/7 01:21
  */
-@Value
-public class BusinessNumber implements Domain {
+@Data
+@NoArgsConstructor
+public class BusinessNumber implements Serializable {
 
     /**
      * 最小业务号值
@@ -32,9 +33,9 @@ public class BusinessNumber implements Domain {
      */
     public static final int BUSINESS_NUMBER_LENGTH = 7;
 
-    String value;
+    private String value;
 
-    public BusinessNumber(@NonNull String businessNumber) {
+    public BusinessNumber(String businessNumber) {
         if (businessNumber.length() != BUSINESS_NUMBER_LENGTH) {
             throw new ValidationException();
         }

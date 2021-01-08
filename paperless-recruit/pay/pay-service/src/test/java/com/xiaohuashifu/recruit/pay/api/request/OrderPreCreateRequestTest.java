@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.pay.api.request;
 
-import com.xiaohuashifu.recruit.pay.api.domain.PaymentMethod;
+import com.xiaohuashifu.recruit.pay.api.constant.PaymentMethodEnum;
 import com.xiaohuashifu.recruit.pay.api.domain.*;
 import org.junit.Test;
 
@@ -23,8 +23,8 @@ public class OrderPreCreateRequestTest {
         Money totalAmount = new Money(100);
         TradeSubject subject = new TradeSubject("苹果1斤");
         TradeExpireTime orderExpireTime = new TradeExpireTime(100);
-        TradePreCreateRequest orderPreCreateRequest = new TradePreCreateRequest(PaymentMethod.ALIPAY, orderNumber, totalAmount, subject, orderExpireTime);
-        System.out.println(orderPreCreateRequest);
+//        TradePreCreateRequest orderPreCreateRequest = new TradePreCreateRequest(PaymentMethodEnum.ALIPAY, orderNumber, totalAmount, subject, orderExpireTime);
+//        System.out.println(orderPreCreateRequest);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.pay.api.request;
 
+import com.xiaohuashifu.recruit.pay.api.constant.PaymentMethodEnum;
 import com.xiaohuashifu.recruit.pay.api.domain.*;
 import lombok.NonNull;
 
@@ -21,7 +22,7 @@ public class TradeRefundRequest extends QueryableTradeRequest {
      */
     private final RefundNumber refundNumber;
 
-    public TradeRefundRequest(PaymentMethod paymentMethod, OrderNumber orderNumber, @NonNull Money refundAmount) {
+    public TradeRefundRequest(PaymentMethodEnum paymentMethod, OrderNumber orderNumber, @NonNull Money refundAmount) {
         super(paymentMethod, orderNumber);
         this.refundAmount = refundAmount;
         this.refundNumber = null;
@@ -33,7 +34,7 @@ public class TradeRefundRequest extends QueryableTradeRequest {
         this.refundNumber = null;
     }
 
-    public TradeRefundRequest(PaymentMethod paymentMethod, OrderNumber orderNumber, @NonNull Money refundAmount,
+    public TradeRefundRequest(PaymentMethodEnum paymentMethod, OrderNumber orderNumber, @NonNull Money refundAmount,
                               @NonNull RefundNumber refundNumber) {
         super(paymentMethod, orderNumber);
         this.refundAmount = refundAmount;

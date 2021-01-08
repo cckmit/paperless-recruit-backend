@@ -1,8 +1,11 @@
 package com.xiaohuashifu.recruit.pay.api.domain;
 
-import com.xiaohuashifu.recruit.common.domain.Domain;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 描述：订单号
@@ -14,17 +17,17 @@ import lombok.Value;
  * @author xhsf
  * @create 2021/1/7 00:51
  */
-@Value
-public class OrderNumber implements Domain {
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class OrderNumber implements Serializable {
 
-    @NonNull
-    BusinessNumber businessNumber;
+    private BusinessNumber businessNumber;
 
-    @NonNull
-    CompactTime time;
+    private CompactTime time;
 
-    @NonNull
-    OrderSerialNumber serialNumber;
+    private OrderSerialNumber serialNumber;
 
     @Override
     public String toString() {

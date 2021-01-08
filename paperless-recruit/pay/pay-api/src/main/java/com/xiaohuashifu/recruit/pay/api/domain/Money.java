@@ -1,9 +1,8 @@
 package com.xiaohuashifu.recruit.pay.api.domain;
 
-import com.xiaohuashifu.recruit.common.domain.Domain;
-import lombok.Value;
+import lombok.Data;
 
-import javax.validation.ValidationException;
+import java.io.Serializable;
 
 /**
  * 描述：金额，单位分
@@ -11,16 +10,16 @@ import javax.validation.ValidationException;
  * @author xhsf
  * @create 2021/1/7 12:43
  */
-@Value
-public class Money implements Domain {
+@Data
+public class Money implements Serializable {
 
     int value;
 
-    public Money(int money) {
-        if (money < 0) {
-            throw new ValidationException();
-        }
-        this.value = money;
+    public Money(int value) {
+//        if (money < 0) {
+//            throw new ValidationException();
+//        }
+        this.value = value;
     }
 
     @Override

@@ -1,60 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaohuashifu.recruit.registration.service.dao.InterviewerMapper">
+<mapper namespace="com.xiaohuashifu.recruit.pay.service.dao.TradeLogMapper">
 
-    <resultMap id="interviewer" type="com.xiaohuashifu.recruit.registration.service.do0.InterviewerDO">
+    <resultMap id="tradeLog" type="com.xiaohuashifu.recruit.pay.service.do0.TradeLogDO">
         <id property="id" column="id"/>
-        <result property="organizationMemberId" column="organization_member_id"/>
-        <result property="organizationId" column="organization_id"/>
-        <result property="available" column="is_available"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="tradeSubject" column="trade_subject"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="paymentMethod" column="payment_method"/>
+        <result property="qrCode" column="qr_code"/>
+        <result property="tradeNumber" column="trade_number"/>
+        <result property="buyerPayAmount" column="buyer_pay_amount"/>
+        <result property="tradeStatus" column="trade_status"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-    <sql id="interviewer">
-        id, organization_member_id, organization_id, is_available, create_time, update_time
+    <sql id="tradeLog">
+        id, order_number, total_amount, trade_subject, expire_time, payment_method, qr_code, trade_number,
+        buyer_pay_amount, trade_status, create_time, update_time
     </sql>
 
-    <insert id="insertInterviewer" keyProperty="id">
-        insert into interviewer(organization_member_id, organization_id)
-        values(#{organizationMemberId}, #{organizationId})
+    <insert id="insertTradeLog" keyProperty="id">
+        insert into trade_log(order_number, total_amount, trade_subject, expire_time, payment_method, trade_status)
+        values(#{orderNumber}, #{totalAmount}, #{tradeSubject}, #{expireTime}, #{paymentMethod}, #{tradeStatus})
     </insert>
 
-    <select id="getInterviewer" resultMap="interviewer">
-        select <include refid="interviewer"/>
-        from interviewer
-        where id = #{id}
-    </select>
+<!--    <select id="getInterviewer" resultMap="interviewer">-->
+<!--        select <include refid="interviewer"/>-->
+<!--        from interviewer-->
+<!--        where id = #{id}-->
+<!--    </select>-->
 
-    <select id="getOrganizationId" resultType="java.lang.Long">
-        select organization_id
-        from interviewer
-        where id = #{id}
-    </select>
 
-    <select id="getOrganizationMemberId" resultType="java.lang.Long">
-        select organization_member_id
-        from interviewer
-        where id = #{id}
-    </select>
-
-    <select id="count" resultType="java.lang.Integer">
+    <select id="countByOrderNumber" resultType="java.lang.Integer">
         select count(*)
-        from interviewer
-        where id = #{id}
+        from trade_log
+        where order_number = #{orderNumber}
     </select>
 
-    <select id="countByOrganizationMemberId" resultType="java.lang.Integer">
-        select count(*)
-        from interviewer
-        where organization_member_id = #{organizationMemberId}
-    </select>
-
-    <update id="updateAvailable">
-        update interviewer
-        set is_available = #{available}
+    <update id="updateQrCode">
+        update trade_log
+        set qr_code = #{qrCode}
         where id = #{id}
-          and is_available = !#{available}
     </update>
 
 </mapper>

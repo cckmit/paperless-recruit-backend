@@ -13,7 +13,13 @@ import lombok.Data;
 @Data
 public class RefundResultDTO {
 
+    /**
+     * 退款总金额
+     */
     private Integer refundFee;
 
+    /**
+     * 本次退款是否发生了资金变化
+     */
     private Boolean fundChange;
 }

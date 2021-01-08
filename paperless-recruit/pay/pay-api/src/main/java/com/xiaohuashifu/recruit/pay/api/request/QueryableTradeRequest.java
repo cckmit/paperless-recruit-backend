@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.pay.api.request;
 
-import com.xiaohuashifu.recruit.pay.api.domain.PaymentMethod;
+import com.xiaohuashifu.recruit.pay.api.constant.PaymentMethodEnum;
 import com.xiaohuashifu.recruit.pay.api.domain.OrderNumber;
 import com.xiaohuashifu.recruit.pay.api.domain.TradeNumber;
 import lombok.Getter;
@@ -25,14 +25,14 @@ public abstract class QueryableTradeRequest extends AbstractTradeRequest {
      */
     private final TradeNumber tradeNumber;
 
-    public QueryableTradeRequest(PaymentMethod paymentMethod, @NonNull OrderNumber orderNumber) {
-        super(paymentMethod);
+    public QueryableTradeRequest(PaymentMethodEnum paymentMethod, @NonNull OrderNumber orderNumber) {
+        super(null);
         this.orderNumber = orderNumber;
         tradeNumber = null;
     }
 
     public QueryableTradeRequest(@NonNull TradeNumber tradeNumber) {
-        super(tradeNumber.getPaymentMethod());
+        super(null);
         this.tradeNumber = tradeNumber;
         this.orderNumber = null;
     }

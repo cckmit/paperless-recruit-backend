@@ -1,10 +1,10 @@
 package com.xiaohuashifu.recruit.pay.api.domain;
 
-import com.xiaohuashifu.recruit.common.domain.Domain;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.ValidationException;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
@@ -16,8 +16,9 @@ import java.util.regex.Pattern;
  * @author xhsf
  * @create 2021/1/7 00:51
  */
-@Value
-public class CompactTime implements Domain {
+@Data
+@NoArgsConstructor
+public class CompactTime implements Serializable {
 
     /**
      * 压缩时间正则
@@ -35,16 +36,16 @@ public class CompactTime implements Domain {
      */
     public static final DateTimeFormatter COMPACT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-    String value;
+    private String value;
 
-    public CompactTime(@NonNull String compactTime) {
+    public CompactTime(String compactTime) {
         if (!p.matcher(compactTime).matches()) {
             throw new ValidationException();
         }
         this.value = compactTime;
     }
 
-    public CompactTime(@NonNull LocalDateTime compactTime) {
+    public CompactTime(LocalDateTime compactTime) {
         this(COMPACT_DATE_TIME_FORMATTER.format(compactTime));
     }
 

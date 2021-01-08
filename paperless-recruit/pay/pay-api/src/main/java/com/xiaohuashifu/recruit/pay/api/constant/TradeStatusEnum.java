@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.pay.api.domain;
+package com.xiaohuashifu.recruit.pay.api.constant;
 
 import com.xiaohuashifu.recruit.common.domain.Domain;
 
@@ -8,7 +8,7 @@ import com.xiaohuashifu.recruit.common.domain.Domain;
  * @author xhsf
  * @create 2021/1/7 20:21
  */
-public enum TradeStatus implements Domain {
+public enum TradeStatusEnum implements Domain {
 
     /**
      * 交易创建，等待买家付款

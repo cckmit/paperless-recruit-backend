@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.pay.api.response;
 import com.xiaohuashifu.recruit.common.response.Response;
 import com.xiaohuashifu.recruit.pay.api.domain.Money;
 import com.xiaohuashifu.recruit.pay.api.domain.TradeNumber;
-import com.xiaohuashifu.recruit.pay.api.domain.TradeStatus;
+import com.xiaohuashifu.recruit.pay.api.constant.TradeStatusEnum;
 import lombok.Builder;
 import lombok.Data;
 
@@ -35,6 +35,6 @@ public class TradeQueryResponse implements Response {
     /**
      * 订单状态
      */
-    private final TradeStatus tradeStatus;
+    private final TradeStatusEnum tradeStatus;
 
 }

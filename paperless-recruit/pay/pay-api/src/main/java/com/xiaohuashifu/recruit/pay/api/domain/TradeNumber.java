@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.pay.api.domain;
 
 import com.xiaohuashifu.recruit.common.domain.Domain;
+import com.xiaohuashifu.recruit.pay.api.constant.PaymentMethodEnum;
 import com.xiaohuashifu.recruit.pay.api.domain.validator.AlipayTradeNumberValidator;
 import com.xiaohuashifu.recruit.pay.api.domain.validator.TradeNumberValidator;
 import com.xiaohuashifu.recruit.pay.api.domain.validator.WeChatPayTradeNumberValidator;
@@ -19,18 +20,18 @@ import java.util.Map;
 @Value
 public class TradeNumber implements Domain {
 
-    private static final Map<PaymentMethod, TradeNumberValidator> VALIDATOR_MAP = new HashMap<>();
+    private static final Map<PaymentMethodEnum, TradeNumberValidator> VALIDATOR_MAP = new HashMap<>();
 
     static {
-        VALIDATOR_MAP.put(PaymentMethod.ALIPAY, new AlipayTradeNumberValidator());
-        VALIDATOR_MAP.put(PaymentMethod.WECHAT_PAY, new WeChatPayTradeNumberValidator());
+        VALIDATOR_MAP.put(PaymentMethodEnum.ALIPAY, new AlipayTradeNumberValidator());
+        VALIDATOR_MAP.put(PaymentMethodEnum.WECHAT_PAY, new WeChatPayTradeNumberValidator());
     }
 
     String tradeNumber;
 
-    PaymentMethod paymentMethod;
+    PaymentMethodEnum paymentMethod;
 
-    public TradeNumber(@NonNull String tradeNumber, @NonNull PaymentMethod paymentMethod) {
+    public TradeNumber(@NonNull String tradeNumber, @NonNull PaymentMethodEnum paymentMethod) {
         VALIDATOR_MAP.get(paymentMethod).validate(tradeNumber);
         this.tradeNumber = tradeNumber;
         this.paymentMethod = paymentMethod;

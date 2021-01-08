@@ -1,9 +1,9 @@
 package com.xiaohuashifu.recruit.pay.api.response;
 
-import com.xiaohuashifu.recruit.common.response.Response;
-import com.xiaohuashifu.recruit.pay.api.domain.QrCode;
 import lombok.Builder;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 描述：预下单响应
@@ -13,11 +13,16 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class TradePreCreateResponse implements Response {
+public class TradePreCreateResponse implements Serializable {
 
     /**
      * 二维码
      */
-    private final QrCode qrCode;
+    private final String qrCode;
+
+    /**
+     * 订单日志编号
+     */
+    private final Long tradeLogId;
 
 }

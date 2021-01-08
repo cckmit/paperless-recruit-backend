@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.pay.api.domain;
 
-import lombok.Value;
+import lombok.Data;
 
-import javax.validation.ValidationException;
+import java.io.Serializable;
 
 /**
  * 描述：订单过期时间，单位分
@@ -10,8 +10,8 @@ import javax.validation.ValidationException;
  * @author xhsf
  * @create 2021/1/7 16:06
  */
-@Value
-public class TradeExpireTime {
+@Data
+public class TradeExpireTime implements Serializable {
 
     /**
      * 最小过期时间，1分钟
@@ -26,9 +26,9 @@ public class TradeExpireTime {
     int value;
 
     public TradeExpireTime(int expireTime) {
-        if (expireTime < MIN_EXPIRE_TIME || expireTime > MAX_EXPIRE_TIME) {
-            throw new ValidationException();
-        }
+//        if (expireTime < MIN_EXPIRE_TIME || expireTime > MAX_EXPIRE_TIME) {
+//            throw new ValidationException();
+//        }
         this.value = expireTime;
     }
 

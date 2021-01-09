@@ -29,4 +29,5 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 // 关闭 session，任何情况不创建 Cookie
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
+
 }

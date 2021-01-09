@@ -98,6 +98,24 @@ public class UserProfileServiceImpl implements UserProfileService {
      * 获取用户个人信息
      *
      * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号的用户信息
+     *
+     * @param userId 用户主体编号
+     * @return UserProfileDTO
+     */
+    @Override
+    public Result<UserProfileDTO> getUserProfileByUserId(Long userId) {
+        UserProfileDO userProfileDO = userProfileMapper.getUserProfileByUserId(userId);
+        if (userProfileDO == null) {
+            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+        }
+        return Result.success(userProfileDO2UserProfileDTO(userProfileDO));
+    }
+
+    /**
+     * 获取用户个人信息
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
      *
      * @param query 查询参数
      * @return PageInfo<UserProfileDTO> 带分页信息的查询结果，可能返回空列表

@@ -1,12 +1,14 @@
 package com.xiaohuashifu.recruit.facade.service.vo;
 
+import java.io.Serializable;
+
 /**
  * 描述：
  *
  * @author xhsf
  * @create 2020/11/29 17:56
  */
-public class UserVO {
+public class UserVO implements Serializable {
     private Long id;
 
     private String username;

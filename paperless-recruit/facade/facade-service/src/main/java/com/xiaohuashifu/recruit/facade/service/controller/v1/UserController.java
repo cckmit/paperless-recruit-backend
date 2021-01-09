@@ -123,9 +123,4 @@ public class UserController {
         return "user";
     }
 
-    public static void main(String[] args) {
-        Pattern pattern = Pattern.compile(".*;? ?version=1\\.0.*");
-        Matcher matcher = pattern.matcher("*/*; version=1.0; xx=11");
-        System.out.println(matcher.matches());
-    }
 }

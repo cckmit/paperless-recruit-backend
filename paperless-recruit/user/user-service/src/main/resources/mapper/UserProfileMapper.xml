@@ -29,6 +29,12 @@
         where id = #{id}
     </select>
 
+    <select id="getUserProfileByUserId" resultMap="userProfile">
+        select <include refid="userProfile"/>
+        from user_profile
+        where user_id = #{userId}
+    </select>
+
     <select id="listUserProfiles" resultMap="userProfile">
         select <include refid="userProfile"/>
         from user_profile

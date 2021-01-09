@@ -51,6 +51,20 @@ public interface UserProfileService {
      * 获取用户个人信息
      *
      * @errorCode InvalidParameter: 请求参数格式错误
+     *              InvalidParameter.NotFound: 找不到该编号的用户信息
+     *
+     * @param userId 用户主体编号
+     * @return UserProfileDTO
+     */
+    Result<UserProfileDTO> getUserProfileByUserId(
+            @NotNull(message = "The userId can't be null.")
+            @Positive(message = "The userId must be greater than 0.") Long userId);
+
+
+    /**
+     * 获取用户个人信息
+     *
+     * @errorCode InvalidParameter: 请求参数格式错误
      *
      * @param query 查询参数
      * @return PageInfo<UserProfileDTO> 带分页信息的查询结果，可能返回空列表

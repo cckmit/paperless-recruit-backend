@@ -33,6 +33,11 @@
 			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
 		<!--    配置中心    -->
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
@@ -76,10 +81,39 @@
 			<artifactId>external-api</artifactId>
 		</dependency>
 
+		<!--    organization-api接口    -->
+		<dependency>
+			<groupId>com.xiaohuashifu.recruit</groupId>
+			<artifactId>organization-api</artifactId>
+		</dependency>
+
 		<!--   公共对象     -->
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>
 			<artifactId>common</artifactId>
+		</dependency>
+
+		<!--     lombok       -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<!--    MapStruct    -->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+		</dependency>
+		<!--    MapStruct    -->
+
+		<!--    fastjson    -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
 		</dependency>
 	</dependencies>
 

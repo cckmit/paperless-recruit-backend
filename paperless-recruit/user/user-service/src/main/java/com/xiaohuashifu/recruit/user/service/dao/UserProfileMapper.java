@@ -18,6 +18,8 @@ public interface UserProfileMapper {
 
     UserProfileDO getUserProfile(Long id);
 
+    UserProfileDO getUserProfileByUserId(Long userId);
+
     List<UserProfileDO> listUserProfiles(UserProfileQuery query);
 
     Long getUserId(Long id);

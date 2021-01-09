@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.config;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,6 +19,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .mvcMatchers(HttpMethod.GET, "/organizations")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -29,5 +32,4 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 // 关闭 session，任何情况不创建 Cookie
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
 }

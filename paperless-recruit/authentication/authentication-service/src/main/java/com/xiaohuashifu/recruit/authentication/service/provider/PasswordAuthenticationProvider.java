@@ -36,13 +36,13 @@ public class PasswordAuthenticationProvider extends AbstractAuthenticationProvid
         return PasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    protected UserDTO check(Authentication authentication) {
+    protected Long check(Authentication authentication) {
         PasswordAuthenticationToken passwordAuthenticationToken = (PasswordAuthenticationToken) authentication;
         String principal = passwordAuthenticationToken.getPrincipal();
 
         // 获取用户对象
         Result<UserDTO> getUserResult = userService.getUserByUsernameOrPhoneOrEmail(principal);
-        if (!getUserResult.isSuccess()) {
+        if (getUserResult.isFailure()) {
             throw new UsernameNotFoundException("The user does not exist.");
         }
 
@@ -58,7 +58,7 @@ public class PasswordAuthenticationProvider extends AbstractAuthenticationProvid
             throw new BadCredentialsException("Password error.");
         }
 
-        return userDTO;
+        return userDTO.getId();
     }
 
 }

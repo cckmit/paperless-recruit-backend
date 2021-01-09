@@ -45,6 +45,11 @@ public class OrganizationManagerImpl implements OrganizationManager {
                     return organizationVO;
                 })
                 .collect(Collectors.toList());
+    }
 
+    @Cacheable(cacheNames = "default", key = "'organization:' + #id +':authenticate-principal:' + #userId")
+    @Override
+    public boolean authenticatePrincipal(Long id, Long userId) {
+        return organizationService.authenticatePrincipal(id, userId);
     }
 }

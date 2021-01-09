@@ -30,25 +30,25 @@ public abstract class AbstractAuthenticationProvider implements AuthenticationPr
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // 检查用户是否通过认证
-        UserDTO userDTO = check(authentication);
+        Long userId = check(authentication);
 
         // 获取权限列表
         Set<String> authoritySet = authorityService.listAuthoritiesByUserId(
-                userDTO.getId(), AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX).getData();
+                userId, AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX).getData();
         List<SimpleGrantedAuthority> authorityList = authoritySet.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
         // 封装成用户名的 Token
-        return new UsernamePasswordAuthenticationToken(userDTO.getUsername(), null, authorityList);
+        return new UsernamePasswordAuthenticationToken(userId, null, authorityList);
     }
 
     /**
      * 检查用户权限，若没有通过认证，直接抛出异常即可
      *
      * @param authentication 认证对象
-     * @return UserDTO 用户 DTO 对象，用于获取用户编号，用户名
+     * @return Long 用户编号
      */
-    protected abstract UserDTO check(Authentication authentication);
+    protected abstract Long check(Authentication authentication);
 
 }

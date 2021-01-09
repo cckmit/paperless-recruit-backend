@@ -4,14 +4,12 @@ import com.xiaohuashifu.recruit.authentication.service.token.OpenIdAuthenticatio
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
-import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * 描述：AuthenticationManager 之后正在处理 OpenId 登录的类
@@ -38,7 +36,7 @@ public class OpenIdAuthenticationProvider extends AbstractAuthenticationProvider
         return OpenIdAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    protected UserDTO check(Authentication authentication) {
+    protected Long check(Authentication authentication) {
         OpenIdAuthenticationToken openIdAuthenticationToken = (OpenIdAuthenticationToken) authentication;
         AppEnum app = openIdAuthenticationToken.getApp();
         String code = openIdAuthenticationToken.getCode();
@@ -51,19 +49,13 @@ public class OpenIdAuthenticationProvider extends AbstractAuthenticationProvider
         }
         AuthOpenIdDTO authOpenIdDTO = checkAuthOpenIdForWeChatMpResult.getData();
 
-        // 获取用户对象
-        Result<UserDTO> getUserResult = userService.getUser(authOpenIdDTO.getUserId());
-        if (!getUserResult.isSuccess()) {
-            throw new UsernameNotFoundException("The user does not exist.");
-        }
-
         // 判断用户是否可用
-        UserDTO userDTO = getUserResult.getData();
-        if (!userDTO.getAvailable()) {
+        Result<Object> checkResult = userService.checkUserStatus(authOpenIdDTO.getUserId());
+        if (checkResult.isFailure()) {
             throw new DisabledException("The user unavailable.");
         }
 
-        return userDTO;
+        return authOpenIdDTO.getId();
     }
 
 }

@@ -1,8 +1,10 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
+import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +20,17 @@ public class OrganizationController {
 
     private final OrganizationManager organizationManager;
 
-    public OrganizationController(OrganizationManager organizationManager) {
+    private final OrganizationContext organizationContext;
+
+    public OrganizationController(OrganizationManager organizationManager, OrganizationContext organizationContext) {
         this.organizationManager = organizationManager;
+        this.organizationContext = organizationContext;
+    }
+
+    @PutMapping
+    public Object updateOrganization() {
+        organizationContext.authenticatePrincipal(3L);
+        return null;
     }
 
     /**

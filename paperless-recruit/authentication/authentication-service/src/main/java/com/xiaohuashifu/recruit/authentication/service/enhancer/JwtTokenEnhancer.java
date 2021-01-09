@@ -20,10 +20,10 @@ import java.util.Map;
  * @author: xhsf
  * @create: 2020/11/10 21:20
  */
-@Component
+//@Component
 public class JwtTokenEnhancer implements TokenEnhancer {
 
-    @Reference
+//    @Reference
     private UserService userService;
 
     /**

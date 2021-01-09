@@ -43,7 +43,7 @@ public class SmsAuthenticationProvider extends AbstractAuthenticationProvider {
     }
 
     @Override
-    protected UserDTO check(Authentication authentication) {
+    protected Long check(Authentication authentication) {
         SmsAuthenticationToken smsAuthenticationToken = (SmsAuthenticationToken) authentication;
         String phone = smsAuthenticationToken.getPhone();
         String authCode = smsAuthenticationToken.getAuthCode();
@@ -72,7 +72,7 @@ public class SmsAuthenticationProvider extends AbstractAuthenticationProvider {
             throw new DisabledException("The user unavailable.");
         }
 
-        return userDTO;
+        return userDTO.getId();
     }
 
 }

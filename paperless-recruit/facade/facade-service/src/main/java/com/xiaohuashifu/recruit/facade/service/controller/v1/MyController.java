@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
-import com.xiaohuashifu.recruit.facade.service.authorize.UserInfo;
+import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.MyManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,19 +18,22 @@ public class MyController {
 
     private final MyManager myManager;
 
-    public MyController(MyManager myManager) {
+    private final UserContext userContext;
+
+    public MyController(MyManager myManager, UserContext userContext) {
         this.myManager = myManager;
+        this.userContext = userContext;
     }
 
     /**
      * 获取用户个人信息
      *
-     * @param userInfo UserInfo
      * @return 用户个人信息
      */
     @GetMapping
-    public Object getPage(UserInfo userInfo) {
-        return myManager.getPage(userInfo.getId());
+    public Object getPage() {
+        System.out.println(userContext.getId());
+        return myManager.getPage(userContext.getId());
     }
 
 }

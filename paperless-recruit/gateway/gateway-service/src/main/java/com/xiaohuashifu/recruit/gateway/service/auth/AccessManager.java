@@ -31,13 +31,18 @@ public class AccessManager implements ReactiveAuthorizationManager<Authorization
     public Mono<AuthorizationDecision> check(Mono<Authentication> authenticationMono,
                                              AuthorizationContext authorizationContext) {
         ServerHttpRequest request = authorizationContext.getExchange().getRequest();
+        // 对认证服务器的请求直接放行
+        if (request.getPath().value().startsWith("/oauth/")) {
+            return Mono.just(new AuthorizationDecision(true));
+        }
+
         // 对应跨域的预检请求直接放行
         if (request.getMethod() == HttpMethod.OPTIONS) {
             return Mono.just(new AuthorizationDecision(true));
         }
 
         // 进行鉴权
-        String url0 = request.getURI().getPath();
+        String url0 = request.getPath().value();
         String url = url0.startsWith("/v1") ? url0.substring(3) : url0;
         return authenticationMono
                 .map(auth -> new AuthorizationDecision(urlAuthorityChecker.check(auth.getAuthorities(), url)))

@@ -75,10 +75,12 @@ public class UrlAuthorityChecker {
         }
 
         // 判断用户的权限里有没有满足获取该路径资源的
-        for (GrantedAuthority authority : authorities) {
-            String authorizationUrl = permissionNameAuthorizationUrlMap.get(authority.getAuthority());
-            if (authorizationUrl != null && antPathMatcher.match(authorizationUrl, url)) {
-                return true;
+        if (authorities != null) {
+            for (GrantedAuthority authority : authorities) {
+                String authorizationUrl = permissionNameAuthorizationUrlMap.get(authority.getAuthority());
+                if (authorizationUrl != null && antPathMatcher.match(authorizationUrl, url)) {
+                    return true;
+                }
             }
         }
         return false;

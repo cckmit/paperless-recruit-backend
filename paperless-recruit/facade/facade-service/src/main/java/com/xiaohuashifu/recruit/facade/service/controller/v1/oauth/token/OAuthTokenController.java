@@ -1,13 +1,13 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token;
 
+import com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.constant.GrantTypeEnum;
+import com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.processor.AuthenticationProcessor;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 描述：oauth 控制器
@@ -16,28 +16,19 @@ import org.springframework.web.client.RestTemplate;
  * @create 2021/1/14 14:52
  */
 @RestController
-@RequestMapping(OAuthTokenController.CURRENT_PATH)
+@RequestMapping("oauth/token")
 public class OAuthTokenController {
 
-    private final RestTemplate restTemplate;
+    private final List<AuthenticationProcessor> authenticationProcessorList;
 
-    @Value("${oauth2.server.url}")
-    private String oauthServerUrl;
-
-    @Value("${oauth2.encoded-credentials}")
-    private String encodedCredentials;
-
-    /**
-     * 当前的路径
-     */
-    public static final String CURRENT_PATH = "oauth/token";
-
-    public OAuthTokenController(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public OAuthTokenController(List<AuthenticationProcessor> authenticationProcessorList) {
+        this.authenticationProcessorList = authenticationProcessorList;
     }
 
     /**
      * 认证接口
+     *
+     * 支持 [PASSWORD, OPEN_ID, SMS, REFRESH_TOKEN] 四种认证方式
      *
      * @param httpHeaders HttpHeaders
      * @param body 请求体
@@ -45,12 +36,16 @@ public class OAuthTokenController {
      */
     @ApiParam
     @PostMapping
-    public Object post(@RequestHeader HttpHeaders httpHeaders, @RequestBody Object body) {
-        httpHeaders.setBasicAuth(encodedCredentials);
-        HttpEntity<Object> httpEntity = new HttpEntity<>(body, httpHeaders);
-        ResponseEntity<Object> responseEntity =
-                restTemplate.postForEntity(oauthServerUrl + CURRENT_PATH, httpEntity, Object.class);
-        return responseEntity;
+    public Object post(@RequestHeader HttpHeaders httpHeaders, @RequestBody Map<String, Object> body) {
+        String grantType = String.valueOf(body.remove("grantType"));
+        GrantTypeEnum grantTypeEnum = GrantTypeEnum.valueOf(grantType);
+        body.put("grant_type", grantTypeEnum.getGrantType());
+        for (AuthenticationProcessor authenticationProcessor : authenticationProcessorList) {
+            if (authenticationProcessor.isSupport(grantTypeEnum)) {
+                return authenticationProcessor.authenticate(httpHeaders, body);
+            }
+        }
+        return "not support grant type";
     }
 
 }

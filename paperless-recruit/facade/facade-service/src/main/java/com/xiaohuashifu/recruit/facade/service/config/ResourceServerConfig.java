@@ -23,6 +23,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/swagger-ui.html/*", "/swagger-resources" , "/swagger-resources/**", "/swagger-ui/**",
                         "/v2/api-docs/**")
                 .permitAll()
+                .mvcMatchers(HttpMethod.POST, "/oauth/**")
+                .permitAll()
                 .mvcMatchers(HttpMethod.GET, "/organizations")
                 .permitAll()
                 .anyRequest()

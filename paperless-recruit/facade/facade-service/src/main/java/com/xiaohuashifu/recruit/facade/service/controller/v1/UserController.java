@@ -1,11 +1,10 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
-import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeUtils;
 import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.facade.service.vo.UserVO;
+import com.xiaohuashifu.recruit.facade.service.assembler.UserAssembler;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -13,8 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 描述：用户的门面类
@@ -28,12 +25,7 @@ public class UserController {
     @Reference
     private UserService userService;
 
-    private final Mapper mapper;
-
-    public UserController(Mapper mapper) {
-        this.mapper = mapper;
-    }
-
+    private final UserAssembler userAssembler = UserAssembler.INSTANCE;
 
     /**
      * 短信验证码方式注册
@@ -91,7 +83,7 @@ public class UserController {
                 return ErrorResponseUtils.instanceResponseEntity(signUpBySmsAuthCodeResult.getErrorCode(), message);
             }
             // 注册成功
-            return mapper.map(signUpBySmsAuthCodeResult.getData(), UserVO.class);
+            return userAssembler.userDTO2UserVO(signUpBySmsAuthCodeResult.getData());
         }
 
         // 密码方式注册
@@ -109,7 +101,7 @@ public class UserController {
                 return ErrorResponseUtils.instanceResponseEntity(signUpUserResult.getErrorCode(), message);
             }
             // 注册成功
-            return mapper.map(signUpUserResult.getData(), UserVO.class);
+            return userAssembler.userDTO2UserVO(signUpUserResult.getData());
         }
 
         // 不支持的注册类型

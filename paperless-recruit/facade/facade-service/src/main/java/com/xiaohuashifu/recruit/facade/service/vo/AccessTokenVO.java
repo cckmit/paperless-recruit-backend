@@ -23,30 +23,30 @@ public class AccessTokenVO {
     /**
      * 令牌
      */
-    @ApiModelProperty(value = "令牌", required = true, example = "xx.xx.xx")
+    @ApiModelProperty(value = "令牌", example = "xx.xx.xx")
     private String accessToken;
 
     /**
      * 刷新令牌
      */
-    @ApiModelProperty(value = "刷新令牌", required = true, example = "xx.xx.xx")
+    @ApiModelProperty(value = "刷新令牌", example = "xx.xx.xx")
     private String refreshToken;
 
     /**
      * 令牌类型
      */
-    @ApiModelProperty(value = "令牌类型", allowableValues = "[bearer]", required = true, example = "bearer")
+    @ApiModelProperty(value = "令牌类型", allowableValues = "[bearer]", example = "bearer")
     private String tokenType;
 
     /**
      * 令牌过期时间
      */
-    @ApiModelProperty(value = "令牌过期时间", required = true, example = "1611315669", dataType = "java.lang.Long")
+    @ApiModelProperty(value = "令牌过期时间", example = "1611315669")
     private Long accessTokenExpireTime;
 
     /**
      * 刷新令牌过期时间
      */
-    @ApiModelProperty(value = "刷新令牌过期时间", required = true, example = "1611315669", dataType = "java.lang.Long")
+    @ApiModelProperty(value = "刷新令牌过期时间", example = "1611315669")
     private Long refreshTokenExpireTime;
 }

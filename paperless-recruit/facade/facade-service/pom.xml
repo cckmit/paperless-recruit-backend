@@ -110,11 +110,17 @@
 			<artifactId>fastjson</artifactId>
 		</dependency>
 
-		<!--springfox swagger官方Starter-->
+<!--		&lt;!&ndash; springfox swagger Starter&ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>io.springfox</groupId>-->
+<!--			<artifactId>springfox-boot-starter</artifactId>-->
+<!--			<version>3.0.0</version>-->
+<!--		</dependency>-->
+		<!-- knife4j swagger 增强 -->
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
-			<version>3.0.0</version>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-spring-boot-starter</artifactId>
+			<version>3.0.2</version>
 		</dependency>
 	</dependencies>
 

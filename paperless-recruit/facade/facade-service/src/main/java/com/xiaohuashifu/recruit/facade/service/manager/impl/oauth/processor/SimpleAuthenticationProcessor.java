@@ -1,6 +1,6 @@
-package com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.processor;
+package com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.processor;
 
-import com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.constant.GrantTypeEnum;
+import com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.constant.GrantTypeEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;

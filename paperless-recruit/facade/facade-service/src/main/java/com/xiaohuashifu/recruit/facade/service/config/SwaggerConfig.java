@@ -11,13 +11,14 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 /**
- * 描述：
+ * 描述：Swagger 配置
  *
  * @author xhsf
  * @create 2021/1/14 13:30
  */
 @Configuration
 public class SwaggerConfig {
+
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -36,4 +37,5 @@ public class SwaggerConfig {
                 .version("1.0")
                 .build();
     }
+
 }

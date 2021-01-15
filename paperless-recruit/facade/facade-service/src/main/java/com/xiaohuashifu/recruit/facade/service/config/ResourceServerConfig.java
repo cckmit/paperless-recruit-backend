@@ -21,9 +21,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("swagger/**", "/swagger-ui.html", "swagger-ui.html", "/webjars/**", "" +
                         "/swagger-ui.html/*", "/swagger-resources" , "/swagger-resources/**", "/swagger-ui/**",
-                        "/v2/api-docs/**")
+                        "/v2/api-docs/**", "/v2/api-docs-ext", "/doc.html")
                 .permitAll()
-                .mvcMatchers(HttpMethod.POST, "/oauth/**")
+                .mvcMatchers(HttpMethod.POST, "/oauth/token")
                 .permitAll()
                 .mvcMatchers(HttpMethod.GET, "/organizations")
                 .permitAll()

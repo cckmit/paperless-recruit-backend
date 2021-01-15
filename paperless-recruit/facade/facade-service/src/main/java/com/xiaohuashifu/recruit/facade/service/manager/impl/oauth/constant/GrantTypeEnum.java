@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.constant;
+package com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.constant;
 
 /**
  * 描述：认证类型

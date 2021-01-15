@@ -52,7 +52,7 @@ public class OAuthTokenController {
     /**
      * 撤销认证
      */
-    @ApiOperation(value = "Oauth 撤销认证", notes = "会删除用户的 refresh_token")
+    @ApiOperation(value = "Oauth 撤销认证", notes = "会删除用户的 Refresh Token")
     @ApiResponses(@ApiResponse(code = 204, message = "撤销认证成功"))
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

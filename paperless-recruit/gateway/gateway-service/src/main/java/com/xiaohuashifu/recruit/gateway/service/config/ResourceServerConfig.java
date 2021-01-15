@@ -52,6 +52,8 @@ public class ResourceServerConfig {
         http.oauth2ResourceServer().authenticationEntryPoint(customServerAuthenticationEntryPoint);
 
         // 添加鉴权过滤器
+        // DelegatingReactiveAuthenticationManager 可以用来整合多个 ReactiveAuthenticationManager 进行解耦
+        // 如果 AccessManager 太过复杂时可以用
         http.authorizeExchange()
                     .anyExchange().access(authorizationManager)
                 .and()

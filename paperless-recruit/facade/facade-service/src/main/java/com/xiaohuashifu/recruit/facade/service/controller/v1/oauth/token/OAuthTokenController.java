@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token;
 
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
+import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
 import com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.constant.GrantTypeEnum;
 import com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.processor.AuthenticationProcessor;
 import io.swagger.annotations.ApiParam;
@@ -45,7 +47,10 @@ public class OAuthTokenController {
                 return authenticationProcessor.authenticate(httpHeaders, body);
             }
         }
-        return "not support grant type";
+
+        // 不支持的认证类型
+        return ErrorResponseUtils.instanceResponseEntity(
+                ErrorCodeEnum.INVALID_PARAMETER_UNSUPPORTED, "Unsupported grant type.");
     }
 
 }

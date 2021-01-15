@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
 /**
  * 描述：资源服务器配置
@@ -16,6 +17,17 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    public ResourceServerConfig(CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+                                CustomAccessDeniedHandler customAccessDeniedHandler) {
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
+    }
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -38,4 +50,14 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 // 关闭 session，任何情况不创建 Cookie
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
+
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) {
+        resources
+                // 处理 accessDenied 异常
+                .accessDeniedHandler(customAccessDeniedHandler)
+                // 处理认证失败异常
+                .authenticationEntryPoint(customAuthenticationEntryPoint);
+    }
+
 }

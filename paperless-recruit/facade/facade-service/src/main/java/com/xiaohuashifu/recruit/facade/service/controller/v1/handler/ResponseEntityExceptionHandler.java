@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResponseEntityException.class)
-    public ResponseEntity<?> httpMessageNotReadableExceptionHandler(ResponseEntityException e) {
+    public ResponseEntity<?> handleHttpMessageNotReadableException(ResponseEntityException e) {
         return e.getResponseEntity();
     }
 

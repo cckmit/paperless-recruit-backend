@@ -20,7 +20,7 @@ public interface AuthenticationProcessor {
      * @param body 请求体
      * @return 认证结果
      */
-    Object authenticate(HttpHeaders httpHeaders, Map<String, Object> body);
+    Object authenticate(HttpHeaders httpHeaders, Map<String, String> body);
 
     /**
      * 判断是否支持该 grant type 的认证

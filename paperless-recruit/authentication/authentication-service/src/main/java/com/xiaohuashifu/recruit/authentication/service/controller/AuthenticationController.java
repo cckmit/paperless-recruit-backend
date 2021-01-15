@@ -70,7 +70,7 @@ public class AuthenticationController {
     @PostMapping("/token")
     public Object postAccessToken(Principal principal, @RequestBody Map<String, String> parameters)
             throws HttpRequestMethodNotSupportedException {
-        return tokenEndpoint.postAccessToken(principal, parameters).getBody();
+        return tokenEndpoint.postAccessToken(principal, parameters);
     }
 
 }

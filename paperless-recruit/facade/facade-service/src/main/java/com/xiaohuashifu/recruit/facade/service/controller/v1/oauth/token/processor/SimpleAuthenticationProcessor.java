@@ -38,7 +38,7 @@ public class SimpleAuthenticationProcessor extends AbstractAuthenticationProcess
      * @param body        请求体
      */
     @Override
-    protected void beforeProcess(HttpHeaders httpHeaders, Map<String, Object> body) {}
+    protected void beforeProcess(HttpHeaders httpHeaders, Map<String, String> body) {}
 
     /**
      * 判断是否支持该 grant type 的认证

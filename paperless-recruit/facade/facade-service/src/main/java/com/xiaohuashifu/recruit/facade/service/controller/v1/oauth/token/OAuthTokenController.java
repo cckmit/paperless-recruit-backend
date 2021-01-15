@@ -1,11 +1,10 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token;
 
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
 import com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.constant.GrantTypeEnum;
 import com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.processor.AuthenticationProcessor;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,14 +31,42 @@ public class OAuthTokenController {
      *
      * 支持 [PASSWORD, OPEN_ID, SMS, REFRESH_TOKEN] 四种认证方式
      *
+     * PASSWORD:
+     *  参数：{
+     *     "grantType": "PASSWORD",
+     *     "principal": 用户名 | 手机 | 邮箱,
+     *     "password": 密码
+     * }
+     *
+     * OPEN_ID:
+     *  参数：{
+     *     "grantType": "OPEN_ID",
+     *     "app": SCAU_RECRUIT_INTERVIEWEE_MP | SCAU_RECRUIT_INTERVIEWER_MP
+     *              @see com.xiaohuashifu.recruit.common.constant.AppEnum
+     *     "code": 微信小程序的 wx.login() 接口返回值
+     * }
+     *
+     * SMS:
+     *  参数：{
+     *     "grantType": "SMS",
+     *     "phone": 手机号码
+     *     "authCode": 短信验证码
+     * }
+     *
+     * REFRESH_TOKEN:
+     *  参数：{
+     *     "grantType": "REFRESH_TOKEN",
+     *     "refreshToken": 刷新令牌
+     * }
+     *
      * @param httpHeaders HttpHeaders
      * @param body 请求体
-     * @return Token 令牌
+     * @return AccessTokenVO 令牌
      */
     @ApiParam
     @PostMapping
-    public Object post(@RequestHeader HttpHeaders httpHeaders, @RequestBody Map<String, Object> body) {
-        String grantType = String.valueOf(body.remove("grantType"));
+    public Object post(@RequestHeader HttpHeaders httpHeaders, @RequestBody Map<String, String> body) {
+        String grantType = body.remove("grantType");
         GrantTypeEnum grantTypeEnum = GrantTypeEnum.valueOf(grantType);
         body.put("grant_type", grantTypeEnum.getGrantType());
         for (AuthenticationProcessor authenticationProcessor : authenticationProcessorList) {
@@ -49,8 +76,7 @@ public class OAuthTokenController {
         }
 
         // 不支持的认证类型
-        return ErrorResponseUtils.instanceResponseEntity(
-                ErrorCodeEnum.INVALID_PARAMETER_UNSUPPORTED, "Unsupported grant type.");
+        throw new InvalidGrantException("Unsupported grant type.");
     }
 
 }

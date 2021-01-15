@@ -23,6 +23,11 @@ public class AccessTokenVO {
     private String accessToken;
 
     /**
+     * 刷新令牌
+     */
+    private String refreshToken;
+
+    /**
      * 令牌类型
      */
     private String tokenType;

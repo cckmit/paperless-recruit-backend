@@ -31,9 +31,9 @@ public abstract class AbstractAuthenticationProcessor implements AuthenticationP
     private final String encodedCredentials;
 
     /**
-     * access token 和 refresh token 的 redis key 模式
+     * 用户的 refresh-token 的 redis key 模式，{0}是用户编号
      */
-    protected static final String ACCESS_TOKEN_REFRESH_TOKEN_REDIS_KEY_PATTERN = "access-token:{0}:refresh-token";
+    protected static final String REFRESH_TOKEN_REDIS_KEY_PATTERN = "refresh-token:user-id:{0}";
 
     public AbstractAuthenticationProcessor(RestTemplate restTemplate, StringRedisTemplate redisTemplate,
                                            String oauthServiceUrl, String encodedCredentials) {
@@ -51,10 +51,10 @@ public abstract class AbstractAuthenticationProcessor implements AuthenticationP
      * @return 认证结果
      */
     @Override
-    public Object authenticate(HttpHeaders httpHeaders, Map<String, Object> body) {
+    public Object authenticate(HttpHeaders httpHeaders, Map<String, String> body) {
         httpHeaders.setBasicAuth(encodedCredentials);
         beforeProcess(httpHeaders, body);
-        HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
+        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(body, httpHeaders);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(oauthServiceUrl, httpEntity, String.class);
         if (!responseEntity.getStatusCode().is2xxSuccessful()) {
             return responseEntity;
@@ -68,7 +68,7 @@ public abstract class AbstractAuthenticationProcessor implements AuthenticationP
      * @param httpHeaders Http 头
      * @param body 请求体
      */
-    protected abstract void beforeProcess(HttpHeaders httpHeaders, Map<String, Object> body);
+    protected abstract void beforeProcess(HttpHeaders httpHeaders, Map<String, String> body);
 
     /**
      * 处理认证成功的情况
@@ -80,21 +80,22 @@ public abstract class AbstractAuthenticationProcessor implements AuthenticationP
         String body = responseEntity.getBody();
         JSONObject result = JSONObject.parseObject(body);
         String accessToken = result.getString("access_token");
-        String tokenType =result.getString("token_type");
+        String tokenType = result.getString("token_type");
         String refreshToken = result.getString("refresh_token");
         Jwt jwt = JwtHelper.decode(refreshToken);
         JSONObject jwtJson = JSONObject.parseObject(jwt.getClaims());
         Long expireTime = jwtJson.getLong("exp");
+        Long userId = jwtJson.getLong("user_name");
 
-        // 缓存 refresh token
-        String accessTokenRefreshTokenRedisKey =
-                MessageFormat.format(ACCESS_TOKEN_REFRESH_TOKEN_REDIS_KEY_PATTERN, accessToken);
-        redisTemplate.opsForValue().set(accessTokenRefreshTokenRedisKey, refreshToken);
-        redisTemplate.expireAt(accessTokenRefreshTokenRedisKey, new Date(expireTime * 1000));
+        // 缓存 refresh-token
+        String redisKey = MessageFormat.format(REFRESH_TOKEN_REDIS_KEY_PATTERN, userId);
+        redisTemplate.opsForValue().set(redisKey, refreshToken);
+        redisTemplate.expireAt(redisKey, new Date(expireTime * 1000));
 
         // 返回 access token
         return AccessTokenVO.builder()
                 .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .tokenType(tokenType)
                 .expireTime(expireTime)
                 .build();

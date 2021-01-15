@@ -1,14 +1,19 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.processor;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.facade.service.controller.v1.oauth.token.constant.GrantTypeEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.jwt.Jwt;
+import org.springframework.security.jwt.JwtHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 描述：刷新 token 的处理器
@@ -32,14 +37,16 @@ public class RefreshTokenAuthenticationProcessor extends AbstractAuthenticationP
      * @param body        请求体
      */
     @Override
-    protected void beforeProcess(HttpHeaders httpHeaders, Map<String, Object> body) {
-        // 获取 Refresh Token
-        String accessToken = String.valueOf(body.get("accessToken"));
-        String accessTokenRefreshTokenRedisKey =
-                MessageFormat.format(ACCESS_TOKEN_REFRESH_TOKEN_REDIS_KEY_PATTERN, accessToken);
-        String refreshToken = redisTemplate.opsForValue().get(accessTokenRefreshTokenRedisKey);
-        if (refreshToken == null) {
-            throw new RuntimeException();
+    protected void beforeProcess(HttpHeaders httpHeaders, Map<String, String> body) {
+        // 判断 Refresh Token 是否存在且有效
+        String refreshToken = body.get("refreshToken");
+        Jwt jwt = JwtHelper.decode(refreshToken);
+        JSONObject jwtJson = JSONObject.parseObject(jwt.getClaims());
+        Long userId = jwtJson.getLong("user_name");
+        String redisKey = MessageFormat.format(REFRESH_TOKEN_REDIS_KEY_PATTERN, userId);
+        String refreshTokenFromRedis = redisTemplate.opsForValue().get(redisKey);
+        if (!Objects.equals(refreshTokenFromRedis, refreshToken)) {
+            throw new BadCredentialsException("Invalid refresh token.");
         }
         body.put("refresh_token", refreshToken);
     }

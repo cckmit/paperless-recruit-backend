@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.manager;
 
 import com.xiaohuashifu.recruit.facade.service.request.OAuthTokenPostRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.AccessTokenVO;
+import com.xiaohuashifu.recruit.facade.service.vo.TokenVO;
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -17,9 +17,9 @@ public interface OAuthTokenManager {
      *
      * @param httpHeaders HttpHeaders
      * @param request OAuthTokenPostRequest
-     * @return AccessTokenVO
+     * @return TokenVO
      */
-    AccessTokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request);
+    TokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request);
 
     /**
      * 退出登录

@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.facade.service.manager.impl;
 import com.xiaohuashifu.recruit.facade.service.manager.OAuthTokenManager;
 import com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.processor.AuthenticationProcessor;
 import com.xiaohuashifu.recruit.facade.service.request.OAuthTokenPostRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.AccessTokenVO;
+import com.xiaohuashifu.recruit.facade.service.vo.TokenVO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
@@ -41,10 +41,10 @@ public class OAuthTokenManagerImpl implements OAuthTokenManager {
      *
      * @param httpHeaders HttpHeaders
      * @param request OAuthTokenPostRequest
-     * @return AccessTokenVO
+     * @return TokenVO
      */
     @Override
-    public AccessTokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request) {
+    public TokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request) {
         // 进行认证
         for (AuthenticationProcessor authenticationProcessor : authenticationProcessorList) {
             if (authenticationProcessor.isSupport(request.getGrantType())) {

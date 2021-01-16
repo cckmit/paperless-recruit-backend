@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.processor;
 
 import com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.constant.GrantTypeEnum;
 import com.xiaohuashifu.recruit.facade.service.request.OAuthTokenPostRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.AccessTokenVO;
+import com.xiaohuashifu.recruit.facade.service.vo.TokenVO;
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -20,7 +20,7 @@ public interface AuthenticationProcessor {
      * @param request 请求
      * @return 认证结果
      */
-    AccessTokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request);
+    TokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request);
 
     /**
      * 判断是否支持该 grant type 的认证

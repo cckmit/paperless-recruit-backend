@@ -4,7 +4,7 @@ import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OAuthTokenManager;
 import com.xiaohuashifu.recruit.facade.service.request.OAuthTokenPostRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.AccessTokenVO;
+import com.xiaohuashifu.recruit.facade.service.vo.TokenVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -42,10 +42,10 @@ public class OAuthTokenController {
      * @return AccessTokenVO 令牌
      */
     @ApiOperation(value = "Oauth 认证")
-    @ApiResponses(@ApiResponse(code = 201, message = "认证成功", response = AccessTokenVO.class))
+    @ApiResponses(@ApiResponse(code = 201, message = "认证成功", response = TokenVO.class))
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccessTokenVO post(@RequestHeader HttpHeaders httpHeaders, @RequestBody OAuthTokenPostRequest request) {
+    public TokenVO post(@RequestHeader HttpHeaders httpHeaders, @RequestBody OAuthTokenPostRequest request) {
         return oAuthTokenManager.authenticate(httpHeaders, request);
     }
 

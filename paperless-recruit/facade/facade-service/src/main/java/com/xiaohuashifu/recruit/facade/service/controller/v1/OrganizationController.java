@@ -33,6 +33,15 @@ public class OrganizationController {
         return null;
     }
 
+//    /**
+//     *
+//     * @param organizationId
+//     * @return
+//     */
+//    public Object get(Long organizationId) {
+//
+//    }
+
     /**
      * 查询组织
      *

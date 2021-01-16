@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.processor;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.request.OAuthTokenPostRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.AccessTokenVO;
+import com.xiaohuashifu.recruit.facade.service.vo.TokenVO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -54,7 +54,7 @@ public abstract class AbstractAuthenticationProcessor implements AuthenticationP
      * @return 认证结果
      */
     @Override
-    public AccessTokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request) {
+    public TokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request) {
         Map<String, String> body = new HashMap<>();
         body.put("grant_type", request.getGrantType() != null ? request.getGrantType().getGrantType() : null);
         body.put("principal", request.getPrincipal());
@@ -89,7 +89,7 @@ public abstract class AbstractAuthenticationProcessor implements AuthenticationP
      * @param responseEntity 认证请求的响应
      * @return AccessTokenVO
      */
-    protected AccessTokenVO afterProcess(ResponseEntity<String> responseEntity) {
+    protected TokenVO afterProcess(ResponseEntity<String> responseEntity) {
         String body = responseEntity.getBody();
         JSONObject result = JSONObject.parseObject(body);
         String accessToken = result.getString("access_token");
@@ -113,7 +113,8 @@ public abstract class AbstractAuthenticationProcessor implements AuthenticationP
         Long accessTokenExpireTime = accessTokenJwtJson.getLong("exp");
 
         // 返回 access token
-        return AccessTokenVO.builder()
+        return TokenVO.builder()
+                .userId(userId)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .tokenType(tokenType)

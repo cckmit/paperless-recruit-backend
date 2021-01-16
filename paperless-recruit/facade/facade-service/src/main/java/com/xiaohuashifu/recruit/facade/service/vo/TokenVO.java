@@ -18,7 +18,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel
-public class AccessTokenVO {
+public class TokenVO {
+
+    /**
+     * 用户编号
+     */
+    @ApiModelProperty(value = "用户编号", example = "123")
+    private Long userId;
 
     /**
      * 令牌

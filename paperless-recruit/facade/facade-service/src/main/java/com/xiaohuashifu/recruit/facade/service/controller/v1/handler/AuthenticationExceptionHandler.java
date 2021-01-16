@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.facade.service.controller.v1.handler;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorResponse;
 import com.xiaohuashifu.recruit.facade.service.exception.ForbiddenException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author: xhsf
  * @create: 2020/11/19 20:42
  */
+@Order(Integer.MIN_VALUE)
 @RestControllerAdvice
 public class AuthenticationExceptionHandler {
 

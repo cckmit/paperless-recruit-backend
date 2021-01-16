@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.controller.v1.handler;
 
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorResponse;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author xhsf
  * @create 2021/1/15 18:23
  */
+@Order(Integer.MIN_VALUE)
 @RestControllerAdvice
 public class ParameterBindingExceptionHandler {
 

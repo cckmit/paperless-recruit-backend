@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.facade.service.controller.v1.handler;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.remoting.RemotingException;
 import org.apache.dubbo.rpc.RpcException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,14 @@ public class RpcExceptionHandler {
         log.error("Catch a rpc exception.", e);
         return new ErrorResponse(ErrorCodeEnum.SERVICE_UNAVAILABLE.getCode(),
                 ErrorCodeEnum.SERVICE_UNAVAILABLE.getMessage());
+    }
+
+    @ExceptionHandler(RemotingException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleRemotingException(RemotingException e) {
+        log.error("Catch a rpc remoting exception.", e);
+        return new ErrorResponse(ErrorCodeEnum.INTERNAL_ERROR.getCode(),
+                ErrorCodeEnum.INTERNAL_ERROR.getMessage());
     }
 
 }

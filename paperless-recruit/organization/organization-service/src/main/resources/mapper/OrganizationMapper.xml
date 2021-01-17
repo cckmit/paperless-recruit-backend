@@ -33,6 +33,12 @@
         where id = #{id}
     </select>
 
+    <select id="getOrganizationByUserId" resultMap="organization">
+        select <include refid="organization"/>
+        from organization
+        where user_id = #{userId}
+    </select>
+
     <select id="getOrganizationLogoUrl" resultType="string">
         select logo_url
         from organization

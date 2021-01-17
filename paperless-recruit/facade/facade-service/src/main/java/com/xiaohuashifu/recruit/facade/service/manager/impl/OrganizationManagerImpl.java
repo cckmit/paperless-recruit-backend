@@ -26,10 +26,28 @@ import java.util.stream.Collectors;
 @CacheConfig(cacheNames = "default")
 public class OrganizationManagerImpl implements OrganizationManager {
 
-    private final OrganizationAssembler organizationAssembler = OrganizationAssembler.INSTANCE;
+    private final OrganizationAssembler organizationAssembler;
 
     @Reference
     private OrganizationService organizationService;
+
+    public OrganizationManagerImpl(OrganizationAssembler organizationAssembler) {
+        this.organizationAssembler = organizationAssembler;
+    }
+
+    @Cacheable(key = "'organizations:' + #id")
+    @Override
+    public OrganizationVO getOrganization(Long id) {
+        OrganizationDTO organizationDTO = organizationService.getOrganization(id).getData();
+        return organizationAssembler.organizationDTO2OrganizationVO(organizationDTO);
+    }
+
+    @Cacheable(key = "'users:' + #userId + ':organizations'")
+    @Override
+    public OrganizationVO getOrganizationsByUserId(Long userId) {
+        OrganizationDTO organizationDTO = organizationService.getOrganizationByUserId(userId).getData();
+        return organizationAssembler.organizationDTO2OrganizationVO(organizationDTO);
+    }
 
     @Cacheable(key = "'organizations:' + #query")
     @Override
@@ -38,12 +56,7 @@ public class OrganizationManagerImpl implements OrganizationManager {
         PageInfo<OrganizationDTO> pageInfo = pageInfoResult.getData();
 
         return pageInfo.getList().stream()
-                .map(organizationDTO -> {
-                    OrganizationVO organizationVO =
-                            organizationAssembler.organizationDTO2OrganizationVO(organizationDTO);
-                    organizationVO.setLogoUrl("https://oss.xiaohuashifu.top/" + organizationVO.getLogoUrl());
-                    return organizationVO;
-                })
+                .map(organizationAssembler::organizationDTO2OrganizationVO)
                 .collect(Collectors.toList());
     }
 

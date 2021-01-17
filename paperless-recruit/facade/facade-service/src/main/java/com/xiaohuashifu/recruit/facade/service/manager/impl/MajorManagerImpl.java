@@ -18,10 +18,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class MajorManagerImpl implements MajorManager {
 
-    private final MajorAssembler majorAssembler = MajorAssembler.INSTANCE;
+    private final MajorAssembler majorAssembler;
 
     @Reference
     private MajorService majorService;
+
+    public MajorManagerImpl(MajorAssembler majorAssembler) {
+        this.majorAssembler = majorAssembler;
+    }
 
     /**
      * 获取专业

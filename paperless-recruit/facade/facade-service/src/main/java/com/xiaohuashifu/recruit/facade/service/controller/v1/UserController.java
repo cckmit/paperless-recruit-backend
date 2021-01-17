@@ -22,10 +22,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
     @Reference
     private UserService userService;
 
-    private final UserAssembler userAssembler = UserAssembler.INSTANCE;
+    private final UserAssembler userAssembler;
 
     /**
      * 短信验证码方式注册
@@ -37,6 +38,10 @@ public class UserController {
      * 用户名密码方式注册
      */
     public static final String SIGN_UP_TYPE_PASSWORD = "password";
+
+    public UserController(UserAssembler userAssembler) {
+        this.userAssembler = userAssembler;
+    }
 
     /**
      * 用于创建用户，也就是注册

@@ -18,6 +18,8 @@ public interface OrganizationMapper {
 
     OrganizationDO getOrganization(Long id);
 
+    OrganizationDO getOrganizationByUserId(Long userId);
+
     String getOrganizationLogoUrl(Long id);
 
     Long getUserId(Long id);

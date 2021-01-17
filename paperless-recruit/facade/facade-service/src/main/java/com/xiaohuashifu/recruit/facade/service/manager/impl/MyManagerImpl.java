@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyManagerImpl implements MyManager {
 
-    private final MyAssembler myAssembler = MyAssembler.INSTANCE;
+    private final MyAssembler myAssembler;
 
     @Reference
     private UserProfileService userProfileService;
@@ -32,7 +32,8 @@ public class MyManagerImpl implements MyManager {
 
     private final CollegeManager collegeManager;
 
-    public MyManagerImpl(MajorManager majorManager, CollegeManager collegeManager) {
+    public MyManagerImpl(MyAssembler myAssembler, MajorManager majorManager, CollegeManager collegeManager) {
+        this.myAssembler = myAssembler;
         this.majorManager = majorManager;
         this.collegeManager = collegeManager;
     }

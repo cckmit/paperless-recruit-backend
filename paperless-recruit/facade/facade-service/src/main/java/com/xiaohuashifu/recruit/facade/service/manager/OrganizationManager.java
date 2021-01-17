@@ -13,8 +13,13 @@ import java.util.List;
  */
 public interface OrganizationManager {
 
+    OrganizationVO getOrganization(Long id);
+
+    OrganizationVO getOrganizationsByUserId(Long userId);
+
     List<OrganizationVO> listOrganizations(OrganizationQuery query);
 
     boolean authenticatePrincipal(Long id, Long userId);
+
 
 }

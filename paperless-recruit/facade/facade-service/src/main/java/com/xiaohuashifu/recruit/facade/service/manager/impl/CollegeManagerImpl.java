@@ -18,10 +18,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class CollegeManagerImpl implements CollegeManager {
 
-    private final CollegeAssembler collegeAssembler = CollegeAssembler.INSTANCE;
+    private final CollegeAssembler collegeAssembler;
 
     @Reference
     private CollegeService collegeService;
+
+    public CollegeManagerImpl(CollegeAssembler collegeAssembler) {
+        this.collegeAssembler = collegeAssembler;
+    }
 
     /**
      * 获取学院

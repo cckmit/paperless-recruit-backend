@@ -98,6 +98,19 @@ public interface OrganizationService {
             @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
+     * 获取组织
+     *
+     * @errorCode InvalidParameter: 用户编号格式错误
+     *              InvalidParameter.NotFound: 该用户编号的组织不存在
+     *
+     * @param userId 用户编号
+     * @return OrganizationDTO
+     */
+    Result<OrganizationDTO> getOrganizationByUserId(
+            @NotNull(message = "The userId can't be null.")
+            @Positive(message = "The userId must be greater than 0.") Long userId);
+
+    /**
      * 查询组织
      *
      * @errorCode InvalidParameter: 查询参数格式错误

@@ -1,10 +1,11 @@
 package com.xiaohuashifu.recruit.common.util;
 
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -29,10 +30,11 @@ public class SpELUtils {
      * 获取表达式的值
      *
      * @param expression 表达式
-     * @param joinPoint ProceedingJoinPoint
-     * @return value
+     * @param joinPoint joinPoint
+     * @param parserContext 解析器上下文
+     * @return 表达式的值
      */
-    public static String getExpressionValue(String expression, ProceedingJoinPoint joinPoint) {
+    public static String getExpressionValue(String expression, JoinPoint joinPoint, ParserContext parserContext) {
         // 获得方法参数的 Map
         String[] parameterNames = ((CodeSignature) joinPoint.getSignature()).getParameterNames();
         Object[] parameterValues = joinPoint.getArgs();
@@ -42,7 +44,7 @@ public class SpELUtils {
         }
 
         // 解析 EL 表达式
-        return getExpressionValue(expression, parameterMap);
+        return getExpressionValue(expression, parameterMap, parserContext);
     }
 
     /**
@@ -50,10 +52,17 @@ public class SpELUtils {
      *
      * @param elExpression EL 表达式
      * @param parameterMap 参数名-值 Map
+     * @param parserContext 解析器上下文
      * @return 表达式的值
      */
-    public static String getExpressionValue(String elExpression, Map<String, Object> parameterMap) {
-        Expression expression = expressionParser.parseExpression(elExpression, new TemplateParserContext());
+    public static String getExpressionValue(String elExpression, Map<String, Object> parameterMap,
+                                            ParserContext parserContext) {
+        Expression expression;
+        if (parserContext == null) {
+            expression = expressionParser.parseExpression(elExpression);
+        } else {
+            expression = expressionParser.parseExpression(elExpression, parserContext);
+        }
         EvaluationContext context = new StandardEvaluationContext();
         for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
             context.setVariable(entry.getKey(), entry.getValue());

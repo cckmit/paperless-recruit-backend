@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
-import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
+import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
@@ -30,15 +30,8 @@ public class OrganizationController {
 
     private final OrganizationManager organizationManager;
 
-    private final OrganizationContext organizationContext;
-
-    private final UserContext userContext;
-
-    public OrganizationController(OrganizationManager organizationManager, OrganizationContext organizationContext,
-                                  UserContext userContext) {
+    public OrganizationController(OrganizationManager organizationManager) {
         this.organizationManager = organizationManager;
-        this.organizationContext = organizationContext;
-        this.userContext = userContext;
     }
 
     /**
@@ -62,8 +55,8 @@ public class OrganizationController {
     @ApiOperation(value = "获取用户的组织", notes = "ROLE: organization. Required: userId = principal.id")
     @GetMapping("users/{userId}/organizations")
     @PreAuthorize("hasRole('organization')")
+    @Owner(id = "#userId", context = UserContext.class)
     public OrganizationVO getOrganizationsByUserId(@ApiParam("用户编号") @PathVariable Long userId) {
-        userContext.isOwner(userId);
         return organizationManager.getOrganizationsByUserId(userId);
     }
 
@@ -81,7 +74,6 @@ public class OrganizationController {
 
     @PutMapping
     public Object updateOrganization() {
-        organizationContext.isOwner(3L);
         return null;
     }
 

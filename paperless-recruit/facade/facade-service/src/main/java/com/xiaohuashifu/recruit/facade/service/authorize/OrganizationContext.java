@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @create 2021/1/9 20:37
  */
 @Component
-public class OrganizationContext {
+public class OrganizationContext implements Context {
 
     private final OrganizationManager organizationManager;
 
@@ -27,6 +27,7 @@ public class OrganizationContext {
      *
      * @param organizationId 组织编号
      */
+    @Override
     public void isOwner(Long organizationId) {
         Long userId = userContext.getUserId();
         if (!organizationManager.authenticatePrincipal(organizationId, userId)) {

@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.data.redis.core.TimeoutUtils;
+import org.springframework.expression.common.TemplateParserContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -157,7 +158,7 @@ public class FrequencyLimitAspect {
         } else {
             errorMessageExpression = ((FixedDelayRefreshFrequencyLimit) frequencyLimit).errorMessage();
         }
-        return SpELUtils.getExpressionValue(errorMessageExpression, joinPoint);
+        return SpELUtils.getExpressionValue(errorMessageExpression, joinPoint, new TemplateParserContext());
     }
 
     /**
@@ -176,7 +177,7 @@ public class FrequencyLimitAspect {
             keyExpression = MessageFormat.format(key, parameters);
         }
         // 获取键
-        return SpELUtils.getExpressionValue(keyExpression, joinPoint);
+        return SpELUtils.getExpressionValue(keyExpression, joinPoint, new TemplateParserContext());
     }
 
 }

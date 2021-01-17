@@ -14,7 +14,7 @@ import java.util.Objects;
  * @create 2021/1/9 12:16
  */
 @Component
-public class UserContext {
+public class UserContext implements Context {
 
     /**
      * 获取用户主体的编号
@@ -31,6 +31,7 @@ public class UserContext {
      *
      * @param userId 用户编号
      */
+    @Override
     public void isOwner(Long userId) {
         if (!Objects.equals(userId, getUserId())) {
             throw new ForbiddenException("Forbidden");

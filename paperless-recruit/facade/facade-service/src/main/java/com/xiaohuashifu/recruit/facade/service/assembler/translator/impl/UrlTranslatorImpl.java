@@ -1,7 +1,7 @@
-package com.xiaohuashifu.recruit.facade.service.translator.impl;
+package com.xiaohuashifu.recruit.facade.service.assembler.translator.impl;
 
-import com.xiaohuashifu.recruit.facade.service.translator.PathToUrl;
-import com.xiaohuashifu.recruit.facade.service.translator.UrlTranslator;
+import com.xiaohuashifu.recruit.facade.service.assembler.translator.PathToUrl;
+import com.xiaohuashifu.recruit.facade.service.assembler.translator.UrlTranslator;
 import org.springframework.stereotype.Component;
 
 /**

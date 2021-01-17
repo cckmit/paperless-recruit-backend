@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.facade.service.assembler;
 
-import com.xiaohuashifu.recruit.facade.service.translator.PathToUrl;
-import com.xiaohuashifu.recruit.facade.service.translator.UrlTranslator;
-import com.xiaohuashifu.recruit.facade.service.translator.impl.UrlTranslatorImpl;
+import com.xiaohuashifu.recruit.facade.service.assembler.translator.PathToUrl;
+import com.xiaohuashifu.recruit.facade.service.assembler.translator.UrlTranslator;
+import com.xiaohuashifu.recruit.facade.service.assembler.translator.impl.UrlTranslatorImpl;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import org.mapstruct.Mapper;

@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.exception;
 
+import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
+import com.xiaohuashifu.recruit.common.result.Result;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -14,6 +16,10 @@ public class ResponseEntityException extends RuntimeException {
 
     public <T> ResponseEntityException(ResponseEntity<T> responseEntity) {
         this.responseEntity = responseEntity;
+    }
+
+    public ResponseEntityException(Result<?> result) {
+        this.responseEntity = ErrorResponseUtils.instanceResponseEntity(result.getErrorCode(), result.getErrorMessage());
     }
 
     public ResponseEntity<?> getResponseEntity() {

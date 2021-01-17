@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.authorize;
 
+import com.xiaohuashifu.recruit.facade.service.exception.ForbiddenException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,13 +21,20 @@ public class UserContext {
      *
      * @return 用户主体编号
      */
-    public Long getId() {
+    public Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return Long.valueOf(String.valueOf(authentication.getPrincipal()));
     }
 
-    public boolean authenticatePrincipal(Object principal) {
-        return Objects.equals(principal, getId());
+    /**
+     * 验证是不是该用户的拥有者
+     *
+     * @param userId 用户编号
+     */
+    public void isOwner(Long userId) {
+        if (!Objects.equals(userId, getUserId())) {
+            throw new ForbiddenException("Forbidden");
+        }
     }
 
 }

@@ -1,8 +1,8 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
-import com.xiaohuashifu.recruit.facade.service.manager.OAuthTokenManager;
+import com.xiaohuashifu.recruit.facade.service.manager.TokenManager;
 import com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.processor.AuthenticationProcessor;
-import com.xiaohuashifu.recruit.facade.service.request.OAuthTokenPostRequest;
+import com.xiaohuashifu.recruit.facade.service.request.TokenPostRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.TokenVO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
@@ -13,13 +13,13 @@ import java.text.MessageFormat;
 import java.util.List;
 
 /**
- * 描述：OAuth token 管理器
+ * 描述：Token 管理器
  *
  * @author xhsf
  * @create 2021/1/15 20:20
  */
 @Component
-public class OAuthTokenManagerImpl implements OAuthTokenManager {
+public class TokenManagerImpl implements TokenManager {
 
     private final StringRedisTemplate redisTemplate;
 
@@ -30,21 +30,21 @@ public class OAuthTokenManagerImpl implements OAuthTokenManager {
 
     private final List<AuthenticationProcessor> authenticationProcessorList;
 
-    public OAuthTokenManagerImpl(StringRedisTemplate redisTemplate,
-                                 List<AuthenticationProcessor> authenticationProcessorList) {
+    public TokenManagerImpl(StringRedisTemplate redisTemplate,
+                            List<AuthenticationProcessor> authenticationProcessorList) {
         this.redisTemplate = redisTemplate;
         this.authenticationProcessorList = authenticationProcessorList;
     }
 
     /**
-     * OAuth 认证
+     * 认证
      *
      * @param httpHeaders HttpHeaders
-     * @param request OAuthTokenPostRequest
+     * @param request TokenPostRequest
      * @return TokenVO
      */
     @Override
-    public TokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request) {
+    public TokenVO authenticate(HttpHeaders httpHeaders, TokenPostRequest request) {
         // 进行认证
         for (AuthenticationProcessor authenticationProcessor : authenticationProcessorList) {
             if (authenticationProcessor.isSupport(request.getGrantType())) {

@@ -20,7 +20,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel
-public class MyVO implements Serializable {
+public class UserProfileVO implements Serializable {
 
     /**
      * 用户个人信息编号

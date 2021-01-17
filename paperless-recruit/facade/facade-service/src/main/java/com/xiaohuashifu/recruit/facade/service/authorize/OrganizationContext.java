@@ -23,13 +23,13 @@ public class OrganizationContext {
     }
 
     /**
-     * 检验是否是该组织的主体用户
+     * 检验是否是该组织的拥有者
      *
-     * @param id 组织编号
+     * @param organizationId 组织编号
      */
-    public void authenticatePrincipal(Long id) {
-        Long userId = userContext.getId();
-        if (Boolean.FALSE.equals(organizationManager.authenticatePrincipal(id, userId))) {
+    public void isOwner(Long organizationId) {
+        Long userId = userContext.getUserId();
+        if (!organizationManager.authenticatePrincipal(organizationId, userId)) {
             throw new ForbiddenException("Forbidden");
         }
     }

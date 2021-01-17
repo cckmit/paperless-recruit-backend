@@ -100,6 +100,8 @@ public interface OrganizationService {
     /**
      * 获取组织
      *
+     * @permission 必须是该组织的主体用户
+     *
      * @errorCode InvalidParameter: 用户编号格式错误
      *              InvalidParameter.NotFound: 该用户编号的组织不存在
      *

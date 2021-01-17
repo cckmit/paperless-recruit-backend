@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.manager.impl.oauth.processor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
-import com.xiaohuashifu.recruit.facade.service.request.OAuthTokenPostRequest;
+import com.xiaohuashifu.recruit.facade.service.request.TokenPostRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.TokenVO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpEntity;
@@ -54,7 +54,7 @@ public abstract class AbstractAuthenticationProcessor implements AuthenticationP
      * @return 认证结果
      */
     @Override
-    public TokenVO authenticate(HttpHeaders httpHeaders, OAuthTokenPostRequest request) {
+    public TokenVO authenticate(HttpHeaders httpHeaders, TokenPostRequest request) {
         Map<String, String> body = new HashMap<>();
         body.put("grant_type", request.getGrantType() != null ? request.getGrantType().getGrantType() : null);
         body.put("principal", request.getPrincipal());

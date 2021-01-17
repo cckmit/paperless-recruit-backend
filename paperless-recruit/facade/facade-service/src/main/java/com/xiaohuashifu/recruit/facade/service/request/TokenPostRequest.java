@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 描述：OAuthTokenPostRequest
+ * 描述：TokenPostRequest
  *
  * @author xhsf
  * @create 2021/1/15 18:42
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel
-public class OAuthTokenPostRequest {
+public class TokenPostRequest {
 
     @ApiModelProperty(value = "认证方式", required = true, example = "PASSWORD")
     private GrantTypeEnum grantType;

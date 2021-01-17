@@ -2,12 +2,14 @@ package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
+import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,9 +32,13 @@ public class OrganizationController {
 
     private final OrganizationContext organizationContext;
 
-    public OrganizationController(OrganizationManager organizationManager, OrganizationContext organizationContext) {
+    private final UserContext userContext;
+
+    public OrganizationController(OrganizationManager organizationManager, OrganizationContext organizationContext,
+                                  UserContext userContext) {
         this.organizationManager = organizationManager;
         this.organizationContext = organizationContext;
+        this.userContext = userContext;
     }
 
     /**
@@ -53,9 +59,11 @@ public class OrganizationController {
      * @param userId 用户编号
      * @return 组织
      */
-    @ApiOperation(value = "获取用户的组织")
+    @ApiOperation(value = "获取用户的组织", notes = "ROLE: organization. Required: userId = principal.id")
     @GetMapping("users/{userId}/organizations")
+    @PreAuthorize("hasRole('organization')")
     public OrganizationVO getOrganizationsByUserId(@ApiParam("用户编号") @PathVariable Long userId) {
+        userContext.isOwner(userId);
         return organizationManager.getOrganizationsByUserId(userId);
     }
 
@@ -73,7 +81,7 @@ public class OrganizationController {
 
     @PutMapping
     public Object updateOrganization() {
-        organizationContext.authenticatePrincipal(3L);
+        organizationContext.isOwner(3L);
         return null;
     }
 

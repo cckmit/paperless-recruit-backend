@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xiaohuashifu.recruit.facade.service.authorize.CustomAccessTokenConverter;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,12 +23,8 @@ public class TokenStoreConfig {
 
     private final ResourceServerProperties resourceServerProperties;
 
-    private final CustomAccessTokenConverter customAccessTokenConverter;
-
-    public TokenStoreConfig(ResourceServerProperties resourceServerProperties,
-                            CustomAccessTokenConverter customAccessTokenConverter) {
+    public TokenStoreConfig(ResourceServerProperties resourceServerProperties) {
         this.resourceServerProperties = resourceServerProperties;
-        this.customAccessTokenConverter = customAccessTokenConverter;
     }
 
     /**
@@ -50,7 +45,6 @@ public class TokenStoreConfig {
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-        jwtAccessTokenConverter.setAccessTokenConverter(customAccessTokenConverter);
         jwtAccessTokenConverter.setVerifierKey(getVerifierKey());
         return jwtAccessTokenConverter;
     }

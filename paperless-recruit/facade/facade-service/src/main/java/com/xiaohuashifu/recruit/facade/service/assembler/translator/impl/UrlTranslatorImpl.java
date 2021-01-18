@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.assembler.translator.impl;
 
 import com.xiaohuashifu.recruit.facade.service.assembler.translator.PathToUrl;
 import com.xiaohuashifu.recruit.facade.service.assembler.translator.UrlTranslator;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,8 +14,13 @@ import org.springframework.stereotype.Component;
 @Component
 @UrlTranslator
 public class UrlTranslatorImpl {
+
     @PathToUrl
     public String pathToUrl(String path) {
-        return "https://oss.xiaohuashifu.top/" + path;
+        if (StringUtils.isBlank(path)) {
+            return "";
+        }
+        return "http://oss.xiaohuashifu.top/" + path;
     }
+
 }

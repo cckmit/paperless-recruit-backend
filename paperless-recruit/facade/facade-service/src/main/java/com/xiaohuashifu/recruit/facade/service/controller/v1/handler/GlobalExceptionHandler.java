@@ -25,4 +25,11 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(ErrorCodeEnum.INTERNAL_ERROR.getCode(), ErrorCodeEnum.INTERNAL_ERROR.getMessage());
     }
 
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleThrowable(Throwable e) {
+        log.error("Catch an unprocessed exception.", e);
+        return new ErrorResponse(ErrorCodeEnum.INTERNAL_ERROR.getCode(), ErrorCodeEnum.INTERNAL_ERROR.getMessage());
+    }
+
 }

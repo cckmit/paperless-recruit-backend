@@ -11,6 +11,7 @@ import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
+import com.xiaohuashifu.recruit.organization.service.assembler.OrganizationAssembler;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
@@ -48,6 +49,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationMapper organizationMapper;
 
+    private final OrganizationAssembler organizationAssembler;
+
     /**
      * 组织默认角色编号
      */
@@ -78,8 +81,9 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     private static final String ORGANIZATION_LOGO_URL_PREFIX = "organization/logo/";
 
-    public OrganizationServiceImpl(OrganizationMapper organizationMapper) {
+    public OrganizationServiceImpl(OrganizationMapper organizationMapper, OrganizationAssembler organizationAssembler) {
         this.organizationMapper = organizationMapper;
+        this.organizationAssembler = organizationAssembler;
     }
 
     /**
@@ -110,7 +114,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         roleService.saveUserRole(userDTO.getId(), ORGANIZATION_DEFAULT_ROLE_ID);
 
         // 创建组织
-        OrganizationDO organizationDO = new OrganizationDO.Builder().userId(userDTO.getId()).build();
+        OrganizationDO organizationDO = OrganizationDO.builder().userId(userDTO.getId()).build();
         organizationMapper.insertOrganization(organizationDO);
 
         // 获取组织
@@ -225,7 +229,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
 
         // 封装成 DTO
-        return Result.success(organizationDO2OrganizationDTO(organizationDO));
+        return Result.success(organizationAssembler.organizationDOToOrganizationDTO(organizationDO));
     }
 
     /**
@@ -249,7 +253,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
 
         // 封装成 DTO
-        return Result.success(organizationDO2OrganizationDTO(organizationDO));
+        return Result.success(organizationAssembler.organizationDOToOrganizationDTO(organizationDO));
     }
 
     /**
@@ -265,7 +269,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<OrganizationDO> organizationDOList = organizationMapper.listOrganizations(query);
         List<OrganizationDTO> organizationDTOList = organizationDOList
                 .stream()
-                .map(this::organizationDO2OrganizationDTO)
+                .map(organizationAssembler::organizationDOToOrganizationDTO)
                 .collect(Collectors.toList());
         PageInfo<OrganizationDTO> pageInfo = new PageInfo<>(organizationDTOList);
         return Result.success(pageInfo);
@@ -628,25 +632,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public int removeLabels(String label) {
         return organizationMapper.removeLabels(label);
-    }
-
-    /**
-     * OrganizationDO to OrganizationDTO
-     *
-     * @param organizationDO OrganizationDO
-     * @return OrganizationDTO
-     */
-    private OrganizationDTO organizationDO2OrganizationDTO(OrganizationDO organizationDO) {
-        return new OrganizationDTO.Builder()
-                .id(organizationDO.getId())
-                .userId(organizationDO.getUserId())
-                .organizationName(organizationDO.getOrganizationName())
-                .abbreviationOrganizationName(organizationDO.getAbbreviationOrganizationName())
-                .introduction(organizationDO.getIntroduction())
-                .logoUrl(organizationDO.getLogoUrl())
-                .memberNumber(organizationDO.getMemberNumber())
-                .labels(organizationDO.getLabels())
-                .available(organizationDO.getAvailable()).build();
     }
 
 }

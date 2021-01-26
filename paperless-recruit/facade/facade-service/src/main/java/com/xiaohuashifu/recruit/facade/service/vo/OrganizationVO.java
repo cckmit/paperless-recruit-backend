@@ -21,6 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrganizationVO {
+
     /**
      * 组织编号
      */
@@ -56,7 +57,13 @@ public class OrganizationVO {
      * 组织成员数
      */
     @ApiModelProperty(value = "组织成员数", example = "321")
-    private String memberNumber;
+    private Integer memberNumber;
+
+    /**
+     * 组织部门数
+     */
+    @ApiModelProperty(value = "组织部门数", example = "13")
+    private Integer numberOfDepartments;
 
     /**
      * 组织标签

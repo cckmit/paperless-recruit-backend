@@ -25,4 +25,5 @@ public class ResponseEntityException extends RuntimeException {
     public ResponseEntity<?> getResponseEntity() {
         return responseEntity;
     }
+
 }

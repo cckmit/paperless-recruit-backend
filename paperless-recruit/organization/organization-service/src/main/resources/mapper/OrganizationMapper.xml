@@ -204,4 +204,16 @@
         where id = #{id}
     </update>
 
+    <update id="increaseNumberOfDepartments">
+        update organization
+        set number_of_departments = number_of_departments + 1
+        where id = #{id}
+    </update>
+
+    <update id="decreaseNumberOfDepartments">
+        update organization
+        set number_of_departments = number_of_departments - 1
+        where id = #{id}
+    </update>
+
 </mapper>

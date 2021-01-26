@@ -317,6 +317,36 @@ public interface OrganizationService {
                                                  @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
+     * 部门数加1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 增加部门数后的组织对象
+     */
+    Result<OrganizationDTO> increaseNumberOfDepartments(@NotNull(message = "The id can't be null.")
+                                                        @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
+     * 部门数减1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 减少部门数后的组织对象
+     */
+    Result<OrganizationDTO> decreaseNumberOfDepartments(@NotNull(message = "The id can't be null.")
+                                                        @Positive(message = "The id must be greater than 0.") Long id);
+
+    /**
      * 检查组织是否存在，
      *
      * @private 内部方法

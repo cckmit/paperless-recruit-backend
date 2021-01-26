@@ -55,4 +55,8 @@ public interface OrganizationMapper {
 
     int decreaseMemberNumber(Long id);
 
+    int increaseNumberOfDepartments(Long id);
+
+    int decreaseNumberOfDepartments(Long id);
+
 }

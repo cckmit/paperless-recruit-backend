@@ -12,6 +12,7 @@ import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
+import com.xiaohuashifu.recruit.organization.service.assembler.DepartmentAssembler;
 import com.xiaohuashifu.recruit.organization.service.dao.DepartmentMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.DepartmentDO;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +20,6 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,6 +42,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     private ObjectStorageService objectStorageService;
 
     private final DepartmentMapper departmentMapper;
+
+    private final DepartmentAssembler departmentAssembler;
 
     /**
      * 部门标签锁定键模式
@@ -70,8 +72,9 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     private static final String DEPARTMENT_LOGO_URL_PREFIX = "organization/department/logo/";
 
-    public DepartmentServiceImpl(DepartmentMapper departmentMapper) {
+    public DepartmentServiceImpl(DepartmentMapper departmentMapper, DepartmentAssembler departmentAssembler) {
         this.departmentMapper = departmentMapper;
+        this.departmentAssembler = departmentAssembler;
     }
 
     /**
@@ -113,12 +116,15 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         // 创建部门
-        DepartmentDO departmentDO = new DepartmentDO.Builder()
+        DepartmentDO departmentDO = DepartmentDO.builder()
                 .organizationId(organizationId)
                 .departmentName(departmentName)
                 .abbreviationDepartmentName(abbreviationDepartmentName)
                 .build();
         departmentMapper.insertDepartment(departmentDO);
+
+        // 增加组织的部门数量
+        organizationService.increaseNumberOfDepartments(organizationId);
 
         // 获取部门
         return getDepartment(departmentDO.getId());
@@ -230,7 +236,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND,
                     "The department does not exist.");
         }
-        return Result.success(departmentDO2DepartmentDTO(departmentDO));
+        return Result.success(departmentAssembler.departmentDOToDepartmentDTO(departmentDO));
     }
 
     /**
@@ -246,7 +252,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         List<DepartmentDO> departmentDOList = departmentMapper.listDepartments(query);
         List<DepartmentDTO> departmentDTOList = departmentDOList
                 .stream()
-                .map(this::departmentDO2DepartmentDTO)
+                .map(departmentAssembler::departmentDOToDepartmentDTO)
                 .collect(Collectors.toList());
         PageInfo<DepartmentDTO> pageInfo = new PageInfo<>(departmentDTOList);
         return Result.success(pageInfo);
@@ -431,13 +437,18 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         // 判断是否已经被停用
-        Boolean deactivated = departmentMapper.getDeactivated(id);
-        if (Boolean.TRUE.equals(deactivated)) {
+        DepartmentDO departmentDO = departmentMapper.getDepartment(id);
+        if (Boolean.TRUE.equals(departmentDO.getDeactivated())) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The department already deactivated.");
         }
 
         // 更新为停用
         departmentMapper.updateDeactivated(id, true);
+
+        // 减少组织的部门数量
+        organizationService.decreaseNumberOfDepartments(departmentDO.getOrganizationId());
+
+        // 停用后的部门对象
         return getDepartment(id);
     }
 
@@ -532,26 +543,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         // 通过检查
         return Result.success();
-    }
-
-    /**
-     * DepartmentDO to DepartmentDTO
-     *
-     * @param departmentDO DepartmentDO
-     * @return DepartmentDTO
-     */
-    private DepartmentDTO departmentDO2DepartmentDTO(DepartmentDO departmentDO) {
-        return new DepartmentDTO.Builder()
-                .id(departmentDO.getId())
-                .organizationId(departmentDO.getOrganizationId())
-                .departmentName(departmentDO.getDepartmentName())
-                .abbreviationDepartmentName(departmentDO.getAbbreviationDepartmentName())
-                .introduction(departmentDO.getIntroduction())
-                .logoUrl(departmentDO.getLogoUrl())
-                .memberNumber(departmentDO.getMemberNumber())
-                .deactivated(departmentDO.getDeactivated())
-                .labels(departmentDO.getLabels())
-                .build();
     }
 
     /**

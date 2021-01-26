@@ -98,6 +98,16 @@ public class OrganizationServiceImplTest {
     }
 
     @Test
+    public void increaseNumberOfDepartments() {
+        System.out.println(organizationService.increaseNumberOfDepartments(1L));
+    }
+
+    @Test
+    public void decreaseNumberOfDepartments() {
+        System.out.println(organizationService.decreaseNumberOfDepartments(1L));
+    }
+
+    @Test
     public void disableOrganization() {
         System.out.println(organizationService.disableOrganization(1L));
     }
@@ -116,4 +126,5 @@ public class OrganizationServiceImplTest {
     public void checkOrganizationStatus() {
         System.out.println(organizationService.checkOrganizationStatus(null));
     }
+
 }

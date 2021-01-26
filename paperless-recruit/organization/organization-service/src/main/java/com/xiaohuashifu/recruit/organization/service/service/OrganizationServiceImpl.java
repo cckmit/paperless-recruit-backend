@@ -552,9 +552,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Result<OrganizationDTO> increaseMemberNumber(Long id) {
         // 检查组织状态
-        Result<Object> checkResult = checkOrganizationStatus(id);
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
         if (checkResult.isFailure()) {
-            return Result.fail(checkResult);
+            return checkResult;
         }
 
         // 增加成员数
@@ -579,15 +579,69 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Result<OrganizationDTO> decreaseMemberNumber(Long id) {
         // 检查组织状态
-        Result<Object> checkResult = checkOrganizationStatus(id);
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
         if (checkResult.isFailure()) {
-            return Result.fail(checkResult);
+            return checkResult;
         }
 
         // 减少成员数
         organizationMapper.decreaseMemberNumber(id);
 
         // 减少成员数后的组织对象
+        return getOrganization(id);
+    }
+
+    /**
+     * 部门数加1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 增加部门数后的组织对象
+     */
+    @Override
+    public Result<OrganizationDTO> increaseNumberOfDepartments(Long id) {
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return checkResult;
+        }
+
+        // 增加部门数量
+        organizationMapper.increaseNumberOfDepartments(id);
+
+        // 增加部门数后的组织对象
+        return getOrganization(id);
+    }
+
+    /**
+     * 部门数减1
+     *
+     * @private 内部方法
+     *
+     * @errorCode InvalidParameter: 组织编号格式错误
+     *              InvalidParameter.NotExist: 组织不存在
+     *              Forbidden.Unavailable: 组织不可用
+     *
+     * @param id 组织编号
+     * @return 减少部门数后的组织对象
+     */
+    @Override
+    public Result<OrganizationDTO> decreaseNumberOfDepartments(Long id) {
+        // 检查组织状态
+        Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
+        if (checkResult.isFailure()) {
+            return checkResult;
+        }
+
+        // 增加部门数量
+        organizationMapper.decreaseNumberOfDepartments(id);
+
+        // 减少部门数后的组织对象
         return getOrganization(id);
     }
 

@@ -1499,7 +1499,7 @@ app_name</ColNames>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
     </column>
-    <column id="416" parent="291" name="member_number">
+    <column id="416" parent="291" name="number_of_members">
       <Position>7</Position>
       <Comment>部门成员数</Comment>
       <DataType>int unsigned|0s</DataType>
@@ -1558,8 +1558,8 @@ abbreviation_department_name</ColNames>
       <ColNames>abbreviation_department_name</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="426" parent="291" name="idx_member_number">
-      <ColNames>member_number</ColNames>
+    <index id="426" parent="291" name="idx_number_of_members">
+      <ColNames>number_of_members</ColNames>
       <Type>btree</Type>
     </index>
     <index id="427" parent="291" name="idx_is_deactivated">
@@ -2217,7 +2217,7 @@ application_form_id</ColNames>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
     </column>
-    <column id="556" parent="304" name="member_number">
+    <column id="556" parent="304" name="number_of_members">
       <Position>7</Position>
       <Comment>组织的成员数</Comment>
       <DataType>int unsigned|0s</DataType>
@@ -2274,8 +2274,8 @@ application_form_id</ColNames>
       <ColNames>abbreviation_organization_name</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="566" parent="304" name="idx_member_number">
-      <ColNames>member_number</ColNames>
+    <index id="566" parent="304" name="idx_number_of_members">
+      <ColNames>number_of_members</ColNames>
       <Type>btree</Type>
     </index>
     <index id="567" parent="304" name="idx_number_of_departments">

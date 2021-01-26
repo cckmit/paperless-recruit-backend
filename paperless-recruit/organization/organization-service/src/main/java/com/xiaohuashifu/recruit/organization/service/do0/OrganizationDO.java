@@ -25,7 +25,7 @@ public class OrganizationDO {
     private String abbreviationOrganizationName;
     private String introduction;
     private String logoUrl;
-    private Integer memberNumber;
+    private Integer numberOfMembers;
     private Integer numberOfDepartments;
     private Set<String> labels;
     private Boolean available;

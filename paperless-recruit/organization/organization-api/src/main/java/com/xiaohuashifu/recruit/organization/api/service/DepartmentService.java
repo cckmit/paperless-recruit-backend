@@ -257,8 +257,8 @@ public interface DepartmentService {
      * @param id 部门编号
      * @return 增加成员数后的部门对象
      */
-    Result<DepartmentDTO> increaseMemberNumber(@NotNull(message = "The id can't be null.")
-                                               @Positive(message = "The id must be greater than 0.") Long id);
+    Result<DepartmentDTO> increaseNumberOfMembers(@NotNull(message = "The id can't be null.")
+                                                  @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 减少成员数，-1
@@ -270,8 +270,8 @@ public interface DepartmentService {
      * @param id 部门编号
      * @return 减少成员数后的部门对象
      */
-    Result<DepartmentDTO> decreaseMemberNumber(@NotNull(message = "The id can't be null.")
-                                               @Positive(message = "The id must be greater than 0.") Long id);
+    Result<DepartmentDTO> decreaseNumberOfMembers(@NotNull(message = "The id can't be null.")
+                                                  @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 检查部门的状态，检查部门是否存在和部门是否被停用

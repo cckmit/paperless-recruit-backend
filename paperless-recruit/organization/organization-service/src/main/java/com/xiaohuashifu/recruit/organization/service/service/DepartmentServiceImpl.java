@@ -490,9 +490,9 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @return 增加成员数后的部门对象
      */
     @Override
-    public Result<DepartmentDTO> increaseMemberNumber(Long id) {
+    public Result<DepartmentDTO> increaseNumberOfMembers(Long id) {
         // 增加成员数
-        departmentMapper.increaseMemberNumber(id);
+        departmentMapper.increaseNumberOfMembers(id);
 
         // 添加成员数后的部门对象
         return getDepartment(id);
@@ -509,9 +509,9 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @return 减少成员数后的部门对象
      */
     @Override
-    public Result<DepartmentDTO> decreaseMemberNumber(Long id) {
+    public Result<DepartmentDTO> decreaseNumberOfMembers(Long id) {
         // 减少成员数
-        departmentMapper.decreaseMemberNumber(id);
+        departmentMapper.decreaseNumberOfMembers(id);
 
         // 减少成员数后的部门对象
         return getDepartment(id);

@@ -53,7 +53,7 @@ public class OrganizationDTO implements Serializable {
     /**
      * 组织成员数
      */
-    private Integer memberNumber;
+    private Integer numberOfMembers;
 
     /**
      * 组织部门数

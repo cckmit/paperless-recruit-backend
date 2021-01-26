@@ -171,7 +171,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
                 OrganizationMemberInvitationStatusEnum.ACCEPTED);
 
         // 增加组织的成员数量
-        organizationService.increaseMemberNumber(organizationId);
+        organizationService.increaseNumberOfMembers(organizationId);
         return getOrganizationMember(organizationMemberDO.getId());
     }
 
@@ -638,10 +638,10 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     private void updateDepartmentMemberNumber(Long oldDepartmentId, Long newDepartmentId) {
         // 当原来部门编号不为0（没有职位时的编号）时，需要减少原来部门的人数
         if (!Objects.equals(oldDepartmentId, DepartmentConstants.DEPARTMENT_ID_WHEN_NO_DEPARTMENT)) {
-            departmentService.decreaseMemberNumber(oldDepartmentId);
+            departmentService.decreaseNumberOfMembers(oldDepartmentId);
         }
         // 增加当前部门的人数
-        departmentService.increaseMemberNumber(newDepartmentId);
+        departmentService.increaseNumberOfMembers(newDepartmentId);
     }
 
     /**
@@ -657,13 +657,13 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
                                                              Long organizationId, Long departmentId) {
         // 如果原状态为在职，组织和部门的成员数量-1
         if (oldMemberStatus == OrganizationMemberStatusEnum.ON_JOB) {
-            organizationService.decreaseMemberNumber(organizationId);
-            departmentService.decreaseMemberNumber(departmentId);
+            organizationService.decreaseNumberOfMembers(organizationId);
+            departmentService.decreaseNumberOfMembers(departmentId);
         }
         // 如果新状态为在职，组织和部门的成员数量+1
         if (newMemberStatus == OrganizationMemberStatusEnum.ON_JOB) {
-            organizationService.increaseMemberNumber(organizationId);
-            departmentService.increaseMemberNumber(departmentId);
+            organizationService.increaseNumberOfMembers(organizationId);
+            departmentService.increaseNumberOfMembers(departmentId);
         }
     }
 

@@ -9,7 +9,7 @@
         <result property="abbreviationDepartmentName" column="abbreviation_department_name"/>
         <result property="introduction" column="introduction"/>
         <result property="logoUrl" column="logo_url"/>
-        <result property="memberNumber" column="member_number"/>
+        <result property="numberOfMembers" column="number_of_members"/>
         <result property="labels" column="labels"
                 typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.StringSetTypeHandler"/>
         <result property="deactivated" column="is_deactivated"/>
@@ -18,7 +18,7 @@
     </resultMap>
 
     <sql id="department">
-        id, organization_id, department_name, abbreviation_department_name, introduction, logo_url, member_number,
+        id, organization_id, department_name, abbreviation_department_name, introduction, logo_url, number_of_members,
         labels, is_deactivated, create_time, update_time
     </sql>
 
@@ -193,15 +193,15 @@
         where #{label} member of(labels->'$')
     </delete>
 
-    <update id="increaseMemberNumber">
+    <update id="increaseNumberOfMembers">
         update department
-        set member_number = member_number + 1
+        set number_of_members = number_of_members + 1
         where id = #{id}
     </update>
 
-    <update id="decreaseMemberNumber">
+    <update id="decreaseNumberOfMembers">
         update department
-        set member_number = member_number - 1
+        set number_of_members = number_of_members - 1
         where id = #{id}
     </update>
 

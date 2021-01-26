@@ -96,12 +96,12 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void increaseMemberNumber() {
-        System.out.println(departmentService.increaseMemberNumber(1L));
+        System.out.println(departmentService.increaseNumberOfMembers(1L));
     }
 
     @Test
     public void decreaseMemberNumber() {
-        System.out.println(departmentService.decreaseMemberNumber(1L));
+        System.out.println(departmentService.decreaseNumberOfMembers(1L));
     }
 
     @Test

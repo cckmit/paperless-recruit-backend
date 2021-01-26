@@ -298,8 +298,8 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return 增加成员数后的组织对象
      */
-    Result<OrganizationDTO> increaseMemberNumber(@NotNull(message = "The id can't be null.")
-                                                 @Positive(message = "The id must be greater than 0.") Long id);
+    Result<OrganizationDTO> increaseNumberOfMembers(@NotNull(message = "The id can't be null.")
+                                                    @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 减少成员数，-1
@@ -313,8 +313,8 @@ public interface OrganizationService {
      * @param id 组织编号
      * @return 减少成员数后的组织对象
      */
-    Result<OrganizationDTO> decreaseMemberNumber(@NotNull(message = "The id can't be null.")
-                                                 @Positive(message = "The id must be greater than 0.") Long id);
+    Result<OrganizationDTO> decreaseNumberOfMembers(@NotNull(message = "The id can't be null.")
+                                                    @Positive(message = "The id must be greater than 0.") Long id);
 
     /**
      * 部门数加1

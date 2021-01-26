@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
-import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -10,8 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -89,12 +86,12 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void increaseMemberNumber() {
-        System.out.println(organizationService.increaseMemberNumber(1L));
+        System.out.println(organizationService.increaseNumberOfMembers(1L));
     }
 
     @Test
     public void decreaseMemberNumber() {
-        System.out.println(organizationService.decreaseMemberNumber(1L));
+        System.out.println(organizationService.decreaseNumberOfMembers(1L));
     }
 
     @Test

@@ -57,7 +57,7 @@ public class OrganizationVO {
      * 组织成员数
      */
     @ApiModelProperty(value = "组织成员数", example = "321")
-    private Integer memberNumber;
+    private Integer numberOfMembers;
 
     /**
      * 组织部门数

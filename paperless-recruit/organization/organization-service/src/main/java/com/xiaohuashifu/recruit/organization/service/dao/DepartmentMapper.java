@@ -54,8 +54,8 @@ public interface DepartmentMapper {
 
     int removeLabels(String label);
 
-    int increaseMemberNumber(Long id);
+    int increaseNumberOfMembers(Long id);
 
-    int decreaseMemberNumber(Long id);
+    int decreaseNumberOfMembers(Long id);
 
 }

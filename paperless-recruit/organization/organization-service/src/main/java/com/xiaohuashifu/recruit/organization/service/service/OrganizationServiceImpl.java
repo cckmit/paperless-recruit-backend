@@ -550,7 +550,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @return 增加成员数后的组织对象
      */
     @Override
-    public Result<OrganizationDTO> increaseMemberNumber(Long id) {
+    public Result<OrganizationDTO> increaseNumberOfMembers(Long id) {
         // 检查组织状态
         Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
         if (checkResult.isFailure()) {
@@ -577,7 +577,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @return 减少成员数后的组织对象
      */
     @Override
-    public Result<OrganizationDTO> decreaseMemberNumber(Long id) {
+    public Result<OrganizationDTO> decreaseNumberOfMembers(Long id) {
         // 检查组织状态
         Result<OrganizationDTO> checkResult = checkOrganizationStatus(id);
         if (checkResult.isFailure()) {

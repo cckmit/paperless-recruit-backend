@@ -63,7 +63,7 @@ public class DepartmentVO {
      * 部门成员数
      */
     @ApiModelProperty(value = "部门成员数", example = "3")
-    private String memberNumber;
+    private String numberOfMembers;
 
     /**
      * 部门是否被废弃

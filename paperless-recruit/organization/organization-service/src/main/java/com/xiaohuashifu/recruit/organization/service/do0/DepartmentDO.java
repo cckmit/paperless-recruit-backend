@@ -25,7 +25,7 @@ public class DepartmentDO {
     private String abbreviationDepartmentName;
     private String introduction;
     private String logoUrl;
-    private Integer memberNumber;
+    private Integer numberOfMembers;
     private Set<String> labels;
     private Boolean deactivated;
     private LocalDateTime createTime;

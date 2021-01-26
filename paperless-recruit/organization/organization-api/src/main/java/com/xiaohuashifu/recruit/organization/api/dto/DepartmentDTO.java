@@ -53,7 +53,7 @@ public class DepartmentDTO implements Serializable {
     /**
      * 部门成员数
      */
-    private Integer memberNumber;
+    private Integer numberOfMembers;
 
     /**
      * 部门是否被废弃

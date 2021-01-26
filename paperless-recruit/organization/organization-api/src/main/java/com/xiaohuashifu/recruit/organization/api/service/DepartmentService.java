@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import java.util.Set;
 
 /**
  * 描述：部门服务
@@ -285,4 +284,5 @@ public interface DepartmentService {
      * @return 检查结果
      */
     <T> Result<T> checkDepartmentStatus(Long id);
+
 }

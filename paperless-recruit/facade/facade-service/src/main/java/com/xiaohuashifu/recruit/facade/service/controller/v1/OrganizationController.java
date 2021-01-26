@@ -52,7 +52,7 @@ public class OrganizationController {
      * @param userId 用户编号
      * @return 组织
      */
-    @ApiOperation(value = "获取用户的组织", notes = "ROLE: organization. Required: userId = principal.id")
+    @ApiOperation(value = "获取用户的组织", notes = "ROLE: organization. Required: userId = token.userId")
     @GetMapping("users/{userId}/organizations")
     @PreAuthorize("hasRole('organization')")
     @Owner(id = "#userId", context = UserContext.class)

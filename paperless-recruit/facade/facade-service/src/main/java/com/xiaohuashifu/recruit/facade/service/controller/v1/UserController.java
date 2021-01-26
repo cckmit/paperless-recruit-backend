@@ -1,12 +1,20 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeUtils;
 import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.UserAssembler;
+import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
+import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
+import com.xiaohuashifu.recruit.facade.service.manager.UserManager;
+import com.xiaohuashifu.recruit.facade.service.vo.UserVO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +27,17 @@ import java.util.Map;
  * @author xhsf
  * @create 2020/11/28 14:41
  */
+@ApiSupport(author = "XHSF")
+@Api(tags = "用户")
 @RestController
-@RequestMapping("/users")
 public class UserController {
 
     @Reference
     private UserService userService;
 
     private final UserAssembler userAssembler;
+
+    private final UserManager userManager;
 
     /**
      * 短信验证码方式注册
@@ -39,8 +50,9 @@ public class UserController {
      */
     public static final String SIGN_UP_TYPE_PASSWORD = "password";
 
-    public UserController(UserAssembler userAssembler) {
+    public UserController(UserAssembler userAssembler, UserManager userManager) {
         this.userAssembler = userAssembler;
+        this.userManager = userManager;
     }
 
     /**
@@ -57,7 +69,7 @@ public class UserController {
      *
      * @return 用户对象
      */
-    @PostMapping
+    @PostMapping("/users")
     @PreAuthorize("(#params.get('type').equals('sms')) " +
             "or #params.get('type').equals('password') and hasRole('admin')")
     public Object post(@RequestBody Map<String, String> params) {
@@ -88,7 +100,7 @@ public class UserController {
                 return ErrorResponseUtils.instanceResponseEntity(signUpBySmsAuthCodeResult.getErrorCode(), message);
             }
             // 注册成功
-            return userAssembler.userDTO2UserVO(signUpBySmsAuthCodeResult.getData());
+            return userAssembler.userDTOToUserVO(signUpBySmsAuthCodeResult.getData());
         }
 
         // 密码方式注册
@@ -106,7 +118,7 @@ public class UserController {
                 return ErrorResponseUtils.instanceResponseEntity(signUpUserResult.getErrorCode(), message);
             }
             // 注册成功
-            return userAssembler.userDTO2UserVO(signUpUserResult.getData());
+            return userAssembler.userDTOToUserVO(signUpUserResult.getData());
         }
 
         // 不支持的注册类型
@@ -114,10 +126,18 @@ public class UserController {
                 ErrorCodeEnum.INVALID_PARAMETER_UNSUPPORTED, "注册类型错误");
     }
 
-
-    @GetMapping
-    public Object getUser() {
-        return "user";
+    /**
+     * 获取用户
+     *
+     * @param userId 用户编号
+     * @return 用户
+     */
+    @ApiOperation(value = "获取用户", notes = "ROLE: user. \nRequired: userId = token.userId")
+    @GetMapping("/users/{userId}")
+    @PreAuthorize("hasRole('user')")
+    @Owner(id = "#userId", context = UserContext.class)
+    public UserVO getUser(@ApiParam("用户编号") @PathVariable Long userId) {
+        return userManager.getUser(userId);
     }
 
 }

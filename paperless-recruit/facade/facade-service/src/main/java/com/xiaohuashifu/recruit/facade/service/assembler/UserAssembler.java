@@ -13,6 +13,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface UserAssembler {
 
-    UserVO userDTO2UserVO(UserDTO userDTO);
+    UserVO userDTOToUserVO(UserDTO userDTO);
 
 }

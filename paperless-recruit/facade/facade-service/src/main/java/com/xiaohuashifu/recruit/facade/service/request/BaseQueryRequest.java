@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -42,7 +43,7 @@ public class BaseQueryRequest {
      * 页码
      */
     @Min(value = MIN_PAGE_NUM)
-    @ApiModelProperty(value = "页码", required = true, example = "1", allowableValues = "pageNum >= " + MIN_PAGE_NUM)
+    @ApiModelProperty(value = "页码", required = true, example = "1")
     private Integer pageNum;
 
     /**
@@ -50,9 +51,8 @@ public class BaseQueryRequest {
      */
     @NotNull
     @Min(value = MIN_PAGE_SIZE)
-    @Min(value = MAX_PAGE_SIZE)
-    @ApiModelProperty(value = "页条数", required = true, example = "10",
-            allowableValues = MIN_PAGE_SIZE + "-" + MAX_PAGE_SIZE)
+    @Max(value = MAX_PAGE_SIZE)
+    @ApiModelProperty(value = "页条数", required = true, example = "10")
     private Integer pageSize;
 
 }

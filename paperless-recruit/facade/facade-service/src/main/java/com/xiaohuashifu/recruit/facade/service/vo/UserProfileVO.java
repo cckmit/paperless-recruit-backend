@@ -57,4 +57,5 @@ public class UserProfileVO implements Serializable {
      */
     @ApiModelProperty(value = "自我介绍", example = "我是法外狂徒张三")
     private String introduction;
+
 }

@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
-import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
@@ -10,10 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,8 +26,11 @@ public class OrganizationController {
 
     private final OrganizationManager organizationManager;
 
-    public OrganizationController(OrganizationManager organizationManager) {
+    private final UserContext userContext;
+
+    public OrganizationController(OrganizationManager organizationManager, UserContext userContext) {
         this.organizationManager = organizationManager;
+        this.userContext = userContext;
     }
 
     /**
@@ -42,22 +41,20 @@ public class OrganizationController {
      */
     @ApiOperation(value = "获取组织")
     @GetMapping("organizations/{organizationId}")
-    public OrganizationVO get(@ApiParam("组织编号") @PathVariable Long organizationId) {
+    public OrganizationVO getOrganization(@ApiParam("组织编号") @PathVariable Long organizationId) {
         return organizationManager.getOrganization(organizationId);
     }
 
     /**
-     * 获取用户的组织
+     * 获取认证用户的组织
      *
-     * @param userId 用户编号
      * @return 组织
      */
-    @ApiOperation(value = "获取用户的组织", notes = "ROLE: organization. Required: userId = token.userId")
-    @GetMapping("users/{userId}/organizations")
+    @ApiOperation(value = "获取认证用户的组织")
+    @GetMapping("user/organization")
     @PreAuthorize("hasRole('organization')")
-    @Owner(id = "#userId", context = UserContext.class)
-    public OrganizationVO getOrganizationsByUserId(@ApiParam("用户编号") @PathVariable Long userId) {
-        return organizationManager.getOrganizationsByUserId(userId);
+    public OrganizationVO getAuthenticatedUserOrganization() {
+        return organizationManager.getOrganizationsByUserId(userContext.getUserId());
     }
 
     /**
@@ -68,13 +65,22 @@ public class OrganizationController {
      */
     @ApiOperation(value = "列出组织")
     @GetMapping("organizations")
-    public List<OrganizationVO> get(OrganizationQuery query) {
+    public List<OrganizationVO> listOrganizations(OrganizationQuery query) {
         return organizationManager.listOrganizations(query);
     }
 
-    @PutMapping
-    public Object updateOrganization() {
-        return null;
-    }
+//    /**
+//     * 更新组织名
+//     *
+//     * @return 更新后的组织
+//     */
+//    @ApiOperation(value = "更新组织")
+//    @PreAuthorize("hasRole('organization')")
+//    @PatchMapping("organizations/{organizationId}/")
+//    @Owner(id = "#userId", context = UserContext.class)
+//    public OrganizationVO updateOrganizationName(@ApiParam("组织编号") @PathVariable Long organizationId,
+//                                                 ) {
+//        return null;
+//    }
 
 }

@@ -6,7 +6,6 @@ import com.xiaohuashifu.recruit.common.result.ErrorCodeUtils;
 import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.UserAssembler;
-import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.UserManager;
 import com.xiaohuashifu.recruit.facade.service.vo.UserVO;
@@ -14,7 +13,6 @@ import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +37,8 @@ public class UserController {
 
     private final UserManager userManager;
 
+    private final UserContext userContext;
+
     /**
      * 短信验证码方式注册
      * 这个方式会随机产生用户名
@@ -50,9 +50,10 @@ public class UserController {
      */
     public static final String SIGN_UP_TYPE_PASSWORD = "password";
 
-    public UserController(UserAssembler userAssembler, UserManager userManager) {
+    public UserController(UserAssembler userAssembler, UserManager userManager, UserContext userContext) {
         this.userAssembler = userAssembler;
         this.userManager = userManager;
+        this.userContext = userContext;
     }
 
     /**
@@ -127,17 +128,14 @@ public class UserController {
     }
 
     /**
-     * 获取用户
+     * 获取已经认证的用户
      *
-     * @param userId 用户编号
      * @return 用户
      */
-    @ApiOperation(value = "获取用户", notes = "ROLE: user. \nRequired: userId = token.userId")
-    @GetMapping("/users/{userId}")
-    @PreAuthorize("hasRole('user')")
-    @Owner(id = "#userId", context = UserContext.class)
-    public UserVO getUser(@ApiParam("用户编号") @PathVariable Long userId) {
-        return userManager.getUser(userId);
+    @ApiOperation(value = "获取已经认证的用户")
+    @GetMapping("/user")
+    public UserVO getAuthenticatedUser() {
+        return userManager.getUser(userContext.getUserId());
     }
 
 }

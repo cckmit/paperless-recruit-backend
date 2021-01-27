@@ -17,9 +17,9 @@ import java.util.Objects;
 public class UserContext implements Context {
 
     /**
-     * 获取用户主体的编号
+     * 获取认证用户的编号
      *
-     * @return 用户主体编号
+     * @return 用户编号
      */
     public Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -27,7 +27,7 @@ public class UserContext implements Context {
     }
 
     /**
-     * 验证是不是该用户的拥有者
+     * 验证是不是认证用户
      *
      * @param userId 用户编号
      */

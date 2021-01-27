@@ -29,6 +29,12 @@ public class OrganizationVO {
     private Long id;
 
     /**
+     * 用户编号
+     */
+    @ApiModelProperty(value = "用户编号", example = "123")
+    private Long userId;
+
+    /**
      * 组织名
      */
     @ApiModelProperty(value = "组织名", example = "华南农业大学学生科技创新与创业联合会")

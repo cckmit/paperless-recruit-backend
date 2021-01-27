@@ -43,4 +43,5 @@ public class UserManagerImpl implements UserManager {
         UserDTO userDTO = getUserResult.getData();
         return userAssembler.userDTOToUserVO(userDTO);
     }
+
 }

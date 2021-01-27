@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.authorize;
 
 import com.xiaohuashifu.recruit.facade.service.exception.ForbiddenException;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
+import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,6 +34,16 @@ public class OrganizationContext implements Context {
         if (!organizationManager.authenticatePrincipal(organizationId, userId)) {
             throw new ForbiddenException("Forbidden");
         }
+    }
+
+    /**
+     * 获取认证用户的组织的编号
+     *
+     * @return 组织编号
+     */
+    public Long getOrganizationId() {
+        OrganizationVO organizationVO = organizationManager.getOrganizationByUserId(userContext.getUserId());
+        return organizationVO.getId();
     }
 
 }

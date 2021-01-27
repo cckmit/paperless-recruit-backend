@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.manager;
 
+import com.xiaohuashifu.recruit.facade.service.request.OrganizationPatchRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 
@@ -13,13 +14,13 @@ import java.util.List;
  */
 public interface OrganizationManager {
 
-    OrganizationVO getOrganization(Long id);
+    OrganizationVO getOrganization(Long organizationId);
 
-    OrganizationVO getOrganizationsByUserId(Long userId);
+    OrganizationVO getOrganizationByUserId(Long userId);
 
     List<OrganizationVO> listOrganizations(OrganizationQuery query);
 
     boolean authenticatePrincipal(Long id, Long userId);
 
-
+    OrganizationVO updateOrganization(Long id, OrganizationPatchRequest request);
 }

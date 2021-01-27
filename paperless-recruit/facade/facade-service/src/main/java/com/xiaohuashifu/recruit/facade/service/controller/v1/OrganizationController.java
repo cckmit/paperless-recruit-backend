@@ -1,8 +1,10 @@
 package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
+import com.xiaohuashifu.recruit.facade.service.request.OrganizationPatchRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import io.swagger.annotations.Api;
@@ -28,9 +30,13 @@ public class OrganizationController {
 
     private final UserContext userContext;
 
-    public OrganizationController(OrganizationManager organizationManager, UserContext userContext) {
+    private final OrganizationContext organizationContext;
+
+    public OrganizationController(OrganizationManager organizationManager, UserContext userContext,
+                                  OrganizationContext organizationContext) {
         this.organizationManager = organizationManager;
         this.userContext = userContext;
+        this.organizationContext = organizationContext;
     }
 
     /**
@@ -54,7 +60,7 @@ public class OrganizationController {
     @GetMapping("user/organization")
     @PreAuthorize("hasRole('organization')")
     public OrganizationVO getAuthenticatedUserOrganization() {
-        return organizationManager.getOrganizationsByUserId(userContext.getUserId());
+        return organizationManager.getOrganizationByUserId(userContext.getUserId());
     }
 
     /**
@@ -69,18 +75,16 @@ public class OrganizationController {
         return organizationManager.listOrganizations(query);
     }
 
-//    /**
-//     * 更新组织名
-//     *
-//     * @return 更新后的组织
-//     */
-//    @ApiOperation(value = "更新组织")
-//    @PreAuthorize("hasRole('organization')")
-//    @PatchMapping("organizations/{organizationId}/")
-//    @Owner(id = "#userId", context = UserContext.class)
-//    public OrganizationVO updateOrganizationName(@ApiParam("组织编号") @PathVariable Long organizationId,
-//                                                 ) {
-//        return null;
-//    }
+    /**
+     * 更新认证用户的组织
+     *
+     * @return 更新后的组织
+     */
+    @ApiOperation(value = "更新认证用户的组织")
+    @PreAuthorize("hasRole('organization')")
+    @PatchMapping("user/organization")
+    public OrganizationVO updateAuthenticatedUserOrganization(@RequestBody OrganizationPatchRequest request) {
+        return organizationManager.updateOrganization(organizationContext.getOrganizationId(), request);
+    }
 
 }

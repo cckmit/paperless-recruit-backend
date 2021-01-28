@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.oss.api.request;
 
+import com.xiaohuashifu.recruit.common.validator.annotation.ObjectName;
 import com.xiaohuashifu.recruit.oss.api.constant.ObjectStorageServiceConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class ListObjectInfosRequest implements Serializable {
      * 基础对象名，如 users/avatars/
      */
     @NotNull
+    @ObjectName
     private String baseObjectName;
 
     /**

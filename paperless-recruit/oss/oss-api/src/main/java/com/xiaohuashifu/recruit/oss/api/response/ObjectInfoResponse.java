@@ -31,11 +31,6 @@ public class ObjectInfoResponse implements Serializable {
     private String objectName;
 
     /**
-     * 基础对象名，如 users/avatars/
-     */
-    private String baseObjectName;
-
-    /**
      * 上传者用户编号
      */
     private Long userId;
@@ -51,19 +46,14 @@ public class ObjectInfoResponse implements Serializable {
     private Long size;
 
     /**
-     * 对象类型，如 .jpg .txt
-     */
-    private String type;
-
-    /**
      * 对象是否已经被关联
      */
-    private Boolean isLinked;
+    private Boolean linked;
 
     /**
      * 对象是否已经被删除
      */
-    private Boolean isDeleted;
+    private Boolean deleted;
 
     /**
      * 对象创建时间

@@ -13,4 +13,9 @@ public class ObjectStorageServiceConstants {
      */
     public static final int LIST_OBJECT_INFOS_REQUEST_MAX_PAGE_SIZE = 50;
 
+    /**
+     * 最大原文件名长度
+     */
+    public static final int MAX_ORIGINAL_NAME_LENGTH = 100;
+
 }

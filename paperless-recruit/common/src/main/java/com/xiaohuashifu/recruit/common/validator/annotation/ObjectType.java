@@ -1,27 +1,37 @@
 package com.xiaohuashifu.recruit.common.validator.annotation;
 
-import com.xiaohuashifu.recruit.common.validator.ObjectNameValidator;
+import com.xiaohuashifu.recruit.common.validator.ObjectTypeValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 描述: 对象名校验器校验，对象名类似于 users/avatars/321.jpg
- *          在使用 UTF-8 编码后长度必须在 1-768 字节之间，同时不能以 '/' 开头。
+ * 描述: 对象类型校验器
+ *          默认支持 [.jpg | .jpeg | .png | .gif]
  *
  * @author xhsf
- * @create 2020-12-07
+ * @create 2021-1-29
  */
 @Documented
-@Constraint(validatedBy = {ObjectNameValidator.class})
+@Constraint(validatedBy = {ObjectTypeValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
         ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(ObjectName.List.class)
-public @interface ObjectName {
+@Repeatable(ObjectType.List.class)
+public @interface ObjectType {
 
-    String message() default "The length of object name must be between 1 and 1023, and can't start with /.";
+    String message() default "Unsupported object type.";
+
+    /**
+     * 支持的对象类型
+     */
+    String[] supportedObjectTypes() default {".jpg", ".jpeg", ".png", ".gif"};
+
+    /**
+     * 额外支持的对象类型
+     */
+    String[] additionalSupportedObjectTypes() default {};
 
     Class<?>[] groups() default {};
 
@@ -32,7 +42,7 @@ public @interface ObjectName {
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface List {
-        ObjectName[] value();
+        ObjectType[] value();
     }
 
 }

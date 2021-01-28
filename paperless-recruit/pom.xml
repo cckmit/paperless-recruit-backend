@@ -19,6 +19,7 @@
         <module>notification</module>
         <module>registration</module>
         <module>pay</module>
+        <module>oss</module>
     </modules>
 
     <!--  项目自定义常量  -->

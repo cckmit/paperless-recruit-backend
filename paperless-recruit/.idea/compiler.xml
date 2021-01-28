@@ -10,10 +10,12 @@
         <module name="pay-service" />
         <module name="notification-api" />
         <module name="facade-service" />
+        <module name="oss-api" />
         <module name="registration-service" />
         <module name="external-api" />
         <module name="gateway-api" />
         <module name="pay-api" />
+        <module name="oss-service" />
         <module name="user-service" />
         <module name="organization-api" />
         <module name="facade-api" />
@@ -48,6 +50,7 @@
       <module name="gateway-service" options="" />
       <module name="login" options="" />
       <module name="organization-service" options="" />
+      <module name="oss-api" options="" />
       <module name="pay-service" options="" />
       <module name="registration-api" options="" />
       <module name="registration-service" options="" />

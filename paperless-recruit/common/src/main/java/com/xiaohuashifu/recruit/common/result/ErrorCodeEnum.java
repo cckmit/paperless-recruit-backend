@@ -213,6 +213,16 @@ public enum ErrorCodeEnum implements Serializable {
             "InvalidParameter.NotFound", "The specified resource does not exist."),
 
     /**
+     * 未找到资源
+     */
+    NOT_FOUND(HttpStatus.NOT_FOUND, "NotFound", "The specified resource does not exist."),
+
+    /**
+     * 资源不存在
+     */
+    NOT_EXIST(HttpStatus.NOT_FOUND, "NotExist", "The specified resource does not exist."),
+
+    /**
      * 操作冲突
      */
     OPERATION_CONFLICT(HttpStatus.CONFLICT,
@@ -253,6 +263,18 @@ public enum ErrorCodeEnum implements Serializable {
      */
     OPERATION_CONFLICT_DEACTIVATED(HttpStatus.CONFLICT,
             "OperationConflict.Deactivated", "Request was denied due to deactivated."),
+
+    /**
+     * 无法处理，非法参数
+     */
+    UNPROCESSABLE_ENTITY_INVALID_PARAMETER(HttpStatus.UNPROCESSABLE_ENTITY,
+            "UnprocessableEntity.InvalidParameter", "Unprocessable Entity."),
+
+    /**
+     * 无法处理，不存在
+     */
+    UNPROCESSABLE_ENTITY_NOT_EXIST(HttpStatus.UNPROCESSABLE_ENTITY,
+            "UnprocessableEntity.NotExist", "Unprocessable Entity."),
 
     /**
      * 太多请求

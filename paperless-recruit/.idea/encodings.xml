@@ -22,6 +22,9 @@
     <file url="file://$PROJECT_DIR$/organization/organization-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/organization/organization-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/organization/organization-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/oss/oss-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/oss/oss-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/oss/oss-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pay/pay-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pay/pay-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pay/pay-service/src/main/resources" charset="UTF-8" />

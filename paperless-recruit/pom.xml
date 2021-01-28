@@ -196,6 +196,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!--    oss-api接口    -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>oss-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- 阿里云库 -->
             <dependency>
                 <groupId>com.aliyun</groupId>

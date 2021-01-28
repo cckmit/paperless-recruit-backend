@@ -57,10 +57,10 @@
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 		</dependency>
 
-		<!--    user-api 接口    -->
+		<!--    oss-api 接口    -->
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>
-			<artifactId>user-api</artifactId>
+			<artifactId>oss-api</artifactId>
 		</dependency>
 
 		<!--   公共对象     -->

@@ -43,7 +43,7 @@ public class ObjectStorageServiceImplTest {
         FileInputStream fis = new FileInputStream(file);
         byte[] bytes = fis.readAllBytes();
         PreUploadObjectRequest request = new PreUploadObjectRequest(
-                1L, "简历.txt", "profile/u=336497710,1373556175&fm=26&gp=8.jpg", bytes);
+                1L, "简历.txt", "profile/u=336497710,1373556175&fm=26&gp=10.jpg", bytes);
         System.out.println(objectStorageService.preUploadObject(request));
     }
 
@@ -77,5 +77,6 @@ public class ObjectStorageServiceImplTest {
 
     @Test
     public void testLinkObject() {
+        System.out.println(objectStorageService.linkObject("profile/u=336497710,1373556175&fm=26&gp=10.jpg"));
     }
 }

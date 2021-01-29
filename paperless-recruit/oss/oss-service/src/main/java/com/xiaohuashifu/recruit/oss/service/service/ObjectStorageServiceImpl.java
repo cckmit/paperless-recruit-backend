@@ -13,6 +13,7 @@ import com.xiaohuashifu.recruit.oss.service.do0.ObjectInfoDO;
 import com.xiaohuashifu.recruit.oss.service.manager.ObjectStorageManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -39,6 +40,21 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     private final TransactionDefinition transactionDefinition;
 
     private final PlatformTransactionManager transactionManager;
+
+    /**
+     * 定时清理未连接对象任务初始延迟
+     */
+    private static final long CLEAR_UNLINKED_OBJECTS_INITIAL_DELAY = 5000;
+
+    /**
+     * 定时清理未连接对象任务固定延迟
+     */
+    private static final long CLEAR_UNLINKED_OBJECTS_FIXED_DELAY = 5000;
+
+    /**
+     * 定时清理未连接对象任务每次清除数量
+     */
+    private static final int CLEAR_UNLINKED_OBJECTS_PAGE_SIZE = 5;
 
     public ObjectStorageServiceImpl(ObjectInfoAssembler objectInfoAssembler, ObjectInfoMapper objectInfoMapper,
                                     ObjectStorageManager objectStorageManager,
@@ -213,6 +229,17 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
             log.error("Delete object error. objectInfoDO=" + objectInfoDO, e);
             transactionManager.rollback(transactionStatus);
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * 清除未链接的对象
+     */
+    @Scheduled(initialDelay = CLEAR_UNLINKED_OBJECTS_INITIAL_DELAY, fixedDelay = CLEAR_UNLINKED_OBJECTS_FIXED_DELAY)
+    public void clearUnlinkedObjects() {
+        List<ObjectInfoDO> objectInfoDOS = objectInfoMapper.selectNeedClearObject(CLEAR_UNLINKED_OBJECTS_PAGE_SIZE);
+        for (ObjectInfoDO objectInfoDO : objectInfoDOS) {
+            deleteObject(objectInfoDO);
         }
     }
 

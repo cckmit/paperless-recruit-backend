@@ -35,7 +35,6 @@ public class PreUploadObjectRequest implements Serializable {
     /**
      * 原始对象名，如 简历.doc
      */
-    @NotBlank
     @Size(max = ObjectStorageServiceConstants.MAX_ORIGINAL_NAME_LENGTH)
     private String originalName;
 
@@ -50,6 +49,8 @@ public class PreUploadObjectRequest implements Serializable {
     /**
      * 对象
      */
+    @NotNull
+    @Size(max = ObjectStorageServiceConstants.MAX_OBJECT_SIZE)
     private byte[] object;
 
 }

@@ -18,4 +18,9 @@ public class ObjectStorageServiceConstants {
      */
     public static final int MAX_ORIGINAL_NAME_LENGTH = 100;
 
+    /**
+     * 对象的最大大小，10MB
+     */
+    public static final int MAX_OBJECT_SIZE = 10485760;
+
 }

@@ -259,16 +259,41 @@ public enum ErrorCodeEnum implements Serializable {
             "OperationConflict.Duplicate", "Request was denied due to duplicate."),
 
     /**
+     * 操作冲突，存在
+     */
+    OPERATION_CONFLICT_EXIST(HttpStatus.CONFLICT,
+            "OperationConflict.Exist", "Request was denied due to exist."),
+
+    /**
      * 操作冲突，已停用
      */
     OPERATION_CONFLICT_DEACTIVATED(HttpStatus.CONFLICT,
             "OperationConflict.Deactivated", "Request was denied due to deactivated."),
 
     /**
+     * 操作冲突，已删除
+     */
+    OPERATION_CONFLICT_DELETED(HttpStatus.CONFLICT,
+            "OperationConflict.Deleted", "Request was denied due to deleted."),
+
+    /**
+     * 操作冲突，已链接
+     */
+    OPERATION_CONFLICT_LINKED(HttpStatus.CONFLICT,
+            "OperationConflict.Linked", "Request was denied due to linked."),
+
+
+    /**
      * 无法处理，非法参数
      */
     UNPROCESSABLE_ENTITY_INVALID_PARAMETER(HttpStatus.UNPROCESSABLE_ENTITY,
             "UnprocessableEntity.InvalidParameter", "Unprocessable Entity."),
+
+    /**
+     * 无法处理，存在
+     */
+    UNPROCESSABLE_ENTITY_EXIST(HttpStatus.UNPROCESSABLE_ENTITY,
+            "UnprocessableEntity.Exist", "Unprocessable Entity."),
 
     /**
      * 无法处理，不存在

@@ -1,5 +1,9 @@
 package com.xiaohuashifu.recruit.oss.service.do0;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,10 +21,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("object_info")
 public class ObjectInfoDO {
     /**
      * 对象编号
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -41,16 +47,18 @@ public class ObjectInfoDO {
     /**
      * 对象大小，B
      */
-    private Long size;
+    private Integer size;
 
     /**
      * 对象是否已经被关联
      */
+    @TableField(value = "is_linked")
     private Boolean linked;
 
     /**
      * 对象是否已经被删除
      */
+    @TableField(value = "is_deleted")
     private Boolean deleted;
 
     /**

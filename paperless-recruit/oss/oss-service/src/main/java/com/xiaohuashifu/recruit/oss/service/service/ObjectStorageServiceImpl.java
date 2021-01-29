@@ -1,14 +1,24 @@
 package com.xiaohuashifu.recruit.oss.service.service;
 
 import com.xiaohuashifu.recruit.common.query.QueryResult;
+import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.oss.api.request.ListObjectInfosRequest;
 import com.xiaohuashifu.recruit.oss.api.request.PreUploadObjectRequest;
 import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
 import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
+import com.xiaohuashifu.recruit.oss.service.assembler.ObjectInfoAssembler;
+import com.xiaohuashifu.recruit.oss.service.dao.ObjectInfoMapper;
+import com.xiaohuashifu.recruit.oss.service.do0.ObjectInfoDO;
+import com.xiaohuashifu.recruit.oss.service.manager.ObjectStorageManager;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 
-import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 描述：对象存储服务
@@ -17,103 +27,193 @@ import javax.validation.constraints.NotNull;
  * @create 2021/1/29 00:17
  */
 @Service
+@Slf4j
 public class ObjectStorageServiceImpl implements ObjectStorageService {
-    /**
-     * 预上传对象
-     *
-     * @param request 请求
-     * @return 预上传结果
-     * @errorCode InvalidParameter: 对象名 | 对象格式错误
-     * InternalError: 上传文件失败
-     */
-    @Override
-    public Result<ObjectInfoResponse> preUploadObject(@NotNull PreUploadObjectRequest request) {
-        return null;
+
+    private final ObjectInfoAssembler objectInfoAssembler;
+
+    private final ObjectInfoMapper objectInfoMapper;
+
+    private final ObjectStorageManager objectStorageManager;
+
+    private final TransactionDefinition transactionDefinition;
+
+    private final PlatformTransactionManager transactionManager;
+
+    public ObjectStorageServiceImpl(ObjectInfoAssembler objectInfoAssembler, ObjectInfoMapper objectInfoMapper,
+                                    ObjectStorageManager objectStorageManager,
+                                    TransactionDefinition transactionDefinition,
+                                    PlatformTransactionManager transactionManager) {
+        this.objectInfoAssembler = objectInfoAssembler;
+        this.objectInfoMapper = objectInfoMapper;
+        this.objectStorageManager = objectStorageManager;
+        this.transactionDefinition = transactionDefinition;
+        this.transactionManager = transactionManager;
     }
 
-    /**
-     * 删除对象
-     *
-     * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
-     * @return 删除结果
-     * @errorCode UnprocessableEntity.NotExist 所要删除的对象不存在
-     * InternalError 由于网络原因，删除对象失败
-     */
+    @Override
+    public Result<ObjectInfoResponse> preUploadObject(PreUploadObjectRequest request) {
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+        try {
+            // 判断对象名是否存在
+            ObjectInfoDO objectInfoDO = objectInfoMapper.selectByObjectName(request.getObjectName());
+            if (objectInfoDO != null) {
+                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_EXIST,
+                        "The objectName already exist.");
+            }
+
+            // 存储对象信息
+            ObjectInfoDO newObjectInfoDO = objectInfoAssembler.preUploadObjectRequestToObjectInfoDO(request);
+            objectInfoMapper.insert(newObjectInfoDO);
+
+            // 存储到 oss
+            objectStorageManager.putObject(request.getObjectName(), request.getObject());
+
+            // 提交事务
+            transactionManager.commit(transactionStatus);
+            return getObjectInfo(newObjectInfoDO.getId());
+        } catch (RuntimeException e) {
+            log.error("Pre upload object error. request=" + request, e);
+            transactionManager.rollback(transactionStatus);
+            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        }
+    }
+
     @Override
     public Result<Void> deleteObject(String objectName) {
-        return null;
+        return deleteObject(objectInfoMapper.selectByObjectName(objectName));
+    }
+
+    @Override
+    public Result<Void> deleteObject(Long id) {
+        return deleteObject(objectInfoMapper.selectById(id));
+    }
+
+    @Override
+    public Result<ObjectInfoResponse> getObjectInfo(String objectName) {
+        ObjectInfoDO objectInfoDO = objectInfoMapper.selectByObjectName(objectName);
+        if (objectInfoDO == null) {
+            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+        }
+        return Result.success(objectInfoAssembler.objectInfoDOToObjectInfoResponse(objectInfoDO));
+    }
+
+    @Override
+    public Result<ObjectInfoResponse> getObjectInfo(Long id) {
+        ObjectInfoDO objectInfoDO = objectInfoMapper.selectById(id);
+        if (objectInfoDO == null) {
+            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+        }
+        return Result.success(objectInfoAssembler.objectInfoDOToObjectInfoResponse(objectInfoDO));
+    }
+
+    @Override
+    public Result<QueryResult<ObjectInfoResponse>> listObjectInfos(ListObjectInfosRequest request) {
+        QueryResult<ObjectInfoDO> objectInfoDOQueryResult = objectInfoMapper.selectList(request);
+        List<ObjectInfoResponse> objectInfoResponses = objectInfoDOQueryResult.getResult().stream()
+                .map(objectInfoAssembler::objectInfoDOToObjectInfoResponse)
+                .collect(Collectors.toList());
+        QueryResult<ObjectInfoResponse> objectInfoResponseQueryResult =
+                new QueryResult<>(objectInfoDOQueryResult.getTotalCount(), objectInfoResponses);
+        return Result.success(objectInfoResponseQueryResult);
+    }
+
+    @Override
+    public Result<ObjectInfoResponse> linkObject(String objectName) {
+        return linkObject(objectInfoMapper.selectByObjectName(objectName));
+    }
+
+    @Override
+    public Result<ObjectInfoResponse> linkObject(Long id) {
+        return linkObject(objectInfoMapper.selectById(id));
+    }
+
+    /**
+     * 链接对象
+     *
+     * @errorCode UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
+     *
+     * @param objectInfoDO 对象信息，从数据库里查询得到
+     * @return 链接后的对象
+     */
+    private Result<ObjectInfoResponse> linkObject(ObjectInfoDO objectInfoDO) {
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+        try {
+            // 判断对象是否存在
+            if (objectInfoDO == null) {
+                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
+                        "The object does not exist.");
+            }
+
+            // 判断对象是否已经删除
+            if (objectInfoDO.getDeleted()) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DELETED,
+                        "The object already deleted.");
+            }
+
+            // 判断对象是否已经链接
+            if (objectInfoDO.getLinked()) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_LINKED,
+                        "The object already linked.");
+            }
+
+            // 链接对象
+            ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().id(objectInfoDO.getId()).linked(true).build();
+            objectInfoMapper.updateById(objectInfoDOForUpdate);
+
+            // 提交事务
+            transactionManager.commit(transactionStatus);
+            return getObjectInfo(objectInfoDO.getId());
+        } catch (RuntimeException e) {
+            log.error("Linked object error. objectInfoDO=" + objectInfoDO, e);
+            transactionManager.rollback(transactionStatus);
+            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        }
     }
 
     /**
      * 删除对象
      *
-     * @param id 对象编号
-     * @return 删除结果
      * @errorCode UnprocessableEntity.NotExist 所要删除的对象不存在
-     * InternalError 由于网络原因，删除对象失败
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 删除对象失败
+     *
+     * @param objectInfoDO 对象信息，从数据库里查询得到
+     * @return 删除结果
      */
-    @Override
-    public Result<Void> deleteObject(Long id) {
-        return null;
+    private Result<Void> deleteObject(ObjectInfoDO objectInfoDO) {
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+        try {
+            // 判断对象是否存在
+            if (objectInfoDO == null) {
+                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
+                        "The object does not exist.");
+            }
+
+            // 判断对象是否已经删除
+            if (objectInfoDO.getDeleted()) {
+                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DELETED,
+                        "The object already deleted.");
+            }
+
+            // 更新对象 deleted 字段为 true
+            ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().id(objectInfoDO.getId()).deleted(true).build();
+            objectInfoMapper.updateById(objectInfoDOForUpdate);
+
+            // 删除 oss 的对象
+            objectStorageManager.deleteObject(objectInfoDO.getObjectName());
+
+            // 提交事务
+            transactionManager.commit(transactionStatus);
+            return Result.success();
+        } catch (RuntimeException e) {
+            log.error("Delete object error. objectInfoDO=" + objectInfoDO, e);
+            transactionManager.rollback(transactionStatus);
+            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        }
     }
 
-    /**
-     * 获取对象信息
-     *
-     * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
-     * @return 响应
-     * @errorCode NotFound: 对象信息不存在
-     */
-    @Override
-    public Result<ObjectInfoResponse> getObjectInfo(String objectName) {
-        return null;
-    }
-
-    /**
-     * 获取对象信息
-     *
-     * @param id 对象编号
-     * @return 响应
-     * @errorCode NotFound: 对象信息不存在
-     */
-    @Override
-    public Result<ObjectInfoResponse> getObjectInfo(Long id) {
-        return null;
-    }
-
-    /**
-     * 列出对象信息
-     *
-     * @param request 请求
-     * @return 列出对象信息结果，可能返回空列表
-     * @errorCode UnprocessableEntity.InvalidParameter: 无法处理，非法参数
-     */
-    @Override
-    public Result<QueryResult<ObjectInfoResponse>> listObjectInfos(@NotNull ListObjectInfosRequest request) {
-        return null;
-    }
-
-    /**
-     * 链接对象，对象若不链接会被自动删除
-     *
-     * @param objectName 对象名
-     * @return 链接后的对象信息
-     * @errorCode UnprocessableEntity.NotExist 所要链接的对象不存在
-     */
-    @Override
-    public Result<ObjectInfoResponse> linkObject(String objectName) {
-        return null;
-    }
-
-    /**
-     * 链接对象，对象若不链接会被自动删除
-     *
-     * @param id 对象编号
-     * @return 链接后的对象信息
-     * @errorCode UnprocessableEntity.NotExist 所要链接的对象不存在
-     */
-    @Override
-    public Result<ObjectInfoResponse> linkObject(Long id) {
-        return null;
-    }
 }

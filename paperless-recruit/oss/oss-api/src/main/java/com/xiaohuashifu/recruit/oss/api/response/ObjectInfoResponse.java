@@ -41,9 +41,9 @@ public class ObjectInfoResponse implements Serializable {
     private String originalName;
 
     /**
-     * 对象大小，B
+     * 对象大小，单位字节
      */
-    private Long size;
+    private Integer size;
 
     /**
      * 对象是否已经被关联

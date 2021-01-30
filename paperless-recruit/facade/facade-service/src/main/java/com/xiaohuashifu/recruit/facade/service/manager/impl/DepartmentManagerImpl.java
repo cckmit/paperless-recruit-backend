@@ -3,7 +3,9 @@ package com.xiaohuashifu.recruit.facade.service.manager.impl;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.DepartmentAssembler;
+import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.DepartmentManager;
+import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
@@ -33,6 +35,16 @@ public class DepartmentManagerImpl implements DepartmentManager {
 
     public DepartmentManagerImpl(DepartmentAssembler departmentAssembler) {
         this.departmentAssembler = departmentAssembler;
+    }
+
+    @Override
+    public DepartmentVO createDepartment(Long organizationId, DepartmentPostRequest request) {
+        Result<DepartmentDTO> result = departmentService.createDepartment(
+                organizationId, request.getDepartmentName(), request.getAbbreviationDepartmentName());
+        if (result.isFailure()) {
+            throw new ResponseEntityException(result);
+        }
+        return departmentAssembler.departmentDTOToDepartmentVO(result.getData());
     }
 
     @Cacheable(key = "'departments:' + #query")

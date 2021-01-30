@@ -33,20 +33,11 @@ public interface DepartmentService {
      * @return DepartmentDTO 部门对象
      */
     Result<DepartmentDTO> createDepartment(
-            @NotNull(message = "The organizationId can't be null.")
-            @Positive(message = "The organizationId must be greater than 0.") Long organizationId,
-            @NotBlank(message = "The departmentName can't be blank.")
-            @Size(min = DepartmentConstants.MIN_DEPARTMENT_NAME_LENGTH,
-                    max = DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH,
-                    message = "The length of departmentName must be between "
-                            + DepartmentConstants.MIN_DEPARTMENT_NAME_LENGTH + " and "
-                            + DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH + ".") String departmentName,
-            @NotBlank(message = "The abbreviationDepartmentName can't be blank.")
-            @Size(min = DepartmentConstants.MIN_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
-                    max = DepartmentConstants.MAX_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
-                    message = "The length of abbreviationDepartmentName must be between "
-                            + DepartmentConstants.MIN_ABBREVIATION_DEPARTMENT_NAME_LENGTH + " and "
-                            + DepartmentConstants.MAX_ABBREVIATION_DEPARTMENT_NAME_LENGTH + ".")
+            @NotNull @Positive Long organizationId,
+            @NotBlank @Size(min = DepartmentConstants.MIN_DEPARTMENT_NAME_LENGTH,
+                    max = DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH) String departmentName,
+            @NotBlank @Size(min = DepartmentConstants.MIN_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
+                    max = DepartmentConstants.MAX_ABBREVIATION_DEPARTMENT_NAME_LENGTH)
                     String abbreviationDepartmentName);
 
     /**

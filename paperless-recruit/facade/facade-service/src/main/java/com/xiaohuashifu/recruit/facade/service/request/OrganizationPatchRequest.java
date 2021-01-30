@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 描述：
+ * 描述：OrganizationPatchRequest
  *
  * @author xhsf
  * @create 2021/1/27 17:30

@@ -4,7 +4,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.UuidUtils;
 import com.xiaohuashifu.recruit.facade.service.assembler.ObjectInfoAssembler;
 import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
-import com.xiaohuashifu.recruit.facade.service.manager.OssManager;
+import com.xiaohuashifu.recruit.facade.service.manager.ObjectManager;
 import com.xiaohuashifu.recruit.facade.service.vo.ObjectInfoVO;
 import com.xiaohuashifu.recruit.oss.api.request.PreUploadObjectRequest;
 import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
@@ -22,14 +22,14 @@ import java.io.IOException;
  * @create 2021/1/30 16:00
  */
 @Component
-public class OssManagerImpl implements OssManager {
+public class ObjectManagerImpl implements ObjectManager {
 
     @Reference
     private ObjectStorageService objectStorageService;
 
     private final ObjectInfoAssembler objectInfoAssembler;
 
-    public OssManagerImpl(ObjectInfoAssembler objectInfoAssembler) {
+    public ObjectManagerImpl(ObjectInfoAssembler objectInfoAssembler) {
         this.objectInfoAssembler = objectInfoAssembler;
     }
 

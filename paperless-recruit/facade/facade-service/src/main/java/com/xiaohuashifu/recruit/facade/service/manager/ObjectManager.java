@@ -11,7 +11,7 @@ import java.io.IOException;
  * @author xhsf
  * @create 2021/1/30 15:59
  */
-public interface OssManager {
+public interface ObjectManager {
 
     /**
      * 预上传对象

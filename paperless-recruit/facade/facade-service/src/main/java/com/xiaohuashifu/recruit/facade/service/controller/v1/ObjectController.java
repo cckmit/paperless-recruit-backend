@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.controller.v1;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
-import com.xiaohuashifu.recruit.facade.service.manager.OssManager;
+import com.xiaohuashifu.recruit.facade.service.manager.ObjectManager;
 import com.xiaohuashifu.recruit.facade.service.vo.ObjectInfoVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,14 +24,14 @@ import java.io.IOException;
 @ApiSupport(author = "XHSF")
 @Api(tags = "对象")
 @RestController
-public class OssController {
+public class ObjectController {
 
-    private final OssManager ossManager;
+    private final ObjectManager objectManager;
 
     private final UserContext userContext;
 
-    public OssController(OssManager ossManager, UserContext userContext) {
-        this.ossManager = ossManager;
+    public ObjectController(ObjectManager objectManager, UserContext userContext) {
+        this.objectManager = objectManager;
         this.userContext = userContext;
     }
 
@@ -41,7 +41,7 @@ public class OssController {
     public ObjectInfoVO preUploadObject(
             @ApiParam(value = "对象", type = "object") MultipartFile object,
             @ApiParam(value = "基础对象名", example = "users/avatars/") String baseObjectName) throws IOException {
-        return ossManager.preUploadObject(userContext.getUserId(), object, baseObjectName);
+        return objectManager.preUploadObject(userContext.getUserId(), object, baseObjectName);
     }
 
 }

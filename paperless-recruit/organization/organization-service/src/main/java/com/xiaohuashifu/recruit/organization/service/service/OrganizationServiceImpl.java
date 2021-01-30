@@ -69,16 +69,6 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     private static final String ORGANIZATION_NAME_LOCK_KEY_PATTERN = "organization:name:{0}";
 
-    /**
-     * 组织 logo 的锁定键模式
-     */
-    private static final String ORGANIZATION_LOGO_LOCK_KEY_PATTERN = "organization:{0}:logo";
-
-    /**
-     * 组织 logo url 的前缀
-     */
-    private static final String ORGANIZATION_LOGO_URL_PREFIX = "organization/logo/";
-
     public OrganizationServiceImpl(OrganizationMapper organizationMapper, OrganizationAssembler organizationAssembler) {
         this.organizationMapper = organizationMapper;
         this.organizationAssembler = organizationAssembler;

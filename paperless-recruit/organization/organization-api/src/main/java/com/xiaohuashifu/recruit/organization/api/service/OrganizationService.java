@@ -7,7 +7,6 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Password;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
-import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 
 import javax.validation.constraints.*;

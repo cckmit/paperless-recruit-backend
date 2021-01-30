@@ -4,10 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
-import com.xiaohuashifu.recruit.organization.api.po.UpdateDepartmentLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
@@ -15,12 +13,12 @@ import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.assembler.DepartmentAssembler;
 import com.xiaohuashifu.recruit.organization.service.dao.DepartmentMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.DepartmentDO;
-import org.apache.commons.lang3.StringUtils;
+import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
+import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -61,16 +59,6 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     private static final String ORGANIZATION_DEPARTMENT_ABBREVIATION_DEPARTMENT_NAME_LOCK_KEY_PATTERN =
             "organization:{0}:department:abbreviation-department-name:{1}";
-
-    /**
-     * 部门 logo 的锁定键模式
-     */
-    private static final String DEPARTMENT_LOGO_LOCK_KEY_PATTERN = "department:{0}:logo";
-
-    /**
-     * 部门 logo url 的前缀
-     */
-    private static final String DEPARTMENT_LOGO_URL_PREFIX = "organization/department/logo/";
 
     public DepartmentServiceImpl(DepartmentMapper departmentMapper, DepartmentAssembler departmentAssembler) {
         this.departmentMapper = departmentMapper;
@@ -376,42 +364,35 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 部门不存在
      *              Forbidden.Unavailable: 组织不可用
-     *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取部门 logo 的锁失败
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
      *
-     * @param updateDepartmentLogoPO 更新 logo 的参数对象
+     * @param id 部门编号
+     * @param logoUrl logoUrl
      * @return 更新后的部门
      */
     @Override
-    @DistributedLock(value = DEPARTMENT_LOGO_LOCK_KEY_PATTERN, parameters = "#{#updateDepartmentLogoPO.id}",
-            errorMessage = "Failed to acquire department logo lock.")
-    public Result<DepartmentDTO> updateLogo(UpdateDepartmentLogoPO updateDepartmentLogoPO) {
+    public Result<DepartmentDTO> updateLogo(Long id, String logoUrl) {
         // 检查部门和组织的状态
-        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(updateDepartmentLogoPO.getId());
+        Result<Long> checkResult = checkDepartmentAndOrganizationStatus(id);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 获取部门 logoUrl
-        String logoUrl = departmentMapper.getLogoUrl(updateDepartmentLogoPO.getId());
-        // 若原来的 logoUrl 为空，则随机产生一个
-        boolean needUpdateLogoUrl = false;
-        if (StringUtils.isBlank(logoUrl)) {
-            needUpdateLogoUrl = true;
-            logoUrl = DEPARTMENT_LOGO_URL_PREFIX + UUID.randomUUID().toString()
-                    + updateDepartmentLogoPO.getId() + updateDepartmentLogoPO.getLogoExtensionName();
+        // 链接 logo
+        Result<ObjectInfoResponse> linkResult = objectStorageService.linkObject(logoUrl);
+        if (linkResult.isFailure()) {
+            return Result.fail(linkResult);
         }
 
-        // 更新 logo
-        objectStorageService.putObject(logoUrl, updateDepartmentLogoPO.getLogo());
-
-        // 若需要更新 logoUrl 到数据库，则更新
-        if (needUpdateLogoUrl) {
-            departmentMapper.updateLogoUrl(updateDepartmentLogoPO.getId(), logoUrl);
-        }
+        // 更新 logoUrl 到数据库
+        departmentMapper.updateLogoUrl(id, logoUrl);
 
         // 更新后的组织信息
-        return getDepartment(updateDepartmentLogoPO.getId());
+        return getDepartment(id);
     }
 
     /**

@@ -5,13 +5,9 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
-import com.xiaohuashifu.recruit.organization.api.po.UpdateDepartmentLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * 描述：部门服务
@@ -199,14 +195,20 @@ public interface DepartmentService {
      * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 部门不存在
      *              Forbidden.Unavailable: 组织不可用
-     *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取部门 logo 的锁失败
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
      *
-     * @param updateDepartmentLogoPO 更新 logo 的参数对象
+     * @param id 部门编号
+     * @param logoUrl logoUrl
      * @return 更新后的部门
      */
-    Result<DepartmentDTO> updateLogo(@NotNull(message = "The updateDepartmentLogoPO can't be null.")
-                                             UpdateDepartmentLogoPO updateDepartmentLogoPO);
+    Result<DepartmentDTO> updateLogo(
+            @NotNull @Positive Long id,
+            @NotBlank @Pattern(
+                    regexp = "(departments/logos/)(.+)(\\.jpg|\\.jpeg|\\.png|\\.gif)") String logoUrl);
 
     /**
      * 停用部门，只是标识为停用

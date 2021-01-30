@@ -87,11 +87,7 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void updateLogo() throws IOException {
-        File file = new File("C:\\Users\\82703\\Desktop\\381056168614065362.png");
-        FileInputStream fis = new FileInputStream(file);
-        byte[] bytes = fis.readAllBytes();
-        System.out.println(departmentService.updateLogo(new UpdateDepartmentLogoPO.Builder()
-                .id(1L).logo(bytes).logoExtensionName(".png").build()));
+        System.out.println(departmentService.updateLogo(1L, "departments/logos/b12459c9b9444104a610e90c8fbc14311601000702(1).jpg"));
     }
 
     @Test

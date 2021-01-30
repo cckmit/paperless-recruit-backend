@@ -104,6 +104,13 @@ public class OrganizationManagerImpl implements OrganizationManager {
             }
         }
 
+        if (request.getLogoUrl() != null) {
+            result = organizationService.updateLogo(id, request.getLogoUrl());
+            if (result.isFailure()) {
+                throw new ResponseEntityException(result);
+            }
+        }
+
         return ((OrganizationManagerImpl) AopContext.currentProxy()).getOrganization(id);
     }
 

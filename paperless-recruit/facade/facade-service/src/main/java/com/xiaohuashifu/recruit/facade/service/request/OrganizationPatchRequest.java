@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 /**
  * 描述：
  *
@@ -38,6 +36,13 @@ public class OrganizationPatchRequest {
      */
     @ApiModelProperty(value = "组织介绍", example = "华南农业大学学生科技创新与创业联合会")
     private String introduction;
+
+    /**
+     * 组织 logoUrl
+     */
+    @ApiModelProperty(value = "组织 logoUrl",
+            example = "organizations/logos/738d8e7485d3455da22765e199cc65721601000702(1).jpg")
+    private String logoUrl;
 
 //    /**
 //     * 组织标签

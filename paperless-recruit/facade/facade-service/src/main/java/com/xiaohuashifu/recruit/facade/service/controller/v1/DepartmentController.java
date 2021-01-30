@@ -10,6 +10,7 @@ import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,7 @@ public class DepartmentController {
 
     @ApiOperation(value = "创建部门")
     @PostMapping("/departments")
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('organization')")
     public DepartmentVO createDepartment(@RequestBody DepartmentPostRequest request) {
         return departmentManager.createDepartment(organizationContext.getOrganizationId(), request);

@@ -34,23 +34,7 @@ public class ApplicationFormServiceImplTest {
     }
 
     @Test
-    public void createApplicationForm() throws IOException {
-        File file = new File("D:\\Github\\SpecializedCourseCode\\文档\\毕设相关文档\\图片\\毕设原型图片" +
-                "\\u=3686185393,469536043&fm=26&gp=0.jpg");
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] bytes = fileInputStream.readAllBytes();
-        ApplicationFormAvatarPO applicationFormAvatarPO =
-                ApplicationFormAvatarPO.builder().avatar(bytes).extensionName(".jpg").build();
-
-        file = new File("D:\\Github\\DocumentAndCode\\MySQL\\druid连接池文档.md");
-        fileInputStream = new FileInputStream(file);
-        bytes = fileInputStream.readAllBytes();
-        ApplicationFormAttachmentPO applicationFormAttachmentPO =
-                ApplicationFormAttachmentPO.builder()
-                .attachment(bytes)
-                .attachmentName("druid连接池文档.md")
-                .build();
-
+    public void createApplicationForm() {
 //        userId
 //                recruitmentId
 //        avatar
@@ -69,14 +53,14 @@ public class ApplicationFormServiceImplTest {
                 CreateApplicationFormPO.builder()
                         .userId(21L)
         .recruitmentId(22L)
-        .avatar(applicationFormAvatarPO)
+        .avatarUrl("")
         .fullName("吴嘉贤")
         .phone("13333333333")
         .firstDepartmentId(2L)
                         .secondDepartmentId(4L)
                         .email("827032783@qq.com")
                         .introduction("我是吴嘉贤")
-        .attachment(applicationFormAttachmentPO)
+        .attachmentUrl("")
                         .studentNumber("201734020124")
                         .collegeId(1L)
                         .majorId(3L)
@@ -91,13 +75,7 @@ public class ApplicationFormServiceImplTest {
 
     @Test
     public void updateAvatar() throws IOException {
-        File file = new File("D:\\Github\\SpecializedCourseCode\\文档\\毕设相关文档\\图片\\毕设原型图片" +
-                "\\u=336497710,1373556175&fm=26&gp=0.jpg");
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] bytes = fileInputStream.readAllBytes();
-        UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO =
-                UpdateApplicationFormAvatarPO.builder().id(6L).avatar(bytes).extensionName(".jpg").build();
-        System.out.println(applicationFormService.updateAvatar(updateApplicationFormAvatarPO));
+        System.out.println(applicationFormService.updateAvatar(1L, ""));
     }
 
     @Test
@@ -132,13 +110,7 @@ public class ApplicationFormServiceImplTest {
 
     @Test
     public void updateAttachment() throws IOException {
-        File file = new File("D:\\Github\\SpecializedCourseCode\\文档\\毕设相关文档\\图片\\系统整体架构.png");
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] bytes = fileInputStream.readAllBytes();
-        UpdateApplicationFormAttachmentPO updateApplicationFormAttachmentPO =
-                UpdateApplicationFormAttachmentPO.builder()
-                        .id(7L).attachment(bytes).attachmentName("系统整体架构1.png").build();
-        System.out.println(applicationFormService.updateAttachment(updateApplicationFormAttachmentPO));
+        System.out.println(applicationFormService.updateAttachment(1L, ""));
     }
 
     @Test

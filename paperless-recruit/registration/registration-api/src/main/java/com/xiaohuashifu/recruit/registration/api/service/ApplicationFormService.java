@@ -7,8 +7,6 @@ import com.xiaohuashifu.recruit.common.validator.annotation.StudentNumber;
 import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormConstants;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
 import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
-import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormAttachmentPO;
-import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormAvatarPO;
 
 import javax.validation.constraints.*;
 
@@ -39,8 +37,7 @@ public interface ApplicationFormService {
      *
      * @return 创建的报名表
      */
-    Result<ApplicationFormDTO> createApplicationForm(@NotNull(message = "The createApplicationFormPO can't be null.")
-                                                             CreateApplicationFormPO createApplicationFormPO);
+    Result<ApplicationFormDTO> createApplicationForm(@NotNull CreateApplicationFormPO createApplicationFormPO);
 
     /**
      * 获取报名表
@@ -54,7 +51,7 @@ public interface ApplicationFormService {
      * @param id 报名表编号
      * @return 报名表
      */
-    Result<ApplicationFormDTO> getApplicationForm(Long id);
+    Result<ApplicationFormDTO> getApplicationForm(@NotNull @Positive Long id);
 
     /**
      * 更新头像
@@ -68,13 +65,18 @@ public interface ApplicationFormService {
      *              Forbidden.Deactivated: 报名表模板被停用
      *              OperationConflict.Status: 招新的状态必须是 STARTED
      *              OperationConflict.Lock: 获取报名表头像的锁失败
-     *              InternalError: 上传文件失败
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
      *
-     * @param updateApplicationFormAvatarPO 更新头像参数
+     * @param id 报名表编号
+     * @param avatarUrl 报名表 url
      * @return 更新后的报名表
      */
-    Result<ApplicationFormDTO> updateAvatar(@NotNull(message = "The updateApplicationFormAvatarPO can't be null.")
-                                                    UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO);
+    Result<ApplicationFormDTO> updateAvatar(
+            @NotNull @Positive Long id,
+            @NotNull @Pattern(regexp = ApplicationFormConstants.AVATAR_URL_PATTERN) String avatarUrl);
 
     /**
      * 更新姓名
@@ -215,14 +217,18 @@ public interface ApplicationFormService {
      *              Forbidden.Deactivated: 报名表模板被停用
      *              OperationConflict.Status: 招新的状态必须是 STARTED
      *              OperationConflict.Lock: 获取报名表附件的锁失败
-     *              InternalError: 上传文件失败
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
      *
-     * @param updateApplicationFormAttachmentPO 更新附件参数
+     * @param id 报名表编号
+     * @param attachmentUrl 附件 url
      * @return 更新后的报名表
      */
     Result<ApplicationFormDTO> updateAttachment(
-            @NotNull(message = "The updateApplicationFormAttachmentPO can't be null.")
-                    UpdateApplicationFormAttachmentPO updateApplicationFormAttachmentPO);
+            @NotNull @Positive Long id,
+            @NotBlank @Pattern(regexp = ApplicationFormConstants.ATTACHMENT_URL_PATTERN) String attachmentUrl);
 
     /**
      * 更新学号

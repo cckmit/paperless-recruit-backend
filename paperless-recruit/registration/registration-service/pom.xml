@@ -105,6 +105,12 @@
 			<artifactId>notification-api</artifactId>
 		</dependency>
 
+		<!--    notification-api接口    -->
+		<dependency>
+			<groupId>com.xiaohuashifu.recruit</groupId>
+			<artifactId>oss-api</artifactId>
+		</dependency>
+
 		<!--   公共对象     -->
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>

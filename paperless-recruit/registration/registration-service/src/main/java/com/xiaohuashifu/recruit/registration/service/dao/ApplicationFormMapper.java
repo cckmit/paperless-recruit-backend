@@ -46,5 +46,7 @@ public interface ApplicationFormMapper {
     int updateCollegeId(@Param("id") Long id, @Param("collegeId") Long collegeId);
 
     int updateMajor(@Param("id") Long id, @Param("majorId") Long majorId);
+
+    int updateAvatarUrl(@Param("id") Long id, @Param("avatarUrl") String avatarUrl);
 }
 

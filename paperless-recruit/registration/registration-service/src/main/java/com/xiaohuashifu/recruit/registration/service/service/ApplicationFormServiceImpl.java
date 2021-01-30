@@ -3,12 +3,13 @@ package com.xiaohuashifu.recruit.registration.service.service;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
+import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
+import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormTemplateDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
-import com.xiaohuashifu.recruit.registration.api.po.*;
+import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
@@ -21,10 +22,8 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.lang.reflect.Field;
-import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * 描述：报名表服务实现
@@ -59,32 +58,10 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     private final ApplicationFormMapper applicationFormMapper;
 
     /**
-     * 报名表的 avatar 的路径模式，{0}是招新编号，{1}是文件名
-     */
-    private static final String APPLICATION_FORM_AVATAR_PATH_PATTERN =
-            "recruitment/{0}/application/form/avatar/{1}";
-
-    /**
-     * 报名表的 attachment 的路径模式，{0}是招新编号，{1}是用户编号，{2}是文件名
-     */
-    private static final String APPLICATION_FORM_ATTACHMENT_PATH_PATTERN =
-            "recruitment/{0}/application/form/attachment/user/{1}/{2}";
-
-    /**
      * 创建报名表的锁定键模式，{0}是用户编号，{1}是招新编号
      */
     private static final String CREATE_APPLICATION_FORM_LOCK_KEY_PATTERN =
             "application-form:create-application-form:user-id:{0}:recruitment-id:{1}";
-
-    /**
-     * 更新头像的锁定键模式，{0}是报名表编号
-     */
-    private static final String UPDATE_AVATAR_LOCK_KEY_PATTERN = "application-form:{0}:update-avatar";
-
-    /**
-     * 更新附件的锁定键模式，{0}是报名表编号
-     */
-    private static final String UPDATE_ATTACHMENT_LOCK_KEY_PATTERN = "application-form:{0}:update-attachment";
 
     public ApplicationFormServiceImpl(ApplicationFormMapper applicationFormMapper) {
         this.applicationFormMapper = applicationFormMapper;
@@ -191,30 +168,31 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      *              Forbidden.Deactivated: 报名表模板被停用
      *              OperationConflict.Status: 招新的状态必须是 STARTED
      *              OperationConflict.Lock: 获取报名表头像的锁失败
-     *              InternalError: 上传文件失败
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
      *
-     * @param updateApplicationFormAvatarPO 更新头像参数
+     * @param id 报名表编号
+     * @param avatarUrl 报名表 url
      * @return 更新后的报名表
      */
-    @DistributedLock(value = UPDATE_AVATAR_LOCK_KEY_PATTERN, parameters = "#{#updateApplicationFormAvatarPO.id}",
-            errorMessage = "Failed to acquire avatar lock.")
     @Override
-    public Result<ApplicationFormDTO> updateAvatar(UpdateApplicationFormAvatarPO updateApplicationFormAvatarPO) {
+    public Result<ApplicationFormDTO> updateAvatar(Long id, String avatarUrl) {
         // 检查是否可以更新
-        Long id = updateApplicationFormAvatarPO.getId();
         Result<Long> checkResult = checkForUpdate(id, "avatar");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 更新头像
-        String path = applicationFormMapper.getAvatarUrl(id);
-        path = path.substring(0, path.lastIndexOf(".")) + updateApplicationFormAvatarPO.getExtensionName();
-        Result<ApplicationFormDTO> putObjectResult =
-                objectStorageService.putObject(path, updateApplicationFormAvatarPO.getAvatar());
-        if (putObjectResult.isFailure()) {
-            return putObjectResult;
+        // 链接 avatar
+        Result<ObjectInfoResponse> linkResult = objectStorageService.linkObject(avatarUrl);
+        if (linkResult.isFailure()) {
+            return Result.fail(linkResult);
         }
+
+        // 更新 avatarUrl 到数据
+        applicationFormMapper.updateAvatarUrl(id, avatarUrl);
 
         // 获取更新后的报名表
         return getApplicationForm(id);
@@ -440,40 +418,31 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      *              Forbidden.Deactivated: 报名表模板被停用
      *              OperationConflict.Status: 招新的状态必须是 STARTED
      *              OperationConflict.Lock: 获取报名表附件的锁失败
-     *              InternalError: 上传文件失败
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
      *
-     * @param updateApplicationFormAttachmentPO 更新附件参数
+     * @param id 报名表编号
+     * @param attachmentUrl 附件 url
      * @return 更新后的报名表
      */
-    @DistributedLock(value = UPDATE_ATTACHMENT_LOCK_KEY_PATTERN,
-            parameters = "#{#updateApplicationFormAttachmentPO.id}",
-            errorMessage = "Failed to acquire attachment lock.")
     @Override
-    public Result<ApplicationFormDTO> updateAttachment(
-            UpdateApplicationFormAttachmentPO updateApplicationFormAttachmentPO) {
+    public Result<ApplicationFormDTO> updateAttachment(Long id, String attachmentUrl) {
         // 检查是否可以更新
-        Long id = updateApplicationFormAttachmentPO.getId();
         Result<Long> checkResult = checkForUpdate(id, "attachment");
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 更新附件
-        Long recruitmentId = checkResult.getData();
-        Long userId = applicationFormMapper.getUserId(id);
-        String newPath = MessageFormat.format(APPLICATION_FORM_ATTACHMENT_PATH_PATTERN, recruitmentId, userId,
-                updateApplicationFormAttachmentPO.getAttachmentName());
-        String oldPath = applicationFormMapper.getAttachmentUrl(id);
-        Result<ApplicationFormDTO> putObjectResult =
-                objectStorageService.putObject(newPath, updateApplicationFormAttachmentPO.getAttachment());
-        if (putObjectResult.isFailure()) {
-            return putObjectResult;
+        // 链接 attachment
+        Result<ObjectInfoResponse> linkResult = objectStorageService.linkObject(attachmentUrl);
+        if (linkResult.isFailure()) {
+            return Result.fail(linkResult);
         }
-        // 如果新旧路径不同，更新数据库路径，并删除旧文件
-        if (!Objects.equals(newPath, oldPath)) {
-            applicationFormMapper.updateAttachmentUrl(id, newPath);
-            objectStorageService.deleteObject(oldPath);
-        }
+
+        // 更新附件 url 到数据库
+        applicationFormMapper.updateAttachmentUrl(id, attachmentUrl);
 
         // 获取更新后的报名表
         return getApplicationForm(id);
@@ -842,46 +811,36 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             applicationFormDOBuilder.secondDepartmentId(secondDepartmentId);
         }
 
-        // 判断是否需要 avatar
+        // 判断是否需要 avatar，若需要则链接 avatar
         if (applicationFormTemplateDTO.getAvatar()) {
-            if (createApplicationFormPO.getAvatar() == null) {
+            if (createApplicationFormPO.getAvatarUrl() == null) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The avatar can't be null.");
             }
+
+            // 链接 avatar
+            Result<ObjectInfoResponse> linkResult =
+                    objectStorageService.linkObject(createApplicationFormPO.getAvatarUrl());
+            if (linkResult.isFailure()) {
+                return Result.fail(linkResult);
+            }
+
+            applicationFormDOBuilder.avatarUrl(createApplicationFormPO.getAvatarUrl());
         }
 
-        // 判断是否需要 attachment
+        // 判断是否需要 attachment，若需要则链接 attachment
         if (applicationFormTemplateDTO.getAttachment()) {
-            if (createApplicationFormPO.getAttachment() == null) {
+            if (createApplicationFormPO.getAttachmentUrl() == null) {
                 return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The attachment can't be null.");
             }
-        }
 
-        // 上传头像
-        if (applicationFormTemplateDTO.getAvatar()) {
-            ApplicationFormAvatarPO applicationFormAvatarPO = createApplicationFormPO.getAvatar();
-            String fileName = UUID.randomUUID().toString() + applicationFormAvatarPO.getExtensionName();
-            String path = MessageFormat.format(APPLICATION_FORM_AVATAR_PATH_PATTERN,
-                    createApplicationFormPO.getRecruitmentId(), fileName);
-            Result<ApplicationFormDO> putObjectResult =
-                    objectStorageService.putObject(path, applicationFormAvatarPO.getAvatar());
-            if (putObjectResult.isFailure()) {
-                return putObjectResult;
+            // 链接 attachment
+            Result<ObjectInfoResponse> linkResult =
+                    objectStorageService.linkObject(createApplicationFormPO.getAttachmentUrl());
+            if (linkResult.isFailure()) {
+                return Result.fail(linkResult);
             }
-            applicationFormDOBuilder.avatarUrl(path);
-        }
 
-        // 上传附件
-        if (applicationFormTemplateDTO.getAttachment()) {
-            ApplicationFormAttachmentPO applicationFormAttachmentPO = createApplicationFormPO.getAttachment();
-            String path = MessageFormat.format(APPLICATION_FORM_ATTACHMENT_PATH_PATTERN,
-                    createApplicationFormPO.getRecruitmentId(), createApplicationFormPO.getUserId(),
-                    applicationFormAttachmentPO.getAttachmentName());
-            Result<ApplicationFormDO> putObjectResult =
-                    objectStorageService.putObject(path, applicationFormAttachmentPO.getAttachment());
-            if (putObjectResult.isFailure()) {
-                return putObjectResult;
-            }
-            applicationFormDOBuilder.attachmentUrl(path);
+            applicationFormDOBuilder.attachmentUrl(createApplicationFormPO.getAttachmentUrl());
         }
 
         // 构造成功

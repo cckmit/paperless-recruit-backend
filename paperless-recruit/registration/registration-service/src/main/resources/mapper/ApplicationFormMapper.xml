@@ -213,4 +213,10 @@
         where id = #{id}
     </update>
 
+    <update id="updateAvatarUrl">
+        update application_form
+        set avatar_url = #{avatarUrl}
+        where id = #{id}
+    </update>
+
 </mapper>

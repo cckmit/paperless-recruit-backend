@@ -9,10 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 /**
@@ -44,7 +41,8 @@ public class CreateApplicationFormPO implements Serializable {
     /**
      * 头像
      */
-    private ApplicationFormAvatarPO avatar;
+    @Pattern(regexp = ApplicationFormConstants.AVATAR_URL_PATTERN)
+    private String avatarUrl;
 
     /**
      * 姓名
@@ -87,7 +85,8 @@ public class CreateApplicationFormPO implements Serializable {
     /**
      * 附件
      */
-    private ApplicationFormAttachmentPO attachment;
+    @Pattern(regexp = ApplicationFormConstants.ATTACHMENT_URL_PATTERN)
+    private String attachmentUrl;
 
     /**
      * 学号

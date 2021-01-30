@@ -33,5 +33,14 @@ public class ApplicationFormConstants {
      */
     public static final int MAX_NOTE_LENGTH = 100;
 
+    /**
+     * 头像 url 的匹配模式
+     */
+    public static final String AVATAR_URL_PATTERN = "(application-forms/avatars/)(.+)(\\.jpg|\\.jpeg|\\.png|\\.gif)";
+
+    /**
+     * 附件 url 的匹配模式
+     */
+    public static final String ATTACHMENT_URL_PATTERN = "(application-forms/attachments/)(.+)(\\.rar|\\.zip)";
 
 }

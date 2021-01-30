@@ -201,14 +201,20 @@ public interface OrganizationService {
      * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
      *              Forbidden.Unavailable: 组织不可用
-     *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取组织 logo 的锁失败
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
      *
-     * @param updateOrganizationLogoPO 更新 logo 的参数对象
+     * @param id 组织编号
+     * @param logoUrl logoUrl
      * @return 更新后的组织
      */
-    Result<OrganizationDTO> updateLogo(@NotNull(message = "The updateOrganizationLogoPO can't be null.")
-                                               UpdateOrganizationLogoPO updateOrganizationLogoPO);
+    Result<OrganizationDTO> updateLogo(
+            @NotNull @Positive Long id,
+            @NotBlank @Pattern(
+                    regexp = "(organizations/logos/)(.+)(\\.jpg|\\.jpeg|\\.png|\\.gif)") String logoUrl);
 
     /**
      * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等

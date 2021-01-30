@@ -4,26 +4,24 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
-import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.assembler.OrganizationAssembler;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
+import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
+import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -377,42 +375,35 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @errorCode InvalidParameter: 更新参数格式错误
      *              InvalidParameter.NotExist: 组织不存在
      *              Forbidden.Unavailable: 组织不可用
-     *              InternalError: 上传文件失败
      *              OperationConflict.Lock: 获取组织 logo 的锁失败
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
+     *              OperationConflict.Linked 对象已经链接
+     *              OperationConflict.Deleted 对象已经删除
+     *              InternalError 链接对象失败
      *
-     * @param updateOrganizationLogoPO 更新 logo 的参数对象
+     * @param id 组织编号
+     * @param logoUrl logoUrl
      * @return 更新后的组织
      */
     @Override
-    @DistributedLock(value = ORGANIZATION_LOGO_LOCK_KEY_PATTERN, parameters = "#{#updateOrganizationLogoPO.id}",
-            errorMessage = "Failed to acquire organization logo lock.")
-    public Result<OrganizationDTO> updateLogo(UpdateOrganizationLogoPO updateOrganizationLogoPO) {
+    public Result<OrganizationDTO> updateLogo(Long id, String logoUrl) {
         // 检查组织状态
-        Result<Object> checkResult = checkOrganizationStatus(updateOrganizationLogoPO.getId());
+        Result<Object> checkResult = checkOrganizationStatus(id);
         if (checkResult.isFailure()) {
             return Result.fail(checkResult);
         }
 
-        // 获取组织 logoUrl
-        String logoUrl = organizationMapper.getOrganizationLogoUrl(updateOrganizationLogoPO.getId());
-        // 若原来的 logoUrl 为空，则随机产生一个
-        boolean needUpdateLogoUrl = false;
-        if (StringUtils.isBlank(logoUrl)) {
-            needUpdateLogoUrl = true;
-            logoUrl = ORGANIZATION_LOGO_URL_PREFIX + UUID.randomUUID().toString()
-                    + updateOrganizationLogoPO.getId() + updateOrganizationLogoPO.getLogoExtensionName();
+        // 链接 logo
+        Result<ObjectInfoResponse> linkResult = objectStorageService.linkObject(logoUrl);
+        if (linkResult.isFailure()) {
+            return Result.fail(linkResult);
         }
 
-        // 更新 logo
-        objectStorageService.putObject(logoUrl, updateOrganizationLogoPO.getLogo());
-
-        // 若需要更新 logoUrl 到数据库，则更新
-        if (needUpdateLogoUrl) {
-            organizationMapper.updateLogoUrl(updateOrganizationLogoPO.getId(), logoUrl);
-        }
+        // 更新 logoUrl 到数据库
+        organizationMapper.updateLogoUrl(id, logoUrl);
 
         // 更新后的组织信息
-        return getOrganization(updateOrganizationLogoPO.getId());
+        return getOrganization(id);
     }
 
     /**

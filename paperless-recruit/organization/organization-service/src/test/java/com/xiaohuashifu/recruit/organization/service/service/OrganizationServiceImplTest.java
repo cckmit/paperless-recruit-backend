@@ -77,11 +77,8 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void updateLogo() throws IOException {
-        File file = new File("C:\\Users\\82703\\Desktop\\1601000702(1).jpg");
-        FileInputStream fis = new FileInputStream(file);
-        byte[] bytes = fis.readAllBytes();
-        System.out.println(organizationService.updateLogo(
-                new UpdateOrganizationLogoPO.Builder().id(1L).logo(bytes).logoExtensionName(".jpg").build()));
+        System.out.println(organizationService.updateLogo(1L,
+                "organizations/logos/738d8e7485d3455da22765e199cc65721601000702(1).jpg"));
     }
 
     @Test

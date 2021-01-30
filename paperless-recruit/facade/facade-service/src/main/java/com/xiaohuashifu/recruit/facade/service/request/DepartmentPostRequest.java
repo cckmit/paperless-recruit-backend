@@ -20,10 +20,10 @@ import lombok.NoArgsConstructor;
 @ApiModel
 public class DepartmentPostRequest {
 
-    @ApiModelProperty(value = "部门名", example = "自然科学部")
+    @ApiModelProperty(value = "部门名", required = true, example = "自然科学部")
     private String departmentName;
 
-    @ApiModelProperty(value = "部门名缩写", example = "自科部")
+    @ApiModelProperty(value = "部门名缩写", required = true, example = "自科部")
     private String abbreviationDepartmentName;
 
 }

@@ -270,6 +270,13 @@
                 <version>1.4.1.Final</version>
             </dependency>
             <!--    MapStruct    -->
+
+            <!--   MyBatis Plus	-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>3.4.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

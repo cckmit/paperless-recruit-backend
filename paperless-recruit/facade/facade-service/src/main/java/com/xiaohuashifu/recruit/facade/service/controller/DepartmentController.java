@@ -76,12 +76,6 @@ public class DepartmentController {
         return departmentManager.getDepartment(departmentId);
     }
 
-    /**
-     * 获取组织的部门
-     *
-     * @param organizationId 组织编号
-     * @return 组织的部门列表
-     */
     @ApiOperation(value = "获取组织的部门")
     @GetMapping("/organizations/{organizationId}/departments")
     public List<DepartmentVO> listOrganizationDepartments(@ApiParam("组织编号") @PathVariable Long organizationId,

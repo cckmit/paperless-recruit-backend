@@ -36,13 +36,6 @@ public class TokenManagerImpl implements TokenManager {
         this.authenticationProcessorList = authenticationProcessorList;
     }
 
-    /**
-     * 认证
-     *
-     * @param httpHeaders HttpHeaders
-     * @param request TokenPostRequest
-     * @return TokenVO
-     */
     @Override
     public TokenVO authenticate(HttpHeaders httpHeaders, TokenPostRequest request) {
         // 进行认证
@@ -56,14 +49,10 @@ public class TokenManagerImpl implements TokenManager {
         throw new InvalidGrantException("Unsupported grant type.");
     }
 
-    /**
-     * 退出登录
-     *
-     * @param userId 用户编号
-     */
     @Override
     public void logout(Long userId) {
         String redisKey = MessageFormat.format(REFRESH_TOKEN_REDIS_KEY_PATTERN, userId);
         redisTemplate.delete(redisKey);
     }
+
 }

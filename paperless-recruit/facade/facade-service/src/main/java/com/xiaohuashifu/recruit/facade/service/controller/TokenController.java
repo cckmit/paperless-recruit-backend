@@ -31,13 +31,6 @@ public class TokenController {
         this.userContext = userContext;
     }
 
-    /**
-     * 认证接口
-     *
-     * @param httpHeaders HttpHeaders
-     * @param request 请求
-     * @return AccessTokenVO 令牌
-     */
     @ApiOperation(value = "创建令牌")
     @PostMapping("tokens")
     @ResponseStatus(HttpStatus.CREATED)
@@ -45,9 +38,6 @@ public class TokenController {
         return tokenManager.authenticate(httpHeaders, request);
     }
 
-    /**
-     * 撤销认证
-     */
     @ApiOperation(value = "删除令牌", notes = "用于退出登录，将会使得 Refresh Token 失效")
     @DeleteMapping("tokens")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -39,7 +39,6 @@ public interface DepartmentManager {
      *
      * @param departmentId 部门编号
      * @param labelName 标签名
-     * @return DepartmentVO
      */
     void removeLabel(Long departmentId, String labelName);
 

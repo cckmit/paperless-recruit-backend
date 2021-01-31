@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
 public interface OrganizationLabelService {
 
     /**
-     * 保存组织标签，初始引用数0
+     * 创建组织标签，初始引用数0
      *
      * @permission 需要管理员权限
      *
@@ -31,7 +31,7 @@ public interface OrganizationLabelService {
      * @param labelName 标签名
      * @return OrganizationLabelDTO
      */
-    Result<OrganizationLabelDTO> saveOrganizationLabel(
+    Result<OrganizationLabelDTO> createOrganizationLabel(
             @NotBlank @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH) String labelName);
 
     /**

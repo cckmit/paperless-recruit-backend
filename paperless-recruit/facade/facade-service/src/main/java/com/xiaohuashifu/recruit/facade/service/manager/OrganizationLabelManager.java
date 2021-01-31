@@ -14,8 +14,6 @@ public interface OrganizationLabelManager {
 
     OrganizationLabelVO createOrganizationLabel(CreateOrganizationLabelRequest request);
 
-    OrganizationLabelVO getOrganizationLabel(Long labelId);
-
     OrganizationLabelVO updateOrganizationLabel(Long labelId, UpdateOrganizationLabelRequest request);
 
 }

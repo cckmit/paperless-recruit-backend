@@ -10,10 +10,8 @@ import com.xiaohuashifu.recruit.facade.service.vo.OrganizationLabelVO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,17 +35,7 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
 
     @Override
     public OrganizationLabelVO createOrganizationLabel(CreateOrganizationLabelRequest request) {
-        Result<OrganizationLabelDTO> result = organizationLabelService.saveOrganizationLabel(request.getLabelName());
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        return organizationLabelAssembler.organizationLabelDTOToOrganizationLabelVO(result.getData());
-    }
-
-    @Cacheable(key = "'organizations:labels:' + #labelId")
-    @Override
-    public OrganizationLabelVO getOrganizationLabel(Long labelId) {
-        Result<OrganizationLabelDTO> result = organizationLabelService.getOrganizationLabel(labelId);
+        Result<OrganizationLabelDTO> result = organizationLabelService.createOrganizationLabel(request.getLabelName());
         if (result.isFailure()) {
             throw new ResponseEntityException(result);
         }
@@ -57,9 +45,10 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
     @CacheEvict(key = "'organizations:labels:' + #labelId", beforeInvocation = true)
     @Override
     public OrganizationLabelVO updateOrganizationLabel(Long labelId, UpdateOrganizationLabelRequest request) {
+        Result<OrganizationLabelDTO> result = null;
         if (request.getAvailable() != null) {
             if (request.getAvailable()) {
-                Result<OrganizationLabelDTO> result = organizationLabelService.enableOrganizationLabel(labelId);
+                result = organizationLabelService.enableOrganizationLabel(labelId);
                 if (result.isFailure()) {
                     throw new ResponseEntityException(result);
                 }
@@ -71,7 +60,7 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
             }
         }
 
-        return ((OrganizationLabelManager) AopContext.currentProxy()).getOrganizationLabel(labelId);
+        return organizationLabelAssembler.organizationLabelDTOToOrganizationLabelVO(result.getData());
     }
 
 }

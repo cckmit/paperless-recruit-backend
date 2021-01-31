@@ -31,7 +31,7 @@ public class OrganizationLabelServiceImplTest {
 
     @Test
     public void saveOrganizationLabel() {
-        System.out.println(organizationLabelService.saveOrganizationLabel("3131232"));
+        System.out.println(organizationLabelService.createOrganizationLabel("3131232"));
     }
 
     @Test

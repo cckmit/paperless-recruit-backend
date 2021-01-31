@@ -34,19 +34,8 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
         this.organizationService = organizationService;
     }
 
-    /**
-     * 保存组织标签，初始引用数0
-     *
-     * @permission 需要管理员权限
-     *
-     * @errorCode InvalidParameter: 标签名格式错误
-     *              OperationConflict: 标签名已经存在
-     *
-     * @param labelName 标签名
-     * @return OrganizationLabelDTO
-     */
     @Override
-    public Result<OrganizationLabelDTO> saveOrganizationLabel(String labelName) {
+    public Result<OrganizationLabelDTO> createOrganizationLabel(String labelName) {
         // 判断标签名是否已经存在
         int count = organizationLabelMapper.countByLabelName(labelName);
         if (count > 0) {

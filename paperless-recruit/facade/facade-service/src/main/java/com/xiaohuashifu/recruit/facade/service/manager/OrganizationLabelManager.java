@@ -1,0 +1,21 @@
+package com.xiaohuashifu.recruit.facade.service.manager;
+
+import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationLabelRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationLabelRequest;
+import com.xiaohuashifu.recruit.facade.service.vo.OrganizationLabelVO;
+
+/**
+ * 描述：组织标签管理器
+ *
+ * @author xhsf
+ * @create 2021/1/9 14:49
+ */
+public interface OrganizationLabelManager {
+
+    OrganizationLabelVO createOrganizationLabel(CreateOrganizationLabelRequest request);
+
+    OrganizationLabelVO getOrganizationLabel(Long labelId);
+
+    OrganizationLabelVO updateOrganizationLabel(Long labelId, UpdateOrganizationLabelRequest request);
+
+}

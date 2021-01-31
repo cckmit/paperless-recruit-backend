@@ -50,7 +50,7 @@ public class DepartmentController {
         return departmentManager.createDepartment(organizationContext.getOrganizationId(), request);
     }
 
-    @ApiOperation(value = "添加部门标签", notes = "Role: organization")
+    @ApiOperation(value = "添加部门的标签", notes = "Role: organization")
     @PostMapping("/departments/{departmentId}/labels")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('organization')")
@@ -60,7 +60,7 @@ public class DepartmentController {
         return departmentManager.addLabel(departmentId, request);
     }
 
-    @ApiOperation(value = "移除部门标签", notes = "Role: organization")
+    @ApiOperation(value = "移除部门的标签", notes = "Role: organization")
     @DeleteMapping("/departments/{departmentId}/labels/{labelName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('organization')")

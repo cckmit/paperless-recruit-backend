@@ -60,6 +60,24 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     }
 
     /**
+     * 获取组织标签
+     *
+     * @errorCode InvalidParameter: 标签名格式错误
+     *              NotFound: 组织标签不存在
+     *
+     * @param id 组织标签编号
+     * @return OrganizationLabelDTO
+     */
+    @Override
+    public Result<OrganizationLabelDTO> getOrganizationLabel(Long id) {
+        OrganizationLabelDO organizationLabelDO = organizationLabelMapper.getOrganizationLabel(id);
+        if (organizationLabelDO == null) {
+            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+        }
+        return Result.success(organizationLabelDO2OrganizationLabelDTO(organizationLabelDO));
+    }
+
+    /**
      * 查询组织标签
      *
      * @errorCode InvalidParameter: 查询参数格式错误
@@ -198,23 +216,6 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
         // 添加标签引用数量
         organizationLabelMapper.increaseReferenceNumber(organizationLabelDO.getId());
         return getOrganizationLabel(organizationLabelDO.getId());
-    }
-
-    /**
-     * 获取组织标签
-     *
-     * @errorCode InvalidParameter.NotFound: 该编号的组织标签不存在
-     *
-     * @param id 组织编号
-     * @return Result<OrganizationLabelDTO>
-     */
-    private Result<OrganizationLabelDTO> getOrganizationLabel(Long id) {
-        OrganizationLabelDO organizationLabelDO = organizationLabelMapper.getOrganizationLabel(id);
-        if (organizationLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND,
-                    "The organization does not exist.");
-        }
-        return Result.success(organizationLabelDO2OrganizationLabelDTO(organizationLabelDO));
     }
 
     /**

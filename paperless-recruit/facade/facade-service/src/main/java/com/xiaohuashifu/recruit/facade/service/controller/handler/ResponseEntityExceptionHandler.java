@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.facade.service.controller.v1.handler;
+package com.xiaohuashifu.recruit.facade.service.controller.handler;
 
 import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import org.springframework.core.annotation.Order;

@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.facade.service.controller.v1;
+package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
@@ -36,6 +36,12 @@ public class DepartmentController {
         this.organizationContext = organizationContext;
     }
 
+    /**
+     * 创建部门
+     *
+     * @param request DepartmentPostRequest
+     * @return DepartmentVO
+     */
     @ApiOperation(value = "创建部门")
     @PostMapping("/departments")
     @ResponseStatus(HttpStatus.CREATED)

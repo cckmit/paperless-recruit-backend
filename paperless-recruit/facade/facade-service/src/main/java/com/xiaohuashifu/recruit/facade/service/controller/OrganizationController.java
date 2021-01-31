@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.facade.service.controller.v1;
+package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;

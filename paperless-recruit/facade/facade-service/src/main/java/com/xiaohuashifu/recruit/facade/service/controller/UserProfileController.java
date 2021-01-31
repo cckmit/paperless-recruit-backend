@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.facade.service.controller.v1;
+package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.UserProfileManager;

@@ -42,10 +42,4 @@ public class OrganizationPatchRequest {
             example = "organizations/logos/738d8e7485d3455da22765e199cc65721601000702(1).jpg")
     private String logoUrl;
 
-//    /**
-//     * 组织标签
-//     */
-//    @ApiModelProperty(value = "组织标签", example = "科技, 竞赛")
-//    private Set<String> labels;
-
 }

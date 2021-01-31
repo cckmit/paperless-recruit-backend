@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 /**
  * 描述：部门传输对象
@@ -63,6 +63,6 @@ public class DepartmentDTO implements Serializable {
     /**
      * 部门标签
      */
-    private Set<String> labels;
+    private List<String> labels;
 
 }

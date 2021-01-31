@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 /**
  * 描述：部门
@@ -26,7 +26,7 @@ public class DepartmentDO {
     private String introduction;
     private String logoUrl;
     private Integer numberOfMembers;
-    private Set<String> labels;
+    private List<String> labels;
     private Boolean deactivated;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

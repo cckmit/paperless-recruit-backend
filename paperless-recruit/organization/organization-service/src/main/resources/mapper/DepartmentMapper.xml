@@ -11,7 +11,7 @@
         <result property="logoUrl" column="logo_url"/>
         <result property="numberOfMembers" column="number_of_members"/>
         <result property="labels" column="labels"
-                typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.StringSetTypeHandler"/>
+                typeHandler="com.xiaohuashifu.recruit.common.mybatis.type.StringListTypeHandler"/>
         <result property="deactivated" column="is_deactivated"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>

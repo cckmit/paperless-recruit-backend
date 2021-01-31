@@ -7,6 +7,7 @@ import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
 import com.xiaohuashifu.recruit.facade.service.manager.DepartmentManager;
 import com.xiaohuashifu.recruit.facade.service.request.BaseQueryRequest;
 import com.xiaohuashifu.recruit.facade.service.request.DepartmentLabelPostRequest;
+import com.xiaohuashifu.recruit.facade.service.request.DepartmentPatchRequest;
 import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.List;
 @ApiSupport(author = "XHSF")
 @Api(tags = "部门")
 @RestController
+@Validated
 public class DepartmentController {
 
     private final DepartmentManager departmentManager;
@@ -39,7 +42,7 @@ public class DepartmentController {
         this.organizationContext = organizationContext;
     }
 
-    @ApiOperation(value = "创建部门")
+    @ApiOperation(value = "创建部门", notes = "Role: organization")
     @PostMapping("/departments")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('organization')")
@@ -47,14 +50,30 @@ public class DepartmentController {
         return departmentManager.createDepartment(organizationContext.getOrganizationId(), request);
     }
 
-    @ApiOperation(value = "添加部门标签")
+    @ApiOperation(value = "添加部门标签", notes = "Role: organization")
     @PostMapping("/departments/{departmentId}/labels")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('organization')")
     @Owner(id = "#departmentId", context = DepartmentContext.class)
     public DepartmentVO addLabel(@ApiParam("部门编号") @PathVariable Long departmentId,
-                                           @ApiParam("标签") @RequestBody DepartmentLabelPostRequest request) {
+                                 @RequestBody DepartmentLabelPostRequest request) {
         return departmentManager.addLabel(departmentId, request);
+    }
+
+    @ApiOperation(value = "移除部门标签", notes = "Role: organization")
+    @DeleteMapping("/departments/{departmentId}/labels/{labelName}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('organization')")
+    @Owner(id = "#departmentId", context = DepartmentContext.class)
+    public void removeLabel(@ApiParam("部门编号") @PathVariable Long departmentId,
+                                    @ApiParam("标签名") @PathVariable String labelName) {
+        departmentManager.removeLabel(departmentId, labelName);
+    }
+
+    @ApiOperation(value = "获取部门")
+    @GetMapping("/departments/{departmentId}")
+    public DepartmentVO removeLabel(@ApiParam("部门编号") @PathVariable Long departmentId) {
+        return departmentManager.getDepartment(departmentId);
     }
 
     /**
@@ -74,4 +93,14 @@ public class DepartmentController {
                 .build();
         return departmentManager.listDepartments(departmentQuery);
     }
+
+    @ApiOperation(value = "更新部门", notes = "Role: organization")
+    @PatchMapping("/departments/{departmentId}")
+    @PreAuthorize("hasRole('organization')")
+    @Owner(id = "#departmentId", context = DepartmentContext.class)
+    public DepartmentVO updateDepartment(@ApiParam("部门编号") @PathVariable Long departmentId,
+                            @Validated @RequestBody DepartmentPatchRequest request) {
+        return departmentManager.updateDepartment(departmentId, request);
+    }
+
 }

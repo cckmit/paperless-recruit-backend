@@ -282,6 +282,11 @@ public enum ErrorCodeEnum implements Serializable {
     OPERATION_CONFLICT_LINKED(HttpStatus.CONFLICT,
             "OperationConflict.Linked", "Request was denied due to linked."),
 
+    /**
+     * 无法处理
+     */
+    UNPROCESSABLE_ENTITY(HttpStatus.UNPROCESSABLE_ENTITY,
+            "UnprocessableEntity", "Unprocessable Entity."),
 
     /**
      * 无法处理，非法参数

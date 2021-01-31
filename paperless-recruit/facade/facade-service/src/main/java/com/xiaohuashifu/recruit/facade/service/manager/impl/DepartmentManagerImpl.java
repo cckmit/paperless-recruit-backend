@@ -6,12 +6,14 @@ import com.xiaohuashifu.recruit.facade.service.assembler.DepartmentAssembler;
 import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.DepartmentManager;
 import com.xiaohuashifu.recruit.facade.service.request.DepartmentLabelPostRequest;
+import com.xiaohuashifu.recruit.facade.service.request.DepartmentPatchRequest;
 import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -62,6 +64,17 @@ public class DepartmentManagerImpl implements DepartmentManager {
         return departmentAssembler.departmentDTOToDepartmentVO(result.getData());
     }
 
+    @Caching(evict = {
+            @CacheEvict(key = "'departments:' + #departmentId")
+    })
+    @Override
+    public void removeLabel(Long departmentId, String labelName) {
+        Result<DepartmentDTO> result = departmentService.removeLabel(departmentId, labelName);
+        if (result.isFailure()) {
+            throw new ResponseEntityException(result);
+        }
+    }
+
     @Cacheable(key = "'departments:' + #departmentId")
     @Override
     public DepartmentVO getDepartment(Long departmentId) {
@@ -83,10 +96,50 @@ public class DepartmentManagerImpl implements DepartmentManager {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(key = "'organizations:' + #organizationId + ':departments'")
+    @Caching(evict = {
+            @CacheEvict(key = "'departments:' + #departmentId", beforeInvocation = true)
+    })
     @Override
-    public List<DepartmentVO> listDepartmentsByOrganizationId(Long organizationId) {
-//        departmentService.listDepartments()
-        return null;
+    public DepartmentVO updateDepartment(Long departmentId, DepartmentPatchRequest request) {
+        if (request.getDepartmentName() != null) {
+            Result<DepartmentDTO> result =
+                    departmentService.updateDepartmentName(departmentId, request.getDepartmentName());
+            if (result.isFailure()) {
+                throw new ResponseEntityException(result);
+            }
+        }
+
+        if (request.getAbbreviationDepartmentName() != null) {
+            Result<DepartmentDTO> result = departmentService.updateAbbreviationDepartmentName(
+                    departmentId, request.getAbbreviationDepartmentName());
+            if (result.isFailure()) {
+                throw new ResponseEntityException(result);
+            }
+        }
+
+        if (request.getIntroduction() != null) {
+            Result<DepartmentDTO> result =
+                    departmentService.updateIntroduction(departmentId, request.getIntroduction());
+            if (result.isFailure()) {
+                throw new ResponseEntityException(result);
+            }
+        }
+
+        if (request.getLogoUrl() != null) {
+            Result<DepartmentDTO> result = departmentService.updateLogo(departmentId, request.getLogoUrl());
+            if (result.isFailure()) {
+                throw new ResponseEntityException(result);
+            }
+        }
+
+        if (request.getDeactivated() != null) {
+            Result<DepartmentDTO> result = departmentService.deactivateDepartment(departmentId);
+            if (result.isFailure()) {
+                throw new ResponseEntityException(result);
+            }
+        }
+
+        return ((DepartmentManager) AopContext.currentProxy()).getDepartment(departmentId);
     }
+
 }

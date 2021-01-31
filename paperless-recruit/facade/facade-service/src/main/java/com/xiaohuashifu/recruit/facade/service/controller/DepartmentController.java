@@ -1,9 +1,12 @@
 package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.xiaohuashifu.recruit.facade.service.authorize.DepartmentContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
+import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
 import com.xiaohuashifu.recruit.facade.service.manager.DepartmentManager;
 import com.xiaohuashifu.recruit.facade.service.request.BaseQueryRequest;
+import com.xiaohuashifu.recruit.facade.service.request.DepartmentLabelPostRequest;
 import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
@@ -36,18 +39,22 @@ public class DepartmentController {
         this.organizationContext = organizationContext;
     }
 
-    /**
-     * 创建部门
-     *
-     * @param request DepartmentPostRequest
-     * @return DepartmentVO
-     */
     @ApiOperation(value = "创建部门")
     @PostMapping("/departments")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('organization')")
     public DepartmentVO createDepartment(@RequestBody DepartmentPostRequest request) {
         return departmentManager.createDepartment(organizationContext.getOrganizationId(), request);
+    }
+
+    @ApiOperation(value = "添加部门标签")
+    @PostMapping("/departments/{departmentId}/labels")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('organization')")
+    @Owner(id = "#departmentId", context = DepartmentContext.class)
+    public DepartmentVO addLabel(@ApiParam("部门编号") @PathVariable Long departmentId,
+                                           @ApiParam("标签") @RequestBody DepartmentLabelPostRequest request) {
+        return departmentManager.addLabel(departmentId, request);
     }
 
     /**

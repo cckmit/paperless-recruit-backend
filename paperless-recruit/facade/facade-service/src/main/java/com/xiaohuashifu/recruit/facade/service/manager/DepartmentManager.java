@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.manager;
 
+import com.xiaohuashifu.recruit.facade.service.request.DepartmentLabelPostRequest;
 import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
@@ -15,6 +16,10 @@ import java.util.List;
 public interface DepartmentManager {
 
     DepartmentVO createDepartment(Long organizationId, DepartmentPostRequest request);
+
+    DepartmentVO addLabel(Long departmentId, DepartmentLabelPostRequest request);
+
+    DepartmentVO getDepartment(Long departmentId);
 
     List<DepartmentVO> listDepartments(DepartmentQuery query);
 

@@ -3,9 +3,8 @@ package com.xiaohuashifu.recruit.facade.service.request;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -17,8 +16,7 @@ import javax.validation.constraints.NotNull;
  * @author xhsf
  * @create 2021/1/18 16:01
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel

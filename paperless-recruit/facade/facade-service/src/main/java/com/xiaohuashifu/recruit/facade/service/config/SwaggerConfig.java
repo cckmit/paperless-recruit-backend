@@ -24,7 +24,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.xiaohuashifu.recruit.facade.service.controller.v1"))
+                .apis(RequestHandlerSelectors.basePackage("com.xiaohuashifu.recruit.facade.service.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

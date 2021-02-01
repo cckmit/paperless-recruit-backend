@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.facade.service.assembler.OrganizationLabelAssemb
 import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationLabelManager;
 import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationLabelRequest;
-import com.xiaohuashifu.recruit.facade.service.request.OrganizationLabelQueryRequest;
+import com.xiaohuashifu.recruit.facade.service.request.QueryOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationLabelVO;
 import com.xiaohuashifu.recruit.organization.api.dto.DisableOrganizationLabelDTO;
@@ -51,7 +51,7 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
 
     @Cacheable(key = "'organizations:labels:' + #request")
     @Override
-    public QueryResult<OrganizationLabelVO> listOrganizationLabels(OrganizationLabelQueryRequest request) {
+    public QueryResult<OrganizationLabelVO> listOrganizationLabels(QueryOrganizationLabelRequest request) {
         Result<QueryResult<OrganizationLabelDTO>> result = organizationLabelService.listOrganizationLabels(
                 organizationLabelAssembler.organizationLabelQueryToOrganizationLabelQueryRequest(request));
         if (result.isFailure()) {

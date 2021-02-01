@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.assembler;
 
-import com.xiaohuashifu.recruit.facade.service.request.OrganizationLabelQueryRequest;
+import com.xiaohuashifu.recruit.facade.service.request.QueryOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationLabelVO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationLabelQuery;
@@ -17,6 +17,6 @@ public interface OrganizationLabelAssembler {
 
     OrganizationLabelVO organizationLabelDTOToOrganizationLabelVO(OrganizationLabelDTO organizationLabelDTO);
 
-    OrganizationLabelQuery organizationLabelQueryToOrganizationLabelQueryRequest(OrganizationLabelQueryRequest request);
+    OrganizationLabelQuery organizationLabelQueryToOrganizationLabelQueryRequest(QueryOrganizationLabelRequest request);
 
 }

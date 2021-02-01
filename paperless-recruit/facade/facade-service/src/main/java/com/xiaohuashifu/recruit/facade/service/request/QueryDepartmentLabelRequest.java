@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 /**
- * 描述：组织标签查询请求
+ * 描述：部门标签查询请求
  *
  * @author xhsf
  * @create 2021/1/18 16:01
@@ -21,7 +21,7 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel
-public class OrganizationLabelQueryRequest {
+public class QueryDepartmentLabelRequest {
 
     @NotNull
     @Positive

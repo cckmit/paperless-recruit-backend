@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.organization.service.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.DepartmentLabelDO;
 
@@ -11,7 +12,11 @@ import com.xiaohuashifu.recruit.organization.service.do0.DepartmentLabelDO;
  */
 public interface DepartmentLabelMapper extends BaseMapper<DepartmentLabelDO> {
 
-    DepartmentLabelDO selectByLabelName(String labelName);
+    default DepartmentLabelDO selectByLabelName(String labelName) {
+        LambdaQueryWrapper<DepartmentLabelDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(DepartmentLabelDO::getLabelName, labelName);
+        return selectOne(wrapper);
+    }
 
     int increaseReferenceNumber(Long id);
 

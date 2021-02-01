@@ -307,6 +307,12 @@ public enum ErrorCodeEnum implements Serializable {
             "UnprocessableEntity.NotExist", "Unprocessable Entity."),
 
     /**
+     * 无法处理，不可用
+     */
+    UNPROCESSABLE_ENTITY_UNAVAILABLE(HttpStatus.UNPROCESSABLE_ENTITY,
+            "UnprocessableEntity.Unavailable", "Unprocessable Entity."),
+
+    /**
      * 太多请求
      */
     TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "TooManyRequests", "Too many requests."),

@@ -6,6 +6,7 @@ import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
+import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
@@ -145,8 +146,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
 
         // 判断该标签是否可用
-        Result<Void> checkOrganizationLabelResult = organizationLabelService.isValidOrganizationLabel(label);
-        if (!checkOrganizationLabelResult.isSuccess()) {
+        OrganizationLabelDTO organizationLabelDTO =
+                organizationLabelService.getOrganizationLabelByLabelName(label).getData();
+        if (organizationLabelDTO == null || !organizationLabelDTO.getAvailable()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_AVAILABLE, "The label unavailable.");
         }
 

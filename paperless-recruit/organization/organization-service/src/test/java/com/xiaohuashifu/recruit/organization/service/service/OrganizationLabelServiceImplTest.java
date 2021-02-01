@@ -46,8 +46,6 @@ public class OrganizationLabelServiceImplTest {
                         .builder()
                         .pageNum(1L)
                         .pageSize(50L)
-                        .orderByReferenceNumberDesc(true)
-                        .orderByUpdateTime(true)
                         .build()));
     }
 
@@ -61,8 +59,4 @@ public class OrganizationLabelServiceImplTest {
         System.out.println(organizationLabelService.enableOrganizationLabel(4L));
     }
 
-    @Test
-    public void isValidOrganizationLabel() {
-        System.out.println(organizationLabelService.isValidOrganizationLabel("创业"));
-    }
 }

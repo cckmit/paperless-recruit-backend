@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
-import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.OrganizationLabelAssembler;
@@ -54,7 +53,7 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
     @Cacheable(key = "'organizations:labels:' + #request")
     @Override
     public QueryResult<OrganizationLabelVO> listOrganizationLabels(BaseQueryRequest request) {
-        Result<PageInfo<OrganizationLabelDTO>> result = organizationLabelService.listOrganizationLabels(
+        Result<QueryResult<OrganizationLabelDTO>> result = organizationLabelService.listOrganizationLabels(
                 OrganizationLabelQuery.builder()
                         .pageNum(Long.valueOf(request.getPageNum()))
                         .pageSize(Long.valueOf(request.getPageSize()))
@@ -62,11 +61,11 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
         if (result.isFailure()) {
             throw new ResponseEntityException(result);
         }
-        PageInfo<OrganizationLabelDTO> data = result.getData();
-        List<OrganizationLabelVO> organizationLabelVOS = data.getList().stream()
+        QueryResult<OrganizationLabelDTO> data = result.getData();
+        List<OrganizationLabelVO> organizationLabelVOS = data.getResult().stream()
                 .map(organizationLabelAssembler::organizationLabelDTOToOrganizationLabelVO)
                 .collect(Collectors.toList());
-        return new QueryResult<>(Long.valueOf(data.getTotal()).intValue(), organizationLabelVOS);
+        return new QueryResult<>(data.getTotalCount(), organizationLabelVOS);
     }
 
     @CacheEvict(key = "'organizations:labels:' + #labelId", beforeInvocation = true)

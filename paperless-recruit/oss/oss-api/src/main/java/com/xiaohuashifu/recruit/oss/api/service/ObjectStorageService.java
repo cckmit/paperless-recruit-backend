@@ -7,6 +7,7 @@ import com.xiaohuashifu.recruit.oss.api.request.PreUploadObjectRequest;
 import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 /**
  * 描述：对象存储服务
@@ -31,46 +32,50 @@ public interface ObjectStorageService {
     /**
      * 删除对象
      *
-     * @errorCode UnprocessableEntity.NotExist 所要删除的对象不存在
+     * @errorCode UnprocessableEntity.InvalidParameter: 无法处理，非法参数
+     *              UnprocessableEntity.NotExist 所要删除的对象不存在
      *              OperationConflict.Deleted 对象已经删除
      *              InternalError 删除对象失败
      *
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 删除结果
      */
-    Result<Void> deleteObject(String objectName);
+    Result<Void> deleteObject(@NotNull String objectName);
 
     /**
      * 删除对象
      *
-     * @errorCode UnprocessableEntity.NotExist 所要删除的对象不存在
+     * @errorCode UnprocessableEntity.InvalidParameter: 无法处理，非法参数
+     *              UnprocessableEntity.NotExist 所要删除的对象不存在
      *              OperationConflict.Deleted 对象已经删除
      *              InternalError 删除对象失败
      *
      * @param id 对象编号
      * @return 删除结果
      */
-    Result<Void> deleteObject(Long id);
+    Result<Void> deleteObject(@NotNull @Positive Long id);
 
     /**
      * 获取对象信息
      *
-     * @errorCode NotFound: 对象信息不存在
+     * @errorCode UnprocessableEntity.InvalidParameter: 无法处理，非法参数
+     *              NotFound: 对象信息不存在
      *
      * @param objectName 对象名，需要完整路径，如 users/avatars/1321.jpg
      * @return 响应
      */
-    Result<ObjectInfoResponse> getObjectInfo(String objectName);
+    Result<ObjectInfoResponse> getObjectInfo(@NotNull String objectName);
 
     /**
      * 获取对象信息
      *
-     * @errorCode NotFound: 对象信息不存在
+     * @errorCode UnprocessableEntity.InvalidParameter: 无法处理，非法参数
+     *              NotFound: 对象信息不存在
      *
      * @param id 对象编号
      * @return 响应
      */
-    Result<ObjectInfoResponse> getObjectInfo(Long id);
+    Result<ObjectInfoResponse> getObjectInfo(@NotNull @Positive Long id);
 
     /**
      * 列出对象信息
@@ -85,7 +90,8 @@ public interface ObjectStorageService {
     /**
      * 链接对象，对象若不链接会被自动删除
      *
-     * @errorCode UnprocessableEntity.NotExist 所要链接的对象不存在
+     * @errorCode UnprocessableEntity.InvalidParameter: 无法处理，非法参数
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
      *              OperationConflict.Linked 对象已经链接
      *              OperationConflict.Deleted 对象已经删除
      *              InternalError 链接对象失败
@@ -93,12 +99,13 @@ public interface ObjectStorageService {
      * @param objectName 对象名
      * @return 链接后的对象信息
      */
-    Result<ObjectInfoResponse> linkObject(String objectName);
+    Result<ObjectInfoResponse> linkObject(@NotNull String objectName);
 
     /**
      * 链接对象，对象若不链接会被自动删除
      *
-     * @errorCode UnprocessableEntity.NotExist 所要链接的对象不存在
+     * @errorCode UnprocessableEntity.InvalidParameter: 无法处理，非法参数
+     *              UnprocessableEntity.NotExist 所要链接的对象不存在
      *              OperationConflict.Linked 对象已经链接
      *              OperationConflict.Deleted 对象已经删除
      *              InternalError 链接对象失败
@@ -106,6 +113,6 @@ public interface ObjectStorageService {
      * @param id 对象编号
      * @return 链接后的对象信息
      */
-    Result<ObjectInfoResponse> linkObject(Long id);
+    Result<ObjectInfoResponse> linkObject(@NotNull @Positive Long id);
 
 }

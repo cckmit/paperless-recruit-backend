@@ -33,12 +33,4 @@ public interface ObjectInfoMapper extends BaseMapper<ObjectInfoDO> {
         return page.getRecords();
     }
 
-    default QueryResult<ObjectInfoDO> selectList(ListObjectInfosRequest request) {
-        QueryWrapper<ObjectInfoDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().likeRight(ObjectInfoDO::getObjectName, request.getBaseObjectName());
-        Page<ObjectInfoDO> page = selectPage(
-                new Page<>(request.getPageNum(), request.getPageSize(), true), queryWrapper);
-        return new QueryResult<>((int) page.getTotal(), page.getRecords());
-    }
-
 }

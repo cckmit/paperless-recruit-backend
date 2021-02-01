@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.oss.service.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
@@ -125,12 +127,17 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     @Override
     public Result<QueryResult<ObjectInfoResponse>> listObjectInfos(ListObjectInfosRequest request) {
-        QueryResult<ObjectInfoDO> objectInfoDOQueryResult = objectInfoMapper.selectList(request);
-        List<ObjectInfoResponse> objectInfoResponses = objectInfoDOQueryResult.getResult().stream()
+        LambdaQueryWrapper<ObjectInfoDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.likeRight(request.getBaseObjectName() != null, ObjectInfoDO::getObjectName,
+                request.getBaseObjectName());
+        Page<ObjectInfoDO> page = new Page<>(request.getPageNum(), request.getPageSize(), true);
+        objectInfoMapper.selectPage(page, wrapper);
+
+        List<ObjectInfoResponse> objectInfoResponses = page.getRecords().stream()
                 .map(objectInfoAssembler::objectInfoDOToObjectInfoResponse)
                 .collect(Collectors.toList());
         QueryResult<ObjectInfoResponse> objectInfoResponseQueryResult =
-                new QueryResult<>(objectInfoDOQueryResult.getTotalCount(), objectInfoResponses);
+                new QueryResult<>(page.getTotal(), objectInfoResponses);
         return Result.success(objectInfoResponseQueryResult);
     }
 

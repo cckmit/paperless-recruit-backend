@@ -1,5 +1,10 @@
 package com.xiaohuashifu.recruit.organization.api.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +13,12 @@ import java.io.Serializable;
  * @author xhsf
  * @create 2020/12/14 0:51
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DisableDepartmentLabelDTO implements Serializable {
+
     /**
      * 部门标签对象
      */
@@ -19,32 +29,4 @@ public class DisableDepartmentLabelDTO implements Serializable {
      */
     private Integer deletedNumber;
 
-    public DisableDepartmentLabelDTO(DepartmentLabelDTO departmentLabelDTO, Integer deletedNumber) {
-        this.departmentLabelDTO = departmentLabelDTO;
-        this.deletedNumber = deletedNumber;
-    }
-
-    public DepartmentLabelDTO getDepartmentLabelDTO() {
-        return departmentLabelDTO;
-    }
-
-    public void setDepartmentLabelDTO(DepartmentLabelDTO departmentLabelDTO) {
-        this.departmentLabelDTO = departmentLabelDTO;
-    }
-
-    public Integer getDeletedNumber() {
-        return deletedNumber;
-    }
-
-    public void setDeletedNumber(Integer deletedNumber) {
-        this.deletedNumber = deletedNumber;
-    }
-
-    @Override
-    public String toString() {
-        return "DisableDepartmentLabelDTO{" +
-                "departmentLabelDTO=" + departmentLabelDTO +
-                ", deletedNumber=" + deletedNumber +
-                '}';
-    }
 }

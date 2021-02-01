@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
-import com.xiaohuashifu.recruit.organization.api.po.UpdateDepartmentLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -8,8 +7,6 @@ import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -62,7 +59,7 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void listDepartments() {
-        System.out.println(departmentService.listDepartments(new DepartmentQuery.Builder()
+        System.out.println(departmentService.listDepartments(DepartmentQuery.builder()
                 .pageNum(1L)
                 .pageSize(50L)
                 .build()));

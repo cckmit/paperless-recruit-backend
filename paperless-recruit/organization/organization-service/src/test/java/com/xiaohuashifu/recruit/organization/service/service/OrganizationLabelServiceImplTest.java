@@ -42,8 +42,8 @@ public class OrganizationLabelServiceImplTest {
     @Test
     public void listOrganizationLabels() {
         System.out.println(organizationLabelService.listOrganizationLabels(
-                new OrganizationLabelQuery
-                        .Builder()
+                OrganizationLabelQuery
+                        .builder()
                         .pageNum(1L)
                         .pageSize(50L)
                         .orderByReferenceNumberDesc(true)

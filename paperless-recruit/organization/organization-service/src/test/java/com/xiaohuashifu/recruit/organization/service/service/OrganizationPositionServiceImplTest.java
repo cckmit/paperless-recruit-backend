@@ -51,7 +51,7 @@ public class OrganizationPositionServiceImplTest {
     @Test
     public void listOrganizationPositions() {
         System.out.println(organizationPositionService.listOrganizationPositions
-                (new OrganizationPositionQuery.Builder().pageNum(1L).pageSize(50L).organizationId(1L).build()));
+                (OrganizationPositionQuery.builder().pageNum(1L).pageSize(50L).organizationId(1L).build()));
     }
 
     @Test

@@ -160,7 +160,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         // 创建组织成员
         Long userId = organizationMemberInvitationDO.getUserId();
         Long organizationId = organizationMemberInvitationDO.getOrganizationId();
-        OrganizationMemberDO organizationMemberDO = new OrganizationMemberDO.Builder()
+        OrganizationMemberDO organizationMemberDO = OrganizationMemberDO.builder()
                 .userId(userId)
                 .organizationId(organizationId)
                 .build();
@@ -190,8 +190,8 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         List<OrganizationMemberDO> organizationMemberDOList = organizationMemberMapper.listOrganizationMembers(query);
         List<OrganizationMemberDTO> organizationMemberDTOList = organizationMemberDOList
                 .stream()
-                .map(organizationMemberDO -> new OrganizationMemberDTO
-                        .Builder()
+                .map(organizationMemberDO -> OrganizationMemberDTO
+                        .builder()
                         .id(organizationMemberDO.getId())
                         .userId(organizationMemberDO.getUserId())
                         .organizationId(organizationMemberDO.getOrganizationId())
@@ -221,8 +221,8 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
                 organizationMemberInvitationMapper.listOrganizationMemberInvitations(query);
         List<OrganizationMemberInvitationDTO> organizationMemberInvitationDTOList =
                 organizationMemberInvitationDOList.stream()
-                .map(organizationMemberInvitationDO -> new OrganizationMemberInvitationDTO
-                        .Builder()
+                .map(organizationMemberInvitationDO -> OrganizationMemberInvitationDTO
+                        .builder()
                         .id(organizationMemberInvitationDO.getId())
                         .userId(organizationMemberInvitationDO.getUserId())
                         .organizationId(organizationMemberInvitationDO.getOrganizationId())
@@ -477,7 +477,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         }
 
         // 添加组织成员邀请记录
-        OrganizationMemberInvitationDO organizationMemberInvitationDO = new OrganizationMemberInvitationDO.Builder()
+        OrganizationMemberInvitationDO organizationMemberInvitationDO = OrganizationMemberInvitationDO.builder()
                 .organizationId(organizationId)
                 .userId(userId)
                 .invitationTime(LocalDateTime.now())
@@ -533,7 +533,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     private Result<OrganizationMemberDTO> getOrganizationMember(Long organizationMemberId) {
         OrganizationMemberDO organizationMemberDO =
                 organizationMemberMapper.getOrganizationMember(organizationMemberId);
-        OrganizationMemberDTO organizationMemberDTO = new OrganizationMemberDTO.Builder()
+        OrganizationMemberDTO organizationMemberDTO = OrganizationMemberDTO.builder()
                 .id(organizationMemberDO.getId())
                 .organizationId(organizationMemberDO.getOrganizationId())
                 .departmentId(organizationMemberDO.getDepartmentId())
@@ -554,7 +554,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             Long organizationMemberInvitationId) {
         OrganizationMemberInvitationDO organizationMemberInvitationDO =
                 organizationMemberInvitationMapper.getOrganizationMemberInvitation(organizationMemberInvitationId);
-        OrganizationMemberInvitationDTO organizationMemberInvitationDTO = new OrganizationMemberInvitationDTO.Builder()
+        OrganizationMemberInvitationDTO organizationMemberInvitationDTO = OrganizationMemberInvitationDTO.builder()
                 .id(organizationMemberInvitationDO.getId())
                 .organizationId(organizationMemberInvitationDO.getOrganizationId())
                 .userId(organizationMemberInvitationDO.getUserId())

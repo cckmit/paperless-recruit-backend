@@ -80,7 +80,7 @@ public class DepartmentController {
     @GetMapping("/organizations/{organizationId}/departments")
     public List<DepartmentVO> listOrganizationDepartments(@ApiParam("组织编号") @PathVariable Long organizationId,
                                                           BaseQueryRequest baseQueryRequest) {
-        DepartmentQuery departmentQuery = new DepartmentQuery.Builder()
+        DepartmentQuery departmentQuery = DepartmentQuery.builder()
                 .pageNum(Long.valueOf(baseQueryRequest.getPageNum()))
                 .pageSize(Long.valueOf(baseQueryRequest.getPageSize()))
                 .organizationId(organizationId)

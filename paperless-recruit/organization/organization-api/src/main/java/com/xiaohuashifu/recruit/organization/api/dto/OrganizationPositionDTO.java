@@ -1,5 +1,10 @@
 package com.xiaohuashifu.recruit.organization.api.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +13,10 @@ import java.io.Serializable;
  * @author xhsf
  * @create 2020/12/13 19:25
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrganizationPositionDTO implements Serializable {
 
     /**
@@ -30,81 +39,4 @@ public class OrganizationPositionDTO implements Serializable {
      */
     private Integer priority;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getOrganizationId() {
-        return organizationId;
-    }
-
-    public void setOrganizationId(Long organizationId) {
-        this.organizationId = organizationId;
-    }
-
-    public String getPositionName() {
-        return positionName;
-    }
-
-    public void setPositionName(String positionName) {
-        this.positionName = positionName;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationPositionDTO{" +
-                "id=" + id +
-                ", organizationId=" + organizationId +
-                ", positionName='" + positionName + '\'' +
-                ", priority=" + priority +
-                '}';
-    }
-
-    public static final class Builder {
-        private Long id;
-        private Long organizationId;
-        private String positionName;
-        private Integer priority;
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder organizationId(Long organizationId) {
-            this.organizationId = organizationId;
-            return this;
-        }
-
-        public Builder positionName(String positionName) {
-            this.positionName = positionName;
-            return this;
-        }
-
-        public Builder priority(Integer priority) {
-            this.priority = priority;
-            return this;
-        }
-
-        public OrganizationPositionDTO build() {
-            OrganizationPositionDTO organizationPositionDTO = new OrganizationPositionDTO();
-            organizationPositionDTO.setId(id);
-            organizationPositionDTO.setOrganizationId(organizationId);
-            organizationPositionDTO.setPositionName(positionName);
-            organizationPositionDTO.setPriority(priority);
-            return organizationPositionDTO;
-        }
-    }
 }

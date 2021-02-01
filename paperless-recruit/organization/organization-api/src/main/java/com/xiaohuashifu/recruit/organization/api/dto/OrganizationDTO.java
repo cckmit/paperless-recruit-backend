@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 /**
  * 描述：组织传输对象
@@ -63,7 +63,7 @@ public class OrganizationDTO implements Serializable {
     /**
      * 组织标签
      */
-    private Set<String> labels;
+    private List<String> labels;
 
     /**
      * 组织是否有效

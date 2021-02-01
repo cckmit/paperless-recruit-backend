@@ -44,13 +44,13 @@ public class OrganizationMemberServiceImplTest {
     @Test
     public void listOrganizationMemberDTO() {
         System.out.println(organizationMemberService.listOrganizationMember(
-                new OrganizationMemberQuery.Builder().pageNum(1L).pageSize(50L).organizationId(1L).build()));
+                OrganizationMemberQuery.builder().pageNum(1L).pageSize(50L).organizationId(1L).build()));
     }
 
     @Test
     public void listOrganizationMemberInvitationDTO() {
         System.out.println(organizationMemberService.listOrganizationMemberInvitation(
-                new OrganizationMemberInvitationQuery.Builder()
+                OrganizationMemberInvitationQuery.builder()
                         .pageNum(1L)
                         .pageSize(50L)
                         .organizationId(1L)

@@ -68,7 +68,7 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
         }
 
         // 插入职位
-        OrganizationPositionDO organizationPositionDO = new OrganizationPositionDO.Builder()
+        OrganizationPositionDO organizationPositionDO = OrganizationPositionDO.builder()
                 .organizationId(organizationId)
                 .positionName(positionName)
                 .priority(priority).build();
@@ -227,7 +227,7 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
      */
     private OrganizationPositionDTO organizationPositionDO2OrganizationPositionDTO(
             OrganizationPositionDO organizationPositionDO) {
-        return new OrganizationPositionDTO.Builder()
+        return OrganizationPositionDTO.builder()
                 .id(organizationPositionDO.getId())
                 .organizationId(organizationPositionDO.getOrganizationId())
                 .positionName(organizationPositionDO.getPositionName())

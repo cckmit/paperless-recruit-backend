@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 /**
  * 描述：组织
@@ -27,7 +27,7 @@ public class OrganizationDO {
     private String logoUrl;
     private Integer numberOfMembers;
     private Integer numberOfDepartments;
-    private Set<String> labels;
+    private List<String> labels;
     private Boolean available;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

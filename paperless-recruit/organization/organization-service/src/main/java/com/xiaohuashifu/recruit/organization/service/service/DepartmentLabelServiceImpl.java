@@ -54,7 +54,7 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
         }
 
         // 保存标签
-        DepartmentLabelDO departmentLabelDO = new DepartmentLabelDO.Builder().labelName(labelName).build();
+        DepartmentLabelDO departmentLabelDO = DepartmentLabelDO.builder().labelName(labelName).build();
         departmentLabelMapper.insertDepartmentLabel(departmentLabelDO);
         return getDepartmentLabel(departmentLabelDO.getId());
     }
@@ -191,7 +191,7 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
 
         // 若不存在先添加标签
         if (departmentLabelDO == null) {
-            departmentLabelDO = new DepartmentLabelDO.Builder().labelName(labelName).build();
+            departmentLabelDO = DepartmentLabelDO.builder().labelName(labelName).build();
             departmentLabelMapper.insertDepartmentLabel(departmentLabelDO);
         }
 
@@ -224,8 +224,8 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
      * @return DepartmentLabelDTO
      */
     private DepartmentLabelDTO departmentLabelDO2DepartmentLabelDTO(DepartmentLabelDO departmentLabelDO) {
-        return new DepartmentLabelDTO
-                .Builder()
+        return DepartmentLabelDTO
+                .builder()
                 .id(departmentLabelDO.getId())
                 .labelName(departmentLabelDO.getLabelName())
                 .referenceNumber(departmentLabelDO.getReferenceNumber())

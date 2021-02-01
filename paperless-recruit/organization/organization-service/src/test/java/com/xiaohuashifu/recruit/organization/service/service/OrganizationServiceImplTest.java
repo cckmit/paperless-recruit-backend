@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
-import com.xiaohuashifu.recruit.organization.api.po.UpdateOrganizationLogoPO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -56,7 +55,7 @@ public class OrganizationServiceImplTest {
     @Test
     public void listOrganizations() {
         System.out.println(organizationService.listOrganizations(
-                new OrganizationQuery.Builder().pageNum(1L).pageSize(50L).build()));
+                OrganizationQuery.builder().pageNum(1L).pageSize(50L).build()));
     }
 
     @Test

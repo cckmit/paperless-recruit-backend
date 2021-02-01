@@ -55,7 +55,7 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
     @Override
     public QueryResult<OrganizationLabelVO> listOrganizationLabels(BaseQueryRequest request) {
         Result<PageInfo<OrganizationLabelDTO>> result = organizationLabelService.listOrganizationLabels(
-                new OrganizationLabelQuery.Builder()
+                OrganizationLabelQuery.builder()
                         .pageNum(Long.valueOf(request.getPageNum()))
                         .pageSize(Long.valueOf(request.getPageSize()))
                         .build());

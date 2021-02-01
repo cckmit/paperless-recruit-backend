@@ -43,7 +43,7 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
         }
 
         // 保存标签
-        OrganizationLabelDO organizationLabelDO = new OrganizationLabelDO.Builder().labelName(labelName).build();
+        OrganizationLabelDO organizationLabelDO = OrganizationLabelDO.builder().labelName(labelName).build();
         organizationLabelMapper.insertOrganizationLabel(organizationLabelDO);
         return getOrganizationLabel(organizationLabelDO.getId());
     }
@@ -198,7 +198,7 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
 
         // 若不存在先添加标签
         if (organizationLabelDO == null) {
-            organizationLabelDO = new OrganizationLabelDO.Builder().labelName(labelName).build();
+            organizationLabelDO = OrganizationLabelDO.builder().labelName(labelName).build();
             organizationLabelMapper.insertOrganizationLabel(organizationLabelDO);
         }
 
@@ -214,8 +214,8 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
      * @return OrganizationLabelDTO
      */
     private OrganizationLabelDTO organizationLabelDO2OrganizationLabelDTO(OrganizationLabelDO organizationLabelDO) {
-        return new OrganizationLabelDTO
-                .Builder()
+        return OrganizationLabelDTO
+                .builder()
                 .id(organizationLabelDO.getId())
                 .labelName(organizationLabelDO.getLabelName())
                 .referenceNumber(organizationLabelDO.getReferenceNumber())

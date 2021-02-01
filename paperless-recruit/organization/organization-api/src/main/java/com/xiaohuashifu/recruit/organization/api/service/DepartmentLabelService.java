@@ -32,10 +32,7 @@ public interface DepartmentLabelService {
      * @return DepartmentLabelDTO
      */
     Result<DepartmentLabelDTO> saveDepartmentLabel(
-            @NotBlank(message = "The labelName can't be blank.")
-            @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of labelName must not be greater than "
-                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String labelName);
+            @NotBlank @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH) String labelName);
 
 
     /**

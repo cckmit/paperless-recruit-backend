@@ -91,7 +91,7 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
         }
 
         // 插入组织核心成员
-        OrganizationCoreMemberDO organizationCoreMemberDO = new OrganizationCoreMemberDO.Builder()
+        OrganizationCoreMemberDO organizationCoreMemberDO = OrganizationCoreMemberDO.builder()
                 .organizationId(organizationId)
                 .organizationMemberId(organizationMemberId)
                 .build();

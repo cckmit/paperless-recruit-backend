@@ -44,7 +44,7 @@ public class DepartmentLabelServiceImplTest {
 
     @Test
     public void listDepartmentLabels() {
-        System.out.println(departmentLabelService.listDepartmentLabels(new DepartmentLabelQuery.Builder()
+        System.out.println(departmentLabelService.listDepartmentLabels(DepartmentLabelQuery.builder()
                 .pageNum(1L)
                 .pageSize(50L)
                 .orderByReferenceNumberDesc(true)

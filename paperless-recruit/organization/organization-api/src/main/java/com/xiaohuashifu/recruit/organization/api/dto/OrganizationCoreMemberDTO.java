@@ -1,5 +1,10 @@
 package com.xiaohuashifu.recruit.organization.api.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +13,10 @@ import java.io.Serializable;
  * @author xhsf
  * @create 2020/12/15 16:26
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrganizationCoreMemberDTO implements Serializable {
 
     /**
@@ -25,42 +34,4 @@ public class OrganizationCoreMemberDTO implements Serializable {
      */
     private Long organizationMemberId;
 
-    public OrganizationCoreMemberDTO(Long id, Long organizationId, Long organizationMemberId) {
-        this.id = id;
-        this.organizationId = organizationId;
-        this.organizationMemberId = organizationMemberId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getOrganizationId() {
-        return organizationId;
-    }
-
-    public void setOrganizationId(Long organizationId) {
-        this.organizationId = organizationId;
-    }
-
-    public Long getOrganizationMemberId() {
-        return organizationMemberId;
-    }
-
-    public void setOrganizationMemberId(Long organizationMemberId) {
-        this.organizationMemberId = organizationMemberId;
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationCoreMemberDTO{" +
-                "id=" + id +
-                ", organizationId=" + organizationId +
-                ", organizationMemberId=" + organizationMemberId +
-                '}';
-    }
 }

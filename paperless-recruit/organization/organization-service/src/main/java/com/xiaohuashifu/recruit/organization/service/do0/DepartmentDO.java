@@ -1,5 +1,8 @@
 package com.xiaohuashifu.recruit.organization.service.do0;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +21,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("department")
 public class DepartmentDO {
     private Long id;
     private Long organizationId;
@@ -26,7 +30,9 @@ public class DepartmentDO {
     private String introduction;
     private String logoUrl;
     private Integer numberOfMembers;
+    @TableField(typeHandler = FastjsonTypeHandler.class)
     private List<String> labels;
+    @TableField("is_deactivated")
     private Boolean deactivated;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

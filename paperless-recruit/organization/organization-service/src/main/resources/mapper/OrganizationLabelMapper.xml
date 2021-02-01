@@ -15,66 +15,6 @@
         id, label_name, reference_number, is_available, create_time, update_time
     </sql>
 
-    <select id="listOrganizationLabels" resultMap="organizationLabel">
-        select <include refid="organizationLabel"/>
-        from organization_label
-        <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
-            <if test="ids != null">
-                and id in (
-                <foreach collection="ids"  item="item" index="index" separator=",">
-                    #{item}
-                </foreach>
-                )
-            </if>
-            <if test="labelName != null">
-                and label_name like "%"#{labelName}"%"
-            </if>
-            <if test="available != null">
-                and is_available = #{available}
-            </if>
-        </where>
-        <if test="orderByAvailable || orderByAvailableDesc || orderByReferenceNumber || orderByReferenceNumberDesc
-         || orderByLabelName || orderByLabelNameDesc || orderByCreateTime || orderByCreateTimeDesc
-         || orderByUpdateTime || orderByUpdateTimeDesc">
-            order by
-            <trim suffixOverrides=",">
-                <if test="orderByAvailable">
-                    is_available,
-                </if>
-                <if test="orderByAvailableDesc">
-                    is_available desc,
-                </if>
-                <if test="orderByReferenceNumber">
-                    reference_number,
-                </if>
-                <if test="orderByReferenceNumberDesc">
-                    reference_number desc,
-                </if>
-                <if test="orderByLabelName">
-                    label_name,
-                </if>
-                <if test="orderByLabelNameDesc">
-                    label_name desc,
-                </if>
-                <if test="orderByCreateTime">
-                    create_time,
-                </if>
-                <if test="orderByCreateTimeDesc">
-                    create_time desc,
-                </if>
-                <if test="orderByUpdateTime">
-                    update_time,
-                </if>
-                <if test="orderByUpdateTimeDesc">
-                    update_time desc,
-                </if>
-            </trim>
-        </if>
-    </select>
-
     <update id="increaseReferenceNumber">
         update organization_label
         set reference_number = reference_number + 1

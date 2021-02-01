@@ -26,7 +26,7 @@
         where id = #{id}
     </select>
 
-    <select id="getDepartmentLabelByLabelName" resultMap="departmentLabel">
+    <select id="selectByLabelName" resultMap="departmentLabel">
         select <include refid="departmentLabel"/>
         from department_label
         where label_name = #{labelName}

@@ -6,6 +6,7 @@ import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
+import com.xiaohuashifu.recruit.organization.api.dto.DepartmentLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
@@ -154,8 +155,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         // 判断该标签是否可用
-        Result<Void> checkDepartmentLabelResult = departmentLabelService.isValidDepartmentLabel(label);
-        if (!checkDepartmentLabelResult.isSuccess()) {
+        DepartmentLabelDTO departmentLabelDTO = departmentLabelService.getDepartmentLabelByLabelName(label).getData();
+        if (departmentLabelDTO != null && !departmentLabelDTO.getAvailable()) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_AVAILABLE, "The label unavailable.");
         }
 

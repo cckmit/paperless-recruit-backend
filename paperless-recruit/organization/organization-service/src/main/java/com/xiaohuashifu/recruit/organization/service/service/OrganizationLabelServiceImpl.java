@@ -14,6 +14,7 @@ import com.xiaohuashifu.recruit.organization.service.assembler.OrganizationLabel
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationLabelMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationLabelDO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -32,9 +33,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrganizationLabelServiceImpl implements OrganizationLabelService {
 
-    private final OrganizationLabelMapper organizationLabelMapper;
+    @Reference
+    private OrganizationService organizationService;
 
-    private final OrganizationService organizationService;
+    private final OrganizationLabelMapper organizationLabelMapper;
 
     private final OrganizationLabelAssembler organizationLabelAssembler;
 
@@ -43,12 +45,10 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     private final TransactionDefinition transactionDefinition;
 
     public OrganizationLabelServiceImpl(OrganizationLabelMapper organizationLabelMapper,
-                                        OrganizationService organizationService,
                                         OrganizationLabelAssembler organizationLabelAssembler,
                                         PlatformTransactionManager transactionManager,
                                         TransactionDefinition transactionDefinition) {
         this.organizationLabelMapper = organizationLabelMapper;
-        this.organizationService = organizationService;
         this.organizationLabelAssembler = organizationLabelAssembler;
         this.transactionManager = transactionManager;
         this.transactionDefinition = transactionDefinition;
@@ -91,7 +91,8 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     @Override
     public Result<QueryResult<OrganizationLabelDTO>> listOrganizationLabels(OrganizationLabelQuery query) {
         LambdaQueryWrapper<OrganizationLabelDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(query.getLabelName() != null, OrganizationLabelDO::getLabelName, query.getLabelName())
+        wrapper.likeRight(query.getLabelName() != null, OrganizationLabelDO::getLabelName,
+                query.getLabelName())
                 .eq(query.getAvailable() != null, OrganizationLabelDO::getAvailable, query.getAvailable());
         Page<OrganizationLabelDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
         organizationLabelMapper.selectPage(page, wrapper);
@@ -168,7 +169,7 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
             return getOrganizationLabel(id);
         } catch (RuntimeException e) {
             transactionManager.rollback(transactionStatus);
-            log.error("Disable organization label error. id=" + id, e);
+            log.error("Enable organization label error. id=" + id, e);
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
         }
     }

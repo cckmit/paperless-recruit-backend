@@ -36,7 +36,7 @@ public interface OrganizationLabelService {
     /**
      * 获取组织标签
      *
-     * @errorCode NotFound: 组织标签不存在
+     * @errorCode NotFound 组织标签不存在
      *
      * @param id 组织标签编号
      * @return OrganizationLabelDTO
@@ -46,7 +46,7 @@ public interface OrganizationLabelService {
     /**
      * 获取组织标签
      *
-     * @errorCode NotFound: 组织标签不存在
+     * @errorCode NotFound 组织标签不存在
      *
      * @param labelName 组织标签名
      * @return OrganizationLabelDTO
@@ -67,8 +67,8 @@ public interface OrganizationLabelService {
      *
      * @permission admin
      *
-     * @errorCode UnprocessableEntity.NotExist: 组织标签不存在
-     *              OperationConflict: 组织标签已经被禁用
+     * @errorCode UnprocessableEntity.NotExist 组织标签不存在
+     *              OperationConflict 组织标签已经被禁用
      *
      * @param id 组织标签编号
      * @return DisableOrganizationLabelDTO 禁用后的组织标签对象和被删除标签的社团数量
@@ -80,8 +80,8 @@ public interface OrganizationLabelService {
      *
      * @permission admin
      *
-     * @errorCode UnprocessableEntity.NotExist: 组织标签不存在
-     *              OperationConflict: 组织标签已经可用
+     * @errorCode UnprocessableEntity.NotExist 组织标签不存在
+     *              OperationConflict 组织标签已经可用
      *
      * @param id 组织标签编号
      * @return 解禁后的组织标签对象
@@ -93,7 +93,7 @@ public interface OrganizationLabelService {
      *
      * @private 内部方法
      *
-     * @errorCode UnprocessableEntity.Unavailable: 无法处理，不可用
+     * @errorCode UnprocessableEntity.Unavailable 无法处理，不可用
      *
      * @param labelName 标签名
      * @return 操作是否成功

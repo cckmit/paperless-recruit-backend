@@ -3,8 +3,8 @@ package com.xiaohuashifu.recruit.facade.service.controller;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationLabelManager;
-import com.xiaohuashifu.recruit.facade.service.request.BaseQueryRequest;
 import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationLabelRequest;
+import com.xiaohuashifu.recruit.facade.service.request.OrganizationLabelQueryRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationLabelVO;
 import io.swagger.annotations.Api;
@@ -41,8 +41,8 @@ public class OrganizationLabelController {
 
     @ApiOperation(value = "列出组织标签")
     @GetMapping("/organizations/labels")
-    public QueryResult<OrganizationLabelVO> listOrganizationLabels(BaseQueryRequest baseQueryRequest) {
-        return organizationLabelManager.listOrganizationLabels(baseQueryRequest);
+    public QueryResult<OrganizationLabelVO> listOrganizationLabels(OrganizationLabelQueryRequest request) {
+        return organizationLabelManager.listOrganizationLabels(request);
     }
 
     @ApiOperation(value = "更新组织标签", notes = "Role: admin")

@@ -5,13 +5,12 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.OrganizationLabelAssembler;
 import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationLabelManager;
-import com.xiaohuashifu.recruit.facade.service.request.BaseQueryRequest;
 import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationLabelRequest;
+import com.xiaohuashifu.recruit.facade.service.request.OrganizationLabelQueryRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationLabelVO;
 import com.xiaohuashifu.recruit.organization.api.dto.DisableOrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
-import com.xiaohuashifu.recruit.organization.api.query.OrganizationLabelQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.cache.annotation.CacheConfig;
@@ -52,12 +51,9 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
 
     @Cacheable(key = "'organizations:labels:' + #request")
     @Override
-    public QueryResult<OrganizationLabelVO> listOrganizationLabels(BaseQueryRequest request) {
+    public QueryResult<OrganizationLabelVO> listOrganizationLabels(OrganizationLabelQueryRequest request) {
         Result<QueryResult<OrganizationLabelDTO>> result = organizationLabelService.listOrganizationLabels(
-                OrganizationLabelQuery.builder()
-                        .pageNum(Long.valueOf(request.getPageNum()))
-                        .pageSize(Long.valueOf(request.getPageSize()))
-                        .build());
+                organizationLabelAssembler.organizationLabelQueryToOrganizationLabelQueryRequest(request));
         if (result.isFailure()) {
             throw new ResponseEntityException(result);
         }
@@ -65,7 +61,7 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
         List<OrganizationLabelVO> organizationLabelVOS = data.getResult().stream()
                 .map(organizationLabelAssembler::organizationLabelDTOToOrganizationLabelVO)
                 .collect(Collectors.toList());
-        return new QueryResult<>(data.getTotalCount(), organizationLabelVOS);
+        return new QueryResult<>(data.getTotal(), organizationLabelVOS);
     }
 
     @CacheEvict(key = "'organizations:labels:' + #labelId", beforeInvocation = true)

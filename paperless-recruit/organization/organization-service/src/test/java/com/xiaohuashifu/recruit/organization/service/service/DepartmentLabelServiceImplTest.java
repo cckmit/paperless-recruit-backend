@@ -2,13 +2,10 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentLabelQuery;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentLabelService;
-import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -34,7 +31,7 @@ public class DepartmentLabelServiceImplTest {
 
     @Test
     public void saveDepartmentLabel() {
-        System.out.println(departmentLabelService.saveDepartmentLabel("软件"));
+        System.out.println(departmentLabelService.createDepartmentLabel("软件"));
     }
 
     @Test
@@ -47,7 +44,6 @@ public class DepartmentLabelServiceImplTest {
         System.out.println(departmentLabelService.listDepartmentLabels(DepartmentLabelQuery.builder()
                 .pageNum(1L)
                 .pageSize(50L)
-                .orderByReferenceNumberDesc(true)
                 .build()));
     }
 
@@ -61,8 +57,4 @@ public class DepartmentLabelServiceImplTest {
         System.out.println(departmentLabelService.enableDepartmentLabel(5L));
     }
 
-    @Test
-    public void isValidDepartmentLabel() {
-        System.out.println(departmentLabelService.isValidDepartmentLabel("创新"));
-    }
 }

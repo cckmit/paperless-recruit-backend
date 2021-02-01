@@ -215,12 +215,12 @@ public enum ErrorCodeEnum implements Serializable {
     /**
      * 未找到资源
      */
-    NOT_FOUND(HttpStatus.NOT_FOUND, "NotFound", "The specified resource does not exist."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "NotFound", "Not found."),
 
     /**
      * 资源不存在
      */
-    NOT_EXIST(HttpStatus.NOT_FOUND, "NotExist", "The specified resource does not exist."),
+    NOT_EXIST(HttpStatus.NOT_FOUND, "NotExist", "Not exist."),
 
     /**
      * 操作冲突

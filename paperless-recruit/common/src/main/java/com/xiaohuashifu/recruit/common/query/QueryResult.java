@@ -14,7 +14,7 @@ public class QueryResult<T> implements Serializable {
     /**
      * 该查询条件下的匹配记录总数
      */
-    private Long totalCount;
+    private Long total;
 
     /**
      * 查询结果
@@ -23,17 +23,17 @@ public class QueryResult<T> implements Serializable {
 
     public QueryResult() {}
 
-    public QueryResult(Long totalCount, Collection<T> result) {
-        this.totalCount = totalCount;
+    public QueryResult(Long total, Collection<T> result) {
+        this.total = total;
         this.result = result;
     }
 
-    public Long getTotalCount() {
-        return totalCount;
+    public Long getTotal() {
+        return total;
     }
 
-    public void setTotalCount(Long totalCount) {
-        this.totalCount = totalCount;
+    public void setTotal(Long total) {
+        this.total = total;
     }
 
     public Collection<T> getResult() {
@@ -47,7 +47,7 @@ public class QueryResult<T> implements Serializable {
     @Override
     public String toString() {
         return "QueryResult{" +
-                "totalCount=" + totalCount +
+                "total=" + total +
                 ", result=" + result +
                 '}';
     }

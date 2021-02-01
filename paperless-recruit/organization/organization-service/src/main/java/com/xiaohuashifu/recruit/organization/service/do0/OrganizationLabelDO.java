@@ -27,7 +27,7 @@ public class OrganizationLabelDO {
     private Long id;
     private String labelName;
     private Long referenceNumber;
-    @TableField(value = "is_available")
+    @TableField("is_available")
     private Boolean available;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

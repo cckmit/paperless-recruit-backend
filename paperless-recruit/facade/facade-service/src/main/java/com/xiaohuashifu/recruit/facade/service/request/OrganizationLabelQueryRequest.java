@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 /**
- * 描述：基本查询请求
+ * 描述：组织标签查询请求
  *
  * @author xhsf
  * @create 2021/1/18 16:01
@@ -21,7 +21,7 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel
-public class BaseQueryRequest {
+public class OrganizationLabelQueryRequest {
 
     @NotNull
     @Positive
@@ -33,5 +33,11 @@ public class BaseQueryRequest {
     @Max(value = QueryConstants.MAX_PAGE_SIZE)
     @ApiModelProperty(value = "页条数", required = true, example = "10")
     private Integer pageSize;
+
+    @ApiModelProperty(value = "标签名，可左模糊", example = "科技")
+    private String labelName;
+
+    @ApiModelProperty(value = "标签是否可用", example = "true")
+    private Boolean available;
 
 }

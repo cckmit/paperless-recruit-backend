@@ -9,17 +9,19 @@ import java.util.Collection;
  * @author xhsf
  * @create 2021/1/28 23:40
  */
-public class  QueryResult <T> implements Serializable {
+public class QueryResult<T> implements Serializable {
 
     /**
      * 该查询条件下的匹配记录总数
      */
-    private final Integer totalCount;
+    private Integer totalCount;
 
     /**
      * 查询结果
      */
-    private final Collection<T> result;
+    private Collection<T> result;
+
+    public QueryResult() {}
 
     public QueryResult(Integer totalCount, Collection<T> result) {
         this.totalCount = totalCount;
@@ -30,8 +32,16 @@ public class  QueryResult <T> implements Serializable {
         return totalCount;
     }
 
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
+    }
+
     public Collection<T> getResult() {
         return result;
+    }
+
+    public void setResult(Collection<T> result) {
+        this.result = result;
     }
 
     @Override

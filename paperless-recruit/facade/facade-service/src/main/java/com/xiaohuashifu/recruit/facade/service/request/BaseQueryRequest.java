@@ -40,6 +40,7 @@ public class BaseQueryRequest {
     /**
      * 页码
      */
+    @NotNull
     @Min(value = MIN_PAGE_NUM)
     @ApiModelProperty(value = "页码", required = true, example = "1")
     private Integer pageNum;

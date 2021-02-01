@@ -86,6 +86,8 @@ public interface OrganizationLabelService {
     /**
      * 判断一个标签是否合法
      *
+     * @private 内部方法
+     *
      * @errorCode InvalidParameter: 标签名格式错误
      *              InvalidParameter.NotAvailable: 该标签名已经被禁用
      *

@@ -1,20 +1,17 @@
 package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
-import com.xiaohuashifu.recruit.facade.service.authorize.DepartmentContext;
-import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationLabelManager;
+import com.xiaohuashifu.recruit.facade.service.request.BaseQueryRequest;
 import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationLabelRequest;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentPatchRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationLabelRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationLabelVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -42,6 +39,12 @@ public class OrganizationLabelController {
         return organizationLabelManager.createOrganizationLabel(request);
     }
 
+    @ApiOperation(value = "列出组织标签")
+    @GetMapping("/organizations/labels")
+    public QueryResult<OrganizationLabelVO> listOrganizationLabels(BaseQueryRequest baseQueryRequest) {
+        return organizationLabelManager.listOrganizationLabels(baseQueryRequest);
+    }
+
     @ApiOperation(value = "更新组织标签", notes = "Role: admin")
     @PatchMapping("/organizations/labels/{labelId}")
     @PreAuthorize("hasRole('admin')")
@@ -49,4 +52,5 @@ public class OrganizationLabelController {
                                          @RequestBody UpdateOrganizationLabelRequest request) {
         return organizationLabelManager.updateOrganizationLabel(labelId, request);
     }
+
 }

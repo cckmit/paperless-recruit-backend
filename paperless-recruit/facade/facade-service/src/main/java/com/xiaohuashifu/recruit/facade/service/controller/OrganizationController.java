@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.xiaohuashifu.recruit.common.validator.annotation.NotAllFieldsNull;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
@@ -11,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.List;
 @ApiSupport(author = "XHSF")
 @Api(tags = "组织")
 @RestController
+@Validated
 public class OrganizationController {
 
     private final OrganizationManager organizationManager;
@@ -83,7 +86,8 @@ public class OrganizationController {
     @ApiOperation(value = "更新认证用户的组织")
     @PreAuthorize("hasRole('organization')")
     @PatchMapping("user/organization")
-    public OrganizationVO updateAuthenticatedUserOrganization(@RequestBody OrganizationPatchRequest request) {
+    public OrganizationVO updateAuthenticatedUserOrganization(
+            @RequestBody @NotAllFieldsNull OrganizationPatchRequest request) {
         return organizationManager.updateOrganization(organizationContext.getOrganizationId(), request);
     }
 

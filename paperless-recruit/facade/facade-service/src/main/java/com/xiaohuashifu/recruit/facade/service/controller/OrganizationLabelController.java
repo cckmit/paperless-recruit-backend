@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
+import com.xiaohuashifu.recruit.common.validator.annotation.NotAllFieldsNull;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationLabelManager;
 import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.request.OrganizationLabelQueryRequest;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @ApiSupport(author = "XHSF")
 @Api(tags = "组织")
 @RestController
+@Validated
 public class OrganizationLabelController {
 
     private final OrganizationLabelManager organizationLabelManager;
@@ -49,7 +52,7 @@ public class OrganizationLabelController {
     @PatchMapping("/organizations/labels/{labelId}")
     @PreAuthorize("hasRole('admin')")
     public OrganizationLabelVO updateOrganizationLabel(@ApiParam("组织标签编号") @PathVariable Long labelId,
-                                         @RequestBody UpdateOrganizationLabelRequest request) {
+                                         @RequestBody @NotAllFieldsNull UpdateOrganizationLabelRequest request) {
         return organizationLabelManager.updateOrganizationLabel(labelId, request);
     }
 

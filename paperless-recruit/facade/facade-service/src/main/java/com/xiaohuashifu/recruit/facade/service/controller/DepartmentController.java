@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.xiaohuashifu.recruit.common.validator.annotation.NotAllFieldsNull;
 import com.xiaohuashifu.recruit.facade.service.authorize.DepartmentContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
@@ -19,6 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -72,7 +75,7 @@ public class DepartmentController {
 
     @ApiOperation(value = "获取部门")
     @GetMapping("/departments/{departmentId}")
-    public DepartmentVO removeLabel(@ApiParam("部门编号") @PathVariable Long departmentId) {
+    public DepartmentVO getDepartment(@ApiParam("部门编号") @PathVariable Long departmentId) {
         return departmentManager.getDepartment(departmentId);
     }
 
@@ -93,7 +96,7 @@ public class DepartmentController {
     @PreAuthorize("hasRole('organization')")
     @Owner(id = "#departmentId", context = DepartmentContext.class)
     public DepartmentVO updateDepartment(@ApiParam("部门编号") @PathVariable Long departmentId,
-                            @Validated @RequestBody DepartmentPatchRequest request) {
+                            @Validated @RequestBody @NotAllFieldsNull DepartmentPatchRequest request) {
         return departmentManager.updateDepartment(departmentId, request);
     }
 

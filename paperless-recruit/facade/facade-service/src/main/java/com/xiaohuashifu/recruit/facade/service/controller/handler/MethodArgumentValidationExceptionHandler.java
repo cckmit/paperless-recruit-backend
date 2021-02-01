@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
 /**
  * 描述：方法参数校验异常处理
  *
@@ -29,5 +32,13 @@ public class MethodArgumentValidationExceptionHandler {
         return new ErrorResponse(ErrorCodeEnum.UNPROCESSABLE_ENTITY.getCode(),
                 fieldError.getField() + ":" + fieldError.getDefaultMessage());
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
+        ConstraintViolation<?> constraintViolation = e.getConstraintViolations().iterator().next();
+        return new ErrorResponse(ErrorCodeEnum.UNPROCESSABLE_ENTITY.getCode(), constraintViolation.getMessage());
+    }
+
 
 }

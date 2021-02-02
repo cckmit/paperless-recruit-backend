@@ -21,9 +21,7 @@ import com.xiaohuashifu.recruit.pay.service.manager.PayManager;
 import com.xiaohuashifu.recruit.pay.service.manager.impl.AlipayManagerImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 描述：支付服务
@@ -37,10 +35,6 @@ public class PayServiceImpl implements PayService {
 
     private final TradeLogMapper tradeLogMapper;
 
-    private final PlatformTransactionManager transactionManager;
-
-    private final TransactionDefinition transactionDefinition;
-
     private final PayManager alipayManager;
 
     /**
@@ -48,11 +42,8 @@ public class PayServiceImpl implements PayService {
      */
     private static final String LOCK_KEY_PATTERN = "pay:order-number:{0}";
 
-    public PayServiceImpl(TradeLogMapper tradeLogMapper, PlatformTransactionManager transactionManager,
-                          TransactionDefinition transactionDefinition, AlipayManagerImpl alipayManager) {
+    public PayServiceImpl(TradeLogMapper tradeLogMapper, AlipayManagerImpl alipayManager) {
         this.tradeLogMapper = tradeLogMapper;
-        this.transactionManager = transactionManager;
-        this.transactionDefinition = transactionDefinition;
         this.alipayManager = alipayManager;
     }
 
@@ -72,6 +63,7 @@ public class PayServiceImpl implements PayService {
     @DistributedLock(value = LOCK_KEY_PATTERN, parameters = "#{#request.orderNumber}",
             errorMessage = "Failed to acquire orderNumber lock.")
     @Override
+    @Transactional
     public Result<TradePreCreateResponse> preCreate(TradePreCreateRequest request) {
         // 判断订单号存不存在
         int count = tradeLogMapper.countByOrderNumber(request.getOrderNumber());
@@ -81,46 +73,37 @@ public class PayServiceImpl implements PayService {
         }
 
         // 在数据库插入订单
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            TradeLogDO tradeLogDO = TradeLogDO.builder()
-                    .paymentMethod(request.getPaymentMethod().name())
-                    .orderNumber(request.getOrderNumber())
-                    .totalAmount(request.getTotalAmount())
-                    .tradeSubject(request.getSubject())
-                    .expireTime(request.getExpireTime())
-                    .tradeStatus(TradeStatusEnum.WAIT_BUYER_SCAN.name())
-                    .build();
-            tradeLogMapper.insertTradeLog(tradeLogDO);
+        TradeLogDO tradeLogDO = TradeLogDO.builder()
+                .paymentMethod(request.getPaymentMethod().name())
+                .orderNumber(request.getOrderNumber())
+                .totalAmount(request.getTotalAmount())
+                .tradeSubject(request.getSubject())
+                .expireTime(request.getExpireTime())
+                .tradeStatus(TradeStatusEnum.WAIT_BUYER_SCAN.name())
+                .build();
+        tradeLogMapper.insertTradeLog(tradeLogDO);
 
-            // 预创建订单
-            Result<String> preCreateResult = alipayManager.preCreate(PreCreateDTO.builder()
-                    .subject(request.getSubject())
-                    .expireTime(request.getExpireTime())
-                    .orderNumber(request.getOrderNumber())
-                    .totalAmount(request.getTotalAmount())
-                    .build());
-            if (preCreateResult.isFailure()) {
-                transactionManager.rollback(transactionStatus);
-                return Result.fail(preCreateResult);
-            }
-            transactionManager.commit(transactionStatus);
-
-            // 插入二维码到数据库
-            String qrCode = preCreateResult.getData();
-            tradeLogMapper.updateQrCode(tradeLogDO.getId(), qrCode);
-
-            // 把二维码和订单日志编号返回
-            TradePreCreateResponse tradePreCreateResponse = TradePreCreateResponse.builder()
-                    .qrCode(qrCode)
-                    .tradeLogId(tradeLogDO.getId())
-                    .build();
-            return Result.success(tradePreCreateResponse);
-        } catch (RuntimeException e) {
-            log.error("Pre create trade false. request=" + request, e);
-            transactionManager.rollback(transactionStatus);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        // 预创建订单
+        Result<String> preCreateResult = alipayManager.preCreate(PreCreateDTO.builder()
+                .subject(request.getSubject())
+                .expireTime(request.getExpireTime())
+                .orderNumber(request.getOrderNumber())
+                .totalAmount(request.getTotalAmount())
+                .build());
+        if (preCreateResult.isFailure()) {
+            throw new RuntimeException("Pre create error");
         }
+
+        // 插入二维码到数据库
+        String qrCode = preCreateResult.getData();
+        tradeLogMapper.updateQrCode(tradeLogDO.getId(), qrCode);
+
+        // 把二维码和订单日志编号返回
+        TradePreCreateResponse tradePreCreateResponse = TradePreCreateResponse.builder()
+                .qrCode(qrCode)
+                .tradeLogId(tradeLogDO.getId())
+                .build();
+        return Result.success(tradePreCreateResponse);
     }
 
     /**

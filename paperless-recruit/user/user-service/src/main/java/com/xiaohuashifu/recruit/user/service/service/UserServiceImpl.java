@@ -25,9 +25,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -57,10 +55,6 @@ public class UserServiceImpl implements UserService {
 
     @Reference
     private UserProfileService userProfileService;
-
-    private final PlatformTransactionManager transactionManager;
-
-    private final TransactionDefinition transactionDefinition;
 
     private final UserMapper userMapper;
 
@@ -187,10 +181,7 @@ public class UserServiceImpl implements UserService {
     private static final String UPDATE_PASSWORD_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
             "user:update-password:email-auth-code:{0}";
 
-    public UserServiceImpl(PlatformTransactionManager transactionManager, TransactionDefinition transactionDefinition,
-                           UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate) {
-        this.transactionManager = transactionManager;
-        this.transactionDefinition = transactionDefinition;
+    public UserServiceImpl(UserMapper userMapper, Mapper mapper, StringRedisTemplate redisTemplate) {
         this.userMapper = userMapper;
         this.mapper = mapper;
         this.redisTemplate = redisTemplate;
@@ -209,28 +200,21 @@ public class UserServiceImpl implements UserService {
      * @return 新创建的用户
      */
     @Override
+    @Transactional
     public Result<UserDTO> signUpUser(String username, String password) {
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            // 判断用户名是否存在
-            int count = userMapper.countByUsername(username);
-            if (count > 0) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The username already exist.");
-            }
-
-            // 添加到数据库
-            UserDO userDO = new UserDO.Builder()
-                    .username(username)
-                    .password(passwordService.encodePassword(password))
-                    .build();
-            Result<UserDTO> userDTOResult = saveUser(userDO);
-            transactionManager.commit(transactionStatus);
-            return userDTOResult;
-        } catch (RuntimeException e) {
-            log.error("Sign up error. username=" + username + ".", e);
-            transactionManager.rollback(transactionStatus);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        // 判断用户名是否存在
+        int count = userMapper.countByUsername(username);
+        if (count > 0) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The username already exist.");
         }
+
+        // 添加到数据库
+        UserDO userDO = new UserDO.Builder()
+                .username(username)
+                .password(passwordService.encodePassword(password))
+                .build();
+        Result<UserDTO> userDTOResult = saveUser(userDO);
+        return userDTOResult;
     }
 
     /**

@@ -16,9 +16,7 @@ import com.xiaohuashifu.recruit.oss.service.manager.ObjectStorageManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,10 +37,6 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     private final ObjectStorageManager objectStorageManager;
 
-    private final TransactionDefinition transactionDefinition;
-
-    private final PlatformTransactionManager transactionManager;
-
     /**
      * 定时清理未连接对象任务初始延迟
      */
@@ -59,42 +53,30 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     private static final int CLEAR_UNLINKED_OBJECTS_PAGE_SIZE = 5;
 
     public ObjectStorageServiceImpl(ObjectInfoAssembler objectInfoAssembler, ObjectInfoMapper objectInfoMapper,
-                                    ObjectStorageManager objectStorageManager,
-                                    TransactionDefinition transactionDefinition,
-                                    PlatformTransactionManager transactionManager) {
+                                    ObjectStorageManager objectStorageManager) {
         this.objectInfoAssembler = objectInfoAssembler;
         this.objectInfoMapper = objectInfoMapper;
         this.objectStorageManager = objectStorageManager;
-        this.transactionDefinition = transactionDefinition;
-        this.transactionManager = transactionManager;
     }
 
     @Override
+    @Transactional
     public Result<ObjectInfoResponse> preUploadObject(PreUploadObjectRequest request) {
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            // 判断对象名是否存在
-            ObjectInfoDO objectInfoDO = objectInfoMapper.selectByObjectName(request.getObjectName());
-            if (objectInfoDO != null) {
-                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_EXIST,
-                        "The objectName already exist.");
-            }
-
-            // 存储对象信息
-            ObjectInfoDO newObjectInfoDO = objectInfoAssembler.preUploadObjectRequestToObjectInfoDO(request);
-            objectInfoMapper.insert(newObjectInfoDO);
-
-            // 存储到 oss
-            objectStorageManager.putObject(request.getObjectName(), request.getObject());
-
-            // 提交事务
-            transactionManager.commit(transactionStatus);
-            return getObjectInfo(newObjectInfoDO.getId());
-        } catch (RuntimeException e) {
-            log.error("Pre upload object error. request=" + request, e);
-            transactionManager.rollback(transactionStatus);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        // 判断对象名是否存在
+        ObjectInfoDO objectInfoDO = objectInfoMapper.selectByObjectName(request.getObjectName());
+        if (objectInfoDO != null) {
+            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_EXIST,
+                    "The objectName already exist.");
         }
+
+        // 存储对象信息
+        ObjectInfoDO newObjectInfoDO = objectInfoAssembler.preUploadObjectRequestToObjectInfoDO(request);
+        objectInfoMapper.insert(newObjectInfoDO);
+
+        // 存储到 oss
+        objectStorageManager.putObject(request.getObjectName(), request.getObject());
+
+        return getObjectInfo(newObjectInfoDO.getId());
     }
 
     @Override
@@ -162,39 +144,31 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
      * @param objectInfoDO 对象信息，从数据库里查询得到
      * @return 链接后的对象
      */
-    private Result<ObjectInfoResponse> linkObject(ObjectInfoDO objectInfoDO) {
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            // 判断对象是否存在
-            if (objectInfoDO == null) {
-                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                        "The object does not exist.");
-            }
-
-            // 判断对象是否已经删除
-            if (objectInfoDO.getDeleted()) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DELETED,
-                        "The object already deleted.");
-            }
-
-            // 判断对象是否已经链接
-            if (objectInfoDO.getLinked()) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_LINKED,
-                        "The object already linked.");
-            }
-
-            // 链接对象
-            ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().id(objectInfoDO.getId()).linked(true).build();
-            objectInfoMapper.updateById(objectInfoDOForUpdate);
-
-            // 提交事务
-            transactionManager.commit(transactionStatus);
-            return getObjectInfo(objectInfoDO.getId());
-        } catch (RuntimeException e) {
-            log.error("Linked object error. objectInfoDO=" + objectInfoDO, e);
-            transactionManager.rollback(transactionStatus);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+    @Transactional
+    protected Result<ObjectInfoResponse> linkObject(ObjectInfoDO objectInfoDO) {
+        // 判断对象是否存在
+        if (objectInfoDO == null) {
+            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
+                    "The object does not exist.");
         }
+
+        // 判断对象是否已经删除
+        if (objectInfoDO.getDeleted()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DELETED,
+                    "The object already deleted.");
+        }
+
+        // 判断对象是否已经链接
+        if (objectInfoDO.getLinked()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_LINKED,
+                    "The object already linked.");
+        }
+
+        // 链接对象
+        ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().id(objectInfoDO.getId()).linked(true).build();
+        objectInfoMapper.updateById(objectInfoDOForUpdate);
+
+        return getObjectInfo(objectInfoDO.getId());
     }
 
     /**
@@ -207,36 +181,28 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
      * @param objectInfoDO 对象信息，从数据库里查询得到
      * @return 删除结果
      */
-    private Result<Void> deleteObject(ObjectInfoDO objectInfoDO) {
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            // 判断对象是否存在
-            if (objectInfoDO == null) {
-                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                        "The object does not exist.");
-            }
-
-            // 判断对象是否已经删除
-            if (objectInfoDO.getDeleted()) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DELETED,
-                        "The object already deleted.");
-            }
-
-            // 更新对象 deleted 字段为 true
-            ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().id(objectInfoDO.getId()).deleted(true).build();
-            objectInfoMapper.updateById(objectInfoDOForUpdate);
-
-            // 删除 oss 的对象
-            objectStorageManager.deleteObject(objectInfoDO.getObjectName());
-
-            // 提交事务
-            transactionManager.commit(transactionStatus);
-            return Result.success();
-        } catch (RuntimeException e) {
-            log.error("Delete object error. objectInfoDO=" + objectInfoDO, e);
-            transactionManager.rollback(transactionStatus);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+    @Transactional
+    protected Result<Void> deleteObject(ObjectInfoDO objectInfoDO) {
+        // 判断对象是否存在
+        if (objectInfoDO == null) {
+            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
+                    "The object does not exist.");
         }
+
+        // 判断对象是否已经删除
+        if (objectInfoDO.getDeleted()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DELETED,
+                    "The object already deleted.");
+        }
+
+        // 更新对象 deleted 字段为 true
+        ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().id(objectInfoDO.getId()).deleted(true).build();
+        objectInfoMapper.updateById(objectInfoDOForUpdate);
+
+        // 删除 oss 的对象
+        objectStorageManager.deleteObject(objectInfoDO.getObjectName());
+
+        return Result.success();
     }
 
     /**

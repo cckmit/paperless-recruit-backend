@@ -6,6 +6,7 @@ import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest;
 
 import javax.validation.constraints.*;
 
@@ -22,23 +23,13 @@ public interface DepartmentService {
      *
      * @permission 必须是组织所属用户主体本身
      *
-     * @errorCode InvalidParameter: 组织编号或部门猛或部门名缩写格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden.Unavailable: 组织不可用
+     * @errorCode UnprocessableEntity.NotExist: 组织不存在
      *              OperationConflict: 该组织已经存在该部门名或部门名缩写
      *
-     * @param organizationId 部门所属组织的编号
-     * @param departmentName 部门名
-     * @param abbreviationDepartmentName 部门名缩写
+     * @param request CreateDepartmentRequest
      * @return DepartmentDTO 部门对象
      */
-    Result<DepartmentDTO> createDepartment(
-            @NotNull @Positive Long organizationId,
-            @NotBlank @Size(min = DepartmentConstants.MIN_DEPARTMENT_NAME_LENGTH,
-                    max = DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH) String departmentName,
-            @NotBlank @Size(min = DepartmentConstants.MIN_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
-                    max = DepartmentConstants.MAX_ABBREVIATION_DEPARTMENT_NAME_LENGTH)
-                    String abbreviationDepartmentName);
+    Result<DepartmentDTO> createDepartment(CreateDepartmentRequest request);
 
     /**
      * 添加部门的标签

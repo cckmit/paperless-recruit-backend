@@ -34,7 +34,12 @@ public class Result<T> implements Serializable {
     /**
      * 默认成功的对象
      */
-    private static final Result<Void> SUCCESS = new Result<>(true, null, null, null);
+    private static final Result<?> SUCCESS = new Result<>(true, null, null, null);
+
+    /**
+     * 默认失败的对象
+     */
+    private static final Result<?> ERROR = fail(ErrorCodeEnum.INTERNAL_ERROR);
 
     private Result(Boolean success, T data, String errorCode, String errorMessage) {
         this.success = success;
@@ -62,6 +67,17 @@ public class Result<T> implements Serializable {
      */
     public static <T> Result<T> success(T data) {
         return new Result<>(true, data, null, null);
+    }
+
+    /**
+     * 失败调用时的构造方法
+     *
+     * @return Result<T>
+     */
+    public static <T> Result<T> fail() {
+        @SuppressWarnings("unchecked")
+        Result<T> result = (Result<T>) ERROR;
+        return result;
     }
 
     /**
@@ -105,7 +121,7 @@ public class Result<T> implements Serializable {
      * @return Result<T>
      */
     public static <T> Result<T> fail(ErrorCodeEnum errorCode) {
-        return new Result<>(false, null, errorCode.getCode(), null);
+        return new Result<>(false, null, errorCode.getCode(), errorCode.getMessage());
     }
 
     /**

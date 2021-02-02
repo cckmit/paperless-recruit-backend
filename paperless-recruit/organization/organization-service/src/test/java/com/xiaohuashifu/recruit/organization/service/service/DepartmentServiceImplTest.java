@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -33,8 +34,8 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void createDepartment() {
-        System.out.println(departmentService.createDepartment(
-                1L, "财务部", "财务部"));
+        System.out.println(departmentService.createDepartment(CreateDepartmentRequest.builder()
+                        .organizationId(1L).departmentName("办公室").abbreviationDepartmentName("办公室").build()));
     }
 
     @Test

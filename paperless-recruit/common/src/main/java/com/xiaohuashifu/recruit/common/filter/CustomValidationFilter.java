@@ -61,7 +61,8 @@ public class CustomValidationFilter implements Filter {
                 ConstraintViolation<?> firsConstraintViolation = constraintViolations.iterator().next();
                 return AsyncRpcResult.newDefaultAsyncResult(
                         com.xiaohuashifu.recruit.common.result.Result.fail(
-                                ErrorCodeEnum.INVALID_PARAMETER, firsConstraintViolation.getMessage()), invocation);
+                                ErrorCodeEnum.UNPROCESSABLE_ENTITY_INVALID_PARAMETER,
+                                firsConstraintViolation.getMessage()), invocation);
             } catch (ValidationException e) {
                 return AsyncRpcResult.newDefaultAsyncResult(new ValidationException(e.getMessage()), invocation);
             } catch (Throwable t) {

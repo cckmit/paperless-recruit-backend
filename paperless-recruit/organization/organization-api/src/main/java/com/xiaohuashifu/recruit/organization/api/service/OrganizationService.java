@@ -260,17 +260,6 @@ public interface OrganizationService {
                                             @Email(message = "The email format error.") String email);
 
     /**
-     * 通过组织编号获取用户编号
-     * 也就是查询组织的主体账号
-     *
-     * @private 内部方法
-     *
-     * @param id 组织编号
-     * @return 用户编号，可能返回 null，若组织不存在
-     */
-    Long getUserId(Long id);
-
-    /**
      * 验证组织的主体
      *
      * @private 内部方法
@@ -280,16 +269,6 @@ public interface OrganizationService {
      * @return 若是返回 true，不是返回 false
      */
     Boolean authenticatePrincipal(Long id, Long userId);
-
-    /**
-     * 通过组织编号判断组织是否存在
-     *
-     * @private 内部方法
-     *
-     * @param id 组织编号
-     * @return 组织是否存在
-     */
-    boolean organizationExists(Long id);
 
     /**
      * 增加成员数，+1

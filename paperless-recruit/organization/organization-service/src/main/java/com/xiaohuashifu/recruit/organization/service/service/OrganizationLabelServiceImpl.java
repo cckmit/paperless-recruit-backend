@@ -16,9 +16,7 @@ import com.xiaohuashifu.recruit.organization.service.do0.OrganizationLabelDO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,18 +38,10 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
 
     private final OrganizationLabelAssembler organizationLabelAssembler;
 
-    private final PlatformTransactionManager transactionManager;
-
-    private final TransactionDefinition transactionDefinition;
-
     public OrganizationLabelServiceImpl(OrganizationLabelMapper organizationLabelMapper,
-                                        OrganizationLabelAssembler organizationLabelAssembler,
-                                        PlatformTransactionManager transactionManager,
-                                        TransactionDefinition transactionDefinition) {
+                                        OrganizationLabelAssembler organizationLabelAssembler) {
         this.organizationLabelMapper = organizationLabelMapper;
         this.organizationLabelAssembler = organizationLabelAssembler;
-        this.transactionManager = transactionManager;
-        this.transactionDefinition = transactionDefinition;
     }
 
     @Override
@@ -106,72 +96,58 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     }
 
     @Override
+    @Transactional
     public Result<DisableOrganizationLabelDTO> disableOrganizationLabel(Long id) {
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            // 判断标签是否存在
-            OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectById(id);
-            if (organizationLabelDO == null) {
-                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST, "The label does not exist.");
-            }
-
-            // 判断标签是否已经被禁用
-            if (!organizationLabelDO.getAvailable()) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already unavailable.");
-            }
-
-            // 禁用标签
-            OrganizationLabelDO organizationLabelDOForUpdate = OrganizationLabelDO.builder()
-                    .id(id)
-                    .available(false)
-                    .build();
-            organizationLabelMapper.updateById(organizationLabelDOForUpdate);
-
-            // 删除组织的这个标签
-            int deletedNumber = organizationService.removeLabels(organizationLabelDO.getLabelName());
-
-            // 封装删除数量和禁用后的组织标签对象
-            OrganizationLabelDTO organizationLabelDTO = getOrganizationLabel(id).getData();
-            DisableOrganizationLabelDTO disableOrganizationLabelDTO =
-                    new DisableOrganizationLabelDTO(organizationLabelDTO, deletedNumber);
-            transactionManager.commit(transactionStatus);
-            return Result.success(disableOrganizationLabelDTO);
-        } catch (RuntimeException e) {
-            transactionManager.rollback(transactionStatus);
-            log.error("Disable organization label error. id=" + id, e);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        // 判断标签是否存在
+        OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectById(id);
+        if (organizationLabelDO == null) {
+            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST, "The label does not exist.");
         }
+
+        // 判断标签是否已经被禁用
+        if (!organizationLabelDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already unavailable.");
+        }
+
+        // 禁用标签
+        OrganizationLabelDO organizationLabelDOForUpdate = OrganizationLabelDO.builder()
+                .id(id)
+                .available(false)
+                .build();
+        organizationLabelMapper.updateById(organizationLabelDOForUpdate);
+
+        // 删除组织的这个标签
+        int deletedNumber = organizationService.removeLabels(organizationLabelDO.getLabelName());
+
+        // 封装删除数量和禁用后的组织标签对象
+        OrganizationLabelDTO organizationLabelDTO = getOrganizationLabel(id).getData();
+        DisableOrganizationLabelDTO disableOrganizationLabelDTO =
+                new DisableOrganizationLabelDTO(organizationLabelDTO, deletedNumber);
+        return Result.success(disableOrganizationLabelDTO);
     }
 
     @Override
+    @Transactional
     public Result<OrganizationLabelDTO> enableOrganizationLabel(Long id) {
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            // 判断标签是否存在
-            OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectById(id);
-            if (organizationLabelDO == null) {
-                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                        "The label does not exist.");
-            }
-
-            // 判断标签是否已经可用
-            if (organizationLabelDO.getAvailable()) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already available.");
-            }
-
-            // 解禁标签
-            OrganizationLabelDO organizationLabelDOForUpdate = OrganizationLabelDO.builder()
-                    .id(id)
-                    .available(true)
-                    .build();
-            organizationLabelMapper.updateById(organizationLabelDOForUpdate);
-            transactionManager.commit(transactionStatus);
-            return getOrganizationLabel(id);
-        } catch (RuntimeException e) {
-            transactionManager.rollback(transactionStatus);
-            log.error("Enable organization label error. id=" + id, e);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        // 判断标签是否存在
+        OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectById(id);
+        if (organizationLabelDO == null) {
+            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
+                    "The label does not exist.");
         }
+
+        // 判断标签是否已经可用
+        if (organizationLabelDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already available.");
+        }
+
+        // 解禁标签
+        OrganizationLabelDO organizationLabelDOForUpdate = OrganizationLabelDO.builder()
+                .id(id)
+                .available(true)
+                .build();
+        organizationLabelMapper.updateById(organizationLabelDOForUpdate);
+        return getOrganizationLabel(id);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.assembler;
 
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
+import com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest;
 import com.xiaohuashifu.recruit.organization.service.do0.DepartmentDO;
 import org.mapstruct.Mapper;
 
@@ -15,4 +16,5 @@ public interface DepartmentAssembler {
 
     DepartmentDTO departmentDOToDepartmentDTO(DepartmentDO departmentDO);
 
+    DepartmentDO createDepartmentRequestToDepartmentDO(CreateDepartmentRequest createDepartmentRequest);
 }

@@ -11,6 +11,7 @@ import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.aop.framework.AopContext;
@@ -44,8 +45,10 @@ public class DepartmentManagerImpl implements DepartmentManager {
 
     @Override
     public DepartmentVO createDepartment(Long organizationId, DepartmentPostRequest request) {
-        Result<DepartmentDTO> result = departmentService.createDepartment(
-                organizationId, request.getDepartmentName(), request.getAbbreviationDepartmentName());
+        CreateDepartmentRequest createDepartmentRequest =
+                departmentAssembler.departmentPostRequestToCreateDepartmentRequest(request);
+        createDepartmentRequest.setOrganizationId(organizationId);
+        Result<DepartmentDTO> result = departmentService.createDepartment(createDepartmentRequest);
         if (result.isFailure()) {
             throw new ResponseEntityException(result);
         }

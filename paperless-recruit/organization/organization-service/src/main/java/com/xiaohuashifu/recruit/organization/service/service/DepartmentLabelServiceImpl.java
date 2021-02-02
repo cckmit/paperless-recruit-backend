@@ -16,9 +16,7 @@ import com.xiaohuashifu.recruit.organization.service.do0.DepartmentLabelDO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,18 +38,10 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
 
     private final DepartmentLabelAssembler departmentLabelAssembler;
 
-    private final PlatformTransactionManager transactionManager;
-
-    private final TransactionDefinition transactionDefinition;
-
     public DepartmentLabelServiceImpl(DepartmentLabelMapper departmentLabelMapper,
-                                      DepartmentLabelAssembler departmentLabelAssembler,
-                                      PlatformTransactionManager transactionManager,
-                                      TransactionDefinition transactionDefinition) {
+                                      DepartmentLabelAssembler departmentLabelAssembler) {
         this.departmentLabelMapper = departmentLabelMapper;
         this.departmentLabelAssembler = departmentLabelAssembler;
-        this.transactionManager = transactionManager;
-        this.transactionDefinition = transactionDefinition;
     }
 
     @Override
@@ -103,73 +93,59 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     }
 
     @Override
+    @Transactional
     public Result<DisableDepartmentLabelDTO> disableDepartmentLabel(Long id) {
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            // 判断标签是否存在
-            DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectById(id);
-            if (departmentLabelDO == null) {
-                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                        "The label does not exist.");
-            }
-
-            // 判断标签是否已经被禁用
-            if (!departmentLabelDO.getAvailable()) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already unavailable.");
-            }
-
-            // 禁用标签
-            DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder()
-                    .id(id)
-                    .available(false)
-                    .build();
-            departmentLabelMapper.updateById(departmentLabelDOForUpdate);
-
-            // 删除部门的这个标签
-            int deletedNumber = departmentService.removeLabels(departmentLabelDO.getLabelName());
-
-            // 封装删除数量和禁用后的部门标签对象
-            DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id).getData();
-            DisableDepartmentLabelDTO disableDepartmentLabelDTO =
-                    new DisableDepartmentLabelDTO(departmentLabelDTO, deletedNumber);
-            transactionManager.commit(transactionStatus);
-            return Result.success(disableDepartmentLabelDTO);
-        } catch (RuntimeException e) {
-            transactionManager.rollback(transactionStatus);
-            log.error("Disable department label error. id=" + id, e);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        // 判断标签是否存在
+        DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectById(id);
+        if (departmentLabelDO == null) {
+            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
+                    "The label does not exist.");
         }
+
+        // 判断标签是否已经被禁用
+        if (!departmentLabelDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already unavailable.");
+        }
+
+        // 禁用标签
+        DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder()
+                .id(id)
+                .available(false)
+                .build();
+        departmentLabelMapper.updateById(departmentLabelDOForUpdate);
+
+        // 删除部门的这个标签
+        int deletedNumber = departmentService.removeLabels(departmentLabelDO.getLabelName());
+
+        // 封装删除数量和禁用后的部门标签对象
+        DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id).getData();
+        DisableDepartmentLabelDTO disableDepartmentLabelDTO =
+                new DisableDepartmentLabelDTO(departmentLabelDTO, deletedNumber);
+        return Result.success(disableDepartmentLabelDTO);
     }
 
     @Override
+    @Transactional
     public Result<DepartmentLabelDTO> enableDepartmentLabel(Long id) {
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-        try {
-            // 判断标签是否存在
-            DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectById(id);
-            if (departmentLabelDO == null) {
-                return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                        "The label does not exist.");
-            }
-
-            // 判断标签是否已经可用
-            if (departmentLabelDO.getAvailable()) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already available.");
-            }
-
-            // 解禁标签
-            DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder()
-                    .id(id)
-                    .available(true)
-                    .build();
-            departmentLabelMapper.updateById(departmentLabelDOForUpdate);
-            transactionManager.commit(transactionStatus);
-            return getDepartmentLabel(id);
-        } catch (RuntimeException e) {
-            transactionManager.rollback(transactionStatus);
-            log.error("Enable department label error. id=" + id, e);
-            return Result.fail(ErrorCodeEnum.INTERNAL_ERROR);
+        // 判断标签是否存在
+        DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectById(id);
+        if (departmentLabelDO == null) {
+            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
+                    "The label does not exist.");
         }
+
+        // 判断标签是否已经可用
+        if (departmentLabelDO.getAvailable()) {
+            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already available.");
+        }
+
+        // 解禁标签
+        DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder()
+                .id(id)
+                .available(true)
+                .build();
+        departmentLabelMapper.updateById(departmentLabelDOForUpdate);
+        return getDepartmentLabel(id);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
@@ -7,7 +8,9 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentLabelDTO;
+import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
@@ -16,9 +19,12 @@ import com.xiaohuashifu.recruit.organization.service.dao.DepartmentMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.DepartmentDO;
 import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
 import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +35,7 @@ import java.util.stream.Collectors;
  * @create 2020/12/8 21:56
  */
 @Service
+@Slf4j
 public class DepartmentServiceImpl implements DepartmentService {
 
     @Reference
@@ -66,57 +73,36 @@ public class DepartmentServiceImpl implements DepartmentService {
         this.departmentAssembler = departmentAssembler;
     }
 
-    /**
-     * 创建部门
-     *
-     * @permission 必须是组织所属用户主体本身
-     *
-     * @errorCode InvalidParameter: 组织编号或部门猛或部门名缩写格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict: 该组织已经存在该部门名或部门名缩写
-     *
-     * @param organizationId 部门所属组织的编号
-     * @param departmentName 部门名
-     * @param abbreviationDepartmentName 部门名缩写
-     * @return DepartmentDTO 部门对象
-     */
     @Override
-    public Result<DepartmentDTO> createDepartment(Long organizationId, String departmentName,
-                                                  String abbreviationDepartmentName) {
-        // 检查组织状态
-        Result<DepartmentDTO> checkResult = organizationService.checkOrganizationStatus(organizationId);
-        if (checkResult.isFailure()) {
-            return checkResult;
+    @Transactional
+    public Result<DepartmentDTO> createDepartment(CreateDepartmentRequest request) {
+        // 判断组织是否存在
+        Result<OrganizationDTO> getOrganizationResult = organizationService.getOrganization(request.getOrganizationId());
+        if (getOrganizationResult.isFailure()) {
+            return Result.fail(getOrganizationResult);
         }
 
-        // 判断组织是否已经有这个部门名了
-        int count = departmentMapper.countByOrganizationIdAndDepartmentName(organizationId, departmentName);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The departmentName already exist.");
-        }
-
-        // 判断组织是否已经有这个部门名缩写了
-        count = departmentMapper.countByOrganizationIdAndAbbreviationDepartmentName(
-                organizationId, abbreviationDepartmentName);
-        if (count > 0) {
+        // 判断组织是否已经有这个部门名或部门名缩写
+        LambdaQueryWrapper<DepartmentDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(DepartmentDO::getOrganizationId, request.getOrganizationId())
+                .and(c -> c.eq(DepartmentDO::getDepartmentName, request.getDepartmentName())
+                        .or()
+                        .eq(DepartmentDO::getAbbreviationDepartmentName, request.getAbbreviationDepartmentName()));
+        DepartmentDO departmentDO = departmentMapper.selectOne(wrapper);
+        if (departmentDO != null) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
-                    "The abbreviationDepartmentName already exist.");
+                    "The departmentName or abbreviationDepartmentName already exist.");
         }
 
         // 创建部门
-        DepartmentDO departmentDO = DepartmentDO.builder()
-                .organizationId(organizationId)
-                .departmentName(departmentName)
-                .abbreviationDepartmentName(abbreviationDepartmentName)
-                .build();
-        departmentMapper.insertDepartment(departmentDO);
+        DepartmentDO departmentDOForInsert = departmentAssembler.createDepartmentRequestToDepartmentDO(request);
+        departmentDOForInsert.setLabels(new ArrayList<>());
+        departmentMapper.insert(departmentDOForInsert);
 
         // 增加组织的部门数量
-        organizationService.increaseNumberOfDepartments(organizationId);
+        organizationService.increaseNumberOfDepartments(request.getOrganizationId());
 
-        // 获取部门
-        return getDepartment(departmentDO.getId());
+        return getDepartment(departmentDOForInsert.getId());
     }
 
     /**

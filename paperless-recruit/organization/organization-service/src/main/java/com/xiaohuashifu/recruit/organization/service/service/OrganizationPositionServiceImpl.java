@@ -55,11 +55,8 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
     @Override
     public Result<OrganizationPositionDTO> saveOrganizationPosition(Long organizationId, String positionName,
                                                                     Integer priority) {
-        // 检查组织状态
-        Result<Object> checkResult = organizationService.checkOrganizationStatus(organizationId);
-        if (checkResult.isFailure()) {
-            return Result.fail(checkResult);
-        }
+        // 检查组织是否存在
+         organizationService.getOrganization(organizationId);
 
         // 判断该组织是否已经存在该职位名
         int count = organizationPositionMapper.countByOrganizationIdPositionName(organizationId, positionName);
@@ -250,13 +247,6 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
                     "The organizationPosition does not exist.");
         }
-
-        // 检查组织状态
-        Result<Object> checkResult = organizationService.checkOrganizationStatus(organizationId);
-        if (checkResult.isFailure()) {
-            return Result.fail(checkResult);
-        }
-
         return Result.success(organizationId);
     }
 }

@@ -291,24 +291,6 @@ public class InterviewFormServiceImpl implements InterviewFormService {
     }
 
     /**
-     * 验证面试表的主体
-     *
-     * @private 内部方法
-     *
-     * @param id 面试表编号
-     * @param userId 主体编号
-     * @return 若是返回 true，不是返回 false
-     */
-    @Override
-    public Boolean authenticatePrincipal(Long id, Long userId) {
-        Long interviewId = interviewFormMapper.getInterviewId(id);
-        if (interviewId == null) {
-            return false;
-        }
-        return interviewService.authenticatePrincipal(interviewId, userId);
-    }
-
-    /**
      * 获取面试表
      *
      * @param id 面试表编号

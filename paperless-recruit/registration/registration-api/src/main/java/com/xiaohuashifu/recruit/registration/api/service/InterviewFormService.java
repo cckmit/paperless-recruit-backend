@@ -137,14 +137,4 @@ public interface InterviewFormService {
      */
     String getInterviewStatus(Long id);
 
-    /**
-     * 验证面试表的主体
-     *
-     * @private 内部方法
-     *
-     * @param id 面试表编号
-     * @param userId 主体编号
-     * @return 若是返回 true，不是返回 false
-     */
-    Boolean authenticatePrincipal(Long id, Long userId);
 }

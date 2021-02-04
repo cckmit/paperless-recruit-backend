@@ -110,15 +110,4 @@ public interface InterviewService {
      */
     Long getRecruitmentId(Long id);
 
-    /**
-     * 验证面试的主体，也就是招新的主体
-     *
-     * @private 内部方法
-     *
-     * @param id 面试编号
-     * @param userId 主体编号
-     * @return 若是返回 true，不是返回 false
-     */
-    Boolean authenticatePrincipal(Long id, Long userId);
-
 }

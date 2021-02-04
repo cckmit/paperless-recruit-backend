@@ -64,10 +64,7 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
         }
 
         // 检查组织状态
-        Result<OrganizationCoreMemberDTO> checkResult = organizationService.checkOrganizationStatus(organizationId);
-        if (checkResult.isFailure()) {
-            return checkResult;
-        }
+        organizationService.getOrganization(organizationId);
 
         // 判断该组织成员是否属于该组织的
         if (!Objects.equals(organizationId0, organizationId)) {
@@ -118,12 +115,6 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
         if (organizationId == null) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
                     "The organizationCoreMember does not exist.");
-        }
-
-        // 检查组织状态
-        Result<Void> checkResult = organizationService.checkOrganizationStatus(organizationId);
-        if (checkResult.isFailure()) {
-            return checkResult;
         }
 
         // 删除该核心成员

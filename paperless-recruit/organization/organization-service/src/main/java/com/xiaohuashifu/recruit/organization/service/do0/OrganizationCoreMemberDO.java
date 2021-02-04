@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.do0;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @TableName("organization_core_member")
 public class OrganizationCoreMemberDO {
+    @TableId(type = IdType.AUTO)
     private Long id;
     private Long organizationId;
     private Long organizationMemberId;

@@ -193,22 +193,4 @@ public class InterviewServiceImpl implements InterviewService {
         return interviewMapper.getRecruitmentId(id);
     }
 
-    /**
-     * 验证面试的主体
-     *
-     * @private 内部方法
-     *
-     * @param id 面试编号
-     * @param userId 主体编号
-     * @return 若是返回 true，不是返回 false
-     */
-    @Override
-    public Boolean authenticatePrincipal(Long id, Long userId) {
-        Long recruitmentId = interviewMapper.getRecruitmentId(id);
-        if (recruitmentId == null) {
-            return false;
-        }
-        return recruitmentService.authenticatePrincipal(recruitmentId, userId);
-    }
-
 }

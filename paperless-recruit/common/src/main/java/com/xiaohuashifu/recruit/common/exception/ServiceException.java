@@ -1,0 +1,16 @@
+package com.xiaohuashifu.recruit.common.exception;
+
+/**
+ * 描述：服务异常
+ *
+ * @author xhsf
+ * @create 2021/2/4 18:39
+ */
+public class ServiceException extends RuntimeException {
+
+    public ServiceException() {}
+
+    public ServiceException(String message) {
+        super(message);
+    }
+}

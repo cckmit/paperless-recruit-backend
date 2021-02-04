@@ -10,7 +10,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 描述：部门查询参数
@@ -40,27 +39,17 @@ public class DepartmentQuery implements Serializable {
     private Long pageSize;
 
     /**
-     * 部门编号
-     */
-    private Long id;
-
-    /**
-     * 部门编号列表
-     */
-    private List<Long> ids;
-
-    /**
      * 部门所属组织编号
      */
     private Long organizationId;
 
     /**
-     * 部门名，可模糊
+     * 部门名，可右模糊
      */
     private String departmentName;
 
     /**
-     * 部门名缩写，可模糊
+     * 部门名缩写，可右模糊
      */
     private String abbreviationDepartmentName;
 
@@ -68,55 +57,5 @@ public class DepartmentQuery implements Serializable {
      * 部门是否被废弃
      */
     private Boolean deactivated;
-
-    /**
-     * 按照部门是否被废弃排序
-     */
-    private Boolean orderByDeactivated;
-
-    /**
-     * 按照部门是否被废弃逆序排序
-     */
-    private Boolean orderByDeactivatedDesc;
-
-    /**
-     * 按照部门名排序
-     */
-    private Boolean orderByDepartmentName;
-
-    /**
-     * 按照部门名逆序排序
-     */
-    private Boolean orderByDepartmentNameDesc;
-
-    /**
-     * 按照部门名缩写排序
-     */
-    private Boolean orderByAbbreviationDepartmentName;
-
-    /**
-     * 按照部门名缩写逆序排序
-     */
-    private Boolean orderByAbbreviationDepartmentNameDesc;
-
-    /**
-     * 按照创建时间排序
-     */
-    private Boolean orderByCreateTime;
-
-    /**
-     * 按照创建时间逆序排序
-     */
-    private Boolean orderByCreateTimeDesc;
-
-    /**
-     * 按照更新时间排序
-     */
-    private Boolean orderByUpdateTime;
-
-    /**
-     * 按照更新时间逆序排序
-     */
-    private Boolean orderByUpdateTimeDesc;
 
 }

@@ -3,8 +3,10 @@ package com.xiaohuashifu.recruit.registration.service.service;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
 import com.xiaohuashifu.recruit.common.constant.MySqlConstants;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnprocessableServiceException;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentConstants;
@@ -303,15 +305,15 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         // 否则走正常的添加招新部门流程
         else {
             // 判断部门是否属于该组织的
-            Long organizationId = departmentService.getOrganizationId(departmentId);
-            if (!Objects.equals(organizationId, recruitmentMapper.getOrganizationId(id))) {
+            DepartmentDTO departmentDTO = departmentService.getDepartment(departmentId);
+            if (!Objects.equals(departmentDTO.getOrganizationId(), recruitmentMapper.getOrganizationId(id))) {
                 return Result.fail(ErrorCodeEnum.FORBIDDEN);
             }
 
             // 检查部门状态
-            Result<RecruitmentDTO> checkDepartmentStatusResult = departmentService.checkDepartmentStatus(departmentId);
-            if (checkDepartmentStatusResult.isFailure()) {
-                return checkDepartmentStatusResult;
+            DepartmentDTO departmentDTO1 = departmentService.getDepartment(departmentId);
+            if (departmentDTO1.getDeactivated()) {
+                throw new UnprocessableServiceException("Department already deactivated.");
             }
 
             // 添加招新部门
@@ -898,24 +900,6 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * 验证招新的主体，也就是组织的主体
-     *
-     * @private 内部方法
-     *
-     * @param id 招新编号
-     * @param userId 主体编号
-     * @return 若是返回 true，不是返回 false
-     */
-    @Override
-    public Boolean authenticatePrincipal(Long id, Long userId) {
-        Long organizationId = recruitmentMapper.getOrganizationId(id);
-        if (organizationId == null) {
-            return false;
-        }
-        return organizationService.authenticatePrincipal(organizationId, userId);
-    }
-
-    /**
      * 更新招新的状态，用于状态的转换
      *
      * @private 内部方法
@@ -1033,13 +1017,6 @@ public class RecruitmentServiceImpl implements RecruitmentService {
             return Result.fail(ErrorCodeEnum.FORBIDDEN_UNAVAILABLE, "The recruitment unavailable.");
         }
 
-        // 检查组织状态
-        Result<RecruitmentDO> checkOrganizationStatusResult =
-                organizationService.checkOrganizationStatus(recruitmentDO.getOrganizationId());
-        if (checkOrganizationStatusResult.isFailure()) {
-            return checkOrganizationStatusResult;
-        }
-
         // 通过检查
         return Result.success(recruitmentDO);
     }
@@ -1057,26 +1034,21 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * @return 检查结果，检查成功返回招新的数据对象，可以直接用于插入数据库
      */
     private Result<RecruitmentDO> checkForCreateRecruitment(CreateRecruitmentPO createRecruitmentPO) {
-        // 检查组织状态
-        Result<RecruitmentDO> checkOrganizationStatusResult =
-                organizationService.checkOrganizationStatus(createRecruitmentPO.getOrganizationId());
-        if (checkOrganizationStatusResult.isFailure()) {
-            return checkOrganizationStatusResult;
-        }
+        // 检查组织是否存在
+        organizationService.getOrganization(createRecruitmentPO.getOrganizationId());
 
         // 检查部门状态
         for (Long recruitmentDepartmentId : createRecruitmentPO.getRecruitmentDepartmentIds()) {
             // 判断部门是否属于该组织的
-            Long organizationId = departmentService.getOrganizationId(recruitmentDepartmentId);
-            if (!Objects.equals(organizationId, createRecruitmentPO.getOrganizationId())) {
+            DepartmentDTO departmentDTO = departmentService.getDepartment(recruitmentDepartmentId);
+            if (!Objects.equals(departmentDTO.getOrganizationId(), createRecruitmentPO.getOrganizationId())) {
                 return Result.fail(ErrorCodeEnum.FORBIDDEN);
             }
 
             // 检查部门状态
-            Result<RecruitmentDO> checkDepartmentStatusResult =
-                    departmentService.checkDepartmentStatus(recruitmentDepartmentId);
-            if (checkDepartmentStatusResult.isFailure()) {
-                return checkDepartmentStatusResult;
+            DepartmentDTO departmentDTO1 = departmentService.getDepartment(recruitmentDepartmentId);
+            if (departmentDTO1.getDeactivated()) {
+                throw new UnprocessableServiceException("Department already deactivated.");
             }
         }
 

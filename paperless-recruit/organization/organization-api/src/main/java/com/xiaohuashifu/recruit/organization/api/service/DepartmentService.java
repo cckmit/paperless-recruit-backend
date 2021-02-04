@@ -1,7 +1,8 @@
 package com.xiaohuashifu.recruit.organization.api.service;
 
-import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.ServiceException;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
@@ -21,193 +22,105 @@ public interface DepartmentService {
     /**
      * 创建部门
      *
-     * @permission 必须是组织所属用户主体本身
-     *
-     * @errorCode UnprocessableEntity.NotExist: 组织不存在
-     *              OperationConflict: 该组织已经存在该部门名或部门名缩写
-     *
      * @param request CreateDepartmentRequest
      * @return DepartmentDTO 部门对象
      */
-    Result<DepartmentDTO> createDepartment(CreateDepartmentRequest request);
+    DepartmentDTO createDepartment(CreateDepartmentRequest request) throws ServiceException;
 
     /**
      * 添加部门的标签
-     *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotAvailable: 标签不可用
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict: 该标签已经存在
-     *              OperationConflict.OverLimit: 部门标签数量超过规定数量
-     *              OperationConflict.Lock: 获取部门标签的锁失败
      *
      * @param id 部门编号
      * @param label 标签名
      * @return 添加后的部门对象
      */
-    Result<DepartmentDTO> addLabel(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
-            @NotBlank(message = "The label can't be blank.")
-            @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of label must not be greater than "
-                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String label);
+    DepartmentDTO addLabel(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH) String label)
+            throws ServiceException;
 
     /**
      * 删除部门的标签
-     *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict: 该标签不存在
      *
      * @param id 部门编号
      * @param label 标签名
      * @return 删除标签后的部门
      */
-    Result<DepartmentDTO> removeLabel(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
-            @NotBlank(message = "The label can't be blank.")
-            @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH,
-                    message = "The length of label must not be greater than "
-                            + DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH + ".") String label);
+    DepartmentDTO removeLabel(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(max = DepartmentLabelConstants.MAX_LABEL_NAME_LENGTH) String label);
 
     /**
      * 获取部门
      *
-     * @errorCode InvalidParameter: 部门编号格式错误
-     *              InvalidParameter.NotFound: 该编号的部门不存在
-     *
      * @param id 部门编号
      * @return DepartmentDTO
      */
-    Result<DepartmentDTO> getDepartment(@NotNull(message = "The id can't be null.")
-                                        @Positive(message = "The id must be greater than 0.") Long id);
+    DepartmentDTO getDepartment(@NotNull @Positive Long id) throws NotFoundServiceException;
 
     /**
      * 查询部门
      *
-     * @errorCode InvalidParameter: 查询参数格式错误
-     *
      * @param query 查询参数
-     * @return PageInfo<DepartmentDTO> 查询结果，可能返回空列表
+     * @return QueryResult<DepartmentDTO> 查询结果，可能返回空列表
      */
-    Result<PageInfo<DepartmentDTO>> listDepartments(
-            @NotNull(message = "The query can't be null.") DepartmentQuery query);
+    QueryResult<DepartmentDTO> listDepartments(@NotNull DepartmentQuery query);
 
     /**
      * 更新部门名
      *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 部门编号或部门名格式错误
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict: 该组织已经存在相同的部门名
-     *              OperationConflict.Lock: 获取组织的部门名锁失败
-     *
      * @param id 部门编号
-     * @param newDepartmentName 新部门名
+     * @param departmentName 部门名
      * @return 更新后的部门
      */
-    Result<DepartmentDTO> updateDepartmentName(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
-            @NotBlank(message = "The newDepartmentName can't be blank.")
-            @Size(min = DepartmentConstants.MIN_DEPARTMENT_NAME_LENGTH,
-                    max = DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH,
-                    message = "The length of newDepartmentName must be between "
-                            + DepartmentConstants.MIN_DEPARTMENT_NAME_LENGTH + " and "
-                            + DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH + ".") String newDepartmentName);
+    DepartmentDTO updateDepartmentName(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(min = DepartmentConstants.MIN_DEPARTMENT_NAME_LENGTH,
+                    max = DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH) String departmentName) throws ServiceException;
 
     /**
      * 更新部门名缩写
      *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 部门编号或部门名缩写格式错误
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict: 该组织已经存在相同的部门名缩写
-     *              OperationConflict.Lock: 获取组织的部门名缩写锁失败
-     *
      * @param id 部门编号
-     * @param newAbbreviationDepartmentName 新部门名缩写
+     * @param abbreviationDepartmentName 部门名缩写
      * @return 更新后的部门
      */
-    Result<DepartmentDTO> updateAbbreviationDepartmentName(
-            @NotNull(message = "The id can't be null.") @Positive(message = "The id must be greater than 0.") Long id,
-            @NotBlank(message = "The newAbbreviationDepartmentName can't be blank.")
-            @Size(min = DepartmentConstants.MIN_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
-                    max = DepartmentConstants.MAX_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
-                    message = "The length of newAbbreviationDepartmentName must be between "
-                            + DepartmentConstants.MIN_ABBREVIATION_DEPARTMENT_NAME_LENGTH + " and "
-                            + DepartmentConstants.MAX_ABBREVIATION_DEPARTMENT_NAME_LENGTH + ".")
-                    String newAbbreviationDepartmentName);
+    DepartmentDTO updateAbbreviationDepartmentName(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(min = DepartmentConstants.MIN_ABBREVIATION_DEPARTMENT_NAME_LENGTH,
+                    max = DepartmentConstants.MAX_ABBREVIATION_DEPARTMENT_NAME_LENGTH)
+                    String abbreviationDepartmentName) throws ServiceException;
 
     /**
      * 更新部门介绍
      *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 部门编号或部门介绍格式错误
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *
      * @param id 部门编号
-     * @param newIntroduction 新部门介绍
+     * @param introduction 部门介绍
      * @return 更新后的部门
      */
-    Result<DepartmentDTO> updateIntroduction(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
-            @NotBlank(message = "The newIntroduction can't be blank.")
-            @Size(max = DepartmentConstants.MAX_DEPARTMENT_INTRODUCTION_LENGTH,
-                    message = "The length of newIntroduction must not be greater than "
-                            + DepartmentConstants.MAX_DEPARTMENT_INTRODUCTION_LENGTH + ".") String newIntroduction);
+    DepartmentDTO updateIntroduction(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(max = DepartmentConstants.MAX_DEPARTMENT_INTRODUCTION_LENGTH) String introduction);
 
     /**
      * 更新部门 Logo
-     *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 更新参数格式错误
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict.Lock: 获取部门 logo 的锁失败
-     *              UnprocessableEntity.NotExist 所要链接的对象不存在
-     *              OperationConflict.Linked 对象已经链接
-     *              OperationConflict.Deleted 对象已经删除
-     *              InternalError 链接对象失败
      *
      * @param id 部门编号
      * @param logoUrl logoUrl
      * @return 更新后的部门
      */
-    Result<DepartmentDTO> updateLogo(
+    DepartmentDTO updateLogo(
             @NotNull @Positive Long id,
-            @NotBlank @Pattern(
-                    regexp = "(departments/logos/)(.+)(\\.jpg|\\.jpeg|\\.png|\\.gif)") String logoUrl);
+            @NotBlank @Pattern(regexp = "(departments/logos/)(.+)(\\.jpg|\\.jpeg|\\.png|\\.gif)") String logoUrl);
 
     /**
      * 停用部门，只是标识为停用
      * 无法再添加成员到该部门，无法创建招新报名
      *
-     * @permission 该部门所属组织的所属用户必须是用户主体本身
-     *
-     * @errorCode InvalidParameter: 部门编号错误
-     *              InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              OperationConflict: 部门已经被停用
-     *
      * @param id 部门编号
      * @return 停用后的部门对象
      */
-    Result<DepartmentDTO> deactivateDepartment(@NotNull(message = "The id can't be null.")
-                                               @Positive(message = "The id must be greater than 0.") Long id);
+    DepartmentDTO deactivateDepartment(@NotNull @Positive Long id) throws ServiceException;
 
     /**
      * 删除部门的标签，通过标签名
@@ -221,52 +134,23 @@ public interface DepartmentService {
     int removeLabels(String label);
 
     /**
-     * 获取该部门所属组织的编号
-     *
-     * @private 内部方法
-     *
-     * @param id 部门编号
-     * @return 组织编号，若该部门不存在则返回 null
-     */
-    Long getOrganizationId(Long id);
-
-    /**
      * 增加成员数，+1
      *
      * @private 内部方法
      *
-     * @errorCode InvalidParameter: 部门编号格式错误
-     *
      * @param id 部门编号
      * @return 增加成员数后的部门对象
      */
-    Result<DepartmentDTO> increaseNumberOfMembers(@NotNull(message = "The id can't be null.")
-                                                  @Positive(message = "The id must be greater than 0.") Long id);
+    DepartmentDTO increaseNumberOfMembers(@NotNull @Positive Long id);
 
     /**
      * 减少成员数，-1
      *
      * @private 内部方法
      *
-     * @errorCode InvalidParameter: 部门编号格式错误
-     *
      * @param id 部门编号
      * @return 减少成员数后的部门对象
      */
-    Result<DepartmentDTO> decreaseNumberOfMembers(@NotNull(message = "The id can't be null.")
-                                                  @Positive(message = "The id must be greater than 0.") Long id);
-
-    /**
-     * 检查部门的状态，检查部门是否存在和部门是否被停用
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter.NotExist: 部门不存在
-     *              Forbidden.Deactivated: 部门被停用
-     *
-     * @param id 部门编号
-     * @return 检查结果
-     */
-    <T> Result<T> checkDepartmentStatus(Long id);
+    DepartmentDTO decreaseNumberOfMembers(@NotNull @Positive Long id);
 
 }

@@ -65,8 +65,4 @@ public class InterviewFormServiceImplTest {
                 3L, InterviewStatusEnum.WAITING_INTERVIEW, InterviewStatusEnum.PASS));
     }
 
-    @Test
-    public void authenticatePrincipal() {
-        System.out.println(interviewFormService.authenticatePrincipal(1L, 18L));
-    }
 }

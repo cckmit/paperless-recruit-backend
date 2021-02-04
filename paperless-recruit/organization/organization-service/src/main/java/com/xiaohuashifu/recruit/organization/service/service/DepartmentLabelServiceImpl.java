@@ -2,9 +2,11 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.DisableDepartmentLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentLabelQuery;
@@ -45,11 +47,12 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     }
 
     @Override
-    public Result<DepartmentLabelDTO> createDepartmentLabel(String labelName) {
+    @Transactional
+    public DepartmentLabelDTO createDepartmentLabel(String labelName) {
         // 判断标签名是否已经存在
         DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectByLabelName(labelName);
         if (departmentLabelDO != null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_EXIST, "This label name already exist.");
+            throw new DuplicateServiceException("This label name already exist.");
         }
 
         // 保存标签
@@ -59,25 +62,25 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     }
 
     @Override
-    public Result<DepartmentLabelDTO> getDepartmentLabel(Long id) {
+    public DepartmentLabelDTO getDepartmentLabel(Long id) {
         DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectById(id);
         if (departmentLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+            throw new NotFoundServiceException();
         }
-        return Result.success(departmentLabelAssembler.departmentLabelDOToDepartmentLabelDTO(departmentLabelDO));
+        return departmentLabelAssembler.departmentLabelDOToDepartmentLabelDTO(departmentLabelDO);
     }
 
     @Override
-    public Result<DepartmentLabelDTO> getDepartmentLabelByLabelName(String labelName) {
+    public DepartmentLabelDTO getDepartmentLabelByLabelName(String labelName) {
         DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectByLabelName(labelName);
         if (departmentLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+            throw new NotFoundServiceException();
         }
-        return Result.success(departmentLabelAssembler.departmentLabelDOToDepartmentLabelDTO(departmentLabelDO));
+        return departmentLabelAssembler.departmentLabelDOToDepartmentLabelDTO(departmentLabelDO);
     }
 
     @Override
-    public Result<QueryResult<DepartmentLabelDTO>> listDepartmentLabels(DepartmentLabelQuery query) {
+    public QueryResult<DepartmentLabelDTO> listDepartmentLabels(DepartmentLabelQuery query) {
         LambdaQueryWrapper<DepartmentLabelDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(query.getAvailable() != null, DepartmentLabelDO::getAvailable, query.getAvailable())
                 .likeRight(query.getLabelName() != null, DepartmentLabelDO::getLabelName,
@@ -88,75 +91,57 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
                 .stream()
                 .map(departmentLabelAssembler::departmentLabelDOToDepartmentLabelDTO)
                 .collect(Collectors.toList());
-        QueryResult<DepartmentLabelDTO> queryResult = new QueryResult<>(page.getTotal(), departmentLabelDTOS);
-        return Result.success(queryResult);
+        return new QueryResult<>(page.getTotal(), departmentLabelDTOS);
     }
 
     @Override
     @Transactional
-    public Result<DisableDepartmentLabelDTO> disableDepartmentLabel(Long id) {
+    public DisableDepartmentLabelDTO disableDepartmentLabel(Long id) {
         // 判断标签是否存在
-        DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectById(id);
-        if (departmentLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                    "The label does not exist.");
-        }
+        DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id);
 
         // 判断标签是否已经被禁用
-        if (!departmentLabelDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already unavailable.");
+        if (!departmentLabelDTO.getAvailable()) {
+            throw new UnmodifiedServiceException("The label already unavailable.");
         }
 
         // 禁用标签
-        DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder()
-                .id(id)
-                .available(false)
-                .build();
+        DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder().id(id).available(false).build();
         departmentLabelMapper.updateById(departmentLabelDOForUpdate);
 
         // 删除部门的这个标签
-        int deletedNumber = departmentService.removeLabels(departmentLabelDO.getLabelName());
+        int deletedNumber = departmentService.removeLabels(departmentLabelDTO.getLabelName());
 
         // 封装删除数量和禁用后的部门标签对象
-        DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id).getData();
-        DisableDepartmentLabelDTO disableDepartmentLabelDTO =
-                new DisableDepartmentLabelDTO(departmentLabelDTO, deletedNumber);
-        return Result.success(disableDepartmentLabelDTO);
+        return new DisableDepartmentLabelDTO(getDepartmentLabel(id), deletedNumber);
     }
 
     @Override
     @Transactional
-    public Result<DepartmentLabelDTO> enableDepartmentLabel(Long id) {
+    public DepartmentLabelDTO enableDepartmentLabel(Long id) {
         // 判断标签是否存在
-        DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectById(id);
-        if (departmentLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                    "The label does not exist.");
-        }
+        DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id);
 
         // 判断标签是否已经可用
-        if (departmentLabelDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already available.");
+        if (departmentLabelDTO.getAvailable()) {
+            throw new UnmodifiedServiceException("The label already available.");
         }
 
         // 解禁标签
-        DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder()
-                .id(id)
-                .available(true)
-                .build();
+        DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder().id(id).available(true).build();
         departmentLabelMapper.updateById(departmentLabelDOForUpdate);
         return getDepartmentLabel(id);
     }
 
     @Override
-    public Result<DepartmentLabelDTO> increaseReferenceNumberOrSaveDepartmentLabel(String labelName) {
+    @Transactional
+    public DepartmentLabelDTO increaseReferenceNumberOrSaveDepartmentLabel(String labelName) {
         // 判断标签是否已经存在
         DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectByLabelName(labelName);
 
         // 若存在且被禁用则不可用增加引用数量
         if (departmentLabelDO != null && !departmentLabelDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_UNAVAILABLE,
-                    "The department label unavailable.");
+            throw new UnavailableServiceException("The department label unavailable.");
         }
 
         // 若不存在先添加标签

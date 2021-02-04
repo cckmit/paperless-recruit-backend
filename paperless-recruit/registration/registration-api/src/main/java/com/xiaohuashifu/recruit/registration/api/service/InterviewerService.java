@@ -87,15 +87,4 @@ public interface InterviewerService {
      */
     Long getOrganizationMemberId(Long id);
 
-    /**
-     * 验证面试官的主体，也就是组织的主体
-     *
-     * @private 内部方法
-     *
-     * @param id 面试官编号
-     * @param userId 主体编号
-     * @return 若是返回 true，不是返回 false
-     */
-    Boolean authenticatePrincipal(Long id, Long userId);
-
 }

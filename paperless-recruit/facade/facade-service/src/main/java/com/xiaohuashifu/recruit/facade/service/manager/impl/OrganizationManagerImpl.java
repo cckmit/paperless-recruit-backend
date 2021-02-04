@@ -69,12 +69,6 @@ public class OrganizationManagerImpl implements OrganizationManager {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(key = "'organization:' + #id +':authenticate-principal:' + #userId")
-    @Override
-    public boolean authenticatePrincipal(Long id, Long userId) {
-        return organizationService.authenticatePrincipal(id, userId);
-    }
-
     @Caching(evict = {
             @CacheEvict(key = "'organizations:' + #id"),
             @CacheEvict(key = "'user:' +  #result.userId + ':organization'")

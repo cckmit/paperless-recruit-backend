@@ -1,8 +1,10 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnprocessableServiceException;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
 import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
@@ -880,16 +882,16 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
         // 判断该部门是否是该组织的
         Long organizationIdByRecruitmentId = recruitmentService.getOrganizationId(recruitmentId);
-        Long organizationIdByDepartmentId = departmentService.getOrganizationId(departmentId);
-        if (!Objects.equals(organizationIdByRecruitmentId, organizationIdByDepartmentId)) {
+        DepartmentDTO departmentDTO = departmentService.getDepartment(departmentId);
+        if (!Objects.equals(organizationIdByRecruitmentId, departmentDTO.getOrganizationId())) {
             return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
                     "The " + firstOrSecondDepartment + " does not belong to this organization.");
         }
 
         // 判断部门状态
-        Result<T> checkDepartmentStatusResult = departmentService.checkDepartmentStatus(departmentId);
-        if (checkDepartmentStatusResult.isFailure()) {
-            return checkDepartmentStatusResult;
+        DepartmentDTO departmentDTO1 = departmentService.getDepartment(departmentId);
+        if (departmentDTO1.getDeactivated()) {
+            throw new UnprocessableServiceException("Department already deactivated.");
         }
 
         // 通过判断

@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.do0;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @TableName("organization_member_invitation")
 public class OrganizationMemberInvitationDO {
+    @TableId(type = IdType.AUTO)
     private Long id;
     private Long organizationId;
     private Long userId;

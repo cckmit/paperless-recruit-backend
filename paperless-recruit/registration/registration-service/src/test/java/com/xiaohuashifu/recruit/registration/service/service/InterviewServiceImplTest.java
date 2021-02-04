@@ -51,8 +51,4 @@ public class InterviewServiceImplTest {
         System.out.println(interviewService.getRecruitmentId(6L));
     }
 
-    @Test
-    public void authenticatePrincipal() {
-        System.out.println(interviewService.authenticatePrincipal(3L, 20L));
-    }
 }

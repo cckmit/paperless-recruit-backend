@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationRequest;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -33,8 +34,8 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void createOrganization() {
-        System.out.println(organizationService.createOrganization("827032783@qq.com",
-                "453669", "123456"));
+        System.out.println(organizationService.createOrganization(
+                CreateOrganizationRequest.builder().email("827032783@qq.com").authCode( "453669").password("123456").build()));
     }
 
     @Test
@@ -112,12 +113,7 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void sendEmailAuthCodeForSignUp() {
-        System.out.println(organizationService.sendEmailAuthCodeForSignUp("827032783@qq.com"));
-    }
-
-    @Test
-    public void checkOrganizationStatus() {
-        System.out.println(organizationService.checkOrganizationStatus(null));
+        organizationService.sendEmailAuthCodeForSignUp("827032783@qq.com");
     }
 
 }

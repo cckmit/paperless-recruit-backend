@@ -51,8 +51,4 @@ public class InterviewerServiceImplTest {
         System.out.println(interviewerService.getOrganizationId(1L));
     }
 
-    @Test
-    public void authenticatePrincipal() {
-        System.out.println(interviewerService.authenticatePrincipal(1L, 21L));
-    }
 }

@@ -1,16 +1,13 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.DepartmentLabelAssembler;
-import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.DepartmentLabelManager;
 import com.xiaohuashifu.recruit.facade.service.request.CreateDepartmentLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.request.QueryDepartmentLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateDepartmentLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentLabelVO;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentLabelDTO;
-import com.xiaohuashifu.recruit.organization.api.dto.DisableDepartmentLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentLabelService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.cache.annotation.CacheConfig;
@@ -42,22 +39,15 @@ public class DepartmentLabelManagerImpl implements DepartmentLabelManager {
 
     @Override
     public DepartmentLabelVO createDepartmentLabel(CreateDepartmentLabelRequest request) {
-        Result<DepartmentLabelDTO> result = departmentLabelService.createDepartmentLabel(request.getLabelName());
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        return departmentLabelAssembler.departmentLabelDTOToDepartmentLabelVO(result.getData());
+        return departmentLabelAssembler.departmentLabelDTOToDepartmentLabelVO(
+                departmentLabelService.createDepartmentLabel(request.getLabelName()));
     }
 
     @Cacheable(key = "'departments:labels:' + #request")
     @Override
     public QueryResult<DepartmentLabelVO> listDepartmentLabels(QueryDepartmentLabelRequest request) {
-        Result<QueryResult<DepartmentLabelDTO>> result = departmentLabelService.listDepartmentLabels(
+        QueryResult<DepartmentLabelDTO> data = departmentLabelService.listDepartmentLabels(
                 departmentLabelAssembler.queryDepartmentLabelRequestToDepartmentLabelQuery(request));
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        QueryResult<DepartmentLabelDTO> data = result.getData();
         List<DepartmentLabelVO> departmentLabelVOS = data.getResult().stream()
                 .map(departmentLabelAssembler::departmentLabelDTOToDepartmentLabelVO)
                 .collect(Collectors.toList());
@@ -70,17 +60,9 @@ public class DepartmentLabelManagerImpl implements DepartmentLabelManager {
         DepartmentLabelDTO departmentLabelDTO = null;
         if (request.getAvailable() != null) {
             if (request.getAvailable()) {
-                Result<DepartmentLabelDTO> result = departmentLabelService.enableDepartmentLabel(labelId);
-                if (result.isFailure()) {
-                    throw new ResponseEntityException(result);
-                }
-                departmentLabelDTO = result.getData();
+                departmentLabelDTO = departmentLabelService.enableDepartmentLabel(labelId);
             } else {
-                Result<DisableDepartmentLabelDTO> result = departmentLabelService.disableDepartmentLabel(labelId);
-                if (result.isFailure()) {
-                    throw new ResponseEntityException(result);
-                }
-                departmentLabelDTO = result.getData().getDepartmentLabelDTO();
+                departmentLabelDTO = departmentLabelService.disableDepartmentLabel(labelId).getDepartmentLabelDTO();
             }
         }
 

@@ -499,8 +499,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
      */
     private void sendInvitationNotification(Long organizationMemberInvitationId, Long organizationId, Long userId) {
         // 构造通知标题
-        Result<OrganizationDTO> getOrganizationResult = organizationService.getOrganization(organizationId);
-        OrganizationDTO organizationDTO = getOrganizationResult.getData();
+        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId);
         String notificationTitle = MessageFormat.format(ORGANIZATION_MEMBER_INVITATION_NOTIFICATION_TITLE_PATTERN,
                 organizationDTO.getAbbreviationOrganizationName());
 
@@ -590,7 +589,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         }
 
         // 判断部门是否被停用
-        DepartmentDTO departmentDTO = departmentService.getDepartment(newDepartmentId).getData();
+        DepartmentDTO departmentDTO = departmentService.getDepartment(newDepartmentId);
         if (departmentDTO.getDeactivated()) {
             return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DEACTIVATED,
                     "The department already deactivated.");

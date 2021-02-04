@@ -8,6 +8,7 @@ import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.validation.ValidationException;
 import java.io.IOException;
 
 /**
@@ -34,8 +35,13 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void createDepartment() {
-        System.out.println(departmentService.createDepartment(CreateDepartmentRequest.builder()
-                        .organizationId(1L).departmentName("办公室").abbreviationDepartmentName("办公室").build()));
+        try {
+            System.out.println(departmentService.createDepartment(CreateDepartmentRequest.builder()
+                    .organizationId(null).departmentName("办公室").abbreviationDepartmentName("办公室").build()));
+        } catch (ValidationException e) {
+            e.printStackTrace();
+            System.out.println(e.getClass());
+        }
     }
 
     @Test
@@ -98,8 +104,4 @@ public class DepartmentServiceImplTest {
         System.out.println(departmentService.decreaseNumberOfMembers(1L));
     }
 
-    @Test
-    public void checkDepartmentStatus() {
-        System.out.println(departmentService.checkDepartmentStatus(4L));
-    }
 }

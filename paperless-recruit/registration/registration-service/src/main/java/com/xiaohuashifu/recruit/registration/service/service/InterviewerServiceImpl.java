@@ -77,12 +77,8 @@ public class InterviewerServiceImpl implements InterviewerService {
      */
     @Override
     public Result<InterviewerDTO> saveInterviewer(Long organizationId, Long organizationMemberId) {
-        // 判断组织状态
-        Result<InterviewerDTO> checkOrganizationStatusResult =
-                organizationService.checkOrganizationStatus(organizationId);
-        if (checkOrganizationStatusResult.isFailure()) {
-            return checkOrganizationStatusResult;
-        }
+        // 判断组织是否存在
+        organizationService.getOrganization(organizationId);
 
         // 判断该成员是否是该组织的
         Long organizationId0 = organizationMemberService.getOrganizationId(organizationMemberId);
@@ -228,21 +224,6 @@ public class InterviewerServiceImpl implements InterviewerService {
     @Override
     public Long getOrganizationMemberId(Long id) {
         return interviewerMapper.getOrganizationMemberId(id);
-    }
-
-    /**
-     * 验证面试官的主体，也就是组织的主体
-     *
-     * @private 内部方法
-     *
-     * @param id 面试官编号
-     * @param userId 主体编号
-     * @return 若是返回 true，不是返回 false
-     */
-    @Override
-    public Boolean authenticatePrincipal(Long id, Long userId) {
-        Long organizationId = interviewerMapper.getOrganizationId(id);
-        return organizationService.authenticatePrincipal(organizationId, userId);
     }
 
     /**

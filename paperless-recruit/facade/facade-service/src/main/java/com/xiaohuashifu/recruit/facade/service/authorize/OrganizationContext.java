@@ -5,6 +5,8 @@ import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * 描述：组织上下文
  *
@@ -31,7 +33,8 @@ public class OrganizationContext implements Context {
     @Override
     public void isOwner(Long organizationId) {
         Long userId = userContext.getUserId();
-        if (!organizationManager.authenticatePrincipal(organizationId, userId)) {
+        OrganizationVO organizationVO = organizationManager.getOrganization(organizationId);
+        if (!Objects.equals(organizationVO.getUserId(), userId)) {
             throw new ForbiddenException("Forbidden");
         }
     }

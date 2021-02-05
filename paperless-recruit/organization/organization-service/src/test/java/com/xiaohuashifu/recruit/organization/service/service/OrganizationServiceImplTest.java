@@ -61,7 +61,8 @@ public class OrganizationServiceImplTest {
 
     @Test
     public void updateOrganizationName() {
-        System.out.println(organizationService.updateOrganizationName(1L, "华南农业大学学生科技创新与创业联合会"));
+        System.out.println(organizationService.updateOrganizationName(
+                2L, "小花师傅工作室6"));
     }
 
     @Test

@@ -86,7 +86,7 @@ public interface OrganizationService {
             @NotNull @Positive Long id,
             @NotBlank @Size(min = OrganizationConstants.MIN_ORGANIZATION_NAME_LENGTH,
                     max = OrganizationConstants.MAX_ORGANIZATION_NAME_LENGTH) String organizationName)
-            throws DuplicateServiceException;
+            throws ServiceException;
 
     /**
      * 更新组织名缩写

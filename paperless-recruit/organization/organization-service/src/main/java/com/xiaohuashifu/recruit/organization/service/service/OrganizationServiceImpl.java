@@ -2,13 +2,13 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.OverLimitServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
@@ -65,20 +65,36 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     private static final String CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE = "创建组织";
 
+    /**
+     * 组织标签锁定键模式，{0}是组织编号
+     */
+    private static final String ORGANIZATION_LABELS_LOCK_KEY_PATTERN = "organizations:{0}:labels";
+
+    /**
+     * 组织邮箱锁定键模式，{0}是邮箱
+     */
+    private static final String ORGANIZATION_EMAIL_LOCK_KEY_PATTERN = "organizations:email:{0}";
+
+    /**
+     * 组织 available 属性锁定键模式，{0}是组织编号
+     */
+    private static final String ORGANIZATION_AVAILABLE_LOCK_KEY_PATTERN = "organizations:{0}:available";
+
     public OrganizationServiceImpl(OrganizationMapper organizationMapper, OrganizationAssembler organizationAssembler) {
         this.organizationMapper = organizationMapper;
         this.organizationAssembler = organizationAssembler;
     }
 
-    @Override
     // TODO: 2021/2/5 这里需要用消息队列使得最终一致性
+    @Override
     @Transactional
+    @DistributedLock(value = ORGANIZATION_EMAIL_LOCK_KEY_PATTERN, parameters = "#{#request.email}")
     public OrganizationDTO createOrganization(CreateOrganizationRequest request) {
         // 注册主体账号
-        Result<UserDTO> signUpResult = userService.signUpByEmailAuthCode(request.getEmail(), request.getAuthCode(), request.getPassword());
+        UserDTO userDTO = userService.createUserByEmailAuthCode(
+                organizationAssembler.createOrganizationRequestToCreateUserByEmailAuthCodeRequest(request));
 
         // 赋予主体组织的基本权限
-        UserDTO userDTO = signUpResult.getData();
         roleService.saveUserRole(userDTO.getId(), ORGANIZATION_DEFAULT_ROLE_ID);
 
         // 创建组织
@@ -92,6 +108,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     // TODO: 2021/2/5 添加消息队列保证最终一致性
     @Override
     @Transactional
+    @DistributedLock(value = ORGANIZATION_LABELS_LOCK_KEY_PATTERN, parameters = "#{#id}")
     public OrganizationDTO addLabel(Long id, String label) {
         // 判断标签数量是否大于 MAX_ORGANIZATION_LABEL_NUMBER
         OrganizationDTO organizationDTO = getOrganization(id);
@@ -167,16 +184,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    @Transactional
     public OrganizationDTO updateOrganizationName(Long id, String organizationName) {
-        // 判断组织名存不存在
-        LambdaQueryWrapper<OrganizationDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OrganizationDO::getOrganizationName, organizationName);
-        int count = organizationMapper.selectCount(wrapper);
-        if (count > 0) {
-            throw new DuplicateServiceException("The organization name already exist.");
-        }
-
         // 更新组织名
         OrganizationDO organizationDOForUpdate =
                 OrganizationDO.builder().id(id).organizationName(organizationName).build();
@@ -188,14 +196,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public OrganizationDTO updateAbbreviationOrganizationName(Long id, String abbreviationOrganizationName) {
-        // 判断组织名缩写存不存在
-        LambdaQueryWrapper<OrganizationDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OrganizationDO::getAbbreviationOrganizationName, abbreviationOrganizationName);
-        int count = organizationMapper.selectCount(wrapper);
-        if (count > 0) {
-            throw new DuplicateServiceException("The abbreviationOrganizationName name already exist.");
-        }
-
         // 更新组织名缩写
         OrganizationDO organizationDOForUpdate =
                 OrganizationDO.builder().id(id).abbreviationOrganizationName(abbreviationOrganizationName).build();
@@ -229,7 +229,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    @Transactional
+    @DistributedLock(value = ORGANIZATION_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}")
     public OrganizationDTO disableOrganization(Long id) {
         // 判断组织是否已经被禁用
         OrganizationDTO organizationDTO = getOrganization(id);
@@ -246,6 +246,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    @DistributedLock(value = ORGANIZATION_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}")
     public OrganizationDTO enableOrganization(Long id) {
         // 判断组织是否可用
         OrganizationDTO organizationDTO = getOrganization(id);
@@ -255,7 +256,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         // 解禁组织
         OrganizationDO organizationDOForUpdate = OrganizationDO.builder().id(id).available(true).build();
-        organizationMapper.updateById(organizationDOForUpdate);;
+        organizationMapper.updateById(organizationDOForUpdate);
 
         // 获取解禁后的组织对象
         return getOrganization(id);
@@ -263,7 +264,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public void sendEmailAuthCodeForSignUp(String email) {
-        System.out.println(userService.sendEmailAuthCodeForSignUp(email, CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE));
+        userService.sendEmailAuthCodeForSignUp(email, CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE);
     }
 
     @Override

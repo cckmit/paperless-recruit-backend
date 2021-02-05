@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.user.api.constant.PermissionConstants;
 import com.xiaohuashifu.recruit.user.api.dto.DisablePermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.EnablePermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
+import com.xiaohuashifu.recruit.user.api.request.CreatePermissionRequest;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 
 import javax.validation.constraints.*;
@@ -31,7 +31,7 @@ public interface PermissionService {
      * @return Result<PermissionDTO>
      */
     Result<PermissionDTO> savePermission(@NotNull(message = "The savePermissionPO can't be null.")
-                                                 SavePermissionPO savePermissionPO);
+                                                 CreatePermissionRequest savePermissionPO);
 
     /**
      * 删除权限，只允许没有子权限的权限删除

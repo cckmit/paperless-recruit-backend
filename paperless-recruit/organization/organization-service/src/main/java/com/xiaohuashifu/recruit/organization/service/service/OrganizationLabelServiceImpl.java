@@ -53,9 +53,7 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
         }
 
         // 保存标签
-        OrganizationLabelDO organizationLabelDOForInsert = OrganizationLabelDO.builder()
-                .labelName(labelName)
-                .build();
+        OrganizationLabelDO organizationLabelDOForInsert = OrganizationLabelDO.builder().labelName(labelName).build();
         organizationLabelMapper.insert(organizationLabelDOForInsert);
         return getOrganizationLabel(organizationLabelDOForInsert.getId());
     }

@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.manager;
 
+import com.xiaohuashifu.recruit.common.exception.ThirdPartyServiceException;
+
 /**
  * 描述：短信相关服务封装
  *
@@ -12,7 +14,6 @@ public interface SmsManager {
      *
      * @param phone 手机号码
      * @param authCode 验证码
-     * @return 发送成功或者失败
      */
-    boolean sendSmsAuthCode(String phone, String authCode);
+    void sendSmsAuthCode(String phone, String authCode) throws ThirdPartyServiceException;
 }

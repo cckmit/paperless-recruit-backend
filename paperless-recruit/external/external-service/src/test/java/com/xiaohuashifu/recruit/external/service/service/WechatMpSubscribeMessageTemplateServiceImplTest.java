@@ -2,8 +2,8 @@ package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
-import com.xiaohuashifu.recruit.external.api.po.SaveWeChatMpSubscribeMessageTemplatePO;
-import com.xiaohuashifu.recruit.external.api.po.UpdateWeChatMpSubscribeMessageTemplatePO;
+import com.xiaohuashifu.recruit.external.api.request.CreateWeChatMpSubscribeMessageTemplateRequest;
+import com.xiaohuashifu.recruit.external.api.request.UpdateWeChatMpSubscribeMessageTemplateRequest;
 import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTemplateService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -38,7 +38,7 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
     @Test
     public void saveWechatMpSubscribeMessageTemplate() {
         System.out.println(wechatMpSubscribeMessageTemplateService.saveWeChatMpSubscribeMessageTemplate(
-                new SaveWeChatMpSubscribeMessageTemplatePO.Builder()
+                new CreateWeChatMpSubscribeMessageTemplateRequest.Builder()
                         .app(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP)
                         .templateId("PwgUsyL54zBnWyB1bHDuOP6Oc8EAG5GvQplx8E2kU")
                         .title("面试结果通知")
@@ -63,7 +63,7 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
     @Test
     public void updateWechatMpSubscribeMessageTemplate() {
         System.out.println(wechatMpSubscribeMessageTemplateService.updateWeChatMpSubscribeMessageTemplate(
-                new UpdateWeChatMpSubscribeMessageTemplatePO.Builder()
+                new UpdateWeChatMpSubscribeMessageTemplateRequest.Builder()
                         .id(1L)
                         .status(WeChatMpSubscribeMessageTemplateStatusEnum.AVAILABLE)
                         .build()));

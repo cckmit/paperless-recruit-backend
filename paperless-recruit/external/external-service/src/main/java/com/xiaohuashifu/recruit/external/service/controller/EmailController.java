@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.external.service.controller;
 
-import com.xiaohuashifu.recruit.external.api.po.CreateAndSendEmailAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.request.CreateAndSendEmailAuthCodeRequest;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +23,7 @@ public class EmailController {
     private EmailService emailService;
 
     @PostMapping("/createAndSendEmailAuthCode")
-    public Object createAndSendEmailAuthCode(@RequestBody CreateAndSendEmailAuthCodePO emailAuthCodeDTO) {
+    public Object createAndSendEmailAuthCode(@RequestBody CreateAndSendEmailAuthCodeRequest emailAuthCodeDTO) {
         return emailService.createAndSendEmailAuthCode(emailAuthCodeDTO);
     }
 

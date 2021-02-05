@@ -4,7 +4,7 @@ import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
+import com.xiaohuashifu.recruit.external.api.request.SendWeChatMpSubscribeMessageRequest;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
@@ -70,7 +70,7 @@ public class WeChatMpServiceImpl implements WeChatMpService {
      * @return 发送结果
      */
     @Override
-    public Result<Void> sendSubscribeMessage(SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO) {
+    public Result<Void> sendSubscribeMessage(SendWeChatMpSubscribeMessageRequest sendWeChatMpSubscribeMessagePO) {
         AppEnum app = sendWeChatMpSubscribeMessagePO.getApp();
         // 平台必须是微信小程序
         if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {

@@ -1,10 +1,8 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
-import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xiaohuashifu.recruit.user.service.do0.UserProfileDO;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * 描述：用户信息表数据库映射层
@@ -12,29 +10,12 @@ import java.util.List;
  * @author: xhsf
  * @create: 2020/10/30 15:05
  */
-public interface UserProfileMapper {
+public interface UserProfileMapper extends BaseMapper<UserProfileDO> {
 
-    int insertUserProfile(UserProfileDO userProfileDO);
-
-    UserProfileDO getUserProfile(Long id);
-
-    UserProfileDO getUserProfileByUserId(Long userId);
-
-    List<UserProfileDO> listUserProfiles(UserProfileQuery query);
-
-    Long getUserId(Long id);
-
-    int count(Long id);
-
-    int countByUserId(Long userId);
-
-    int updateFullName(@Param("id") Long id, @Param("fullName") String fullName);
-
-    int updateStudentNumber(@Param("id") Long id, @Param("studentNumber") String studentNumber);
-
-    int updateCollegeIdAndMajorId(@Param("id") Long id, @Param("collegeId") Long collegeId,
-                                  @Param("majorId") Long majorId);
-
-    int updateIntroduction(@Param("id") Long id, @Param("introduction") String introduction);
+    default UserProfileDO selectByUserId(Long userId) {
+        LambdaQueryWrapper<UserProfileDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserProfileDO::getUserId, userId);
+        return selectOne(wrapper);
+    }
 
 }

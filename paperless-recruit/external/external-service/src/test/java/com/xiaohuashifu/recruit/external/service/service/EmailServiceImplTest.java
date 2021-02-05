@@ -1,9 +1,9 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.external.api.po.CheckEmailAuthCodePO;
-import com.xiaohuashifu.recruit.external.api.po.CreateAndSendEmailAuthCodePO;
-import com.xiaohuashifu.recruit.external.api.po.SendSimpleEmailPO;
-import com.xiaohuashifu.recruit.external.api.po.SendTemplateEmailPO;
+import com.xiaohuashifu.recruit.external.api.request.CheckEmailAuthCodeRequest;
+import com.xiaohuashifu.recruit.external.api.request.CreateAndSendEmailAuthCodeRequest;
+import com.xiaohuashifu.recruit.external.api.request.SendSimpleEmailRequest;
+import com.xiaohuashifu.recruit.external.api.request.SendTemplateEmailRequest;
 import com.xiaohuashifu.recruit.external.api.service.EmailService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -47,7 +47,7 @@ public class EmailServiceImplTest {
         Map<String, byte[]> attachmentMap = new HashMap<>();
         byte[] bytes = fileInputStream.readAllBytes();
         attachmentMap.put("hhx.jpg", bytes);
-        System.out.println(emailService.sendSimpleEmail(new SendSimpleEmailPO.Builder()
+        System.out.println(emailService.sendSimpleEmail(new SendSimpleEmailRequest.Builder()
                 .email("827032783@qq.com")
                 .subject("邮箱测试")
                 .text("测测测")
@@ -65,7 +65,7 @@ public class EmailServiceImplTest {
         Map<String, byte[]> attachmentMap = new HashMap<>();
 
         System.out.println(emailService.sendTemplateEmail(
-                new SendTemplateEmailPO.Builder()
+                new SendTemplateEmailRequest.Builder()
                         .email("827032783@qq.com")
                         .subject("邮箱测试")
                         .templateName("RecruitAuthCode")
@@ -77,13 +77,13 @@ public class EmailServiceImplTest {
     @Test
     public void createAndSendEmailAuthCode() {
         System.out.println(emailService.createAndSendEmailAuthCode(
-                new CreateAndSendEmailAuthCodePO.Builder()
+                new CreateAndSendEmailAuthCodeRequest.Builder()
                         .email("827032783@qq.com").subject("email-update").title("邮箱绑定").expirationTime(5).build()));
     }
 
     @Test
     public void checkEmailAuthCode() {
-        System.out.println(emailService.checkEmailAuthCode(new CheckEmailAuthCodePO.Builder()
+        System.out.println(emailService.checkEmailAuthCode(new CheckEmailAuthCodeRequest.Builder()
                 .email("827032783@qq.com").subject("email-update").authCode("700285").delete(true).build()));
     }
 }

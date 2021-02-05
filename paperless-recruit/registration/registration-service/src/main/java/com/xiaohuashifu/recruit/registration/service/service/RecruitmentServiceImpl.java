@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.registration.service.service;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
 import com.xiaohuashifu.recruit.common.constant.MySqlConstants;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnprocessableServiceException;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
@@ -17,6 +18,8 @@ import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplate
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.dao.RecruitmentMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.RecruitmentDO;
+import com.xiaohuashifu.recruit.user.api.dto.CollegeDTO;
+import com.xiaohuashifu.recruit.user.api.dto.MajorDTO;
 import com.xiaohuashifu.recruit.user.api.service.CollegeService;
 import com.xiaohuashifu.recruit.user.api.service.MajorService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -140,10 +143,10 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         }
         // 否则走正常的添加招新学院流程
         else {
-            // 检查学院状态
-            Result<RecruitmentDTO> checkCollegeStatusResult = collegeService.checkCollegeStatus(collegeId);
-            if (checkCollegeStatusResult.isFailure()) {
-                return checkCollegeStatusResult;
+            // 判断学院状态
+            CollegeDTO collegeDTO = collegeService.getCollege(collegeId);
+            if (collegeDTO.getDeactivated()) {
+                throw new UnavailableServiceException("The college is deactivated.");
             }
 
             // 判断招新学院数量是否超过限制
@@ -203,9 +206,9 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         // 否则走正常的添加招新专业流程
         else {
             // 检查专业状态
-            Result<RecruitmentDTO> checkMajorStatusResult = majorService.checkMajorStatus(majorId);
-            if (checkMajorStatusResult.isFailure()) {
-                return checkMajorStatusResult;
+            MajorDTO majorDTO = majorService.getMajor(majorId);
+            if (majorDTO.getDeactivated()) {
+                throw new UnavailableServiceException("The major is deactivated");
             }
 
             // 判断招新专业数量是否超过限制
@@ -1054,17 +1057,17 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         // 检查学院状态
         for (Long recruitmentCollegeId : createRecruitmentPO.getRecruitmentCollegeIds()) {
-            Result<RecruitmentDO> checkCollegeStatusResult = collegeService.checkCollegeStatus(recruitmentCollegeId);
-            if (checkCollegeStatusResult.isFailure()) {
-                return checkCollegeStatusResult;
+            CollegeDTO collegeDTO = collegeService.getCollege(recruitmentCollegeId);
+            if (collegeDTO.getDeactivated()) {
+                throw new UnavailableServiceException("The college is deactivated.");
             }
         }
 
         // 检查专业状态
         for (Long recruitmentMajorId : createRecruitmentPO.getRecruitmentMajorIds()) {
-            Result<RecruitmentDO> checkMajorStatusResult = majorService.checkMajorStatus(recruitmentMajorId);
-            if (checkMajorStatusResult.isFailure()) {
-                return checkMajorStatusResult;
+            MajorDTO majorDTO = majorService.getMajor(recruitmentMajorId);
+            if (majorDTO.getDeactivated()) {
+                throw new UnavailableServiceException("The major is deactivated");
             }
         }
 

@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
-import com.xiaohuashifu.recruit.external.api.po.CreateImageAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.request.CreateImageAuthCodeRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -25,7 +25,7 @@ public interface ImageAuthCodeService {
      * @return ImageAuthCodeDTO 包含验证码的唯一标识 id 和 Base64编码的验证码
      */
     Result<ImageAuthCodeDTO> createImageAuthCode(@NotNull(message = "The createImageAuthCodePO can't be null.")
-                                                         CreateImageAuthCodePO createImageAuthCodePO);
+                                                         CreateImageAuthCodeRequest createImageAuthCodePO);
 
     /**
      * 校验验证码

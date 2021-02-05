@@ -49,10 +49,7 @@ public class SystemNotificationServiceImpl implements SystemNotificationService 
     @Override
     public Result<SystemNotificationDTO> sendSystemNotification(SendSystemNotificationPO sendSystemNotificationPO) {
         // 判断目标用户存不存在
-        Result<SystemNotificationDTO> userExistsResult = userService.userExists(sendSystemNotificationPO.getUserId());
-        if (!userExistsResult.isSuccess()) {
-            return userExistsResult;
-        }
+        userService.getUser(sendSystemNotificationPO.getUserId());
 
         // 发送系统通知
         SystemNotificationDO systemNotificationDO = new SystemNotificationDO.Builder()

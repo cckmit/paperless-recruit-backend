@@ -1,5 +1,10 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +13,10 @@ import java.io.Serializable;
  * @author xhsf
  * @create 2020/12/14 16:48
  */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DeactivateCollegeDTO implements Serializable {
 
     /**
@@ -20,32 +29,4 @@ public class DeactivateCollegeDTO implements Serializable {
      */
     private Integer deactivatedCount;
 
-    public DeactivateCollegeDTO(CollegeDTO collegeDTO, Integer deactivatedCount) {
-        this.collegeDTO = collegeDTO;
-        this.deactivatedCount = deactivatedCount;
-    }
-
-    public CollegeDTO getCollegeDTO() {
-        return collegeDTO;
-    }
-
-    public void setCollegeDTO(CollegeDTO collegeDTO) {
-        this.collegeDTO = collegeDTO;
-    }
-
-    public Integer getDeactivatedCount() {
-        return deactivatedCount;
-    }
-
-    public void setDeactivatedCount(Integer deactivatedCount) {
-        this.deactivatedCount = deactivatedCount;
-    }
-
-    @Override
-    public String toString() {
-        return "DeactivateCollegeDTO{" +
-                "collegeDTO=" + collegeDTO +
-                ", deactivatedCount=" + deactivatedCount +
-                '}';
-    }
 }

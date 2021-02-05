@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
-import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
-import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
+import com.xiaohuashifu.recruit.user.api.request.CreateRoleRequest;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -34,7 +33,7 @@ public class RoleServiceImplTest {
 
     @Test
     public void saveRole() {
-        final SaveRolePO saveRolePO = new SaveRolePO.Builder()
+        final CreateRoleRequest saveRolePO = new CreateRoleRequest.Builder()
                 .parentRoleId(5L)
                 .roleName("organization")
                 .description("组织")

@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
-import com.xiaohuashifu.recruit.external.api.po.CreateAndSendSmsAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.request.CheckSmsAuthCodeRequest;
+import com.xiaohuashifu.recruit.external.api.request.CreateAndSendSmsAuthCodeRequest;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -33,14 +33,14 @@ public class SmsServiceImplTest {
     @Test
     public void createAndSendSmsAuthCode() {
         System.out.println(smsService.createAndSendSmsAuthCode(
-                new CreateAndSendSmsAuthCodePO.Builder()
+                new CreateAndSendSmsAuthCodeRequest.Builder()
                         .phone("15992321303").subject("sms-login").expirationTime(10).build()));
     }
 
     @Test
     public void checkSmsAuthCode() {
         System.out.println(smsService.checkSmsAuthCode(
-                new CheckSmsAuthCodePO.Builder()
+                new CheckSmsAuthCodeRequest.Builder()
                         .phone("15992321303")
                         .subject("authentication:sms-sign-in")
                         .authCode("864449")

@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnprocessableServiceException;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
@@ -17,6 +18,8 @@ import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplate
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.dao.ApplicationFormMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.ApplicationFormDO;
+import com.xiaohuashifu.recruit.user.api.dto.CollegeDTO;
+import com.xiaohuashifu.recruit.user.api.dto.MajorDTO;
 import com.xiaohuashifu.recruit.user.api.service.CollegeService;
 import com.xiaohuashifu.recruit.user.api.service.MajorService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -103,10 +106,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         }
 
         // 判断用户状态
-        Result<ApplicationFormDTO> checkUserStatusResult = userService.checkUserStatus(userId);
-        if (checkUserStatusResult.isFailure()) {
-            return checkUserStatusResult;
-        }
+        userService.getUser(userId);
 
         // 判断该招新是否可以报名
         Result<ApplicationFormDTO> canRegistration = applicationFormTemplateService.canRegistration(recruitmentId);
@@ -918,9 +918,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         }
 
         // 判断学院状态
-        Result<T> checkCollegeStatusResult = collegeService.checkCollegeStatus(collegeId);
-        if (checkCollegeStatusResult.isFailure()) {
-            return checkCollegeStatusResult;
+        CollegeDTO collegeDTO = collegeService.getCollege(collegeId);
+        if (collegeDTO.getDeactivated()) {
+            throw new UnavailableServiceException("The college is deactivated.");
         }
 
         // 通过检查
@@ -947,9 +947,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         }
 
         // 判断专业状态
-        Result<T> checkMajorStatusResult = majorService.checkMajorStatus(majorId);
-        if (checkMajorStatusResult.isFailure()) {
-            return checkMajorStatusResult;
+        MajorDTO majorDTO = majorService.getMajor(majorId);
+        if (majorDTO.getDeactivated()) {
+            throw new UnavailableServiceException("The major is deactivated");
         }
 
         // 通过检查

@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.common.aspect;
 
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
+import com.xiaohuashifu.recruit.common.exception.OperationConflictServiceException;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -48,6 +49,7 @@ public class DistributedLockAspect {
      * @errorCode OperationConflict.Lock: 获取锁失败
      *
      * @param joinPoint ProceedingJoinPoint
+     * @throws OperationConflictServiceException 获取锁失败
      * @return Object
      */
     @Around("@annotation(distributedLock)")
@@ -62,7 +64,7 @@ public class DistributedLockAspect {
         if (!tryLock(lock, distributedLock)) {
             String errorMessageExpression = distributedLock.errorMessage();
             String errorMessage = getExpressionValue(errorMessageExpression, joinPoint);
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_LOCK, errorMessage);
+            throw new OperationConflictServiceException(errorMessage);
         }
 
         // 执行业务逻辑

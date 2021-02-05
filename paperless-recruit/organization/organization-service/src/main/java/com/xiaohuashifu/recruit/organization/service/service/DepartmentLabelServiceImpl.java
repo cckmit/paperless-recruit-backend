@@ -47,7 +47,6 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     }
 
     @Override
-    @Transactional
     public DepartmentLabelDTO createDepartmentLabel(String labelName) {
         // 判断标签名是否已经存在
         DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectByLabelName(labelName);
@@ -65,7 +64,7 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     public DepartmentLabelDTO getDepartmentLabel(Long id) {
         DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectById(id);
         if (departmentLabelDO == null) {
-            throw new NotFoundServiceException();
+            throw new NotFoundServiceException("department label", "id", id);
         }
         return departmentLabelAssembler.departmentLabelDOToDepartmentLabelDTO(departmentLabelDO);
     }
@@ -74,7 +73,7 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     public DepartmentLabelDTO getDepartmentLabelByLabelName(String labelName) {
         DepartmentLabelDO departmentLabelDO = departmentLabelMapper.selectByLabelName(labelName);
         if (departmentLabelDO == null) {
-            throw new NotFoundServiceException();
+            throw new NotFoundServiceException("department label", "labelName", labelName);
         }
         return departmentLabelAssembler.departmentLabelDOToDepartmentLabelDTO(departmentLabelDO);
     }
@@ -95,7 +94,7 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     }
 
     @Override
-    @Transactional
+
     public DisableDepartmentLabelDTO disableDepartmentLabel(Long id) {
         // 判断标签是否存在
         DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id);
@@ -117,12 +116,9 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
     }
 
     @Override
-    @Transactional
     public DepartmentLabelDTO enableDepartmentLabel(Long id) {
-        // 判断标签是否存在
-        DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id);
-
         // 判断标签是否已经可用
+        DepartmentLabelDTO departmentLabelDTO = getDepartmentLabel(id);
         if (departmentLabelDTO.getAvailable()) {
             throw new UnmodifiedServiceException("The label already available.");
         }

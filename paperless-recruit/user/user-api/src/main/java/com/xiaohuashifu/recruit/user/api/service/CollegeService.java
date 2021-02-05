@@ -1,7 +1,9 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
-import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.ServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.user.api.constant.CollegeConstants;
 import com.xiaohuashifu.recruit.user.api.dto.CollegeDTO;
 import com.xiaohuashifu.recruit.user.api.dto.DeactivateCollegeDTO;
@@ -25,99 +27,50 @@ public interface CollegeService {
      *
      * @permission admin 权限
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              OperationConflict: 该学院名已经存在
-     *
      * @param collegeName 学院名
      * @return CollegeDTO
      */
-    Result<CollegeDTO> saveCollege(
-            @NotBlank(message = "The collegeName can't be blank.")
-            @Size(max = CollegeConstants.MAX_COLLEGE_NAME_LENGTH,
-                    message = "The length of collegeName must not be greater than "
-                            + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".") String collegeName);
+    CollegeDTO createCollege(@NotBlank @Size(max = CollegeConstants.MAX_COLLEGE_NAME_LENGTH) String collegeName)
+            throws DuplicateServiceException;
 
     /**
      * 获取学院
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 找不到该编号的学院
-     *
      * @param id 学院编号
      * @return CollegeDTO
      */
-    Result<CollegeDTO> getCollege(@NotNull(message = "The id can't be null.")
-                                  @Positive(message = "The id must be greater than 0.") Long id);
+    CollegeDTO getCollege(@NotNull @Positive Long id) throws NotFoundServiceException;
 
     /**
      * 查询学院
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
      * @param query 查询参数
-     * @return PageInfo<CollegeDTO> 带分页信息的查询结果，可能返回空列表
+     * @return QueryResult<CollegeDTO> 带分页信息的查询结果，可能返回空列表
      */
-    Result<PageInfo<CollegeDTO>> listColleges(@NotNull(message = "The query can't be null.") CollegeQuery query);
-
-    /**
-     * 获取学院名
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 找不到该编号的学院名
-     *
-     * @param id 学院编号
-     * @return String 学院名
-     */
-    Result<String> getCollegeName(@NotNull(message = "The id can't be null.")
-                                  @Positive(message = "The id must be greater than 0.") Long id);
+    QueryResult<CollegeDTO> listColleges(@NotNull CollegeQuery query);
 
     /**
      * 更新学院名
      *
      * @permission admin 权限
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 学院不存在
-     *              OperationConflict.Unmodified: 新旧学院名相同
-     *              OperationConflict: 新学院名已经存在
-     *
      * @param id 学院编号
-     * @param newCollegeName 新学院名
+     * @param collegeName 学院名
      * @return CollegeDTO 更新后的学院
      */
-    Result<CollegeDTO> updateCollegeName(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
-            @NotBlank(message = "The newCollegeName can't be blank.")
-            @Size(max = CollegeConstants.MAX_COLLEGE_NAME_LENGTH,
-                    message = "The length of newCollegeName must not be greater than "
-                            + CollegeConstants.MAX_COLLEGE_NAME_LENGTH + ".") String newCollegeName);
+    CollegeDTO updateCollegeName(
+            @NotNull @Positive Long id,
+            @NotBlank @Size(max = CollegeConstants.MAX_COLLEGE_NAME_LENGTH) String collegeName)
+            throws DuplicateServiceException;
 
     /**
      * 停用学院，会停用该学院的所有专业
      *
      * @permission 需要 admin 权限
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 学院不存在
-     *              OperationConflict.Deactivated: 该学院已经被停用
-     *
      * @param id 学院编号
      * @return 停用结果，附带被停用的专业的数量
      */
-    Result<DeactivateCollegeDTO> deactivateCollege(@NotNull(message = "The id can't be null.")
-                                                   @Positive(message = "The id must be greater than 0.") Long id);
+    DeactivateCollegeDTO deactivateCollege(@NotNull @Positive Long id) throws ServiceException;
 
-    /**
-     * 检查学院状态
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter.NotExist: 学院不存在
-     *              Forbidden.Deactivated: 学院被停用
-     *
-     * @param id 学院编号
-     * @return 检查结果
-     */
-    <T> Result<T> checkCollegeStatus(Long id);
 }

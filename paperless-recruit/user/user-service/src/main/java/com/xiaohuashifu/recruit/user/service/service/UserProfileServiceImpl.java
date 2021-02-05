@@ -1,15 +1,18 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
-import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.user.api.dto.MajorDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserProfileDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
-import com.xiaohuashifu.recruit.user.api.service.CollegeService;
+import com.xiaohuashifu.recruit.user.api.request.UpdateUserProfileRequest;
 import com.xiaohuashifu.recruit.user.api.service.MajorService;
 import com.xiaohuashifu.recruit.user.api.service.UserProfileService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
+import com.xiaohuashifu.recruit.user.service.assembler.UserProfileAssembler;
 import com.xiaohuashifu.recruit.user.service.dao.UserProfileMapper;
 import com.xiaohuashifu.recruit.user.service.do0.UserProfileDO;
 import org.apache.dubbo.config.annotation.Reference;
@@ -29,249 +32,82 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileMapper userProfileMapper;
 
+    private final UserProfileAssembler userProfileAssembler;
+
     @Reference
     private UserService userService;
 
     @Reference
-    private CollegeService collegeService;
-
-    @Reference
     private MajorService majorService;
 
-    public UserProfileServiceImpl(UserProfileMapper userProfileMapper) {
+    public UserProfileServiceImpl(UserProfileMapper userProfileMapper, UserProfileAssembler userProfileAssembler) {
         this.userProfileMapper = userProfileMapper;
+        this.userProfileAssembler = userProfileAssembler;
     }
 
-    /**
-     * 创建用户个人信息，创建的是一个空白的个人信息
-     * 需要用户后续填写
-     * 用户必须还没有创建个人信息
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.User.NotExist: 用户不存在
-     *              OperationConflict: 用户信息已经存在
-     *
-     * @param userId 用户编号
-     * @return UserProfileDTO 创建的用户对象
-     */
     @Override
-    public Result<UserProfileDTO> createUserProfile(Long userId) {
+    public UserProfileDTO createUserProfile(Long userId) {
         // 判断该编号的用户是否存在
-        Result<Void> userExistsResult = userService.userExists(userId);
-        if (!userExistsResult.isSuccess()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_USER_NOT_EXIST, "The user does not exist.");
-        }
+        userService.getUser(userId);
 
         // 判断用户信息是否已经存在
-        int count = userProfileMapper.countByUserId(userId);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The user profile already exist.");
+        UserProfileDO userProfileDO = userProfileMapper.selectByUserId(userId);
+        if (userProfileDO != null) {
+            throw new DuplicateServiceException("The user profile already exist.");
         }
 
         // 创建用户个人信息
-        UserProfileDO userProfileDO = new UserProfileDO.Builder().userId(userId).build();
-        userProfileMapper.insertUserProfile(userProfileDO);
-        return getUserProfile(userProfileDO.getId());
+        UserProfileDO userProfileDOForInsert = UserProfileDO.builder().userId(userId).build();
+        userProfileMapper.insert(userProfileDOForInsert);
+        return getUserProfile(userProfileDOForInsert.getId());
     }
 
-    /**
-     * 获取用户个人信息
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 找不到该编号的用户信息
-     *
-     * @param id 用户个人信息编号
-     * @return UserProfileDTO
-     */
     @Override
-    public Result<UserProfileDTO> getUserProfile(Long id) {
-        UserProfileDO userProfileDO = userProfileMapper.getUserProfile(id);
+    public UserProfileDTO getUserProfile(Long id) {
+        UserProfileDO userProfileDO = userProfileMapper.selectById(id);
         if (userProfileDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+            throw new NotFoundServiceException("userProfile", "id", id);
         }
-        return Result.success(userProfileDO2UserProfileDTO(userProfileDO));
+        return userProfileAssembler.userProfileDOToUserProfileDTO(userProfileDO);
     }
 
-    /**
-     * 获取用户个人信息
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 找不到该编号的用户信息
-     *
-     * @param userId 用户主体编号
-     * @return UserProfileDTO
-     */
     @Override
-    public Result<UserProfileDTO> getUserProfileByUserId(Long userId) {
-        UserProfileDO userProfileDO = userProfileMapper.getUserProfileByUserId(userId);
+    public UserProfileDTO getUserProfileByUserId(Long userId) {
+        UserProfileDO userProfileDO = userProfileMapper.selectByUserId(userId);
         if (userProfileDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+            throw new NotFoundServiceException("userProfile", "userId", userId);
         }
-        return Result.success(userProfileDO2UserProfileDTO(userProfileDO));
+        return userProfileAssembler.userProfileDOToUserProfileDTO(userProfileDO);
     }
 
-    /**
-     * 获取用户个人信息
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param query 查询参数
-     * @return PageInfo<UserProfileDTO> 带分页信息的查询结果，可能返回空列表
-     */
     @Override
-    public Result<PageInfo<UserProfileDTO>> listUserProfiles(UserProfileQuery query) {
-        List<UserProfileDO> userProfileDOList = userProfileMapper.listUserProfiles(query);
-        List<UserProfileDTO> userProfileDTOList = userProfileDOList
-                .stream()
-                .map(this::userProfileDO2UserProfileDTO)
-                .collect(Collectors.toList());
-        PageInfo<UserProfileDTO> pageInfo = new PageInfo<>(userProfileDTOList);
-        return Result.success(pageInfo);
+    public QueryResult<UserProfileDTO> listUserProfiles(UserProfileQuery query) {
+        LambdaQueryWrapper<UserProfileDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(query.getUserId() != null, UserProfileDO::getUserId, query.getUserId())
+                .likeRight(query.getFullName() != null, UserProfileDO::getFullName, query.getFullName())
+                .likeRight(query.getStudentNumber() != null, UserProfileDO::getStudentNumber,
+                        query.getStudentNumber())
+                .eq(query.getCollegeId() != null, UserProfileDO::getCollegeId, query.getCollegeId())
+                .eq(query.getMajorId() != null, UserProfileDO::getMajorId, query.getMajorId());
+
+        Page<UserProfileDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
+        userProfileMapper.selectPage(page, wrapper);
+        List<UserProfileDTO> userProfileDTOS = page.getRecords()
+                .stream().map(userProfileAssembler::userProfileDOToUserProfileDTO).collect(Collectors.toList());
+        return new QueryResult<>(page.getTotal(), userProfileDTOS);
     }
 
-    /**
-     * 通过用户个人信息编号获取用户编号
-     *
-     * @private 内部方法
-     *
-     * @param id 用户个人信息编号
-     * @return 用户编号，若找不到返回 null
-     */
     @Override
-    public Long getUserId(Long id) {
-        return userProfileMapper.getUserId(id);
-    }
-
-    /**
-     * 更新姓名
-     *
-     * @permission id 必须是用户本身
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 用户个人信息不存在
-     *
-     * @param id 用户个人信息编号
-     * @param newFullName 新姓名
-     * @return 更新后的用户个人信息
-     */
-    @Override
-    public Result<UserProfileDTO> updateFullName(Long id, String newFullName) {
-        // 判断用户个人信息是否存在
-        int count = userProfileMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The userProfile does not exist.");
+    public UserProfileDTO updateUserProfile(UpdateUserProfileRequest request) {
+        UserProfileDO userProfileDO = userProfileAssembler.updateUserProfileRequestToUserProfileDO(request);
+        if (userProfileDO.getMajorId() != null) {
+            MajorDTO majorDTO = majorService.getMajor(userProfileDO.getMajorId());
+            userProfileDO.setCollegeId(majorDTO.getCollegeId());
         }
 
-        // 更新姓名
-        userProfileMapper.updateFullName(id, newFullName);
-        return getUserProfile(id);
-    }
-
-    /**
-     * 更新学号
-     * 学号长度必须是12
-     * 且为纯数字
-     * 会进行学号格式校验
-     *
-     * @permission id 必须是用户本身
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 用户个人信息不存在
-     *
-     * @param id 用户个人信息编号
-     * @param newStudentNumber 新学号
-     * @return 更新后的用户个人信息
-     */
-    @Override
-    public Result<UserProfileDTO> updateStudentNumber(Long id, String newStudentNumber) {
-        // 判断用户个人信息是否存在
-        int count = userProfileMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The userProfile does not exist.");
-        }
-
-        // 更新学号
-        userProfileMapper.updateStudentNumber(id, newStudentNumber);
-        return getUserProfile(id);
-    }
-
-    /**
-     * 更新学院专业通过专业的编号
-     * 学院专业必须是存在系统的学院专业库里的
-     * 该方法会根据专业的编号去寻找学院
-     *
-     * @permission id 必须是用户本身
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 专业不存在 | 用户个人信息不存在
-     *
-     * @param id 用户个人信息编号
-     * @param newMajorId 新专业编号
-     * @return 更新后的用户个人信息
-     */
-    @Override
-    public Result<UserProfileDTO> updateCollegeAndMajor(Long id, Long newMajorId) {
-        // 判断用户个人信息是否存在
-        int count = userProfileMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The userProfile does not exist.");
-        }
-
-        // 判断该专业编号是否存在系统库里
-        Result<MajorDTO> getMajorResult = majorService.getMajor(newMajorId);
-        if (!getMajorResult.isSuccess()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The major does not exist.");
-        }
-
-        // 更新学院专业
-        MajorDTO majorDTO = getMajorResult.getData();
-        userProfileMapper.updateCollegeIdAndMajorId(id, majorDTO.getCollegeId(), majorDTO.getId());
-        return getUserProfile(id);
-    }
-
-    /**
-     * 更新自我介绍
-     *
-     * @permission id 必须是用户本身
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 用户个人信息不存在
-     *
-     * @param id 用户个人信息编号
-     * @param newIntroduction 新自我介绍
-     * @return 更新后的用户个人信息
-     */
-    @Override
-    public Result<UserProfileDTO> updateIntroduction(Long id, String newIntroduction) {
-        // 判断用户个人信息是否存在
-        int count = userProfileMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The userProfile does not exist.");
-        }
-
-        // 更新自我介绍
-        userProfileMapper.updateIntroduction(id, newIntroduction);
-        return getUserProfile(id);
-    }
-
-    /**
-     * UserProfileDO to UserProfileDTO
-     *
-     * @param userProfileDO UserProfileDO
-     * @return UserProfileDTO
-     */
-    private UserProfileDTO userProfileDO2UserProfileDTO(UserProfileDO userProfileDO) {
-        return new UserProfileDTO.Builder()
-                .id(userProfileDO.getId())
-                .userId(userProfileDO.getUserId())
-                .fullName(userProfileDO.getFullName())
-                .studentNumber(userProfileDO.getStudentNumber())
-                .collegeId(userProfileDO.getCollegeId())
-                .majorId(userProfileDO.getMajorId())
-                .introduction(userProfileDO.getIntroduction())
-                .build();
+        // 更新用户简介
+        userProfileMapper.updateById(userProfileDO);
+        return getUserProfile(request.getId());
     }
 
 }

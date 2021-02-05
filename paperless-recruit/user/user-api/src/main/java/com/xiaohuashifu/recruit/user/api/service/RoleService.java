@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.user.api.constant.RoleConstants;
 import com.xiaohuashifu.recruit.user.api.dto.DisableRoleDTO;
 import com.xiaohuashifu.recruit.user.api.dto.EnableRoleDTO;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
-import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
+import com.xiaohuashifu.recruit.user.api.request.CreateRoleRequest;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 
 import javax.validation.constraints.*;
@@ -30,7 +30,7 @@ public interface RoleService {
      * @param saveRolePO 保存 Role 需要的参数对象
      * @return Result<RoleDTO>
      */
-    Result<RoleDTO> saveRole(@NotNull(message = "The saveRolePO can't be null.") SaveRolePO saveRolePO);
+    Result<RoleDTO> saveRole(@NotNull(message = "The saveRolePO can't be null.") CreateRoleRequest saveRolePO);
 
     /**
      * 创建用户角色，也就是给用户绑定角色

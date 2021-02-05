@@ -1,7 +1,9 @@
 package com.xiaohuashifu.recruit.organization.service.assembler;
 
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
+import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationRequest;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
+import com.xiaohuashifu.recruit.user.api.request.CreateUserByEmailAuthCodeRequest;
 import org.mapstruct.Mapper;
 
 /**
@@ -14,5 +16,8 @@ import org.mapstruct.Mapper;
 public interface OrganizationAssembler {
 
     OrganizationDTO organizationDOToOrganizationDTO(OrganizationDO organizationDO);
+
+    CreateUserByEmailAuthCodeRequest createOrganizationRequestToCreateUserByEmailAuthCodeRequest(
+            CreateOrganizationRequest createOrganizationRequest);
 
 }

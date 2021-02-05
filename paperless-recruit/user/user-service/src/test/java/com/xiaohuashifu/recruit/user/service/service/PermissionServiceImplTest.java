@@ -1,8 +1,6 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
-import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
-import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
+import com.xiaohuashifu.recruit.user.api.request.CreatePermissionRequest;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
@@ -10,9 +8,6 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 描述：
@@ -50,7 +45,7 @@ public class PermissionServiceImplTest {
 
     @Test
     public void savePermission() {
-        System.out.println(permissionService.savePermission(new SavePermissionPO.Builder()
+        System.out.println(permissionService.savePermission(new CreatePermissionRequest.Builder()
                 .parentPermissionId(1L)
         .permissionName("  test4  ")
         .authorizationUrl("  /tests/test3  ")

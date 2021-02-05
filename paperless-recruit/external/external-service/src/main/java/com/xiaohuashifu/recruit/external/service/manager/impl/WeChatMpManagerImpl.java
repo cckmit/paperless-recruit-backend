@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.external.service.manager.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.GenderEnum;
-import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
+import com.xiaohuashifu.recruit.external.api.request.SendWeChatMpSubscribeMessageRequest;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WeChatMpDetails;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
@@ -171,7 +171,7 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
      */
     @Override
     public boolean sendSubscribeMessage(AppEnum app, String openId,
-                                        SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO) {
+                                        SendWeChatMpSubscribeMessageRequest sendWeChatMpSubscribeMessagePO) {
         // 获取 access-token
         Optional<String> accessToken = getAccessToken(app);
         if (accessToken.isEmpty()) {

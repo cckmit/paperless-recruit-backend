@@ -32,7 +32,7 @@ public class CollegeServiceImplTest {
 
     @Test
     public void saveCollege() {
-        System.out.println(collegeService.saveCollege("兽医学院"));
+        System.out.println(collegeService.createCollege("兽医学院"));
     }
 
     @Test
@@ -42,7 +42,7 @@ public class CollegeServiceImplTest {
 
     @Test
     public void testGetCollege() {
-        System.out.println(collegeService.listColleges(new CollegeQuery.Builder().collegeName("软件").build()));
+        System.out.println(collegeService.listColleges(CollegeQuery.builder().collegeName("软件").build()));
     }
 
     @Test
@@ -55,8 +55,4 @@ public class CollegeServiceImplTest {
         System.out.println(collegeService.deactivateCollege(5L));
     }
 
-    @Test
-    public void checkCollegeStatus() {
-        System.out.println(collegeService.checkCollegeStatus(3L));
-    }
 }

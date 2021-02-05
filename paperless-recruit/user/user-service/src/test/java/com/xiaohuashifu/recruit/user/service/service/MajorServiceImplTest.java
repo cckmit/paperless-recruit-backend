@@ -30,7 +30,7 @@ public class MajorServiceImplTest {
 
     @Test
     public void saveMajor() {
-        System.out.println(majorService.saveMajor(6L, "动物药学"));
+        System.out.println(majorService.createMajor(6L, "动物药学"));
     }
 
     @Test
@@ -40,20 +40,11 @@ public class MajorServiceImplTest {
 
     @Test
     public void listMajors() {
-        System.out.println(majorService.listMajors(new MajorQuery.Builder().pageNum(1L).pageSize(50L).collegeId(1L).build()));
+        System.out.println(majorService.listMajors(MajorQuery.builder().pageNum(1L).pageSize(50L).collegeId(1L).build()));
     }
 
     @Test
     public void updateMajorName() {
     }
 
-    @Test
-    public void deactivateMajor() {
-        System.out.println(majorService.deactivateMajor(9L));
-    }
-
-    @Test
-    public void checkMajorStatus() {
-        System.out.println(majorService.checkMajorStatus(10L));
-    }
 }

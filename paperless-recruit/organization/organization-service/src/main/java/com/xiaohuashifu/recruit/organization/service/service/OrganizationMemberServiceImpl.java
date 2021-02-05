@@ -120,15 +120,10 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     @Override
     public Result<OrganizationMemberInvitationDTO> sendInvitation(Long organizationId, String username) {
         // 获取用户
-        Result<UserDTO> getUserResult = userService.getUserByUsername(username);
-        if (getUserResult.isFailure()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_USER_NOT_EXIST, "The user does not exist.");
-        }
-        UserDTO userDTO = getUserResult.getData();
-        Long userId = userDTO.getId();
+        UserDTO userDTO = userService.getUserByUsername(username);
 
         // 调用主处理服务
-        return ((OrganizationMemberServiceImpl)AopContext.currentProxy()).sendInvitation(organizationId, userId);
+        return ((OrganizationMemberServiceImpl)AopContext.currentProxy()).sendInvitation(organizationId, userDTO.getId());
     }
 
     /**
@@ -457,10 +452,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             errorMessage = "Failed to acquire organization member lock.")
     public Result<OrganizationMemberInvitationDTO> sendInvitation(Long organizationId, Long userId) {
         // 检查用户的状态
-        Result<OrganizationMemberInvitationDTO> checkUserStatusResult = userService.checkUserStatus(userId);
-        if (checkUserStatusResult.isFailure()) {
-            return checkUserStatusResult;
-        }
+        userService.getUser(userId);
 
         // 判断该组织是否已经有该成员
         int count = organizationMemberMapper.countByOrganizationIdAndUserId(organizationId, userId);

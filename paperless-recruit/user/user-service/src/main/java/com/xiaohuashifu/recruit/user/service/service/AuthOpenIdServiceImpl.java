@@ -1,8 +1,13 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.UnknownServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnsupportedServiceException;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.DesUtils;
@@ -11,11 +16,13 @@ import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
+import com.xiaohuashifu.recruit.user.service.assembler.AuthOpenIdAssembler;
 import com.xiaohuashifu.recruit.user.service.dao.AuthOpenIdMapper;
 import com.xiaohuashifu.recruit.user.service.do0.AuthOpenIdDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 描述：AuthOpenId 相关服务，用于接入第三方平台的身份认证
@@ -37,7 +44,7 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
 
     private final AuthOpenIdMapper authOpenIdMapper;
 
-    private final Mapper mapper;
+    private final AuthOpenIdAssembler authOpenIdAssembler;
 
     /**
      * 华农招新面试者默认角色编号
@@ -55,74 +62,62 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
     @Value("${service.auth-open-id.secret}")
     private String secretKey;
 
-    public AuthOpenIdServiceImpl(AuthOpenIdMapper authOpenIdMapper, Mapper mapper) {
+    public AuthOpenIdServiceImpl(AuthOpenIdMapper authOpenIdMapper, AuthOpenIdAssembler authOpenIdAssembler) {
         this.authOpenIdMapper = authOpenIdMapper;
-        this.mapper = mapper;
+        this.authOpenIdAssembler = authOpenIdAssembler;
     }
 
-    /**
-     * 用于微信小程序用户绑定 AuthOpenId
-     * 会通过 code 获取 openId
-     * 保存时会对 openId 进行加密
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 不支持的 App 类型 | 非法 code | 对应编号的用户不存在
-     *              OperationConflict: 用户已经绑定在此 App 上
-     *
-     * @param userId 用户编号
-     * @param app 具体的微信小程序，只支持 SCAU_RECRUIT_INTERVIEWEE_MP 和 SCAU_RECRUIT_INTERVIEWER_MP 两种类型的绑定
-     * @param code 微信小程序 wx.login() 接口的返回结果
-     * @return AuthOpenIdDTO
-     */
     @Override
-    public Result<AuthOpenIdDTO> bindAuthOpenIdForWeChatMp(Long userId, AppEnum app, String code) {
+    @Transactional
+    public AuthOpenIdDTO bindAuthOpenIdForWeChatMp(Long userId, AppEnum app, String code) {
         // 如果 App 类型不是微信小程序，则不给绑定
         if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Unsupported app.");
+            throw new UnsupportedServiceException("Unsupported app.");
         }
 
         // 检查用户是否存在
-        Result<Void> userExistsResult = userService.userExists(userId);
-        if (!userExistsResult.isSuccess()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This user does not exist.");
-        }
+        userService.getUser(userId);
 
         // 检查用户是否已经绑定在这个 app 上
-        int count = authOpenIdMapper.countByUserIdAndAppName(userId, app);
+        LambdaQueryWrapper<AuthOpenIdDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AuthOpenIdDO::getUserId, userId)
+                .eq(AuthOpenIdDO::getAppName, app);
+        int count = authOpenIdMapper.selectCount(wrapper);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This user has been bind.");
+            throw new DuplicateServiceException("This user has been bind.");
         }
 
         // 获取 openId
-        Result<String> getOpenIdResult = weChatMpService.getOpenId(code, app);
-        if (!getOpenIdResult.isSuccess()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Invalid code.");
-        }
-        String openId = getOpenIdResult.getData();
+        String openId = weChatMpService.getOpenId(code, app);
 
         // 加密 openId
-        try {
-            openId = DesUtils.encrypt(openId, secretKey);
-        } catch (Exception ignored) {
-            // 本地操作，不会报错
-        }
+        openId = encryptOpenId(openId);
 
         // 添加到数据库
-        AuthOpenIdDO authOpenIdDO = new AuthOpenIdDO
-                .Builder()
-                .userId(userId)
-                .appName(app)
-                .openId(openId)
-                .build();
-        authOpenIdMapper.insertAuthOpenId(authOpenIdDO);
+        AuthOpenIdDO authOpenIdDOForInsert = AuthOpenIdDO.builder().userId(userId).appName(app).openId(openId).build();
+        authOpenIdMapper.insert(authOpenIdDOForInsert);
 
         // 给用户添加微信小程序基本权限
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP) {
             roleService.saveUserRole(userId, INTERVIEWEE_DEFAULT_ROLE_ID);
         }
+
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWER_MP) {
             roleService.saveUserRole(userId, INTERVIEWER_DEFAULT_ROLE_ID);
         }
-        return getAuthOpenId(authOpenIdDO.getId());
+
+        return getAuthOpenId(authOpenIdDOForInsert.getId());
+    }
+
+    @Override
+    public AuthOpenIdDTO getAuthOpenId(Long id) {
+        AuthOpenIdDO authOpenIdDO = authOpenIdMapper.selectById(id);
+        if (authOpenIdDO == null) {
+            throw new NotFoundServiceException("authOpenId", "id", id);
+        }
+        AuthOpenIdDTO authOpenIdDTO = authOpenIdAssembler.authOpenIdDOToAuthOpenIdDTO(authOpenIdDO);
+        authOpenIdDTO.setOpenId(encryptOpenId(authOpenIdDTO.getOpenId()));
+        return authOpenIdDTO;
     }
 
     /**
@@ -196,20 +191,17 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
     }
 
     /**
-     * 获取 AuthOpenIdDTO
-     *
-     * @errorCode InvalidParameter.NotFound: 该编号对应的 AuthOpenId 不存在
-     *
-     * @param id AuthOpenId 的编号
-     * @return AuthOpenIdDTO
+     * 加密 openId
+     * @param openId openId
+     * @return 加密后的 openId
      */
-    private Result<AuthOpenIdDTO> getAuthOpenId(Long id) {
-        AuthOpenIdDO authOpenIdDO = authOpenIdMapper.getAuthOpenId(id);
-        if (authOpenIdDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+    private String encryptOpenId(String openId) {
+        try {
+            return DesUtils.encrypt(openId, secretKey);
+        } catch (Exception ignored) {
+            // 本地操作，不会报错
+            throw new UnknownServiceException("Encrypt openId error.");
         }
-        AuthOpenIdDTO authOpenIdDTO = mapper.map(authOpenIdDO, AuthOpenIdDTO.class);
-        authOpenIdDTO.setApp(authOpenIdDO.getAppName());
-        return Result.success(authOpenIdDTO);
     }
+
 }

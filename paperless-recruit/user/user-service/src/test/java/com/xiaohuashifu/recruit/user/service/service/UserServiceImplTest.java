@@ -1,17 +1,13 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserQuery;
+import com.xiaohuashifu.recruit.user.api.request.*;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -38,48 +34,33 @@ public class UserServiceImplTest {
 
     @Test
     public void getUser() {
-//        final Result<UserDTO> user = userService.getUser(1L);
-//        System.out.println(user);
-        ArrayList<Long> ids = new ArrayList<>();
-        ids.add(1L);
-        ids.add(3L);
-        ids.add(6L);
-        System.out.println(userService.listUsers(new UserQuery.Builder().pageNum(1L).pageSize(50L).ids(ids).build()));
+        System.out.println(userService.listUsers(UserQuery.builder().pageNum(1L).pageSize(50L).build()));
     }
 
     @Test
     public void signUpUser() {
-        final Result<UserDTO> saveUserResult = userService.signUpUser(
-                "profiletest8", "123456");
-        System.out.println(saveUserResult);
+        UserDTO userDTO = userService.createUser(
+                CreateUserRequest.builder().username("profiletest8").password("123456").build());
+        System.out.println(userDTO);
     }
 
     @Test
     public void signUpBySmsAuthCode() {
-        System.out.println(userService.signUpBySmsAuthCode(
-                "15992321303", "565209", "123456"));
+        System.out.println(userService.createUserBySmsAuthCode(CreateUserBySmsAuthCodeRequest.builder()
+                .phone("15992321303").authCode("565209").password("123456").build()));
     }
 
     @Test
     public void signUpByEmailAuthCode() {
-        System.out.println(userService.signUpByEmailAuthCode(
-                "827032783@qq.com", "075478", "123456"));
+        System.out.println(userService.createUserByEmailAuthCode(CreateUserByEmailAuthCodeRequest.builder()
+                .email("827032783@qq.com").password("123456").authCode("075478").build()));
     }
 
 
     @Test
     public void getUserByUsername() {
         // 正确
-        Result<UserDTO> getUserResult = userService.getUserByUsername("xiaohuashifu");
-        assertTrue(getUserResult.isSuccess());
-        UserDTO user = getUserResult.getData();
-        assertEquals("xiaohuashifu", user.getUsername());
-        assertEquals(Long.valueOf(1), user.getId());
-
-        // 参数错误，无法通过参数校验
-        getUserResult = userService.getUserByUsername("xia");
-        assertFalse(getUserResult.isSuccess());
-        System.out.println(getUserResult);
+        UserDTO userDTO = userService.getUserByUsername("xiaohuashifu");
     }
 
 
@@ -105,38 +86,34 @@ public class UserServiceImplTest {
 
     @Test
     public void updatePhone() {
-        Result<UserDTO> updatePhoneResult =
-                userService.updatePhone(1L, "15992321303", "214481");
-        System.out.println(updatePhoneResult);
+        UserDTO userDTO = userService.updatePhone(1L, "15992321303", "214481");
+        System.out.println(userDTO);
     }
 
     @Test
     public void updateEmail() {
-        Result<UserDTO> updateEmailResult = userService.updateEmail(1L, "827032783@qq.com", "495483");
-        System.out.println(updateEmailResult);
-//        assertTrue(updateEmailResult.isSuccess());
+        UserDTO userDTO = userService.updateEmail(1L, "827032783@qq.com", "495483");
+        System.out.println(userDTO);
     }
 
     @Test
     public void updatePassword() {
-        Result<UserDTO> updatePasswordResult = userService.updatePassword(7L, "123456");
-        assertTrue(updatePasswordResult.isSuccess());
+        UserDTO userDTO = userService.updatePassword(7L, "123456");
+        System.out.println(userDTO);
     }
-
 
     @Test
     public void updatePasswordByEmailAuthCode() {
-        Result<UserDTO> updatePasswordResult = userService.updatePasswordByEmailAuthCode(
-                "827032783@qq.com", "123456", "672394");
-        System.out.println(updatePasswordResult.isSuccess());
+        UserDTO userDTO = userService.updatePasswordByEmailAuthCode(UpdatePasswordByEmailAuthCodeRequest.builder()
+                .email("827032783@qq.com").password("123456").authCode("223231").build());
+        System.out.println(userDTO);
     }
-
 
     @Test
     public void updatePasswordBySmsAuthCode() {
-        Result<UserDTO> updatePasswordResult = userService.updatePasswordBySmsAuthCode(
-                "15992321303", "123456", "223231");
-        System.out.println(updatePasswordResult.isSuccess());
+        UserDTO userDTO = userService.updatePasswordBySmsAuthCode(UpdatePasswordBySmsAuthCodeRequest.builder()
+                .phone("15992321303").password("123456").authCode("223231").build());
+        System.out.println(userDTO);
     }
 
     @Test
@@ -150,43 +127,33 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void userExists() {
-        System.out.println(userService.userExists(16L));
-    }
-
-    @Test
-    public void checkUserStatus() {
-        System.out.println(userService.checkUserStatus(20L));
-    }
-
-    @Test
     public void sendSmsAuthCodeForSignUp() {
-        System.out.println(userService.sendSmsAuthCodeForSignUp("15992321303"));
+        userService.sendSmsAuthCodeForSignUp("15992321303");
     }
 
     @Test
     public void sendSmsAuthCodeForUpdatePhone() {
-        System.out.println(userService.sendSmsAuthCodeForUpdatePhone("15992321303"));
+        userService.sendSmsAuthCodeForUpdatePhone("15992321303");
     }
 
     @Test
     public void sendSmsAuthCodeForUpdatePassword() {
-        System.out.println(userService.sendSmsAuthCodeForUpdatePassword("15992321303"));
+        userService.sendSmsAuthCodeForUpdatePassword("15992321303");
     }
 
     @Test
     public void sendEmailAuthCodeForUpdateEmail() {
-        System.out.println(userService.sendEmailAuthCodeForUpdateEmail("827032783@qq.com"));
+        userService.sendEmailAuthCodeForUpdateEmail("827032783@qq.com");
     }
 
     @Test
     public void sendEmailAuthCodeForUpdatePassword() {
-        System.out.println(userService.sendEmailAuthCodeForUpdatePassword("827032783@qq.com"));
+        userService.sendEmailAuthCodeForUpdatePassword("827032783@qq.com");
     }
 
     @Test
     public void sendEmailAuthCodeForSignUp() {
-        System.out.println(userService.sendEmailAuthCodeForSignUp("827032783@qq.com", "注册账号"));
+        userService.sendEmailAuthCodeForSignUp("827032783@qq.com", "注册账号");
     }
 
 }

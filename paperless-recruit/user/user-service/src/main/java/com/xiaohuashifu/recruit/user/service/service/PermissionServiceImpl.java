@@ -7,7 +7,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.DisablePermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.EnablePermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.po.SavePermissionPO;
+import com.xiaohuashifu.recruit.user.api.request.CreatePermissionRequest;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
@@ -53,7 +53,7 @@ public class PermissionServiceImpl implements PermissionService {
      * @return Result<PermissionDTO>
      */
     @Override
-    public Result<PermissionDTO> savePermission(SavePermissionPO savePermissionPO) {
+    public Result<PermissionDTO> savePermission(CreatePermissionRequest savePermissionPO) {
         // 如果父权限编号不为0，则父权限必须存在
         if (!Objects.equals(savePermissionPO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
             int count = permissionMapper.count(savePermissionPO.getParentPermissionId());

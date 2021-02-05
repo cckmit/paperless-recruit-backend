@@ -44,30 +44,16 @@ public class UserProfileServiceImplTest {
     @Test
     public void testGetUserProfile() {
         System.out.println(userProfileService.listUserProfiles(
-                new UserProfileQuery.Builder()
+                UserProfileQuery.builder()
                         .pageNum(1L)
                         .pageSize(50L)
-                        .id(1L)
                         .build()));
     }
 
-    @Test
-    public void updateFullName() {
-        System.out.println(userProfileService.updateFullName(1L, "吴嘉贤3"));
-    }
-
-    @Test
-    public void updateStudentNumber() {
-        System.out.println(userProfileService.updateStudentNumber(1L, "201734020124"));
-    }
 
     @Test
     public void updateCollegeAndMajor() {
-        System.out.println(userProfileService.updateCollegeAndMajor(1L, 2L));
+//        System.out.println(userProfileService.updateCollegeAndMajor(1L, 2L));
     }
 
-    @Test
-    public void updateIntroduction() {
-        System.out.println(userProfileService.updateIntroduction(1L, "我是17软件工程学生111"));
-    }
 }

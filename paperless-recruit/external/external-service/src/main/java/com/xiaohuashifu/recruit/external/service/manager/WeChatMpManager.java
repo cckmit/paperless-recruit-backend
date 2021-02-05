@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.manager;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
-import com.xiaohuashifu.recruit.external.api.po.SendWeChatMpSubscribeMessagePO;
+import com.xiaohuashifu.recruit.external.api.request.SendWeChatMpSubscribeMessageRequest;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpUserInfoDTO;
 
@@ -51,7 +51,7 @@ public interface WeChatMpManager {
      * @return 发送结果
      */
     boolean sendSubscribeMessage(AppEnum app, String openId,
-                                 SendWeChatMpSubscribeMessagePO sendWeChatMpSubscribeMessagePO);
+                                 SendWeChatMpSubscribeMessageRequest sendWeChatMpSubscribeMessagePO);
 
     /**
      * 获取新的 access-token

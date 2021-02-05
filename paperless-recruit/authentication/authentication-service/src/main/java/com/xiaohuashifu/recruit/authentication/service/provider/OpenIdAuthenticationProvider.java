@@ -4,6 +4,7 @@ import com.xiaohuashifu.recruit.authentication.service.token.OpenIdAuthenticatio
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
+import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -50,8 +51,8 @@ public class OpenIdAuthenticationProvider extends AbstractAuthenticationProvider
         AuthOpenIdDTO authOpenIdDTO = checkAuthOpenIdForWeChatMpResult.getData();
 
         // 判断用户是否可用
-        Result<Object> checkResult = userService.checkUserStatus(authOpenIdDTO.getUserId());
-        if (checkResult.isFailure()) {
+        UserDTO userDTO = userService.getUser(authOpenIdDTO.getUserId());
+        if (!userDTO.getAvailable()) {
             throw new DisabledException("The user unavailable.");
         }
 

@@ -1,5 +1,10 @@
 package com.xiaohuashifu.recruit.user.api.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +13,10 @@ import java.io.Serializable;
  * @author xhsf
  * @create 2020/12/14 16:48
  */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class EnableRoleDTO implements Serializable {
 
     /**
@@ -20,32 +29,4 @@ public class EnableRoleDTO implements Serializable {
      */
     private Integer enabledCount;
 
-    public EnableRoleDTO(RoleDTO role, Integer enabledCount) {
-        this.role = role;
-        this.enabledCount = enabledCount;
-    }
-
-    public RoleDTO getRole() {
-        return role;
-    }
-
-    public void setRole(RoleDTO role) {
-        this.role = role;
-    }
-
-    public Integer getEnabledCount() {
-        return enabledCount;
-    }
-
-    public void setEnabledCount(Integer enabledCount) {
-        this.enabledCount = enabledCount;
-    }
-
-    @Override
-    public String toString() {
-        return "EnableRoleDTO{" +
-                "role=" + role +
-                ", enabledCount=" + enabledCount +
-                '}';
-    }
 }

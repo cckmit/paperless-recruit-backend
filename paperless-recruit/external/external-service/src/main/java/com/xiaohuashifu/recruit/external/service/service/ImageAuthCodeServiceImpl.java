@@ -4,7 +4,7 @@ import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.ImageAuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
-import com.xiaohuashifu.recruit.external.api.po.CreateImageAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.request.CreateImageAuthCodeRequest;
 import com.xiaohuashifu.recruit.external.api.service.ImageAuthCodeService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -48,7 +48,7 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
      * @return ImageAuthCodeDTO
      */
     @Override
-    public Result<ImageAuthCodeDTO> createImageAuthCode(CreateImageAuthCodePO createImageAuthCodePO) {
+    public Result<ImageAuthCodeDTO> createImageAuthCode(CreateImageAuthCodeRequest createImageAuthCodePO) {
         // 创建图形验证码
         ImageAuthCodeUtils.ImageAuthCode imageAuthCode = ImageAuthCodeUtils.createImageCode(
                 createImageAuthCodePO.getWidth(), createImageAuthCodePO.getHeight(),

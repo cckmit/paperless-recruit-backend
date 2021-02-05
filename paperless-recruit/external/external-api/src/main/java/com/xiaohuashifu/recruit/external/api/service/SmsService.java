@@ -1,10 +1,11 @@
 package com.xiaohuashifu.recruit.external.api.service;
 
+import com.xiaohuashifu.recruit.common.exception.ThirdPartyServiceException;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.Sms;
-import com.xiaohuashifu.recruit.external.api.po.CheckSmsAuthCodePO;
-import com.xiaohuashifu.recruit.external.api.po.CreateAndSendSmsAuthCodePO;
+import com.xiaohuashifu.recruit.external.api.request.CheckSmsAuthCodeRequest;
+import com.xiaohuashifu.recruit.external.api.request.CreateAndSendSmsAuthCodeRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -27,9 +28,7 @@ public interface SmsService {
      * @return 发送结果
      */
     // TODO: 2020/12/9  该方法暂不支持
-    default Result<Object> sendSms(
-            @NotBlank(message = "The phone can't be blank.") @Phone String phone,
-            @NotBlank(message = "The message can't be blank.") @Sms String message) {
+    default Result<Object> sendSms(@NotBlank @Phone String phone, @NotBlank @Sms String message) {
         throw new UnsupportedOperationException();
     }
 
@@ -39,14 +38,9 @@ public interface SmsService {
      *
      * @private 内部方法
      *
-     * @errorCode InvalidParameter: 手机号码或主题或过期时间的格式错误
-     *              UnknownError: 发送短信验证码错误，需要重试
-     *
-     * @param createAndSendSmsAuthCodePO 创建并发送短信验证码的参数对象
-     * @return Result<Void> 返回结果若 Result.isSuccess()为true 表示发送成功，否则发送失败
+     * @param request CreateAndSendSmsAuthCodeRequest
      */
-    Result<Void> createAndSendSmsAuthCode(@NotNull(message = "The createAndSendSmsAuthCodePO can't be null.")
-                                                  CreateAndSendSmsAuthCodePO createAndSendSmsAuthCodePO);
+    void createAndSendSmsAuthCode(@NotNull CreateAndSendSmsAuthCodeRequest request) throws ThirdPartyServiceException;
 
     /**
      * 短信验证码检验验证码是否有效的服务
@@ -54,14 +48,8 @@ public interface SmsService {
      *
      * @private 内部方法
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.AuthCode.NotExist: 找不到对应手机号码的验证码，有可能已经过期或者没有发送成功
-     *              InvalidParameter.AuthCode.Incorrect: 短信验证码值不正确
-     *
-     * @param checkSmsAuthCodePO 检查短信验证码的对象
-     * @return Result<Void> 返回结果若 Result.isSuccess() 为 true 表示验证成功，否则验证失败
+     * @param request CheckSmsAuthCodeRequest
      */
-    Result<Void> checkSmsAuthCode(@NotNull(message = "The checkSmsAuthCodePO can't be null.")
-                                          CheckSmsAuthCodePO checkSmsAuthCodePO);
+    void checkSmsAuthCode(@NotNull CheckSmsAuthCodeRequest request);
 
 }

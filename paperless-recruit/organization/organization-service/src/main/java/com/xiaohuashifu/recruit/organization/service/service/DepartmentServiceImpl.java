@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.OverLimitServiceException;
@@ -52,13 +53,23 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentAssembler departmentAssembler;
 
+    /**
+     * 部门标签锁定键模式，{0}是部门编号
+     */
+    private static final String DEPARTMENT_LABELS_LOCK_KEY_PATTERN = "departments:{0}:labels";
+
+    /**
+     * 部门 deactivated 的锁定键模式，{0}是部门编号
+     */
+    private static final String DEPARTMENT_DEACTIVATED_LOCK_KEY_PATTERN = "departments:{0}:deactivated";
+
     public DepartmentServiceImpl(DepartmentMapper departmentMapper, DepartmentAssembler departmentAssembler) {
         this.departmentMapper = departmentMapper;
         this.departmentAssembler = departmentAssembler;
     }
 
-    @Override
     // TODO: 2021/2/5 这里需要消息队列保证最终一致性
+    @Override
     @Transactional
     public DepartmentDTO createDepartment(CreateDepartmentRequest request) {
         // 判断组织是否存在
@@ -86,9 +97,10 @@ public class DepartmentServiceImpl implements DepartmentService {
         return getDepartment(departmentDOForInsert.getId());
     }
 
-    @Override
     // TODO: 2021/2/5 这里需要消息队列保证最终一致性
+    @Override
     @Transactional
+    @DistributedLock(value = DEPARTMENT_LABELS_LOCK_KEY_PATTERN, parameters = "#{#id}")
     public DepartmentDTO addLabel(Long id, String label) {
         // 判断标签数量是否大于 MAX_DEPARTMENT_LABEL_NUMBER
         DepartmentDTO departmentDTO = getDepartment(id);
@@ -126,7 +138,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentDTO getDepartment(Long id) {
         DepartmentDO departmentDO = departmentMapper.selectById(id);
         if (departmentDO == null) {
-            throw new NotFoundServiceException();
+            throw new NotFoundServiceException("department", "id", id);
         }
         return departmentAssembler.departmentDOToDepartmentDTO(departmentDO);
     }
@@ -150,7 +162,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    @Transactional
     public DepartmentDTO updateDepartmentName(Long id, String departmentName) {
         // 判断该组织是否已经存在该部门名
         DepartmentDTO departmentDTO = getDepartment(id);
@@ -171,7 +182,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    @Transactional
     public DepartmentDTO updateAbbreviationDepartmentName(Long id, String abbreviationDepartmentName) {
         // 判断该组织是否已经存在该部门名缩写
         DepartmentDTO departmentDTO = getDepartment(id);
@@ -218,6 +228,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Transactional
+    @DistributedLock(value = DEPARTMENT_DEACTIVATED_LOCK_KEY_PATTERN, parameters = "#{#id}")
     public DepartmentDTO deactivateDepartment(Long id) {
         // 判断是否已经被停用
         DepartmentDTO departmentDTO = getDepartment(id);

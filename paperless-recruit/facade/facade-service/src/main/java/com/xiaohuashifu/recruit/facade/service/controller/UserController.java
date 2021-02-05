@@ -76,7 +76,7 @@ public class UserController {
     public Object post(@RequestBody Map<String, String> params) {
         // 短信验证码方式注册
         if (params.get("type").equals(SIGN_UP_TYPE_SMS)) {
-            Result<UserDTO> signUpBySmsAuthCodeResult = userService.signUpBySmsAuthCode(
+            Result<UserDTO> signUpBySmsAuthCodeResult = userService.createUserBySmsAuthCode(
                     params.get("phone"), params.get("authCode"), params.get("password"));
             // 注册失败
             if (!signUpBySmsAuthCodeResult.isSuccess()) {
@@ -106,7 +106,7 @@ public class UserController {
 
         // 密码方式注册
         if (params.get("type").equals(SIGN_UP_TYPE_PASSWORD)) {
-            Result<UserDTO> signUpUserResult = userService.signUpUser(params.get("username"), params.get("password"));
+            Result<UserDTO> signUpUserResult = userService.createUser(params.get("username"), params.get("password"));
             // 注册失败
             if (!signUpUserResult.isSuccess()) {
                 String message = "注册失败";

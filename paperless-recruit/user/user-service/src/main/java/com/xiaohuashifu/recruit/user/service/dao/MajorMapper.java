@@ -1,10 +1,9 @@
 package com.xiaohuashifu.recruit.user.service.dao;
 
-import com.xiaohuashifu.recruit.user.api.query.MajorQuery;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xiaohuashifu.recruit.user.service.do0.MajorDO;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
+import com.xiaohuashifu.recruit.user.service.do0.UserDO;
 
 /**
  * 描述：专业表数据库映射层
@@ -12,23 +11,11 @@ import java.util.List;
  * @author: xhsf
  * @create: 2020/10/30 15:05
  */
-public interface MajorMapper {
+public interface MajorMapper extends BaseMapper<MajorDO> {
 
-    int insertMajor(MajorDO majorDO);
-
-    MajorDO getMajor(Long id);
-
-    Boolean getDeactivated(Long id);
-
-    List<MajorDO> listMajorsByCollegeId(Long collegeId);
-
-    List<MajorDO> listMajors(MajorQuery query);
-
-    int countByMajorName(String majorName);
-
-    int updateMajorName(@Param("id") Long id, @Param("majorName") String majorName);
-
-    int updateDeactivated(@Param("id") Long id, @Param("deactivated") Boolean deactivated);
-
-    int updateDeactivatedByCollegeId(@Param("collegeId") Long collegeId, @Param("deactivated") Boolean deactivated);
+    default MajorDO selectByMajorName(String majorName) {
+        LambdaQueryWrapper<MajorDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MajorDO::getMajorName, majorName);
+        return selectOne(wrapper);
+    }
 }

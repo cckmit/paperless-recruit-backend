@@ -1,10 +1,12 @@
 package com.xiaohuashifu.recruit.user.api.service;
 
-import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.ServiceException;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.user.api.constant.MajorConstants;
 import com.xiaohuashifu.recruit.user.api.dto.MajorDTO;
 import com.xiaohuashifu.recruit.user.api.query.MajorQuery;
+import com.xiaohuashifu.recruit.user.api.request.UpdateMajorRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,7 +14,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 /**
- * 描述：
+ * 描述：专业服务
  *
  * @author xhsf
  * @create 2020/12/24 13:04
@@ -20,110 +22,52 @@ import javax.validation.constraints.Size;
 public interface MajorService {
 
     /**
-     * 保存专业
+     * 创建专业
      *
      * @permission admin 权限
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 学院不存在
-     *              OperationConflict: 该专业名已经存在
      *
      * @param collegeId 学院编号
      * @param majorName 专业名
      * @return CollegeDTO
      */
-    Result<MajorDTO> saveMajor(
-            @NotNull(message = "The collegeId can't be null.")
-            @Positive(message = "The collegeId must be greater than 0.") Long collegeId,
-            @NotBlank(message = "The majorName can't be blank.")
-            @Size(max = MajorConstants.MAX_MAJOR_NAME_LENGTH,
-                    message = "The length of majorName must not be greater than "
-                            + MajorConstants.MAX_MAJOR_NAME_LENGTH + ".") String majorName);
+    MajorDTO createMajor(
+            @NotNull @Positive Long collegeId,
+            @NotBlank @Size(max = MajorConstants.MAX_MAJOR_NAME_LENGTH) String majorName) throws ServiceException;
 
     /**
      * 获取专业
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 找不到该编号的专业
-     *
      * @param id 专业编号
      * @return MajorDTO
      */
-    Result<MajorDTO> getMajor(@NotNull(message = "The id can't be null.")
-                              @Positive(message = "The id must be greater than 0.") Long id);
+    MajorDTO getMajor(@NotNull @Positive Long id) throws NotFoundServiceException;
 
     /**
      * 查询专业
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
      * @param query 查询参数
-     * @return PageInfo<MajorDTO> 带分页信息的查询结果，可能会返回空列表
+     * @return QueryResult<MajorDTO> 带分页信息的查询结果，可能会返回空列表
      */
-    Result<PageInfo<MajorDTO>> listMajors(@NotNull(message = "The query can't be null.") MajorQuery query);
+    QueryResult<MajorDTO> listMajors(@NotNull MajorQuery query);
 
     /**
-     * 更新专业名
+     * 更新专业
      *
      * @permission admin 权限
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 专业不存在
-     *              OperationConflict.Unmodified: 新旧专业名相同
-     *              OperationConflict: 新专业名已经存在
-     *
-     * @param id 专业编号
-     * @param newMajorName 新专业名
+     * @param request UpdateMajorRequest
      * @return MajorDTO 更新后的专业
      */
-    Result<MajorDTO> updateMajorName(
-            @NotNull(message = "The id can't be null.")
-            @Positive(message = "The id must be greater than 0.") Long id,
-            @NotBlank(message = "The newMajorName can't be blank.")
-            @Size(max = MajorConstants.MAX_MAJOR_NAME_LENGTH,
-                    message = "The length of newMajorName must not be greater than "
-                            + MajorConstants.MAX_MAJOR_NAME_LENGTH + ".") String newMajorName);
-
-    /**
-     * 停用专业
-     *
-     * @permission 需要 admin 权限
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotExist: 专业不存在
-     *              OperationConflict.Deactivated: 该专业已经被停用
-     *
-     * @param id 专业编号
-     * @return 停用结果
-     */
-    Result<MajorDTO> deactivateMajor(@NotNull(message = "The id can't be null.")
-                                     @Positive(message = "The id must be greater than 0.") Long id);
+    MajorDTO updateMajor(@NotNull UpdateMajorRequest request);
 
     /**
      * 停用一个学院的所有专业
      *
      * @private 内部方法
      *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
      * @param collegeId 学院编号
      * @return 被停用的专业数量
      */
-    Result<Integer> deactivateMajorsByCollegeId(
-            @NotNull(message = "The collegeId can't be null.")
-            @Positive(message = "The collegeId must be greater than 0.") Long collegeId);
-
-    /**
-     * 检查专业状态
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter.NotExist: 专业不存在
-     *              Forbidden.Deactivated: 专业被停用
-     *
-     * @param id 专业编号
-     * @return 检查结果
-     */
-    <T> Result<T> checkMajorStatus(Long id);
+    Integer deactivateMajorsByCollegeId(@NotNull @Positive Long collegeId);
 
 }

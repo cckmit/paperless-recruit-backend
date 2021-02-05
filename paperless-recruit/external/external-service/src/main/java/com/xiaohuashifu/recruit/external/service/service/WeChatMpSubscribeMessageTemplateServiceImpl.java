@@ -5,8 +5,8 @@ import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.ObjectUtils;
 import com.xiaohuashifu.recruit.external.api.dto.WeChatMpSubscribeMessageTemplateDTO;
-import com.xiaohuashifu.recruit.external.api.po.SaveWeChatMpSubscribeMessageTemplatePO;
-import com.xiaohuashifu.recruit.external.api.po.UpdateWeChatMpSubscribeMessageTemplatePO;
+import com.xiaohuashifu.recruit.external.api.request.CreateWeChatMpSubscribeMessageTemplateRequest;
+import com.xiaohuashifu.recruit.external.api.request.UpdateWeChatMpSubscribeMessageTemplateRequest;
 import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTemplateService;
 import com.xiaohuashifu.recruit.external.service.dao.WeChatMpSubscribeMessageTemplateMapper;
@@ -45,7 +45,7 @@ public class WeChatMpSubscribeMessageTemplateServiceImpl implements WeChatMpSubs
      */
     @Override
     public Result<WeChatMpSubscribeMessageTemplateDTO> saveWeChatMpSubscribeMessageTemplate(
-            SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO) {
+            CreateWeChatMpSubscribeMessageTemplateRequest saveWeChatMpSubscribeMessageTemplatePO) {
         // 查看是否存在相同的模板 id
         int count = weChatMpSubscribeMessageTemplateMapper.countByTemplateId(
                 saveWeChatMpSubscribeMessageTemplatePO.getTemplateId());
@@ -145,7 +145,7 @@ public class WeChatMpSubscribeMessageTemplateServiceImpl implements WeChatMpSubs
      */
     @Override
     public Result<WeChatMpSubscribeMessageTemplateDTO> updateWeChatMpSubscribeMessageTemplate(
-            UpdateWeChatMpSubscribeMessageTemplatePO updateWeChatMpSubscribeMessageTemplatePO) {
+            UpdateWeChatMpSubscribeMessageTemplateRequest updateWeChatMpSubscribeMessageTemplatePO) {
         // 判断该编号的模板存不存在
         int count = weChatMpSubscribeMessageTemplateMapper.count(updateWeChatMpSubscribeMessageTemplatePO.getId());
         if (count < 1) {

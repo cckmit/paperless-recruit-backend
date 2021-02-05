@@ -3,8 +3,8 @@ package com.xiaohuashifu.recruit.external.api.service;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.WeChatMpSubscribeMessageTemplateDTO;
-import com.xiaohuashifu.recruit.external.api.po.SaveWeChatMpSubscribeMessageTemplatePO;
-import com.xiaohuashifu.recruit.external.api.po.UpdateWeChatMpSubscribeMessageTemplatePO;
+import com.xiaohuashifu.recruit.external.api.request.CreateWeChatMpSubscribeMessageTemplateRequest;
+import com.xiaohuashifu.recruit.external.api.request.UpdateWeChatMpSubscribeMessageTemplateRequest;
 import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 
 import javax.validation.constraints.NotNull;
@@ -31,7 +31,7 @@ public interface WeChatMpSubscribeMessageTemplateService {
      */
     Result<WeChatMpSubscribeMessageTemplateDTO> saveWeChatMpSubscribeMessageTemplate(
             @NotNull(message = "The saveWeChatMpSubscribeMessageTemplatePO can't be null.")
-                    SaveWeChatMpSubscribeMessageTemplatePO saveWeChatMpSubscribeMessageTemplatePO);
+                    CreateWeChatMpSubscribeMessageTemplateRequest saveWeChatMpSubscribeMessageTemplatePO);
 
     /**
      * 获取模板
@@ -67,6 +67,6 @@ public interface WeChatMpSubscribeMessageTemplateService {
      */
     Result<WeChatMpSubscribeMessageTemplateDTO> updateWeChatMpSubscribeMessageTemplate(
             @NotNull(message = "The updateWeChatMpSubscribeMessageTemplatePO can't be null.")
-                    UpdateWeChatMpSubscribeMessageTemplatePO updateWeChatMpSubscribeMessageTemplatePO);
+                    UpdateWeChatMpSubscribeMessageTemplateRequest updateWeChatMpSubscribeMessageTemplatePO);
 
 }

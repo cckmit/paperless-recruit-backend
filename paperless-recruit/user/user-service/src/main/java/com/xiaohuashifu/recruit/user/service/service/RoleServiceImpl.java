@@ -7,7 +7,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.DisableRoleDTO;
 import com.xiaohuashifu.recruit.user.api.dto.EnableRoleDTO;
 import com.xiaohuashifu.recruit.user.api.dto.RoleDTO;
-import com.xiaohuashifu.recruit.user.api.po.SaveRolePO;
+import com.xiaohuashifu.recruit.user.api.request.CreateRoleRequest;
 import com.xiaohuashifu.recruit.user.api.query.RoleQuery;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
@@ -59,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
      * @return Result<RoleDTO>
      */
     @Override
-    public Result<RoleDTO> saveRole(SaveRolePO saveRolePO) {
+    public Result<RoleDTO> saveRole(CreateRoleRequest saveRolePO) {
         // 如果父角色编号不为0，则父角色必须存在
         if (!Objects.equals(saveRolePO.getParentRoleId(), NO_PARENT_ROLE_ID)) {
             int count = roleMapper.count(saveRolePO.getParentRoleId());

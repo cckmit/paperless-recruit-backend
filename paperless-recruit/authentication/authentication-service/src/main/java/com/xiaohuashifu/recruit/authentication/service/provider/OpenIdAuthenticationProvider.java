@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.authentication.service.provider;
 
 import com.xiaohuashifu.recruit.authentication.service.token.OpenIdAuthenticationToken;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.exception.ServiceException;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
@@ -43,12 +44,12 @@ public class OpenIdAuthenticationProvider extends AbstractAuthenticationProvider
         String code = openIdAuthenticationToken.getCode();
 
         // 通过 openId 认证
-        Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMpResult =
-                authOpenIdService.checkAuthOpenIdForWeChatMp(app, code);
-        if (!checkAuthOpenIdForWeChatMpResult.isSuccess()) {
+        AuthOpenIdDTO authOpenIdDTO;
+        try {
+            authOpenIdDTO = authOpenIdService.checkAuthOpenIdForWeChatMp(app, code);
+        } catch (ServiceException e) {
             throw new BadCredentialsException("Auth failed.");
         }
-        AuthOpenIdDTO authOpenIdDTO = checkAuthOpenIdForWeChatMpResult.getData();
 
         // 判断用户是否可用
         UserDTO userDTO = userService.getUser(authOpenIdDTO.getUserId());

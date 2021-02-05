@@ -42,8 +42,4 @@ public class AuthOpenIdServiceImplTest {
                 "11"));
     }
 
-    @Test
-    public void getOpenId() {
-        System.out.println(authOpenIdService.getOpenId(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP, 1L));
-    }
 }

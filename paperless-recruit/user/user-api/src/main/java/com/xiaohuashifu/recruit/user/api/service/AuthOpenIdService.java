@@ -3,7 +3,6 @@ package com.xiaohuashifu.recruit.user.api.service;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.constant.AuthOpenIdServiceConstants;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
 
@@ -45,6 +44,16 @@ public interface AuthOpenIdService {
     AuthOpenIdDTO getAuthOpenId(@NotNull @Positive Long id) throws NotFoundServiceException;
 
     /**
+     * 获取 AuthOpenId
+     *
+     * @param app AppEnum
+     * @param userId 用户编号
+     * @return AuthOpenIdDTO
+     */
+    AuthOpenIdDTO getAuthOpenIdByAppAndUserId(@NotNull AppEnum app, @NotNull @Positive Long userId)
+            throws NotFoundServiceException;
+
+    /**
      * 用于微信小程序用户检查 AuthOpenId
      * 会通过 code 获取 openId
      * 可以用于快捷登录时使用
@@ -57,15 +66,6 @@ public interface AuthOpenIdService {
     AuthOpenIdDTO checkAuthOpenIdForWeChatMp(
             @NotNull AppEnum app,
             @NotBlank @Size(max = AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH,
-                    min = AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH) String code);
-
-    /**
-     * 获取 openId
-     *
-     * @param userId 用户编号
-     * @param app 具体的微信小程序
-     * @return openId 若参数错误的情况下，返回 null
-     */
-    String getOpenId(@NotNull AppEnum app, @NotNull @Positive Long userId);
+                    min = AuthOpenIdServiceConstants.WECHAT_MP_CODE_LENGTH) String code) throws ServiceException;
 
 }

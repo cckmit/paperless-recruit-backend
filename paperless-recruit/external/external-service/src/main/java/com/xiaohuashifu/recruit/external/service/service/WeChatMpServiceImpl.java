@@ -8,6 +8,7 @@ import com.xiaohuashifu.recruit.external.api.request.SendWeChatMpSubscribeMessag
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
+import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -78,14 +79,11 @@ public class WeChatMpServiceImpl implements WeChatMpService {
         }
 
         // 获取 openId
-        Result<String> getOpenIdResult = authOpenIdService.getOpenId(app, sendWeChatMpSubscribeMessagePO.getUserId());
-        if (!getOpenIdResult.isSuccess()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The user has not been bound this app.");
-        }
+        AuthOpenIdDTO authOpenIdDTO = authOpenIdService.getAuthOpenIdByAppAndUserId(app, sendWeChatMpSubscribeMessagePO.getUserId());
 
         // 发送订阅消息
         boolean sendResult = weChatMpManager.sendSubscribeMessage(
-                app, getOpenIdResult.getData(), sendWeChatMpSubscribeMessagePO);
+                app, authOpenIdDTO.getOpenId(), sendWeChatMpSubscribeMessagePO);
         if (!sendResult) {
             return Result.fail(ErrorCodeEnum.INTERNAL_ERROR, "Send subscribe message failed.");
         }

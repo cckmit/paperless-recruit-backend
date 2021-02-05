@@ -1,15 +1,12 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.github.dozermapper.core.Mapper;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.UnknownServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnsupportedServiceException;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.DesUtils;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpService;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
@@ -70,7 +67,7 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
     @Override
     @Transactional
     public AuthOpenIdDTO bindAuthOpenIdForWeChatMp(Long userId, AppEnum app, String code) {
-        // 如果 App 类型不是微信小程序，则不给绑定
+        // 如果 App 类型不是微信小程序，则不需要继续下去
         if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
             throw new UnsupportedServiceException("Unsupported app.");
         }
@@ -87,10 +84,8 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
             throw new DuplicateServiceException("This user has been bind.");
         }
 
-        // 获取 openId
+        // 获取并加密 openId
         String openId = weChatMpService.getOpenId(code, app);
-
-        // 加密 openId
         openId = encryptOpenId(openId);
 
         // 添加到数据库
@@ -101,7 +96,6 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP) {
             roleService.saveUserRole(userId, INTERVIEWEE_DEFAULT_ROLE_ID);
         }
-
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWER_MP) {
             roleService.saveUserRole(userId, INTERVIEWER_DEFAULT_ROLE_ID);
         }
@@ -116,78 +110,43 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
             throw new NotFoundServiceException("authOpenId", "id", id);
         }
         AuthOpenIdDTO authOpenIdDTO = authOpenIdAssembler.authOpenIdDOToAuthOpenIdDTO(authOpenIdDO);
-        authOpenIdDTO.setOpenId(encryptOpenId(authOpenIdDTO.getOpenId()));
+        authOpenIdDTO.setOpenId(decryptOpenId(authOpenIdDTO.getOpenId()));
         return authOpenIdDTO;
     }
 
-    /**
-     * 用于微信小程序用户检查 AuthOpenId
-     * 会通过 code 获取 openId
-     * 可以用于快捷登录时使用
-     * 该接口调用成功即可证明用户身份
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 不支持的 App 类型 | 非法 code
-     *              InvalidParameter.NotExist: 该用户还未绑定到此 App
-     *
-     * @param app 具体的微信小程序
-     * @param code 微信小程序 wx.login() 接口的返回结果
-     * @return AuthOpenIdDTO
-     */
     @Override
-    public Result<AuthOpenIdDTO> checkAuthOpenIdForWeChatMp(AppEnum app, String code) {
-        // 如果 App 类型不是微信小程序，则不需要继续下去
-        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Unsupported app.");
+    public AuthOpenIdDTO getAuthOpenIdByAppAndUserId(AppEnum app, Long userId) {
+        LambdaQueryWrapper<AuthOpenIdDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AuthOpenIdDO::getAppName, app).eq(AuthOpenIdDO::getUserId, userId);
+        AuthOpenIdDO authOpenIdDO = authOpenIdMapper.selectOne(wrapper);
+        if (authOpenIdDO == null) {
+            throw new NotFoundServiceException("authOpenId and userId", "app and userId", app.name() + userId);
         }
-
-        // 获取 openId
-        Result<String> getOpenIdResult = weChatMpService.getOpenId(code, app);
-        if (!getOpenIdResult.isSuccess()) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "Invalid code.");
-        }
-        String openId = getOpenIdResult.getData();
-
-        // 加密 openId
-        try {
-            openId = DesUtils.encrypt(openId, secretKey);
-        } catch (Exception ignored) {
-            // 本地操作，不会报错
-        }
-
-        // 检查是否存在数据库，结合 app_name + openId （加密后）
-        Long id = authOpenIdMapper.getIdByAppNameAndOpenId(app, openId);
-        if (id == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST, "The user has not been bound this app.");
-        }
-
-        return getAuthOpenId(id);
+        AuthOpenIdDTO authOpenIdDTO = authOpenIdAssembler.authOpenIdDOToAuthOpenIdDTO(authOpenIdDO);
+        authOpenIdDTO.setOpenId(decryptOpenId(authOpenIdDTO.getOpenId()));
+        return authOpenIdDTO;
     }
 
-    /**
-     * 获取 openId
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 找不到对应的 openId
-     *
-     * @param userId 用户编号
-     * @param app 具体的微信小程序
-     * @return openId 若参数错误的情况下，返回 null
-     */
     @Override
-    public Result<String> getOpenId(AppEnum app, Long userId) {
-        // 获取 openId
-        String openId = authOpenIdMapper.getOpenIdByAppNameAndUserId(app, userId);
-        if (openId == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+    public AuthOpenIdDTO checkAuthOpenIdForWeChatMp(AppEnum app, String code) {
+        // 如果 App 类型不是微信小程序，则不需要继续下去
+        if (app.getPlatform() != PlatformEnum.WECHAT_MINI_PROGRAM) {
+            throw new UnsupportedServiceException("Unsupported app.");
         }
 
-        // 解码 openId
-        try {
-            openId = DesUtils.decrypt(openId, secretKey);
-        } catch (Exception ignored) {
-            // 内部操作，不会抛出异常
+        // 获取并加密 openId
+        String openId = weChatMpService.getOpenId(code, app);
+        openId = encryptOpenId(openId);
+
+        // 检查是否存在数据库，结合 app_name + openId （加密后）
+        LambdaQueryWrapper<AuthOpenIdDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AuthOpenIdDO::getAppName, app).eq(AuthOpenIdDO::getOpenId, openId);
+        AuthOpenIdDO authOpenIdDO = authOpenIdMapper.selectOne(wrapper);
+        if (authOpenIdDO == null) {
+            throw new NotFoundServiceException("The user has not been bound this app.");
         }
-        return Result.success(openId);
+
+        return getAuthOpenId(authOpenIdDO.getId());
     }
 
     /**
@@ -201,6 +160,20 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
         } catch (Exception ignored) {
             // 本地操作，不会报错
             throw new UnknownServiceException("Encrypt openId error.");
+        }
+    }
+
+    /**
+     * 解密 openId
+     * @param openId openId
+     * @return 解密后的 openId
+     */
+    private String decryptOpenId(String openId) {
+        try {
+            return DesUtils.decrypt(openId, secretKey);
+        } catch (Exception ignored) {
+            // 本地操作，不会报错
+            throw new UnknownServiceException("Decrypt openId error.");
         }
     }
 

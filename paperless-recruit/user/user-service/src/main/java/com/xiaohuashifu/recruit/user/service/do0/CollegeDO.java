@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 描述：学院表映射对象
+ * 描述：学院DO
  *
  * @author: xhsf
  * @create: 2020/10/30 15:05

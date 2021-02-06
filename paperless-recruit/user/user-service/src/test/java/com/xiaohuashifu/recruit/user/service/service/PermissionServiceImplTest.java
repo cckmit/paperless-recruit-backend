@@ -45,7 +45,7 @@ public class PermissionServiceImplTest {
 
     @Test
     public void savePermission() {
-        System.out.println(permissionService.savePermission(new CreatePermissionRequest.Builder()
+        System.out.println(permissionService.createPermission(CreatePermissionRequest.builder()
                 .parentPermissionId(1L)
         .permissionName("  test4  ")
         .authorizationUrl("  /tests/test3  ")
@@ -55,7 +55,7 @@ public class PermissionServiceImplTest {
 
     @Test
     public void deletePermission() {
-        System.out.println(permissionService.removePermission(14L));
+        permissionService.removePermission(14L);
     }
 
     @Test
@@ -66,24 +66,14 @@ public class PermissionServiceImplTest {
     @Test
     public void testGetPermission() {
         System.out.println(permissionService.listPermissions(
-                new PermissionQuery.Builder()
+                PermissionQuery.builder()
                         .permissionName("test")
                         .build()));
     }
 
     @Test
-    public void updatePermissionName() {
-        System.out.println(permissionService.updatePermissionName(13L, "   test3  "));
-    }
-
-    @Test
-    public void updateAuthorizationUrl() {
-        System.out.println(permissionService.updateAuthorizationUrl(13L, "  /tests/test3  \n"));
-    }
-
-    @Test
-    public void updateDescription() {
-        System.out.println(permissionService.updateDescription(13L, "  测试3  "));
+    public void updatePermission() {
+//        System.out.println(permissionService.updatePermissionName(13L, "   test3  "));
     }
 
     @Test

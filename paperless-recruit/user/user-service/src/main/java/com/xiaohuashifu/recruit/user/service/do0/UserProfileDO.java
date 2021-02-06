@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 描述：用户信息表映射对象
+ * 描述：用户信息DO
  *
  * @author: xhsf
  * @create: 2020/10/30 15:05

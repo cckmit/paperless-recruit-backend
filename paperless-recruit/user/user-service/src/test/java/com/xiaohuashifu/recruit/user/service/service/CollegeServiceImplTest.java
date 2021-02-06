@@ -31,28 +31,29 @@ public class CollegeServiceImplTest {
     }
 
     @Test
-    public void saveCollege() {
-        System.out.println(collegeService.createCollege("兽医学院"));
+    public void createCollege() {
+        System.out.println(collegeService.createCollege("海洋学院"));
     }
 
     @Test
     public void getCollege() {
-        System.out.println(collegeService.getCollege(1L));
+        System.out.println(collegeService.getCollege(7L));
     }
 
     @Test
-    public void testGetCollege() {
-        System.out.println(collegeService.listColleges(CollegeQuery.builder().collegeName("软件").build()));
+    public void listColleges() {
+        System.out.println(collegeService.listColleges(
+                CollegeQuery.builder().pageNum(1L).pageSize(10L).collegeName("数").build()));
     }
 
     @Test
     public void updateCollegeName() {
-        System.out.println(collegeService.updateCollegeName(5L, "经济管理学院"));
+        System.out.println(collegeService.updateCollegeName(7L, "海洋学院"));
     }
 
     @Test
     public void deactivateCollege() {
-        System.out.println(collegeService.deactivateCollege(5L));
+        System.out.println(collegeService.deactivateCollege(7L));
     }
 
 }

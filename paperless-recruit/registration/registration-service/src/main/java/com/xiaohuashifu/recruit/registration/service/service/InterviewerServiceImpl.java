@@ -101,7 +101,7 @@ public class InterviewerServiceImpl implements InterviewerService {
 
         // 为面试官的组织成员的用户主体授予面试官角色
         Long userId = organizationMemberService.getUserId(organizationMemberId);
-        roleService.saveUserRole(userId, INTERVIEWER_ROLE_ID);
+        roleService.createUserRole(userId, INTERVIEWER_ROLE_ID);
 
         // 发送成为面试官的系统通知
         sendBecomeInterviewerSystemNotification(userId, organizationId);
@@ -191,7 +191,7 @@ public class InterviewerServiceImpl implements InterviewerService {
         // 赋予面试官的成员所属用户主体面试官权限
         Long organizationMemberId = interviewerMapper.getOrganizationMemberId(id);
         Long userId = organizationMemberService.getUserId(organizationMemberId);
-        roleService.saveUserRole(userId, INTERVIEWER_ROLE_ID);
+        roleService.createUserRole(userId, INTERVIEWER_ROLE_ID);
 
         // 发送恢复面试官的系统通知
         sendDisableOrEnableInterviewerSystemNotification(userId, organizationMemberId, "恢复");

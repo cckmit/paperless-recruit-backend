@@ -32,43 +32,40 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void saveRole() {
-        final CreateRoleRequest saveRolePO = new CreateRoleRequest.Builder()
-                .parentRoleId(5L)
-                .roleName("organization")
-                .description("组织")
-                .available(true).build();
-        System.out.println(roleService.saveRole(saveRolePO));
+    public void createRole() {
+        CreateRoleRequest request =
+                CreateRoleRequest.builder().parentRoleId(5L).roleName("organization").description("组织").available(true).build();
+        System.out.println(roleService.createRole(request));
     }
 
     @Test
     public void saveUserRole() {
-        System.out.println(roleService.saveUserRole(12L, 4L));
+        System.out.println(roleService.createUserRole(12L, 4L));
     }
 
     @Test
     public void saveRolePermission() {
-        System.out.println(roleService.saveRolePermission(11L, 9L));
+        System.out.println(roleService.createRolePermission(11L, 9L));
     }
 
     @Test
     public void listRoles() {
-        System.out.println(roleService.listRoles(new RoleQuery.Builder().pageNum(1L).pageSize(10L).build()));
+        System.out.println(roleService.listRoles(RoleQuery.builder().pageNum(1L).pageSize(10L).build()));
     }
 
     @Test
     public void deleteRole() {
-        System.out.println(roleService.removeRole(7L));
+        roleService.removeRole(7L);
     }
 
     @Test
     public void deleteUserRole() {
-        System.out.println(roleService.removeUserRole(7L, 10L));
+        roleService.removeUserRole(7L, 10L);
     }
 
     @Test
     public void deleteRolePermission() {
-        System.out.println(roleService.removeRolePermission(11L, 9L));
+        roleService.removeRolePermission(11L, 9L);
     }
 
     @Test

@@ -10,6 +10,7 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * 描述：更新专业请求
@@ -21,7 +22,7 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateMajorRequest {
+public class UpdateMajorRequest implements Serializable {
 
     /**
      * 专业编号

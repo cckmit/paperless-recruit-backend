@@ -16,7 +16,6 @@ public class NotAllFieldsNullValidator implements ConstraintValidator<NotAllFiel
 
     @Override
     public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
-        System.out.println(o);
         // 不检查 null 的情况
         if (o == null) {
             return true;

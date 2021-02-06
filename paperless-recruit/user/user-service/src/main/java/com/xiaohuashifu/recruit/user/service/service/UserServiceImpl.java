@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -202,7 +203,7 @@ public class UserServiceImpl implements UserService {
         // 添加到数据库
         UserDO userDOForInsert = UserDO.builder().username(request.getUsername())
                 .password(passwordService.encodePassword(request.getPassword())).build();
-        return saveUser(userDOForInsert);
+        return ((UserServiceImpl)AopContext.currentProxy()).saveUser(userDOForInsert);
     }
 
     @Override
@@ -226,7 +227,7 @@ public class UserServiceImpl implements UserService {
         // 添加到数据库
         UserDO userDOForInsert =
                 UserDO.builder().username(username).password(password).phone(request.getPhone()).build();
-        return saveUser(userDOForInsert);
+        return ((UserServiceImpl)AopContext.currentProxy()).saveUser(userDOForInsert);
     }
 
     @Override
@@ -250,7 +251,7 @@ public class UserServiceImpl implements UserService {
         // 添加到数据库
         UserDO userDOForInsert =
                 UserDO.builder().username(username).password(password).email(request.getEmail()).build();
-        return saveUser(userDOForInsert);
+        return ((UserServiceImpl)AopContext.currentProxy()).saveUser(userDOForInsert);
     }
 
     @Override
@@ -555,7 +556,7 @@ public class UserServiceImpl implements UserService {
         userMapper.insert(userDO);
 
         // 为新账号赋予最基本的权限
-        roleService.saveUserRole(userDO.getId(), USER_DEFAULT_ROLE_ID);
+        roleService.createUserRole(userDO.getId(), USER_DEFAULT_ROLE_ID);
 
         // 为账号初始化个人信息
         userProfileService.createUserProfile(userDO.getId());

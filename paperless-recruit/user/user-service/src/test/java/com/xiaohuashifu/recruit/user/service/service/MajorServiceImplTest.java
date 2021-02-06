@@ -29,18 +29,18 @@ public class MajorServiceImplTest {
     }
 
     @Test
-    public void saveMajor() {
-        System.out.println(majorService.createMajor(6L, "动物药学"));
+    public void createMajor() {
+        System.out.println(majorService.createMajor(7L, "海洋科学"));
     }
 
     @Test
     public void getMajor() {
-        System.out.println(majorService.getMajor(8L));
+        System.out.println(majorService.getMajor(15L));
     }
 
     @Test
     public void listMajors() {
-        System.out.println(majorService.listMajors(MajorQuery.builder().pageNum(1L).pageSize(50L).collegeId(1L).build()));
+        System.out.println(majorService.listMajors(MajorQuery.builder().pageNum(1L).pageSize(50L).collegeId(7L).build()));
     }
 
     @Test

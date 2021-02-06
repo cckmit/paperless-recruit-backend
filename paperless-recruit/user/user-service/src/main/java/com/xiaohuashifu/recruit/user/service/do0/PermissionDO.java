@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 描述：权限表映射对象
+ * 描述：权限DO
  *
  * @author: xhsf
  * @create: 2020/11/12 19:42

@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
 import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
+import com.xiaohuashifu.recruit.user.api.request.UpdateUserProfileRequest;
 import com.xiaohuashifu.recruit.user.api.service.UserProfileService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -31,9 +32,7 @@ public class UserProfileServiceImplTest {
 
     @Test
     public void createUserProfile() {
-        for (long i = 2; i <= 11; i++ ) {
-            System.out.println(userProfileService.createUserProfile(i));
-        }
+        System.out.println(userProfileService.createUserProfile(1L));
     }
 
     @Test
@@ -42,7 +41,7 @@ public class UserProfileServiceImplTest {
     }
 
     @Test
-    public void testGetUserProfile() {
+    public void listUserProfiles() {
         System.out.println(userProfileService.listUserProfiles(
                 UserProfileQuery.builder()
                         .pageNum(1L)
@@ -50,10 +49,11 @@ public class UserProfileServiceImplTest {
                         .build()));
     }
 
-
     @Test
-    public void updateCollegeAndMajor() {
-//        System.out.println(userProfileService.updateCollegeAndMajor(1L, 2L));
+    public void updateUserProfile() {
+        System.out.println(userProfileService.updateUserProfile(
+                UpdateUserProfileRequest.builder().id(2L).fullName("黄海欣").introduction("hdx")
+                        .studentNumber("201820182018").majorId(2L).build()));
     }
 
 }

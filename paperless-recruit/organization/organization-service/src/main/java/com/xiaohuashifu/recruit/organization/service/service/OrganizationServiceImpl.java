@@ -95,7 +95,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 organizationAssembler.createOrganizationRequestToCreateUserByEmailAuthCodeRequest(request));
 
         // 赋予主体组织的基本权限
-        roleService.saveUserRole(userDTO.getId(), ORGANIZATION_DEFAULT_ROLE_ID);
+        roleService.createUserRole(userDTO.getId(), ORGANIZATION_DEFAULT_ROLE_ID);
 
         // 创建组织
         OrganizationDO organizationDO = OrganizationDO.builder().userId(userDTO.getId()).build();

@@ -34,7 +34,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUser() {
-        System.out.println(userService.listUsers(UserQuery.builder().pageNum(1L).pageSize(50L).build()));
+        System.out.println(userService.listUsers(UserQuery.builder().pageNum(3L).pageSize(10L).username("x").build()));
     }
 
     @Test
@@ -60,23 +60,25 @@ public class UserServiceImplTest {
     @Test
     public void getUserByUsername() {
         // 正确
-        UserDTO userDTO = userService.getUserByUsername("xiaohuashifu");
+        System.out.println(userService.getUserByUsername("xiaohuashifu"));
     }
 
 
     @Test
     public void getUserByUsernameOrPhoneOrEmail() {
-        System.out.println(userService.getUserByUsernameOrPhoneOrEmail("8270323783@qq.com"));
+        System.out.println(userService.getUserByUsernameOrPhoneOrEmail("827032781@qq.com"));
+        System.out.println(userService.getUserByUsernameOrPhoneOrEmail("15992321303"));
+        System.out.println(userService.getUserByUsernameOrPhoneOrEmail("xiaohuashifu"));
     }
 
     @Test
     public void getUserByPhone() {
-        System.out.println(userService.getUserByPhone(null));
+        System.out.println(userService.getUserByPhone("15992321303"));
     }
 
     @Test
     public void getUserByEmail() {
-        System.out.println(userService.getUserByEmail("827032782"));
+        System.out.println(userService.getUserByEmail("827032781@qq.com"));
     }
 
     @Test
@@ -123,7 +125,7 @@ public class UserServiceImplTest {
 
     @Test
     public void enableUser() {
-        System.out.println(userService.enableUser(7L));
+        System.out.println(userService.enableUser(2L));
     }
 
     @Test

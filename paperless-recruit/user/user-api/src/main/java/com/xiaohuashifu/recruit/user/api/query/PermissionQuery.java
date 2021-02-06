@@ -44,12 +44,12 @@ public class PermissionQuery implements Serializable {
     private Long parentPermissionId;
 
     /**
-     * 权限名，可模糊
+     * 权限名，可右模糊
      */
     private String permissionName;
 
     /**
-     * 授权路径，可模糊
+     * 授权路径，可右模糊
      */
     private String authorizationUrl;
 

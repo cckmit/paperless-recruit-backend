@@ -1,18 +1,28 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
-import com.github.dozermapper.core.Mapper;
-import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnprocessableServiceException;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.user.api.dto.DisablePermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.EnablePermissionDTO;
 import com.xiaohuashifu.recruit.user.api.dto.PermissionDTO;
-import com.xiaohuashifu.recruit.user.api.request.CreatePermissionRequest;
 import com.xiaohuashifu.recruit.user.api.query.PermissionQuery;
+import com.xiaohuashifu.recruit.user.api.request.CreatePermissionRequest;
+import com.xiaohuashifu.recruit.user.api.request.UpdatePermissionRequest;
 import com.xiaohuashifu.recruit.user.api.service.PermissionService;
+import com.xiaohuashifu.recruit.user.service.assembler.PermissionAssembler;
 import com.xiaohuashifu.recruit.user.service.dao.PermissionMapper;
+import com.xiaohuashifu.recruit.user.service.dao.RolePermissionMapper;
 import com.xiaohuashifu.recruit.user.service.do0.PermissionDO;
+import com.xiaohuashifu.recruit.user.service.do0.RolePermissionDO;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,340 +39,205 @@ import java.util.stream.Collectors;
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionMapper permissionMapper;
-    private final Mapper mapper;
+
+    private final RolePermissionMapper rolePermissionMapper;
+
+    private final PermissionAssembler permissionAssembler;
 
     /**
      * 当权限没有父亲时的 parentPermissionId
      */
     private static final Long NO_PARENT_PERMISSION_ID = 0L;
 
-    public PermissionServiceImpl(PermissionMapper permissionMapper, Mapper mapper) {
+    public PermissionServiceImpl(PermissionMapper permissionMapper, RolePermissionMapper rolePermissionMapper,
+                                 PermissionAssembler permissionAssembler) {
         this.permissionMapper = permissionMapper;
-        this.mapper = mapper;
+        this.rolePermissionMapper = rolePermissionMapper;
+        this.permissionAssembler = permissionAssembler;
     }
 
-    /**
-     * 创建权限
-     * 权限名必须不存在
-     * 如果父权限被禁用了，则该权限也会被禁用
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 父权限不存在
-     *              OperationConflict: 权限名已经存在
-     *
-     * @param savePermissionPO 保存 Permission 需要的参数
-     * @return Result<PermissionDTO>
-     */
     @Override
-    public Result<PermissionDTO> savePermission(CreatePermissionRequest savePermissionPO) {
+    public PermissionDTO createPermission(CreatePermissionRequest request) {
         // 如果父权限编号不为0，则父权限必须存在
-        if (!Objects.equals(savePermissionPO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
-            int count = permissionMapper.count(savePermissionPO.getParentPermissionId());
-            if (count < 1) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER,
-                        "The parent permission does not exist.");
+        if (!Objects.equals(request.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
+            PermissionDTO parentPermissionDTO = getPermission(request.getParentPermissionId());
+            // 如果父权限被禁用了，则该权限也应该被禁用
+            if (!parentPermissionDTO.getAvailable()) {
+                request.setAvailable(false);
             }
         }
 
         // 去掉权限名两边的空白符
-        savePermissionPO.setPermissionName(savePermissionPO.getPermissionName().trim());
+        request.setPermissionName(request.getPermissionName().trim());
 
         // 判断权限名存不存在，权限名必须不存在
-        int count = permissionMapper.countByPermissionName(savePermissionPO.getPermissionName());
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The permission name already exist.");
-        }
-
-        // 如果父权限编号不为0，且被禁用了，则该权限也应该被禁用
-        if (!Objects.equals(savePermissionPO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
-            count = permissionMapper.countByIdAndAvailable(savePermissionPO.getParentPermissionId(), false);
-            if (count > 0) {
-                savePermissionPO.setAvailable(false);
-            }
+        PermissionDO permissionDO = permissionMapper.selectByPermissionName(request.getPermissionName());
+        if (permissionDO != null) {
+            throw new DuplicateServiceException("The permission name already exist.");
         }
 
         // 去掉权限描述和授权路径两边的空白符
-        savePermissionPO.setDescription(savePermissionPO.getDescription().trim());
-        savePermissionPO.setAuthorizationUrl(savePermissionPO.getAuthorizationUrl().trim());
+        request.setDescription(request.getDescription().trim());
+        request.setAuthorizationUrl(request.getAuthorizationUrl().trim());
 
         // 保存权限
-        PermissionDO permissionDO = new PermissionDO.Builder()
-                .parentPermissionId(savePermissionPO.getParentPermissionId())
-                .permissionName(savePermissionPO.getPermissionName())
-                .authorizationUrl(savePermissionPO.getAuthorizationUrl())
-                .description(savePermissionPO.getDescription())
-                .available(savePermissionPO.getAvailable())
-                .build();
-        permissionMapper.insertPermission(permissionDO);
-        return getPermission(permissionDO.getId());
+        PermissionDO permissionDOForInsert = permissionAssembler.createPermissionRequestToPermissionDO(request);
+        permissionMapper.insert(permissionDOForInsert);
+        return getPermission(permissionDOForInsert.getId());
     }
 
-    /**
-     * 删除权限，只允许没有子权限的权限删除
-     * 同时会删除与此权限关联的所有角色 Role 的关联关系
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在 | 存在子权限 |
-     *
-     * @param id 权限编号
-     * @return Result<Void>
-     */
     @Override
-    public Result<Void> removePermission(Long id) {
+    @Transactional
+    public void removePermission(Long id) {
         // 判断该权限存不存在
-        int count = permissionMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This permission not exists.");
-        }
+        getPermission(id);
 
         // 判断该权限是否还拥有子权限，必须没有子权限才可以删除
-        count = permissionMapper.countByParentPermissionId(id);
+        LambdaQueryWrapper<PermissionDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PermissionDO::getParentPermissionId, id);
+        int count = permissionMapper.selectCount(wrapper);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission exist children.");
+            throw new UnprocessableServiceException("The permission exist children.");
         }
 
         // 删除该权限所关联的角色 Role 的关联关系
-        permissionMapper.deleteRolePermissionByPermissionId(id);
+        LambdaQueryWrapper<RolePermissionDO> wrapperForDelete = new LambdaQueryWrapper<>();
+        wrapperForDelete.eq(RolePermissionDO::getPermissionId, id);
+        rolePermissionMapper.delete(wrapperForDelete);
 
         // 删除该权限
-        permissionMapper.deletePermission(id);
-        return Result.success();
+        permissionMapper.deleteById(id);
     }
 
-    /**
-     * 获取权限
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 找不到该编号对应的权限
-     *
-     * @param id 权限编号
-     * @return Result<PermissionDTO>
-     */
     @Override
-    public Result<PermissionDTO> getPermission(Long id) {
-        PermissionDO permissionDO = permissionMapper.getPermission(id);
+    public PermissionDTO getPermission(Long id) {
+        PermissionDO permissionDO = permissionMapper.selectById(id);
         if (permissionDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+            throw new NotFoundServiceException("permission", "id", id);
         }
-        return Result.success(mapper.map(permissionDO, PermissionDTO.class));
+        return permissionAssembler.permissionDOToPermissionDTO(permissionDO);
     }
 
-    /**
-     * 获取权限
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param query 查询参数
-     * @return Result<PageInfo<PermissionDTO>> 带分页信息的权限列表，可能返回空列表
-     */
     @Override
-    public Result<PageInfo<PermissionDTO>> listPermissions(PermissionQuery query) {
-        List<PermissionDO> permissionDOList = permissionMapper.listPermissions(query);
-        List<PermissionDTO> permissionDTOList = permissionDOList
-                .stream()
-                .map(permissionDO -> mapper.map(permissionDO, PermissionDTO.class))
-                .collect(Collectors.toList());
-        PageInfo<PermissionDTO> pageInfo = new PageInfo<>(permissionDTOList);
-        return Result.success(pageInfo);
+    public QueryResult<PermissionDTO> listPermissions(PermissionQuery query) {
+        LambdaQueryWrapper<PermissionDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(query.getParentPermissionId() != null, PermissionDO::getParentPermissionId,
+                query.getParentPermissionId())
+                .likeRight(query.getPermissionName() != null, PermissionDO::getPermissionName,
+                        query.getPermissionName())
+                .likeRight(query.getAuthorizationUrl() != null, PermissionDO::getAuthorizationUrl,
+                        query.getAuthorizationUrl())
+                .eq(query.getAvailable() != null, PermissionDO::getAvailable, query.getAvailable());
+
+        Page<PermissionDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
+        permissionMapper.selectPage(page, wrapper);
+        List<PermissionDTO> permissionDTOS = page.getRecords()
+                .stream().map(permissionAssembler::permissionDOToPermissionDTO).collect(Collectors.toList());
+        return new QueryResult<>(page.getTotal(), permissionDTOS);
     }
 
-    /**
-     * 更新权限名，新权限名必须不存在
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
-     *              OperationConflict: 新权限名已经存在
-     *
-     * @param id 权限编号
-     * @param newPermissionName 新权限名
-     * @return Result<PermissionDTO> 更新后的权限对象
-     */
     @Override
-    public Result<PermissionDTO> updatePermissionName(Long id, String newPermissionName) {
-        // 判断该权限存不存在，该权限必须存在
-        int count = permissionMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
+    public PermissionDTO updatePermission(UpdatePermissionRequest request) {
+        if (request.getPermissionName() != null) {
+            // 去除权限名两边空白符
+            request.setPermissionName(request.getPermissionName().trim());
+
+            // 判断新权限名存不存在，新权限名必须不存在
+            PermissionDO permissionDO = permissionMapper.selectByPermissionName(request.getPermissionName());
+            if (permissionDO != null) {
+                throw new DuplicateServiceException("The new permission name already exist.");
+            }
         }
 
-        // 去除权限名两边空白符
-        newPermissionName = newPermissionName.trim();
-
-        // 判断新权限名存不存在，新权限名必须不存在
-        count = permissionMapper.countByPermissionName(newPermissionName);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The new permission name already exist.");
+        if (request.getAuthorizationUrl() != null) {
+            // 去除授权路径两边空白符
+            request.setAuthorizationUrl(request.getAuthorizationUrl().trim());
         }
 
-        // 更新权限名
-        permissionMapper.updatePermissionName(id, newPermissionName);
-        return getPermission(id);
+        if (request.getDescription() != null) {
+            // 去除权限描述两边空白符
+            request.setDescription(request.getDescription().trim());
+        }
+
+        PermissionDO permissionDOForUpdate = permissionAssembler.updatePermissionRequestToPermissionDO(request);
+        permissionMapper.updateById(permissionDOForUpdate);
+        return getPermission(request.getId());
     }
 
-    /**
-     * 更新授权路径
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
-     *
-     * @param id 权限编号
-     * @param newAuthorizationUrl 新授权路径
-     * @return Result<PermissionDTO> 更新后的权限对象
-     */
     @Override
-    public Result<PermissionDTO> updateAuthorizationUrl(Long id, String newAuthorizationUrl) {
-        // 判断该权限存不存在，该权限必须存在
-        int count = permissionMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
-        }
-
-        // 去除授权路径两边空白符
-        // 更新授权路径
-        permissionMapper.updateAuthorizationUrl(id, newAuthorizationUrl.trim());
-        return getPermission(id);
-    }
-
-    /**
-     * 更新权限描述
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
-     *
-     * @param id 权限编号
-     * @param newDescription 新权限描述
-     * @return Result<PermissionDTO> 更新后的权限对象
-     */
-    @Override
-    public Result<PermissionDTO> updateDescription(Long id, String newDescription) {
-        // 判断该权限存不存在，该权限必须存在
-        int count = permissionMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
-        }
-
-        // 去除权限描述两边空白符
-        // 更新权限描述
-        permissionMapper.updateDescription(id, newDescription.trim());
-        return getPermission(id);
-    }
-
-    /**
-     * 禁用权限（且子权限可用状态也被禁用，递归禁用）
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
-     *              OperationConflict: 该权限已经被禁用
-     *
-     * @param id 权限编号
-     * @return DisablePermissionDTO 禁用的数量和禁用后的权限对象
-     */
-    @Override
-    public Result<DisablePermissionDTO> disablePermission(Long id) {
+    @Transactional
+    public DisablePermissionDTO disablePermission(Long id) {
         // 判断该权限存不存在
-        int count = permissionMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
-        }
+        PermissionDTO permissionDTO = getPermission(id);
 
         // 判断该权限是否已经被禁用
-        count = permissionMapper.countByIdAndAvailable(id, false);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The permission already disable.");
+        if (!permissionDTO.getAvailable()) {
+            throw new UnmodifiedServiceException("The permission already disable.");
         }
 
         // 递归的禁用权限
-        int disabledCount = recursiveDisablePermission(id);
-        DisablePermissionDTO disablePermissionDTO =
-                new DisablePermissionDTO(getPermission(id).getData(), disabledCount);
-        return Result.success(disablePermissionDTO);
+        int disabledCount = ((PermissionServiceImpl)AopContext.currentProxy()).recursiveDisablePermission(id);
+        return new DisablePermissionDTO(getPermission(id), disabledCount);
     }
 
-    /**
-     * 解禁权限（且子权限可用状态也被解禁，递归解禁）
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 该权限不存在
-     *              OperationConflict: 该权限已经可用 | 父权限被禁用，无法解禁该权限
-     *
-     * @param id 权限编号
-     * @return Result<Map<String, Object>> 解禁的数量和解禁后的权限对象
-     */
     @Override
-    public Result<EnablePermissionDTO> enablePermission(Long id) {
+    public EnablePermissionDTO enablePermission(Long id) {
         // 判断该权限存不存在
-        PermissionDO permissionDO = permissionMapper.getPermission(id);
-        if (permissionDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
-        }
+        PermissionDTO permissionDTO = getPermission(id);
 
         // 不能解禁已经有效的权限
-        if (permissionDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The permission is available.");
+        if (permissionDTO.getAvailable()) {
+            throw new UnmodifiedServiceException("The permission is available.");
         }
 
         // 如果该权限的父权限编号不为0
         // 判断该权限的父权限是否已经被禁用，如果父权限已经被禁用，则无法解禁该权限
-        if (!Objects.equals(permissionDO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
-            int count = permissionMapper.countByIdAndAvailable(permissionDO.getParentPermissionId(), false);
-            if (count > 0) {
-                return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
+        if (!Objects.equals(permissionDTO.getParentPermissionId(), NO_PARENT_PERMISSION_ID)) {
+            PermissionDTO parentPermissionDTO = getPermission(permissionDTO.getParentPermissionId());
+            if (!parentPermissionDTO.getAvailable()) {
+                throw new UnmodifiedServiceException(
                         "Can't enable this permission, because the parent permission is disable.");
             }
         }
 
         // 递归的解禁权限
-        int enabledCount = recursiveEnablePermission(id);
-        EnablePermissionDTO enablePermissionDTO =
-                new EnablePermissionDTO(getPermission(id).getData(), enabledCount);
-        return Result.success(enablePermissionDTO);
+        int enabledCount = ((PermissionServiceImpl)AopContext.currentProxy()).recursiveEnablePermission(id);
+        return new EnablePermissionDTO(getPermission(id), enabledCount);
     }
 
-    /**
-     * 设置父权限
-     * 设置 parentPermissionId 为0表示取消父权限设置
-     * 如果父权限状态为禁用，而该权限的状态为可用，则递归更新该权限状态为禁用
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 权限不存在 | 父权限不存在
-     *              OperationConflict: 新旧父权限相同
-     *
-     * @param id 权限编号
-     * @param parentPermissionId 父权限编号
-     * @return Result<DisablePermissionDTO>，禁用的数量和设置父权限后的权限对象
-     *          这里的禁用是因为如果父权限为禁用，则该权限必须也递归的禁用
-     */
     @Override
-    public Result<DisablePermissionDTO> setParentPermission(Long id, Long parentPermissionId) {
+    @Transactional
+    public DisablePermissionDTO setParentPermission(Long id, Long parentPermissionId) {
         // 判断该权限存不存在
-        PermissionDO permissionDO = permissionMapper.getPermission(id);
-        if (permissionDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The permission does not exist.");
-        }
+        PermissionDTO permissionDTO = getPermission(id);
 
         // 如果原来的父权限编号和要设置的父权限编号相同，则直接返回
-        if (Objects.equals(permissionDO.getParentPermissionId(), parentPermissionId)) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT,
-                    "The new permission same as the old permission.");
+        if (Objects.equals(permissionDTO.getParentPermissionId(), parentPermissionId)) {
+            throw new UnmodifiedServiceException("The new permission same as the old permission.");
         }
 
         // 若父权限编号不为0，则判断要设置的父权限是否存在
         if (!Objects.equals(parentPermissionId, NO_PARENT_PERMISSION_ID)) {
-            int count = permissionMapper.count(parentPermissionId);
-            if (count < 1) {
-                return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The parent permission does not exist.");
-            }
+            getPermission(parentPermissionId);
         }
 
         // 设置父权限
-        permissionMapper.updateParentPermissionId(id, parentPermissionId);
+        PermissionDO permissionDOForUpdate =
+                PermissionDO.builder().id(id).parentPermissionId(parentPermissionId).build();
+        permissionMapper.updateById(permissionDOForUpdate);
 
         // 如果要设置的父权限编号为0（取消父权限）
         // 或者要设置的父权限的状态为可用
         // 或者要设置的父权限的状态为禁用且当前权限的状态也为禁用，则直接返回
         boolean canReturn = Objects.equals(parentPermissionId, NO_PARENT_PERMISSION_ID)
-                || permissionMapper.countByIdAndAvailable(parentPermissionId, true) == 1
-                || !permissionDO.getAvailable();
+                || permissionMapper.selectById(parentPermissionId).getAvailable()
+                || !permissionDTO.getAvailable();
         if (canReturn) {
-            DisablePermissionDTO disablePermissionDTO =
-                    new DisablePermissionDTO(getPermission(id).getData(), 0);
-            return Result.success(disablePermissionDTO);
+            return new DisablePermissionDTO(getPermission(id), 0);
         }
 
         // 如果父权限状态为禁用，而该权限的状态为可用，则递归更新该权限状态为禁用
-        return disablePermission(id);
+        return ((PermissionServiceImpl)AopContext.currentProxy()).disablePermission(id);
     }
 
     /**
@@ -371,11 +246,16 @@ public class PermissionServiceImpl implements PermissionService {
      * @param id 权限编号
      * @return 总共禁用的权限数量
      */
-    private int recursiveDisablePermission(Long id) {
-        int count = permissionMapper.updateAvailable(id, false);
-        List<Long> permissionIdList = permissionMapper.listIdsByParentPermissionIdAndAvailable(id, true);
-        for (Long permissionId : permissionIdList) {
-            count += recursiveDisablePermission(permissionId);
+    @Transactional
+    protected int recursiveDisablePermission(Long id) {
+        PermissionDO permissionDOForUpdate = PermissionDO.builder().id(id).available(false).build();
+        int count = permissionMapper.updateById(permissionDOForUpdate);
+
+        LambdaQueryWrapper<PermissionDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PermissionDO::getParentPermissionId, id).eq(PermissionDO::getAvailable, true);
+        List<PermissionDO> permissionDOS = permissionMapper.selectList(wrapper);
+        for (PermissionDO permissionDO : permissionDOS) {
+            count += recursiveDisablePermission(permissionDO.getId());
         }
         return count;
     }
@@ -386,11 +266,18 @@ public class PermissionServiceImpl implements PermissionService {
      * @param id 权限编号
      * @return 总共解禁的权限数量
      */
-    private int recursiveEnablePermission(Long id) {
-        int count = permissionMapper.updateAvailableIfUnavailable(id);
-        List<Long> permissionIdList = permissionMapper.listIdsByParentPermissionId(id);
-        for (Long permissionId : permissionIdList) {
-            count += recursiveEnablePermission(permissionId);
+    @Transactional
+    protected int recursiveEnablePermission(Long id) {
+        LambdaUpdateWrapper<PermissionDO> wrapperForUpdate = new LambdaUpdateWrapper<>();
+        wrapperForUpdate.eq(PermissionDO::getAvailable, false).eq(PermissionDO::getId, id);
+        PermissionDO permissionDOForUpdate = PermissionDO.builder().available(true).build();
+        int count = permissionMapper.update(permissionDOForUpdate, wrapperForUpdate);
+
+        LambdaQueryWrapper<PermissionDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PermissionDO::getParentPermissionId, id);
+        List<PermissionDO> permissionDOS = permissionMapper.selectList(wrapper);
+        for (PermissionDO permissionDO : permissionDOS) {
+            count += recursiveEnablePermission(permissionDO.getId());
         }
         return count;
     }

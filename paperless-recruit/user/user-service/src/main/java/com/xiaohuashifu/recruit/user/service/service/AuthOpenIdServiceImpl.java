@@ -94,10 +94,10 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
 
         // 给用户添加微信小程序基本权限
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP) {
-            roleService.saveUserRole(userId, INTERVIEWEE_DEFAULT_ROLE_ID);
+            roleService.createUserRole(userId, INTERVIEWEE_DEFAULT_ROLE_ID);
         }
         if (app == AppEnum.SCAU_RECRUIT_INTERVIEWER_MP) {
-            roleService.saveUserRole(userId, INTERVIEWER_DEFAULT_ROLE_ID);
+            roleService.createUserRole(userId, INTERVIEWER_DEFAULT_ROLE_ID);
         }
 
         return getAuthOpenId(authOpenIdDOForInsert.getId());

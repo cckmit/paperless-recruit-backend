@@ -31,6 +31,16 @@ public class AuthorityServiceImplTest {
 
     @Test
     public void createRoleHierarchy() {
-        System.out.println(authorityService.createRoleHierarchy("ROLE_").getData());
+        System.out.println(authorityService.createRoleHierarchy("ROLE_"));
+    }
+
+    @Test
+    public void listAuthoritiesByUserId() {
+        System.out.println(authorityService.listAuthoritiesByUserId(1L, "ROLE_"));
+    }
+
+    @Test
+    public void createPermissionNameAuthorizationUrlMap() {
+        System.out.println(authorityService.createPermissionNameAuthorizationUrlMap("A"));
     }
 }

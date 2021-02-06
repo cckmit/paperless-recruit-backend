@@ -44,7 +44,7 @@ public class RoleQuery implements Serializable {
     private Long parentRoleId;
 
     /**
-     * 角色名，可模糊
+     * 角色名，可右模糊
      */
     private String roleName;
 

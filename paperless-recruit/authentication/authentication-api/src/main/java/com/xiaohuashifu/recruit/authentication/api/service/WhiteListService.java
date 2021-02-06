@@ -1,9 +1,9 @@
 package com.xiaohuashifu.recruit.authentication.api.service;
 
-import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.authentication.api.constant.WhiteListServiceConstants;
 import com.xiaohuashifu.recruit.authentication.api.dto.PermittedUrlDTO;
 import com.xiaohuashifu.recruit.authentication.api.query.PermittedUrlQuery;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.AntPath;
 
@@ -72,7 +72,7 @@ public interface WhiteListService {
      * @param query 查询参数
      * @return PageInfo<PermittedUrlDTO> 这里可能返回空列表
      */
-    Result<PageInfo<PermittedUrlDTO>> listPermittedUrls(
+    QueryResult<PermittedUrlDTO> listPermittedUrls(
             @NotNull(message = "The query can't be null.") PermittedUrlQuery query);
 
     /**

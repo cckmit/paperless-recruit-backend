@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.user.service.config;
 
-import com.github.dozermapper.spring.DozerBeanMapperFactoryBean;
 import com.xiaohuashifu.recruit.common.aspect.DistributedLockAspect;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
@@ -14,16 +13,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class SingletonConfig {
-
-    /**
-     * dozer 配置
-     *
-     * @return Mapper
-     */
-    @Bean
-    public DozerBeanMapperFactoryBean dozerMapper() {
-        return new DozerBeanMapperFactoryBean();
-    }
 
     /**
      * 分布式锁切面

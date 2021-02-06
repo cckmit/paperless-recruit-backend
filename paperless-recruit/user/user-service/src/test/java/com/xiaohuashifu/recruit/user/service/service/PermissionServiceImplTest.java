@@ -44,13 +44,10 @@ public class PermissionServiceImplTest {
     }
 
     @Test
-    public void savePermission() {
+    public void createPermission() {
         System.out.println(permissionService.createPermission(CreatePermissionRequest.builder()
-                .parentPermissionId(1L)
-        .permissionName("  test4  ")
-        .authorizationUrl("  /tests/test3  ")
-        .description("  测试3  ")
-        .available(true).build()));
+                .parentPermissionId(17L).permissionName("  test8  ").authorizationUrl("  /tests/test5  ")
+                .description("  测试  ").available(true).build()));
     }
 
     @Test

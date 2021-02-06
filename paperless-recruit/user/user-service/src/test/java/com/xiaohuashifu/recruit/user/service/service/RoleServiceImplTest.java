@@ -33,19 +33,19 @@ public class RoleServiceImplTest {
 
     @Test
     public void createRole() {
-        CreateRoleRequest request =
-                CreateRoleRequest.builder().parentRoleId(5L).roleName("organization").description("组织").available(true).build();
+        CreateRoleRequest request = CreateRoleRequest.builder()
+                .parentRoleId(15L).roleName("test11").description("测试").available(true).build();
         System.out.println(roleService.createRole(request));
     }
 
     @Test
-    public void saveUserRole() {
-        System.out.println(roleService.createUserRole(12L, 4L));
+    public void createUserRole() {
+        System.out.println(roleService.createUserRole(12L, 18L));
     }
 
     @Test
-    public void saveRolePermission() {
-        System.out.println(roleService.createRolePermission(11L, 9L));
+    public void createRolePermission() {
+        System.out.println(roleService.createRolePermission(18L, 20L));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class RoleServiceImplTest {
 
     @Test
     public void deleteRole() {
-        roleService.removeRole(7L);
+        roleService.removeRole(18L);
     }
 
     @Test
@@ -80,12 +80,12 @@ public class RoleServiceImplTest {
 
     @Test
     public void disableRole() {
-        System.out.println(roleService.disableRole(6L));
+        System.out.println(roleService.disableRole(15L));
     }
 
     @Test
     public void enableRole() {
-        System.out.println(roleService.enableRole(12L));
+        System.out.println(roleService.enableRole(15L));
     }
 
     @Test

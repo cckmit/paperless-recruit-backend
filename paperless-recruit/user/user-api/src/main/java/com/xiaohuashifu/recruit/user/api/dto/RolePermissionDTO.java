@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 描述：角色权限DTO
  *
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RolePermissionDTO {
+public class RolePermissionDTO implements Serializable {
     private Long id;
     private Long roleId;
     private Long permissionId;

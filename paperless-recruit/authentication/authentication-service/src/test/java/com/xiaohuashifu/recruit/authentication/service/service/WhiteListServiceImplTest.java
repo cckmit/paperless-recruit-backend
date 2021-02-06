@@ -31,7 +31,7 @@ public class WhiteListServiceImplTest {
 
     @Test
     public void savePermittedUrl() {
-        System.out.println(whiteListService.savePermittedUrl("/oauth/*"));
+        System.out.println(whiteListService.createPermittedUrl("/oauth/*"));
     }
 
     @Test

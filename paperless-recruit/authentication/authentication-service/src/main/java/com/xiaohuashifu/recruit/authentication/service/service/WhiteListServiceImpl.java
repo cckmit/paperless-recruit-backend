@@ -41,7 +41,7 @@ public class WhiteListServiceImpl implements WhiteListService {
      * @return PermittedUrlDTO
      */
     @Override
-    public Result<PermittedUrlDTO> savePermittedUrl(String url) {
+    public Result<PermittedUrlDTO> createPermittedUrl(String url) {
         // 判断该 url 是否已经存在
         int count = permittedUrlMapper.countByUrl(url);
         if (count > 0) {

@@ -57,10 +57,16 @@
 			<artifactId>druid-spring-boot-starter</artifactId>
 		</dependency>
 
-		<!-- 分页插件 -->
+		<!--   MyBatis Plus	-->
 		<dependency>
-			<groupId>com.github.pagehelper</groupId>
-			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+		</dependency>
+
+		<!-- MyBatis -->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
 		</dependency>
 
 		<!--    user-api接口    -->
@@ -98,16 +104,20 @@
 		</dependency>
 		<!--    Redisson    -->
 
+		<!--     lombok       -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
 		<!--    MapStruct    -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
-			<version>1.4.1.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
-			<version>1.4.1.Final</version>
 		</dependency>
 		<!--    MapStruct    -->
 	</dependencies>

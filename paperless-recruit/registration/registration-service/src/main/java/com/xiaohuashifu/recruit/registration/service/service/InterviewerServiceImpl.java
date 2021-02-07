@@ -5,7 +5,7 @@ import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
-import com.xiaohuashifu.recruit.notification.api.po.SendSystemNotificationPO;
+import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
 import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
@@ -252,7 +252,7 @@ public class InterviewerServiceImpl implements InterviewerService {
                 + "的报名表，并进行面试工作啦！");
         jsonObject.put("organizationId", organizationId);
         String notificationContent = jsonObject.toJSONString();
-        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+        SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
                 .userId(userId)
                 .notificationType(SystemNotificationTypeEnum.INTERVIEWER)
                 .notificationTitle(notificationTitle)
@@ -278,7 +278,7 @@ public class InterviewerServiceImpl implements InterviewerService {
         jsonObject.put("message", notificationTitle);
         jsonObject.put("organizationId", organizationId);
         String notificationContent = jsonObject.toJSONString();
-        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+        SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
                 .userId(userId)
                 .notificationType(SystemNotificationTypeEnum.INTERVIEWER)
                 .notificationTitle(notificationTitle)

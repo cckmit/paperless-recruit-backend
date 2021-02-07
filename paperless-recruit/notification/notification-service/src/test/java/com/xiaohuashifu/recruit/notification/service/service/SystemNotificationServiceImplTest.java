@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.notification.service.service;
 
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
-import com.xiaohuashifu.recruit.notification.api.po.SendSystemNotificationPO;
+import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
 import com.xiaohuashifu.recruit.notification.api.query.SystemNotificationQuery;
 import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -34,7 +34,7 @@ public class SystemNotificationServiceImplTest {
     @Test
     public void sendSystemNotification() {
         System.out.println(systemNotificationService.sendSystemNotification(
-                SendSystemNotificationPO.builder()
+                SendSystemNotificationRequest.builder()
                         .userId(1L)
                         .notificationTitle("校科联成员邀请")
                         .notificationType(SystemNotificationTypeEnum.ORGANIZATION_INVITATION)
@@ -44,7 +44,7 @@ public class SystemNotificationServiceImplTest {
     @Test
     public void listSystemNotifications() {
         System.out.println(systemNotificationService.listSystemNotifications(
-                new SystemNotificationQuery.Builder()
+                SystemNotificationQuery.builder()
                         .pageNum(1L)
                         .pageSize(50L)
                         .userId(1L)

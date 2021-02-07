@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
-import com.xiaohuashifu.recruit.notification.api.po.SendSystemNotificationPO;
+import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
 import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum;
@@ -506,7 +506,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         String notificationContent = notificationContentJsonObject.toJSONString();
 
         // 发送通知
-        SendSystemNotificationPO sendSystemNotificationPO = SendSystemNotificationPO.builder()
+        SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
                 .userId(userId)
                 .notificationType(SystemNotificationTypeEnum.ORGANIZATION_INVITATION)
                 .notificationTitle(notificationTitle)

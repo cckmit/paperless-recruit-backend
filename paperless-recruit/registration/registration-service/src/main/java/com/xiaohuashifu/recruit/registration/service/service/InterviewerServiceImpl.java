@@ -30,7 +30,7 @@ import java.util.Objects;
 @Service
 public class InterviewerServiceImpl implements InterviewerService {
 
-    private final InterviewerAssembler interviewerAssembler = InterviewerAssembler.INSTANCES;
+    private final InterviewerAssembler interviewerAssembler;
 
     private final InterviewerMapper interviewerMapper;
 
@@ -56,7 +56,8 @@ public class InterviewerServiceImpl implements InterviewerService {
      */
     private static final String UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN = "interviewer:{0}:update-available";
 
-    public InterviewerServiceImpl(InterviewerMapper interviewerMapper) {
+    public InterviewerServiceImpl(InterviewerAssembler interviewerAssembler, InterviewerMapper interviewerMapper) {
+        this.interviewerAssembler = interviewerAssembler;
         this.interviewerMapper = interviewerMapper;
     }
 

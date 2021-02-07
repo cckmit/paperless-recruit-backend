@@ -29,7 +29,7 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
     /**
      * 模板所属微信小程序
      */
-    private AppEnum app;
+    private AppEnum appName;
 
     /**
      * 模板编号，微信小程序平台的

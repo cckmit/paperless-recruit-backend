@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
+import com.xiaohuashifu.recruit.common.exception.ServiceException;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.constant.WeChatMpServiceConstants;
 import com.xiaohuashifu.recruit.external.api.request.SendWeChatMpSubscribeMessageRequest;
@@ -22,8 +23,6 @@ public interface WeChatMpService {
     /**
      * 通过 code 获得 openId
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | App 是不支持的类型 | 非法 code
-     *
      * @param code code
      * @param app 具体的微信小程序
      * @return openId
@@ -31,22 +30,16 @@ public interface WeChatMpService {
     String getOpenId(
             @NotBlank @Size(max = WeChatMpServiceConstants.WECHAT_MP_CODE_LENGTH,
                     min = WeChatMpServiceConstants.WECHAT_MP_CODE_LENGTH) String code,
-            @NotNull AppEnum app);
+            @NotNull AppEnum app) throws ServiceException;
 
     void getUserInfo(String encryptedData, String iv, String code);
 
     /**
      * 发送订阅消息
      *
-     * @errorCode InvalidParameter: 请求参数格式错误 | App 是不支持的类型 | 用户还未绑定此 app
-     *              InternalError: 服务器错误 | access-token 获取失败 | 发送订阅消息出错
-     *              UnknownError: 未知错误 | 发送订阅消息时微信小程序报的错误，具体查看错误消息
-     *
-     * @param sendWeChatMpSubscribeMessagePO 发送订阅消息的参数对象
-     * @return 发送结果
+     * @param request SendWeChatMpSubscribeMessageRequest
      */
-    Result<Void> sendSubscribeMessage(@NotNull(message = "The sendWeChatMpSubscribeMessagePO can't be null.")
-                                              SendWeChatMpSubscribeMessageRequest sendWeChatMpSubscribeMessagePO);
+    void sendSubscribeMessage(@NotNull SendWeChatMpSubscribeMessageRequest request) throws ServiceException;
 
 
 }

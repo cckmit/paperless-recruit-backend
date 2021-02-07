@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.external.service.timer;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.PlatformEnum;
+import com.xiaohuashifu.recruit.common.exception.InternalServiceException;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +50,10 @@ public class WeChatMpTimer {
         for (AppEnum app : AppEnum.values()) {
             if (app.getPlatform() == PlatformEnum.WECHAT_MINI_PROGRAM) {
                 for (int i = 0; i < 10; i++) {
-                    if (weChatMpManager.refreshAccessToken(app)) {
+                    try {
+                        weChatMpManager.refreshAccessToken(app);
                         break;
+                    } catch (InternalServiceException ignored) {
                     }
                     if (i == 9) {
                         logger.error("Refresh wechat mp access token failed. app{}", app);

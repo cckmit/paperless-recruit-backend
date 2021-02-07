@@ -2,9 +2,9 @@ package com.xiaohuashifu.recruit.external.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.external.api.constant.WeChatMpSubscribeMessageTemplateStatusEnum;
+import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 import com.xiaohuashifu.recruit.external.api.request.CreateWeChatMpSubscribeMessageTemplateRequest;
 import com.xiaohuashifu.recruit.external.api.request.UpdateWeChatMpSubscribeMessageTemplateRequest;
-import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTemplateService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -37,14 +37,14 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
 
     @Test
     public void saveWechatMpSubscribeMessageTemplate() {
-        System.out.println(wechatMpSubscribeMessageTemplateService.saveWeChatMpSubscribeMessageTemplate(
-                new CreateWeChatMpSubscribeMessageTemplateRequest.Builder()
-                        .app(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP)
+        System.out.println(wechatMpSubscribeMessageTemplateService.createWeChatMpSubscribeMessageTemplate(
+                CreateWeChatMpSubscribeMessageTemplateRequest.builder()
+                        .appName(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP)
                         .templateId("PwgUsyL54zBnWyB1bHDuOP6Oc8EAG5GvQplx8E2kU")
                         .title("面试结果通知")
-                        .type("预约/报名")
+                        .templateType("预约/报名")
                         .description("招新面试结果通知")
-                        .status(WeChatMpSubscribeMessageTemplateStatusEnum.AVAILABLE)
+                        .templateStatus(WeChatMpSubscribeMessageTemplateStatusEnum.AVAILABLE)
                         .build()));
     }
 
@@ -56,14 +56,14 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
     @Test
     public void testGetWechatMpSubscribeMessageTemplate() {
         System.out.println(wechatMpSubscribeMessageTemplateService.listWeChatMpSubscribeMessageTemplates(
-                new WeChatMpSubscribeMessageTemplateQuery.Builder().pageNum(1L).pageSize(50L).build()
+                WeChatMpSubscribeMessageTemplateQuery.builder().pageNum(1L).pageSize(50L).build()
         ));
     }
 
     @Test
     public void updateWechatMpSubscribeMessageTemplate() {
         System.out.println(wechatMpSubscribeMessageTemplateService.updateWeChatMpSubscribeMessageTemplate(
-                new UpdateWeChatMpSubscribeMessageTemplateRequest.Builder()
+                UpdateWeChatMpSubscribeMessageTemplateRequest.builder()
                         .id(1L)
                         .status(WeChatMpSubscribeMessageTemplateStatusEnum.AVAILABLE)
                         .build()));

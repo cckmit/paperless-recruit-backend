@@ -12,7 +12,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 描述：微信订阅消息模板的查询参数
@@ -42,19 +41,9 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
     private Long pageSize;
 
     /**
-     * 模板编号，项目产生的
-     */
-    private Long id;
-
-    /**
-     * 模板编号列表，项目产生的
-     */
-    private List<Long> ids;
-
-    /**
      * 模板所属微信小程序
      */
-    private AppEnum app;
+    private AppEnum appName;
 
     /**
      * 模板编号，微信小程序平台产生的
@@ -62,23 +51,18 @@ public class WeChatMpSubscribeMessageTemplateQuery implements Serializable {
     private String templateId;
 
     /**
-     * 标题，可模糊
+     * 标题，可右模糊
      */
     private String title;
 
     /**
-     * 类别，可模糊
+     * 类别，可右模糊
      */
-    private String type;
-
-    /**
-     * 描述，可模糊
-     */
-    private String description;
+    private String templateType;
 
     /**
      * 模板状态
      */
-    private WeChatMpSubscribeMessageTemplateStatusEnum status;
+    private WeChatMpSubscribeMessageTemplateStatusEnum templateStatus;
 
 }

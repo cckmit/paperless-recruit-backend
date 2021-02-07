@@ -3,17 +3,19 @@ package com.xiaohuashifu.recruit.external.service.manager.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.constant.GenderEnum;
+import com.xiaohuashifu.recruit.common.exception.InternalServiceException;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.external.api.request.SendWeChatMpSubscribeMessageRequest;
 import com.xiaohuashifu.recruit.external.service.manager.WeChatMpManager;
 import com.xiaohuashifu.recruit.external.service.manager.impl.constant.WeChatMpDetails;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpSessionDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpUserInfoDTO;
 import com.xiaohuashifu.recruit.external.service.pojo.dto.WeChatMpWatermarkDTO;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.axis.InternalException;
 import org.apache.axis.encoding.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -33,7 +35,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,9 +44,8 @@ import java.util.concurrent.TimeUnit;
  * @create: 2020/11/20 15:53
  */
 @Component
+@Slf4j
 public class WeChatMpManagerImpl implements WeChatMpManager {
-
-    private static final Logger logger = LoggerFactory.getLogger(WeChatMpManagerImpl.class);
 
     /**
      * 微信开放平台请求成功时的错误码
@@ -90,21 +90,14 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         this.redisTemplate = redisTemplate;
     }
 
-    /**
-     * 通过 code 获取封装过的 WeChatMpSessionDTO
-     *
-     * @param code String
-     * @param app 微信小程序类别
-     * @return WeChatMpSessionDTO
-     */
     @Override
-    public Optional<WeChatMpSessionDTO> getSessionByCode(String code, AppEnum app) {
+    public WeChatMpSessionDTO getSessionByCode(String code, AppEnum app) {
         // 获取 Session
         String url = MessageFormat.format(CODE_TO_SESSION_URL,
                 weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app), code);
         String sessionString = restTemplate.getForObject(url, String.class);
         if (StringUtils.isBlank(sessionString)) {
-            return Optional.empty();
+            throw new InternalServiceException("Get session failed, response body is blank.");
         }
 
         // 封装成 WeChatMpSessionDTO
@@ -114,85 +107,58 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         String unionId = sessionJsonObject.getString("unionid");
         Integer errorCode = sessionJsonObject.getInteger("errcode");
         String errorMessage = sessionJsonObject.getString("errmsg");
-        WeChatMpSessionDTO code2SessionDTO = new WeChatMpSessionDTO(openId, sessionKey, unionId, errorCode, errorMessage);
-        return Optional.of(code2SessionDTO);
+        return new WeChatMpSessionDTO(openId, sessionKey, unionId, errorCode, errorMessage);
     }
 
-    /**
-     * 获取 access-token
-     *
-     * @param app 具体的微信小程序类型
-     * @return access-token
-     */
     @Override
-    public Optional<String> getAccessToken(AppEnum app) {
+    public String getAccessToken(AppEnum app) {
         // 获取 access-token
         String redisKey = ACCESS_TOKEN_REDIS_KEY_PREFIX + ":" + app.name();
-        return Optional.ofNullable(redisTemplate.opsForValue().get(redisKey));
+        String accessToken = redisTemplate.opsForValue().get(redisKey);
+        if (accessToken == null) {
+            throw new NotFoundServiceException("accessToken", "redisKey", redisKey);
+        }
+        return accessToken;
     }
 
-    /**
-     * 解密 encryptedData 获取用户信息
-     *
-     * @param encryptedData wx.getUserInfo() 返回值
-     * @param iv wx.getUserInfo() 返回值
-     * @param code wx.login() 的返回值
-     * @param app 具体的微信小程序类型
-     * @return 若获取失败则返回 null
-     */
     @Override
-    public Optional<WeChatMpUserInfoDTO> getUserInfo(String encryptedData, String iv, String code, AppEnum app) {
+    public WeChatMpUserInfoDTO getUserInfo(String encryptedData, String iv, String code, AppEnum app) {
         // 通过 code 换取 sessionKey
-        Optional<WeChatMpSessionDTO> code2SessionDTO = getSessionByCode(code, app);
-        if (code2SessionDTO.isEmpty()) {
-            return Optional.empty();
-        }
-        String sessionKey = code2SessionDTO.get().getSessionKey();
+        WeChatMpSessionDTO code2SessionDTO = getSessionByCode(code, app);
+        String sessionKey = code2SessionDTO.getSessionKey();
 
         // 解析 encryptedData
         try {
-            return Optional.of(parseEncryptedData2UserInfo(encryptedData, iv, sessionKey));
+            return parseEncryptedData2UserInfo(encryptedData, iv, sessionKey);
         } catch (NoSuchPaddingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException
                 | IllegalBlockSizeException | BadPaddingException | NoSuchProviderException
                 | InvalidKeyException | InvalidParameterSpecException e) {
-            logger.warn("Parse encryptedData error. encryptedData={}, iv={}, sessionKey={}",
+            log.warn("Parse encryptedData error. encryptedData={}, iv={}, sessionKey={}",
                     encryptedData, iv, sessionKey);
-            return Optional.empty();
+            throw new InternalServiceException("Parse encryptedData error.");
         }
     }
 
-    /**
-     * 发送模板消息
-     *
-     * @param app 具体的微信小程序类型
-     * @param openId 目标用户 openId
-     * @param sendWeChatMpSubscribeMessagePO 发送模板消息的参数对象
-     * @return 发送结果
-     */
     @Override
-    public boolean sendSubscribeMessage(AppEnum app, String openId,
-                                        SendWeChatMpSubscribeMessageRequest sendWeChatMpSubscribeMessagePO) {
+    public void sendSubscribeMessage(AppEnum app, String openId,
+                                        SendWeChatMpSubscribeMessageRequest request) {
         // 获取 access-token
-        Optional<String> accessToken = getAccessToken(app);
-        if (accessToken.isEmpty()) {
-            logger.error("Can't get access token. app={}", app);
-            return false;
-        }
+        String accessToken = getAccessToken(app);
 
         // 发送消息
         JSONObject subscribeMessage = new JSONObject();
         subscribeMessage.put("touser", openId);
-        subscribeMessage.put("template_id", sendWeChatMpSubscribeMessagePO.getTemplateId());
-        subscribeMessage.put("page", sendWeChatMpSubscribeMessagePO.getPage());
-        subscribeMessage.put("data", sendWeChatMpSubscribeMessagePO.getTemplateData());
-        subscribeMessage.put("miniprogram_state", sendWeChatMpSubscribeMessagePO.getMpType());
-        subscribeMessage.put("lang", sendWeChatMpSubscribeMessagePO.getLanguage());
-        String url = MessageFormat.format(SUBSCRIBE_MESSAGE_URL, accessToken.get());
+        subscribeMessage.put("template_id", request.getTemplateId());
+        subscribeMessage.put("page", request.getPage());
+        subscribeMessage.put("data", request.getTemplateData());
+        subscribeMessage.put("miniprogram_state", request.getMpType());
+        subscribeMessage.put("lang", request.getLanguage());
+        String url = MessageFormat.format(SUBSCRIBE_MESSAGE_URL, accessToken);
         String responseString = restTemplate.postForObject(url, subscribeMessage, String.class);
         if (StringUtils.isBlank(responseString)) {
-            logger.error("Send subscribe message failed, response body is blank. app={}, subscribeMessage={}",
+            log.error("Send subscribe message failed, response body is blank. app={}, subscribeMessage={}",
                     app, subscribeMessage);
-            return false;
+            throw new InternalException("Send subscribe message failed, response body is blank.");
         }
 
         // 解析响应信息
@@ -201,33 +167,22 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         // 发送失败
         if (!Objects.equals(errorCode, WECHAT_OPEN_PLATFORM_REQUEST_SUCCESS_ERROR_CODE)) {
             String errorMessage = responseJsonObject.getString("errmsg");
-            logger.warn("Send subscribe message failed. " +
+            log.warn("Send subscribe message failed. " +
                             "errorCode={}, errorMessage={}, app={}, subscribeMessage={}",
                     errorCode, errorMessage, app, subscribeMessage);
-            return false;
+            throw new InternalServiceException("Send subscribe message failed.");
         }
-
-        // 发送成功
-        return true;
     }
 
-    /**
-     * 获取新的 AccessToken
-     * 并添加到 redis
-     * 并设置过期时间
-     *
-     * @param app 具体的微信小程序类型
-     * @return 刷新是否成功
-     */
     @Override
-    public boolean refreshAccessToken(AppEnum app) {
+    public String refreshAccessToken(AppEnum app) {
         // 获取 AccessToken
         String url = MessageFormat.format(ACCESS_TOKEN_URL,
                 weChatMpDetails.getAppId(app), weChatMpDetails.getSecret(app));
         String accessTokenString = restTemplate.getForObject(url, String.class);
         if (StringUtils.isBlank(accessTokenString)) {
-            logger.error("Get access token fail, response is blank. app={}", app);
-            return false;
+            log.error("Get access token fail, response is blank. app={}", app);
+            throw new InternalServiceException("Get access token fail, response is blank.");
         }
 
         // 解析响应
@@ -236,9 +191,9 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         // 请求出错
         if (errorCode != null && !Objects.equals(errorCode, WECHAT_OPEN_PLATFORM_REQUEST_SUCCESS_ERROR_CODE)) {
             String errorMessage = accessTokenJsonObject.getString("errmsg");
-            logger.warn("Refresh access token failed. app={}, errorCode={}, errorMessage={}",
+            log.warn("Refresh access token failed. app={}, errorCode={}, errorMessage={}",
                     app, errorCode, errorMessage);
-            return false;
+            throw new InternalServiceException("Refresh access token failed.");
         }
         // 请求成功
         String accessToken = accessTokenJsonObject.getString("access_token");
@@ -250,7 +205,7 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
 
         // 设置 AccessToken 在 Redis 的过期时间
         redisTemplate.expire(redisKey, expireTime, TimeUnit.SECONDS);
-        return true;
+        return accessToken;
     }
 
     /**

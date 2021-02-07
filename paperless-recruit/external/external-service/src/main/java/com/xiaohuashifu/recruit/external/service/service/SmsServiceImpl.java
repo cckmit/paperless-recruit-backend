@@ -38,7 +38,7 @@ public class SmsServiceImpl implements SmsService {
     }
 
     @Override
-    public void createAndSendSmsAuthCode(CreateAndSendSmsAuthCodeRequest request) {
+    public String createAndSendSmsAuthCode(CreateAndSendSmsAuthCodeRequest request) {
         // 发送短信验证码到手机
         String authCode = AuthCodeUtils.randomAuthCode();
         smsManager.sendSmsAuthCode(request.getPhone(), authCode);
@@ -46,6 +46,7 @@ public class SmsServiceImpl implements SmsService {
         // 添加短信验证码到缓存
         String redisKey = SMS_AUTH_CODE_REDIS_PREFIX + ":" + request.getSubject() + ":" + request.getPhone();
         redisTemplate.opsForValue().set(redisKey, authCode, request.getExpirationTime(), TimeUnit.MINUTES);
+        return authCode;
     }
 
     @Override

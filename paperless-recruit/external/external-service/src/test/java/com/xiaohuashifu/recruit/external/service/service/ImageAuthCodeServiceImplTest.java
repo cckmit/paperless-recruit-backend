@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.request.CreateImageAuthCodeRequest;
 import com.xiaohuashifu.recruit.external.api.service.ImageAuthCodeService;
@@ -36,20 +35,18 @@ public class ImageAuthCodeServiceImplTest {
 
     @Test
     public void createImageAuthCode() {
-        Result<ImageAuthCodeDTO> createImageAuthCodeResult = imageAuthCodeService.createImageAuthCode(
-                new CreateImageAuthCodeRequest.Builder()
+        ImageAuthCodeDTO imageAuthCodeDTO = imageAuthCodeService.createImageAuthCode(
+                CreateImageAuthCodeRequest.builder()
                         .width(100)
                         .height(40)
                         .length(5)
                         .expirationTime(5)
                         .build());
-        System.out.println(createImageAuthCodeResult.getData().getAuthCode());
-        System.out.println(createImageAuthCodeResult.getData().getId());
+        System.out.println(imageAuthCodeDTO);
     }
 
     @Test
     public void checkImageAuthCode() {
-        System.out.println(imageAuthCodeService.checkImageAuthCode(
-                "e4a7df78-c5b3-4fb2-b143-aad07524b9594","90573"));
+        imageAuthCodeService.checkImageAuthCode("e4a7df78-c5b3-4fb2-b143-aad07524b9594","90573");
     }
 }

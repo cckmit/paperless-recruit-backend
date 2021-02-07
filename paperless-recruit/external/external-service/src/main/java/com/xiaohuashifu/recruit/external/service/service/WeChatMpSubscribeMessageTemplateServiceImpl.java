@@ -1,14 +1,16 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.common.util.ObjectUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.external.api.dto.WeChatMpSubscribeMessageTemplateDTO;
+import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 import com.xiaohuashifu.recruit.external.api.request.CreateWeChatMpSubscribeMessageTemplateRequest;
 import com.xiaohuashifu.recruit.external.api.request.UpdateWeChatMpSubscribeMessageTemplateRequest;
-import com.xiaohuashifu.recruit.external.api.query.WeChatMpSubscribeMessageTemplateQuery;
 import com.xiaohuashifu.recruit.external.api.service.WeChatMpSubscribeMessageTemplateService;
+import com.xiaohuashifu.recruit.external.service.assembler.WeChatMpSubscribeMessageTemplateAssembler;
 import com.xiaohuashifu.recruit.external.service.dao.WeChatMpSubscribeMessageTemplateMapper;
 import com.xiaohuashifu.recruit.external.service.pojo.do0.WeChatMpSubscribeMessageTemplateDO;
 import org.apache.dubbo.config.annotation.Service;
@@ -29,151 +31,82 @@ public class WeChatMpSubscribeMessageTemplateServiceImpl implements WeChatMpSubs
 
     private final WeChatMpSubscribeMessageTemplateMapper weChatMpSubscribeMessageTemplateMapper;
 
+    private final WeChatMpSubscribeMessageTemplateAssembler weChatMpSubscribeMessageTemplateAssembler;
+
     public WeChatMpSubscribeMessageTemplateServiceImpl(
-            WeChatMpSubscribeMessageTemplateMapper weChatMpSubscribeMessageTemplateMapper) {
+            WeChatMpSubscribeMessageTemplateMapper weChatMpSubscribeMessageTemplateMapper,
+            WeChatMpSubscribeMessageTemplateAssembler weChatMpSubscribeMessageTemplateAssembler) {
         this.weChatMpSubscribeMessageTemplateMapper = weChatMpSubscribeMessageTemplateMapper;
+        this.weChatMpSubscribeMessageTemplateAssembler = weChatMpSubscribeMessageTemplateAssembler;
     }
 
-    /**
-     * 添加模板
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              OperationConflict: 存在相同的模板编号
-     *
-     * @param saveWeChatMpSubscribeMessageTemplatePO 参数对象
-     * @return WeChatMpSubscribeMessageTemplateDTO
-     */
     @Override
-    public Result<WeChatMpSubscribeMessageTemplateDTO> saveWeChatMpSubscribeMessageTemplate(
-            CreateWeChatMpSubscribeMessageTemplateRequest saveWeChatMpSubscribeMessageTemplatePO) {
+    public WeChatMpSubscribeMessageTemplateDTO createWeChatMpSubscribeMessageTemplate(
+            CreateWeChatMpSubscribeMessageTemplateRequest request) {
         // 查看是否存在相同的模板 id
-        int count = weChatMpSubscribeMessageTemplateMapper.countByTemplateId(
-                saveWeChatMpSubscribeMessageTemplatePO.getTemplateId());
+        LambdaQueryWrapper<WeChatMpSubscribeMessageTemplateDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(WeChatMpSubscribeMessageTemplateDO::getTemplateId, request.getTemplateId());
+        int count = weChatMpSubscribeMessageTemplateMapper.selectCount(wrapper);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "This template id already exists.");
+            throw new DuplicateServiceException("This template id already exists.");
         }
 
         // 添加到数据库
-        WeChatMpSubscribeMessageTemplateDO weChatMpSubscribeMessageTemplateDO =
-                new WeChatMpSubscribeMessageTemplateDO.Builder()
-                        .appName(saveWeChatMpSubscribeMessageTemplatePO.getApp())
-                        .templateId(saveWeChatMpSubscribeMessageTemplatePO.getTemplateId())
-                        .title(saveWeChatMpSubscribeMessageTemplatePO.getTitle())
-                        .templateType(saveWeChatMpSubscribeMessageTemplatePO.getType())
-                        .description(saveWeChatMpSubscribeMessageTemplatePO.getDescription())
-                        .templateStatus(saveWeChatMpSubscribeMessageTemplatePO.getStatus())
-                        .build();
-        weChatMpSubscribeMessageTemplateMapper.insertWeChatMpSubscribeMessageTemplate(weChatMpSubscribeMessageTemplateDO);
-        return getWeChatMpSubscribeMessageTemplate(weChatMpSubscribeMessageTemplateDO.getId());
+        WeChatMpSubscribeMessageTemplateDO weChatMpSubscribeMessageTemplateDOForInsert =
+                weChatMpSubscribeMessageTemplateAssembler
+                        .createWeChatMpSubscribeMessageTemplateRequestToWeChatMpSubscribeMessageTemplateDO(request);
+        weChatMpSubscribeMessageTemplateMapper.insert(weChatMpSubscribeMessageTemplateDOForInsert);
+        return getWeChatMpSubscribeMessageTemplate(weChatMpSubscribeMessageTemplateDOForInsert.getId());
     }
 
-    /**
-     * 获取模板
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 该编号的模板不存在
-     *
-     * @param id 模板编号
-     * @return WeChatMpSubscribeMessageTemplateDTO
-     */
     @Override
-    public Result<WeChatMpSubscribeMessageTemplateDTO> getWeChatMpSubscribeMessageTemplate(Long id) {
-        // 判断模板存不存在
+    public WeChatMpSubscribeMessageTemplateDTO getWeChatMpSubscribeMessageTemplate(Long id) {
         WeChatMpSubscribeMessageTemplateDO weChatMpSubscribeMessageTemplateDO =
-                weChatMpSubscribeMessageTemplateMapper.getWeChatMpSubscribeMessageTemplate(id);
+                weChatMpSubscribeMessageTemplateMapper.selectById(id);
         if (weChatMpSubscribeMessageTemplateDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+            throw new NotFoundServiceException("weChatMpSubscribeMessageTemplate", "id", id);
         }
-
-        // 封装成 DTO
-        WeChatMpSubscribeMessageTemplateDTO weChatMpSubscribeMessageTemplateDTO =
-                new WeChatMpSubscribeMessageTemplateDTO.Builder()
-                        .id(weChatMpSubscribeMessageTemplateDO.getId())
-                        .app(weChatMpSubscribeMessageTemplateDO.getAppName())
-                        .templateId(weChatMpSubscribeMessageTemplateDO.getTemplateId())
-                        .title(weChatMpSubscribeMessageTemplateDO.getTitle())
-                        .type(weChatMpSubscribeMessageTemplateDO.getTemplateType())
-                        .description(weChatMpSubscribeMessageTemplateDO.getDescription())
-                        .status(weChatMpSubscribeMessageTemplateDO.getTemplateStatus())
-                        .build();
-        return Result.success(weChatMpSubscribeMessageTemplateDTO);
+        return weChatMpSubscribeMessageTemplateAssembler
+                .weChatMpSubscribeMessageTemplateDOToWeChatMpSubscribeMessageTemplateDTO(
+                        weChatMpSubscribeMessageTemplateDO);
     }
 
-    /**
-     * 获取模板通过 query 参数
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param query 查询参数
-     * @return WeChatMpSubscribeMessageTemplateDTO 可能返回空列表
-     */
     @Override
-    public Result<PageInfo<WeChatMpSubscribeMessageTemplateDTO>> listWeChatMpSubscribeMessageTemplates(
+    public QueryResult<WeChatMpSubscribeMessageTemplateDTO> listWeChatMpSubscribeMessageTemplates(
             WeChatMpSubscribeMessageTemplateQuery query) {
-        // 获取 WeChatMpSubscribeMessageTemplateDO
-        List<WeChatMpSubscribeMessageTemplateDO> weChatMpSubscribeMessageTemplateDOList =
-                weChatMpSubscribeMessageTemplateMapper.listWeChatMpSubscribeMessageTemplates(query);
+        LambdaQueryWrapper<WeChatMpSubscribeMessageTemplateDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(query.getAppName() != null, WeChatMpSubscribeMessageTemplateDO::getAppName,
+                query.getAppName())
+                .eq(query.getTemplateId() != null, WeChatMpSubscribeMessageTemplateDO::getTemplateId,
+                        query.getTemplateId())
+                .likeRight(query.getTitle() != null, WeChatMpSubscribeMessageTemplateDO::getTitle,
+                        query.getTitle())
+                .likeRight(query.getTemplateType() != null,
+                        WeChatMpSubscribeMessageTemplateDO::getTemplateType, query.getTemplateType())
+                .eq(query.getTemplateStatus() != null, WeChatMpSubscribeMessageTemplateDO::getTemplateStatus,
+                        query.getTemplateStatus());
 
-        // 转换成 WeChatMpSubscribeMessageTemplateDTO
-        List<WeChatMpSubscribeMessageTemplateDTO> weChatMpSubscribeMessageTemplateDTOList =
-                weChatMpSubscribeMessageTemplateDOList
-                .stream()
-                .map(weChatMpSubscribeMessageTemplateDO -> new WeChatMpSubscribeMessageTemplateDTO.Builder()
-                        .id(weChatMpSubscribeMessageTemplateDO.getId())
-                        .app(weChatMpSubscribeMessageTemplateDO.getAppName())
-                        .templateId(weChatMpSubscribeMessageTemplateDO.getTemplateId())
-                        .title(weChatMpSubscribeMessageTemplateDO.getTitle())
-                        .type(weChatMpSubscribeMessageTemplateDO.getTemplateType())
-                        .description(weChatMpSubscribeMessageTemplateDO.getDescription())
-                        .status(weChatMpSubscribeMessageTemplateDO.getTemplateStatus())
-                        .build())
+        Page<WeChatMpSubscribeMessageTemplateDO> page =
+                new Page<>(query.getPageNum(), query.getPageSize(), true);
+        weChatMpSubscribeMessageTemplateMapper.selectPage(page, wrapper);
+        List<WeChatMpSubscribeMessageTemplateDTO> weChatMpSubscribeMessageTemplateDTOS = page.getRecords().stream()
+                .map(weChatMpSubscribeMessageTemplateAssembler::
+                        weChatMpSubscribeMessageTemplateDOToWeChatMpSubscribeMessageTemplateDTO)
                 .collect(Collectors.toList());
-
-        // 包装 PageInfo
-        PageInfo<WeChatMpSubscribeMessageTemplateDTO> pageInfo =
-                new PageInfo<>(weChatMpSubscribeMessageTemplateDTOList);
-        return Result.success(pageInfo);
+        return new QueryResult<>(page.getTotal(), weChatMpSubscribeMessageTemplateDTOS);
     }
 
-    /**
-     * 更新模板，这是一个较广的更新接口，请小心使用
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 模板不存在 | 不能每个域都为 null
-     *
-     * @param updateWeChatMpSubscribeMessageTemplatePO 更新的参数对象
-     * @return WeChatMpSubscribeMessageTemplateDTO
-     */
     @Override
-    public Result<WeChatMpSubscribeMessageTemplateDTO> updateWeChatMpSubscribeMessageTemplate(
-            UpdateWeChatMpSubscribeMessageTemplateRequest updateWeChatMpSubscribeMessageTemplatePO) {
-        // 判断该编号的模板存不存在
-        int count = weChatMpSubscribeMessageTemplateMapper.count(updateWeChatMpSubscribeMessageTemplatePO.getId());
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "This template does not exist.");
-        }
-
+    public WeChatMpSubscribeMessageTemplateDTO updateWeChatMpSubscribeMessageTemplate(
+            UpdateWeChatMpSubscribeMessageTemplateRequest request) {
         // 配置更新参数
-        WeChatMpSubscribeMessageTemplateDO weChatMpSubscribeMessageTemplateDO =
-                new WeChatMpSubscribeMessageTemplateDO.Builder()
-                        .appName(updateWeChatMpSubscribeMessageTemplatePO.getApp())
-                        .templateId(updateWeChatMpSubscribeMessageTemplatePO.getTemplateId())
-                        .title(updateWeChatMpSubscribeMessageTemplatePO.getTitle())
-                        .templateType(updateWeChatMpSubscribeMessageTemplatePO.getType())
-                        .description(updateWeChatMpSubscribeMessageTemplatePO.getDescription())
-                        .templateStatus(updateWeChatMpSubscribeMessageTemplatePO.getStatus())
-                        .build();
-
-        // 检查是否每个域都为 null
-        if (ObjectUtils.allFieldIsNull(weChatMpSubscribeMessageTemplateDO)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "At least one non null parameter.");
-        }
-
-        // 添加 id 属性
-        weChatMpSubscribeMessageTemplateDO.setId(updateWeChatMpSubscribeMessageTemplatePO.getId());
+        WeChatMpSubscribeMessageTemplateDO weChatMpSubscribeMessageTemplateDOForInsert =
+                weChatMpSubscribeMessageTemplateAssembler
+                        .updateWeChatMpSubscribeMessageTemplateRequestToWeChatMpSubscribeMessageTemplateDO(request);
 
         // 更新到数据库
-        weChatMpSubscribeMessageTemplateMapper.updateWeChatMpSubscribeMessageTemplate(
-                weChatMpSubscribeMessageTemplateDO);
-        return getWeChatMpSubscribeMessageTemplate(updateWeChatMpSubscribeMessageTemplatePO.getId());
+        weChatMpSubscribeMessageTemplateMapper.updateById(weChatMpSubscribeMessageTemplateDOForInsert);
+        return getWeChatMpSubscribeMessageTemplate(request.getId());
     }
+
 }

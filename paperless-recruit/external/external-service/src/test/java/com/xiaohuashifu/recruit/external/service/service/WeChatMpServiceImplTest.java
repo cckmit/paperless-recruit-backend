@@ -53,7 +53,7 @@ public class WeChatMpServiceImplTest {
         sendWeChatMpSubscribeMessagePO.setTemplateData(map);
         sendWeChatMpSubscribeMessagePO.setApp(AppEnum.SCAU_RECRUIT_INTERVIEWEE_MP);
         sendWeChatMpSubscribeMessagePO.setUserId(1L);
-        System.out.println(weChatMpService.sendSubscribeMessage(sendWeChatMpSubscribeMessagePO));
+        weChatMpService.sendSubscribeMessage(sendWeChatMpSubscribeMessagePO);
     }
 
     @Test

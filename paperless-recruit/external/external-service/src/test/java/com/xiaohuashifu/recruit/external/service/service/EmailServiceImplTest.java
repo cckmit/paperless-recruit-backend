@@ -47,12 +47,12 @@ public class EmailServiceImplTest {
         Map<String, byte[]> attachmentMap = new HashMap<>();
         byte[] bytes = fileInputStream.readAllBytes();
         attachmentMap.put("hhx.jpg", bytes);
-        System.out.println(emailService.sendSimpleEmail(new SendSimpleEmailRequest.Builder()
+        emailService.sendSimpleEmail(SendSimpleEmailRequest.builder()
                 .email("827032783@qq.com")
                 .subject("邮箱测试")
                 .text("测测测")
                 .attachmentMap(attachmentMap)
-                .build()));
+                .build());
     }
 
     @Test
@@ -64,26 +64,26 @@ public class EmailServiceImplTest {
 
         Map<String, byte[]> attachmentMap = new HashMap<>();
 
-        System.out.println(emailService.sendTemplateEmail(
-                new SendTemplateEmailRequest.Builder()
+        emailService.sendTemplateEmail(
+                SendTemplateEmailRequest.builder()
                         .email("827032783@qq.com")
                         .subject("邮箱测试")
                         .templateName("RecruitAuthCode")
                         .templateParameters(templateParameters)
                         .attachmentMap(attachmentMap)
-                        .build()));
+                        .build());
     }
 
     @Test
     public void createAndSendEmailAuthCode() {
-        System.out.println(emailService.createAndSendEmailAuthCode(
-                new CreateAndSendEmailAuthCodeRequest.Builder()
-                        .email("827032783@qq.com").subject("email-update").title("邮箱绑定").expirationTime(5).build()));
+        emailService.createAndSendEmailAuthCode(
+                CreateAndSendEmailAuthCodeRequest.builder()
+                        .email("827032783@qq.com").subject("email-update").title("邮箱绑定").expirationTime(5).build());
     }
 
     @Test
     public void checkEmailAuthCode() {
-        System.out.println(emailService.checkEmailAuthCode(new CheckEmailAuthCodeRequest.Builder()
-                .email("827032783@qq.com").subject("email-update").authCode("700285").delete(true).build()));
+        emailService.checkEmailAuthCode(CheckEmailAuthCodeRequest.builder()
+                .email("827032783@qq.com").subject("email-update").authCode("700285").delete(true).build());
     }
 }

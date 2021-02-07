@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.external.service.service;
 
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.IncorrectValueServiceException;
 import com.xiaohuashifu.recruit.common.util.ImageAuthCodeUtils;
 import com.xiaohuashifu.recruit.external.api.dto.ImageAuthCodeDTO;
 import com.xiaohuashifu.recruit.external.api.request.CreateImageAuthCodeRequest;
@@ -38,21 +38,11 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
         this.redisTemplate = redisTemplate;
     }
 
-    /**
-     * 创建图形验证码
-     * 会把验证码缓存，可用通过 checkImageAuthCode 检查是否通过校验
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param createImageAuthCodePO 创建图形验证码参数对象
-     * @return ImageAuthCodeDTO
-     */
     @Override
-    public Result<ImageAuthCodeDTO> createImageAuthCode(CreateImageAuthCodeRequest createImageAuthCodePO) {
+    public ImageAuthCodeDTO createImageAuthCode(CreateImageAuthCodeRequest request) {
         // 创建图形验证码
         ImageAuthCodeUtils.ImageAuthCode imageAuthCode = ImageAuthCodeUtils.createImageCode(
-                createImageAuthCodePO.getWidth(), createImageAuthCodePO.getHeight(),
-                createImageAuthCodePO.getLength());
+                request.getWidth(), request.getHeight(), request.getLength());
 
         // 创建图形验证码编号
         Long incrementId = redisTemplate.opsForValue().increment(IMAGE_AUTH_CODE_INCREMENT_ID_REDIS_KEY);
@@ -61,38 +51,20 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
         // 添加验证码到缓存
         String redisKey = IMAGE_AUTH_CODE_REDIS_KEY_PREFIX + ":" + id;
         redisTemplate.opsForValue().set(redisKey, imageAuthCode.getAuthCode());
-        redisTemplate.expire(redisKey, createImageAuthCodePO.getExpirationTime(), TimeUnit.MINUTES);
+        redisTemplate.expire(redisKey, request.getExpirationTime(), TimeUnit.MINUTES);
 
         // 构造并返回
-        ImageAuthCodeDTO imageAuthCodeDTO = new ImageAuthCodeDTO(id, imageAuthCode.getBase64Image());
-        return Result.success(imageAuthCodeDTO);
+        return new ImageAuthCodeDTO(id, imageAuthCode.getBase64Image());
     }
 
-    /**
-     * 校验验证码
-     * 会从缓存读取验证码进行校验
-     * 该接口不管校验是否通过都会删除缓存里的验证码
-     * 即验证码只能进行一次校验（进行一次校验后即失效）
-     *
-     * @private 内部方法
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.AuthCode.Incorrect: 验证码错误
-     *              InvalidParameter.AuthCode.NotExist: 验证码不存在，可能是因为过期
-     *
-     * @param id 图形验证码编号
-     * @param authCode 用户输入的验证码字符串
-     * @return 校验结果
-     */
     @Override
-    public Result<Void> checkImageAuthCode(String id, String authCode) {
+    public void checkImageAuthCode(String id, String authCode) {
         // 从缓存获取图形验证码
         String redisKey = IMAGE_AUTH_CODE_REDIS_KEY_PREFIX + ":" + id;
         String authCodeInRedis = redisTemplate.opsForValue().get(redisKey);
         // 验证码不存在
         if (authCodeInRedis == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_NOT_EXIST,
-                    "Auth code does not exist.");
+            throw new NotFoundServiceException("Auth code does not exist.");
         }
 
         // 删除验证码
@@ -100,10 +72,8 @@ public class ImageAuthCodeServiceImpl implements ImageAuthCodeService {
 
         // 判断验证码是否相同
         if (!Objects.equals(authCode, authCodeInRedis)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_AUTH_CODE_INCORRECT,
-                    "Auth code is incorrect.");
+            throw new IncorrectValueServiceException("Auth code is incorrect.");
         }
-        return Result.success();
     }
 
 }

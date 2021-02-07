@@ -29,7 +29,7 @@ public class CreateWeChatMpSubscribeMessageTemplateRequest implements Serializab
      * app 类型
      */
     @NotNull
-    private AppEnum app;
+    private AppEnum appName;
 
     /**
      * 模板编号
@@ -50,7 +50,7 @@ public class CreateWeChatMpSubscribeMessageTemplateRequest implements Serializab
      */
     @NotBlank
     @Size(max = WeChatMpSubscribeMessageTemplateServiceConstants.MAX_SUBSCRIBE_MESSAGE_TYPE_LENGTH)
-    private String type;
+    private String templateType;
 
     /**
      * 描述
@@ -63,6 +63,6 @@ public class CreateWeChatMpSubscribeMessageTemplateRequest implements Serializab
      * 模板的状态
      */
     @NotNull
-    private WeChatMpSubscribeMessageTemplateStatusEnum status;
+    private WeChatMpSubscribeMessageTemplateStatusEnum templateStatus;
 
 }

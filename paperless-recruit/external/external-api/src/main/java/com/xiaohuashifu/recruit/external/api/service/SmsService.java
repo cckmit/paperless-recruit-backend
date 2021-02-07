@@ -29,7 +29,7 @@ public interface SmsService {
      * @return 发送结果
      */
     // TODO: 2020/12/9  该方法暂不支持
-    default Result<Object> sendSms(@NotBlank @Phone String phone, @NotBlank @Sms String message) {
+    default Object sendSms(@NotBlank @Phone String phone, @NotBlank @Sms String message) {
         throw new UnsupportedOperationException();
     }
 
@@ -40,8 +40,9 @@ public interface SmsService {
      * @private 内部方法
      *
      * @param request CreateAndSendSmsAuthCodeRequest
+     * @return authCode
      */
-    void createAndSendSmsAuthCode(@NotNull CreateAndSendSmsAuthCodeRequest request) throws ThirdPartyServiceException;
+    String createAndSendSmsAuthCode(@NotNull CreateAndSendSmsAuthCodeRequest request) throws ThirdPartyServiceException;
 
     /**
      * 短信验证码检验验证码是否有效的服务

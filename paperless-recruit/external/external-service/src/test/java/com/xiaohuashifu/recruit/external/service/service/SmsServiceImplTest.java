@@ -32,19 +32,19 @@ public class SmsServiceImplTest {
 
     @Test
     public void createAndSendSmsAuthCode() {
-        System.out.println(smsService.createAndSendSmsAuthCode(
-                new CreateAndSendSmsAuthCodeRequest.Builder()
-                        .phone("15992321303").subject("sms-login").expirationTime(10).build()));
+        smsService.createAndSendSmsAuthCode(
+                CreateAndSendSmsAuthCodeRequest.builder()
+                        .phone("15992321303").subject("sms-login").expirationTime(10).build());
     }
 
     @Test
     public void checkSmsAuthCode() {
-        System.out.println(smsService.checkSmsAuthCode(
-                new CheckSmsAuthCodeRequest.Builder()
+        smsService.checkSmsAuthCode(
+                CheckSmsAuthCodeRequest.builder()
                         .phone("15992321303")
                         .subject("authentication:sms-sign-in")
                         .authCode("864449")
                         .delete(true)
-                        .build()));
+                        .build());
     }
 }

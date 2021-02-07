@@ -30,7 +30,7 @@ public class DepartmentLabelServiceImplTest {
     }
 
     @Test
-    public void saveDepartmentLabel() {
+    public void createDepartmentLabel() {
         System.out.println(departmentLabelService.createDepartmentLabel("软件"));
     }
 

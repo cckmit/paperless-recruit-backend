@@ -177,7 +177,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         Page<OrganizationDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
         organizationMapper.selectPage(page, wrapper);
-        System.out.println(page.getRecords());
         List<OrganizationDTO> departmentDTOS = page.getRecords()
                 .stream().map(organizationAssembler::organizationDOToOrganizationDTO).collect(Collectors.toList());
         return new QueryResult<>(page.getTotal(), departmentDTOS);

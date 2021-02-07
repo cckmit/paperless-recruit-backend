@@ -29,14 +29,13 @@ public class OrganizationCoreMemberServiceImplTest {
     }
 
     @Test
-    public void saveOrganizationCoreMember() {
+    public void createOrganizationCoreMember() {
         System.out.println(organizationCoreMemberService.createOrganizationCoreMember(
                 1L, 2L));
     }
 
-
     @Test
-    public void deleteOrganizationCoreMember() {
+    public void removeOrganizationCoreMember() {
         organizationCoreMemberService.removeOrganizationCoreMember(2L);
     }
 

@@ -23,7 +23,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("department")
+@TableName(value = "department", autoResultMap = true)
 public class DepartmentDO {
     @TableId(type = IdType.AUTO)
     private Long id;

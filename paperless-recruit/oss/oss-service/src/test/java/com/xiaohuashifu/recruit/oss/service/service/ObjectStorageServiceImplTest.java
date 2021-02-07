@@ -49,7 +49,7 @@ public class ObjectStorageServiceImplTest {
 
     @Test
     public void deleteObject() {
-        System.out.println(objectStorageService.deleteObject(1L));
+        objectStorageService.deleteObject(1L);
     }
 
     @Test

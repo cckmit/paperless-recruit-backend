@@ -3,8 +3,6 @@ package com.xiaohuashifu.recruit.oss.service.dao;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.oss.api.request.ListObjectInfosRequest;
 import com.xiaohuashifu.recruit.oss.service.do0.ObjectInfoDO;
 
 import java.time.LocalDateTime;

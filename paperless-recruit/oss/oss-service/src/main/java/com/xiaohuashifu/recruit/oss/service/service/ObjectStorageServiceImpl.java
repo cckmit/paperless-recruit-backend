@@ -1,10 +1,12 @@
 package com.xiaohuashifu.recruit.oss.service.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.oss.api.request.ListObjectInfosRequest;
 import com.xiaohuashifu.recruit.oss.api.request.PreUploadObjectRequest;
 import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
@@ -15,6 +17,7 @@ import com.xiaohuashifu.recruit.oss.service.do0.ObjectInfoDO;
 import com.xiaohuashifu.recruit.oss.service.manager.ObjectStorageManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,54 +64,57 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     @Override
     @Transactional
-    public Result<ObjectInfoResponse> preUploadObject(PreUploadObjectRequest request) {
+    public ObjectInfoResponse preUploadObject(PreUploadObjectRequest request) {
         // 判断对象名是否存在
         ObjectInfoDO objectInfoDO = objectInfoMapper.selectByObjectName(request.getObjectName());
         if (objectInfoDO != null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_EXIST,
-                    "The objectName already exist.");
+            throw new DuplicateServiceException("The objectName already exist.");
         }
 
         // 存储对象信息
-        ObjectInfoDO newObjectInfoDO = objectInfoAssembler.preUploadObjectRequestToObjectInfoDO(request);
-        objectInfoMapper.insert(newObjectInfoDO);
+        ObjectInfoDO objectInfoDOForInsert = objectInfoAssembler.preUploadObjectRequestToObjectInfoDO(request);
+        objectInfoMapper.insert(objectInfoDOForInsert);
 
         // 存储到 oss
         objectStorageManager.putObject(request.getObjectName(), request.getObject());
 
-        return getObjectInfo(newObjectInfoDO.getId());
+        return getObjectInfo(objectInfoDOForInsert.getId());
     }
 
     @Override
-    public Result<Void> deleteObject(String objectName) {
-        return deleteObject(objectInfoMapper.selectByObjectName(objectName));
+    @Transactional
+    public void deleteObject(String objectName) {
+        ObjectInfoResponse objectInfoResponse = getObjectInfo(objectName);
+        ((ObjectStorageServiceImpl)AopContext.currentProxy()).deleteObject(objectInfoResponse);
     }
 
     @Override
-    public Result<Void> deleteObject(Long id) {
-        return deleteObject(objectInfoMapper.selectById(id));
+    @Transactional
+    public void deleteObject(Long id) {
+        ObjectInfoResponse objectInfoResponse = getObjectInfo(id);
+        ((ObjectStorageServiceImpl)AopContext.currentProxy()).deleteObject(objectInfoResponse);
     }
 
     @Override
-    public Result<ObjectInfoResponse> getObjectInfo(String objectName) {
+    public ObjectInfoResponse getObjectInfo(String objectName) {
         ObjectInfoDO objectInfoDO = objectInfoMapper.selectByObjectName(objectName);
         if (objectInfoDO == null) {
-            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+            throw new NotFoundServiceException("objectInfo", "objectName", objectName);
         }
-        return Result.success(objectInfoAssembler.objectInfoDOToObjectInfoResponse(objectInfoDO));
+        return objectInfoAssembler.objectInfoDOToObjectInfoResponse(objectInfoDO);
     }
 
     @Override
-    public Result<ObjectInfoResponse> getObjectInfo(Long id) {
+    public ObjectInfoResponse getObjectInfo(Long id) {
         ObjectInfoDO objectInfoDO = objectInfoMapper.selectById(id);
         if (objectInfoDO == null) {
-            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+            throw new NotFoundServiceException("objectInfo", "id", id);
         }
-        return Result.success(objectInfoAssembler.objectInfoDOToObjectInfoResponse(objectInfoDO));
+        return objectInfoAssembler.objectInfoDOToObjectInfoResponse(objectInfoDO);
     }
 
     @Override
-    public Result<QueryResult<ObjectInfoResponse>> listObjectInfos(ListObjectInfosRequest request) {
+    public QueryResult<ObjectInfoResponse> listObjectInfos(ListObjectInfosRequest request) {
         LambdaQueryWrapper<ObjectInfoDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.likeRight(request.getBaseObjectName() != null, ObjectInfoDO::getObjectName,
                 request.getBaseObjectName());
@@ -118,91 +124,63 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         List<ObjectInfoResponse> objectInfoResponses = page.getRecords().stream()
                 .map(objectInfoAssembler::objectInfoDOToObjectInfoResponse)
                 .collect(Collectors.toList());
-        QueryResult<ObjectInfoResponse> objectInfoResponseQueryResult =
-                new QueryResult<>(page.getTotal(), objectInfoResponses);
-        return Result.success(objectInfoResponseQueryResult);
+        return new QueryResult<>(page.getTotal(), objectInfoResponses);
     }
 
     @Override
-    public Result<ObjectInfoResponse> linkObject(String objectName) {
-        return linkObject(objectInfoMapper.selectByObjectName(objectName));
+    @Transactional
+    public ObjectInfoResponse linkObject(String objectName) {
+        ObjectInfoResponse objectInfoResponse = getObjectInfo(objectName);
+        return ((ObjectStorageServiceImpl)AopContext.currentProxy()).linkObject(objectInfoResponse);
     }
 
     @Override
-    public Result<ObjectInfoResponse> linkObject(Long id) {
-        return linkObject(objectInfoMapper.selectById(id));
+    @Transactional
+    public ObjectInfoResponse linkObject(Long id) {
+        ObjectInfoResponse objectInfoResponse = getObjectInfo(id);
+        return ((ObjectStorageServiceImpl)AopContext.currentProxy()).linkObject(objectInfoResponse);
     }
 
     /**
      * 链接对象
      *
-     * @errorCode UnprocessableEntity.NotExist 所要链接的对象不存在
-     *              OperationConflict.Linked 对象已经链接
-     *              OperationConflict.Deleted 对象已经删除
-     *              InternalError 链接对象失败
-     *
-     * @param objectInfoDO 对象信息，从数据库里查询得到
+     * @param objectInfoResponse ObjectInfoResponse
      * @return 链接后的对象
      */
     @Transactional
-    protected Result<ObjectInfoResponse> linkObject(ObjectInfoDO objectInfoDO) {
-        // 判断对象是否存在
-        if (objectInfoDO == null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                    "The object does not exist.");
-        }
-
-        // 判断对象是否已经删除
-        if (objectInfoDO.getDeleted()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DELETED,
-                    "The object already deleted.");
-        }
-
-        // 判断对象是否已经链接
-        if (objectInfoDO.getLinked()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_LINKED,
-                    "The object already linked.");
-        }
-
+    protected ObjectInfoResponse linkObject(ObjectInfoResponse objectInfoResponse) throws UnmodifiedServiceException {
         // 链接对象
-        ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().id(objectInfoDO.getId()).linked(true).build();
-        objectInfoMapper.updateById(objectInfoDOForUpdate);
+        ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().linked(true).build();
+        LambdaUpdateWrapper<ObjectInfoDO> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(ObjectInfoDO::getDeleted, false)
+                .eq(ObjectInfoDO::getId, objectInfoResponse.getId());
+        int count = objectInfoMapper.update(objectInfoDOForUpdate, wrapper);
+        if (count < 1) {
+            throw new UnmodifiedServiceException("The object already deleted.");
+        }
 
-        return getObjectInfo(objectInfoDO.getId());
+        return getObjectInfo(objectInfoResponse.getId());
     }
 
     /**
      * 删除对象
      *
-     * @errorCode UnprocessableEntity.NotExist 所要删除的对象不存在
-     *              OperationConflict.Deleted 对象已经删除
-     *              InternalError 删除对象失败
-     *
-     * @param objectInfoDO 对象信息，从数据库里查询得到
-     * @return 删除结果
+     * @param objectInfoResponse ObjectInfoResponse
      */
     @Transactional
-    protected Result<Void> deleteObject(ObjectInfoDO objectInfoDO) {
-        // 判断对象是否存在
-        if (objectInfoDO == null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                    "The object does not exist.");
-        }
-
-        // 判断对象是否已经删除
-        if (objectInfoDO.getDeleted()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DELETED,
-                    "The object already deleted.");
-        }
-
+    protected void deleteObject(ObjectInfoResponse objectInfoResponse) throws SecurityException {
         // 更新对象 deleted 字段为 true
-        ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().id(objectInfoDO.getId()).deleted(true).build();
-        objectInfoMapper.updateById(objectInfoDOForUpdate);
+        ObjectInfoDO objectInfoDOForUpdate = ObjectInfoDO.builder().deleted(true).build();
+        LambdaUpdateWrapper<ObjectInfoDO> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(ObjectInfoDO::getDeleted, false)
+                .eq(ObjectInfoDO::getId, objectInfoResponse.getId());
+        int count = objectInfoMapper.update(objectInfoDOForUpdate, wrapper);
+        if (count < 1) {
+            throw new UnmodifiedServiceException("The object already deleted.");
+        }
 
         // 删除 oss 的对象
-        objectStorageManager.deleteObject(objectInfoDO.getObjectName());
-
-        return Result.success();
+        objectStorageManager.deleteObject(objectInfoResponse.getObjectName());
     }
 
     /**
@@ -212,7 +190,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     public void clearUnlinkedObjects() {
         List<ObjectInfoDO> objectInfoDOS = objectInfoMapper.selectNeedClearObject(CLEAR_UNLINKED_OBJECTS_PAGE_SIZE);
         for (ObjectInfoDO objectInfoDO : objectInfoDOS) {
-            deleteObject(objectInfoDO);
+            deleteObject(objectInfoAssembler.objectInfoDOToObjectInfoResponse(objectInfoDO));
         }
     }
 

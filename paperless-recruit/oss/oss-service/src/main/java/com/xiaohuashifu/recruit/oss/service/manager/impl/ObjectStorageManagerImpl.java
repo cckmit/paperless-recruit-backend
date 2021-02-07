@@ -1,6 +1,9 @@
 package com.xiaohuashifu.recruit.oss.service.manager.impl;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSException;
+import com.xiaohuashifu.recruit.common.exception.InternalServiceException;
 import com.xiaohuashifu.recruit.oss.service.manager.ObjectStorageManager;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +37,11 @@ public class ObjectStorageManagerImpl implements ObjectStorageManager {
      */
     @Override
     public void putObject(String objectName, byte[] object) {
-        oss.putObject(BUCKET_NAME, objectName, new ByteArrayInputStream(object));
+        try {
+            oss.putObject(BUCKET_NAME, objectName, new ByteArrayInputStream(object));
+        } catch (OSSException | ClientException e) {
+            throw new InternalServiceException("Put object error.");
+        }
     }
 
     /**
@@ -44,7 +51,11 @@ public class ObjectStorageManagerImpl implements ObjectStorageManager {
      */
     @Override
     public void deleteObject(String objectName) {
-        oss.deleteObject(BUCKET_NAME, objectName);
+        try {
+            oss.deleteObject(BUCKET_NAME, objectName);
+        } catch (OSSException | ClientException e) {
+            throw new InternalServiceException("Delete object error.");
+        }
     }
 
 }

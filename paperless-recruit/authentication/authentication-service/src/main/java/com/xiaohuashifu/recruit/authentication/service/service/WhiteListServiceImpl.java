@@ -1,17 +1,19 @@
 package com.xiaohuashifu.recruit.authentication.service.service;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaohuashifu.recruit.authentication.api.dto.PermittedUrlDTO;
 import com.xiaohuashifu.recruit.authentication.api.query.PermittedUrlQuery;
 import com.xiaohuashifu.recruit.authentication.api.service.WhiteListService;
+import com.xiaohuashifu.recruit.authentication.service.assembler.PermittedUrlAssembler;
 import com.xiaohuashifu.recruit.authentication.service.dao.PermittedUrlMapper;
 import com.xiaohuashifu.recruit.authentication.service.do0.PermittedUrlDO;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -27,132 +29,67 @@ public class WhiteListServiceImpl implements WhiteListService {
 
     private final PermittedUrlMapper permittedUrlMapper;
 
-    public WhiteListServiceImpl(PermittedUrlMapper permittedUrlMapper) {
+    private final PermittedUrlAssembler permittedUrlAssembler;
+
+    public WhiteListServiceImpl(PermittedUrlMapper permittedUrlMapper, PermittedUrlAssembler permittedUrlAssembler) {
         this.permittedUrlMapper = permittedUrlMapper;
+        this.permittedUrlAssembler = permittedUrlAssembler;
     }
 
-    /**
-     * 添加被允许的 Url
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              OperationConflict: 该 url 已经存在
-     *
-     * @param url 被允许的 Url
-     * @return PermittedUrlDTO
-     */
     @Override
-    public Result<PermittedUrlDTO> createPermittedUrl(String url) {
+    public PermittedUrlDTO createPermittedUrl(String url) {
         // 判断该 url 是否已经存在
-        int count = permittedUrlMapper.countByUrl(url);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The url already exist.");
+        PermittedUrlDO permittedUrlDO = permittedUrlMapper.selectByUrl(url);
+        if (permittedUrlDO != null) {
+            throw new DuplicateServiceException("The url already exist.");
         }
 
         // 保存
-        PermittedUrlDO permittedUrlDO = new PermittedUrlDO.Builder().url(url).build();
-        permittedUrlMapper.insertPermittedUrl(permittedUrlDO);
-        return getPermittedUrl(permittedUrlDO.getId());
+        PermittedUrlDO permittedUrlDOForInsert = PermittedUrlDO.builder().url(url).build();
+        permittedUrlMapper.insert(permittedUrlDOForInsert);
+        return getPermittedUrl(permittedUrlDOForInsert.getId());
     }
 
-    /**
-     * 删除被允许的 Url
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 要删除的编号不存在
-     *
-     * @param id 被允许的 Url 的编号
-     * @return PermittedUrlDTO
-     */
     @Override
-    public Result<Void> removePermittedUrl(Long id) {
-        // 判断要删除的 permittedUrl 存不存在
-        int count = permittedUrlMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The url does not exist.");
-        }
-
+    public void removePermittedUrl(Long id) {
         // 删除
-        permittedUrlMapper.deletePermittedUrl(id);
-        return Result.success();
+        permittedUrlMapper.deleteById(id);
     }
 
-    /**
-     * 通过编号获得 PermittedUrlDTO
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *              InvalidParameter.NotFound: 找不到该编号的允许路径
-     *
-     * @param id 被允许路径的编号
-     * @return PermittedUrlDTO
-     */
     @Override
-    public Result<PermittedUrlDTO> getPermittedUrl(Long id) {
-        PermittedUrlDO permittedUrlDO = permittedUrlMapper.getPermittedUrl(id);
+    public PermittedUrlDTO getPermittedUrl(Long id) {
+        PermittedUrlDO permittedUrlDO = permittedUrlMapper.selectById(id);
         if (permittedUrlDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND);
+            throw new NotFoundServiceException("permittedUrl", "id", id);
         }
-        return Result.success(new PermittedUrlDTO(permittedUrlDO.getId(), permittedUrlDO.getUrl()));
+        return permittedUrlAssembler.permittedUrlDOToPermittedUrlDTO(permittedUrlDO);
     }
 
-    /**
-     * 查询被允许的路径
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误
-     *
-     * @param query 查询参数
-     * @return PageInfo<PermittedUrlDTO> 这里可能返回空列表
-     */
     @Override
-    public Result<PageInfo<PermittedUrlDTO>> listPermittedUrls(PermittedUrlQuery query) {
-        List<PermittedUrlDO> permittedUrlDOList = permittedUrlMapper.listPermittedUrls(query);
-        List<PermittedUrlDTO> permittedUrlDTOList = permittedUrlDOList.stream()
-                .map(permittedUrlDO -> new PermittedUrlDTO(permittedUrlDO.getId(), permittedUrlDO.getUrl()))
-                .collect(Collectors.toList());
-        PageInfo<PermittedUrlDTO> pageInfo = new PageInfo<>(permittedUrlDTOList);
-        return Result.success(pageInfo);
+    public QueryResult<PermittedUrlDTO> listPermittedUrls(PermittedUrlQuery query) {
+        LambdaQueryWrapper<PermittedUrlDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.likeRight(query.getUrl() != null, PermittedUrlDO::getUrl, query.getUrl());
+
+        Page<PermittedUrlDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
+        permittedUrlMapper.selectPage(page, wrapper);
+        List<PermittedUrlDTO> permittedUrlDTOS = page.getRecords()
+                .stream().map(permittedUrlAssembler::permittedUrlDOToPermittedUrlDTO).collect(Collectors.toList());
+        return new QueryResult<>(page.getTotal(), permittedUrlDTOS);
     }
 
-    /**
-     * 获取白名单
-     *
-     * @return 白名单列表
-     */
     @Override
-    public Result<List<String>> getWhiteList() {
-        List<String> whiteList = permittedUrlMapper.listAllUrls();
-        return Result.success(whiteList);
+    public List<String> getWhiteList() {
+        LambdaQueryWrapper<PermittedUrlDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(PermittedUrlDO::getUrl);
+        List<PermittedUrlDO> whiteList = permittedUrlMapper.selectList(wrapper);
+        return whiteList.stream().map(PermittedUrlDO::getUrl).collect(Collectors.toList());
     }
 
-    /**
-     * 更新被允许的路径
-     *
-     * @errorCode InvalidParameter: 请求参数格式错误 | 该编号的允许路径不存在 | 新 url 与原 url 相同
-     *              OperationConflict: 新 url 已经存在
-     *
-     * @param id 编号
-     * @param newUrl 新的被允许路径
-     * @return PermittedUrlDTO 更新后的 PermittedUrlDTO
-     */
     @Override
-    public Result<PermittedUrlDTO> updateUrl(Long id, String newUrl) {
-        // 判断该 url 是否存在
-        PermittedUrlDO permittedUrlDO = permittedUrlMapper.getPermittedUrl(id);
-        if (permittedUrlDO == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The url does not exist.");
-        }
-
-        // 判断该 url 是否与原 url 相同
-        if (Objects.equals(permittedUrlDO.getUrl(), newUrl)) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER, "The new url must not same as old url.");
-        }
-
-        // 判断该 url 是否已经存在
-        int count = permittedUrlMapper.countByUrl(newUrl);
-        if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The url already exist.");
-        }
-
+    public PermittedUrlDTO updateUrl(Long id, String url) {
         // 更新 url
-        permittedUrlMapper.updateUrl(id, newUrl);
+        PermittedUrlDO permittedUrlDOForUpdate = PermittedUrlDO.builder().id(id).url(url).build();
+        permittedUrlMapper.updateById(permittedUrlDOForUpdate);
         return getPermittedUrl(id);
     }
 

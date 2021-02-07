@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.external.api.service;
 
+import com.xiaohuashifu.recruit.common.exception.ServiceException;
 import com.xiaohuashifu.recruit.common.exception.ThirdPartyServiceException;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
@@ -50,6 +51,6 @@ public interface SmsService {
      *
      * @param request CheckSmsAuthCodeRequest
      */
-    void checkSmsAuthCode(@NotNull CheckSmsAuthCodeRequest request);
+    void checkSmsAuthCode(@NotNull CheckSmsAuthCodeRequest request) throws ServiceException;
 
 }

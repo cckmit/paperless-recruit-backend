@@ -1,7 +1,8 @@
 package com.xiaohuashifu.recruit.authentication.service.provider;
 
 import com.xiaohuashifu.recruit.authentication.service.token.SmsAuthenticationToken;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.ServiceException;
 import com.xiaohuashifu.recruit.external.api.request.CheckSmsAuthCodeRequest;
 import com.xiaohuashifu.recruit.external.api.service.SmsService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
@@ -49,25 +50,27 @@ public class SmsAuthenticationProvider extends AbstractAuthenticationProvider {
         String authCode = smsAuthenticationToken.getAuthCode();
 
         // 通过短信验证码认证
-        Result<Void> checkSmsAuthCodeResult = smsService.checkSmsAuthCode(
-                new CheckSmsAuthCodeRequest.Builder()
-                        .phone(phone)
-                        .subject(SUBJECT)
-                        .authCode(authCode)
-                        .delete(true)
-                        .build());
-        if (!checkSmsAuthCodeResult.isSuccess()) {
-            throw new BadCredentialsException("Auth failed.");
+        try {
+           smsService.checkSmsAuthCode(
+                   CheckSmsAuthCodeRequest.builder()
+                           .phone(phone)
+                           .subject(SUBJECT)
+                           .authCode(authCode)
+                           .delete(true)
+                           .build());
+        } catch (ServiceException e) {
+            throw new BadCredentialsException(e.getMessage());
         }
 
         // 获取用户对象
-        Result<UserDTO> getUserResult = userService.getUserByPhone(phone);
-        if (!getUserResult.isSuccess()) {
+        UserDTO userDTO;
+        try {
+            userDTO = userService.getUserByPhone(phone);
+        } catch (NotFoundServiceException e) {
             throw new UsernameNotFoundException("The user does not exist.");
         }
 
         // 判断用户是否可用
-        UserDTO userDTO = getUserResult.getData();
         if (!userDTO.getAvailable()) {
             throw new DisabledException("The user unavailable.");
         }

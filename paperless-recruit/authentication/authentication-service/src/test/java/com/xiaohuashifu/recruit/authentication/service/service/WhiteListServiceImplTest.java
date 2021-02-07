@@ -36,7 +36,7 @@ public class WhiteListServiceImplTest {
 
     @Test
     public void deletePermittedUrl() {
-        System.out.println(whiteListService.removePermittedUrl(3L));
+        whiteListService.removePermittedUrl(3L);
     }
 
     @Test
@@ -45,9 +45,9 @@ public class WhiteListServiceImplTest {
     }
 
     @Test
-    public void testGetPermittedUrl() {
+    public void listPermittedUrls() {
         System.out.println(whiteListService.listPermittedUrls(
-                new PermittedUrlQuery.Builder().pageNum(1L).pageSize(50L).build()));
+                PermittedUrlQuery.builder().pageNum(1L).pageSize(50L).build()));
     }
 
     @Test

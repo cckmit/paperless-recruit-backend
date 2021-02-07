@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.service;
 
 import com.xiaohuashifu.recruit.authentication.service.constant.AuthorityConstants;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -38,20 +38,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String usernameOrPhoneOrEmail) throws UsernameNotFoundException {
         // 查找用户
-        Result<UserDTO> getUserResult = userService.getUserByUsernameOrPhoneOrEmail(usernameOrPhoneOrEmail);
-        if (!getUserResult.isSuccess()) {
+        UserDTO userDTO;
+        try {
+            userDTO = userService.getUserByUsernameOrPhoneOrEmail(usernameOrPhoneOrEmail);
+        } catch (NotFoundServiceException e) {
             throw new UsernameNotFoundException("The user does not exist.");
         }
 
         // 判断用户是否可用
-        UserDTO userDTO = getUserResult.getData();
         if (!userDTO.getAvailable()) {
             throw new DisabledException("The user unavailable.");
         }
 
         // 获取权限列表
         Set<String> authoritySet = authorityService.listAuthoritiesByUserId(
-                userDTO.getId(), AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX).getData();
+                userDTO.getId(), AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX);
         List<SimpleGrantedAuthority> authorityList = authoritySet.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());

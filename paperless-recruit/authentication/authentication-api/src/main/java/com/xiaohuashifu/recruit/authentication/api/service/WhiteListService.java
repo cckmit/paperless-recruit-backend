@@ -4,6 +4,7 @@ import com.xiaohuashifu.recruit.authentication.api.constant.WhiteListServiceCons
 import com.xiaohuashifu.recruit.authentication.api.dto.PermittedUrlDTO;
 import com.xiaohuashifu.recruit.authentication.api.query.PermittedUrlQuery;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.common.validator.annotation.AntPath;
 
@@ -30,7 +31,8 @@ public interface WhiteListService {
      * @return PermittedUrlDTO
      */
     PermittedUrlDTO createPermittedUrl(
-            @NotBlank @Size(max = WhiteListServiceConstants.MAX_PERMITTED_URL_LENGTH) @AntPath String url);
+            @NotBlank @Size(max = WhiteListServiceConstants.MAX_PERMITTED_URL_LENGTH) @AntPath String url)
+            throws DuplicateServiceException;
 
     /**
      * 删除被允许的 url

@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.authentication.service.provider;
 
 import com.xiaohuashifu.recruit.authentication.service.token.PasswordAuthenticationToken;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
@@ -41,13 +41,14 @@ public class PasswordAuthenticationProvider extends AbstractAuthenticationProvid
         String principal = passwordAuthenticationToken.getPrincipal();
 
         // 获取用户对象
-        Result<UserDTO> getUserResult = userService.getUserByUsernameOrPhoneOrEmail(principal);
-        if (getUserResult.isFailure()) {
+        UserDTO userDTO;
+        try {
+            userDTO = userService.getUserByUsernameOrPhoneOrEmail(principal);
+        } catch (NotFoundServiceException e) {
             throw new UsernameNotFoundException("The user does not exist.");
         }
 
         // 判断用户是否可用
-        UserDTO userDTO = getUserResult.getData();
         if (!userDTO.getAvailable()) {
             throw new DisabledException("The user unavailable.");
         }

@@ -2,13 +2,9 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
-import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationPositionDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationPositionQuery;
 import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationPositionRequest;
@@ -18,7 +14,6 @@ import com.xiaohuashifu.recruit.organization.api.service.OrganizationPositionSer
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.assembler.OrganizationPositionAssembler;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationPositionMapper;
-import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationPositionDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -106,10 +101,10 @@ public class OrganizationPositionServiceImpl implements OrganizationPositionServ
 
         Page<OrganizationPositionDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
         organizationPositionMapper.selectPage(page, wrapper);
-        List<OrganizationPositionDTO> departmentDTOS = page.getRecords()
+        List<OrganizationPositionDTO> organizationPositionDTOS = page.getRecords()
                 .stream().map(organizationPositionAssembler::organizationPositionDOToOrganizationPositionDTO)
                 .collect(Collectors.toList());
-        return new QueryResult<>(page.getTotal(), departmentDTOS);
+        return new QueryResult<>(page.getTotal(), organizationPositionDTOS);
     }
 
     @Override

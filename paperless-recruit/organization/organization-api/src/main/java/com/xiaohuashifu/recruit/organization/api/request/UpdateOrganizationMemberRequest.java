@@ -1,57 +1,45 @@
-package com.xiaohuashifu.recruit.organization.api.query;
+package com.xiaohuashifu.recruit.organization.api.request;
 
-import com.xiaohuashifu.recruit.common.constant.QueryConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 
 /**
- * 描述：组织成员查询参数
+ * 描述：更新组织成员请求
  *
  * @author xhsf
- * @create 2020/12/16 13:29
+ * @create 2021/2/7 20:18
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrganizationMemberQuery implements Serializable {
+public class UpdateOrganizationMemberRequest implements Serializable {
 
     /**
-     * 页码
+     * 组织成员编号
      */
     @NotNull
     @Positive
-    private Long pageNum;
+    private Long id;
 
     /**
-     * 页条数
+     * 部门编号，若为0表示不绑定任何部门
      */
-    @NotNull
-    @Positive
-    @Max(value = QueryConstants.MAX_PAGE_SIZE)
-    private Long pageSize;
-
-    /**
-     * 组织编号
-     */
-    private Long organizationId;
-
-    /**
-     * 部门编号
-     */
+    @PositiveOrZero
     private Long departmentId;
 
     /**
-     * 组织职位编号
+     * 组织职位编号，若为0表示不绑定任何组织职位
      */
+    @PositiveOrZero
     private Long organizationPositionId;
 
     /**

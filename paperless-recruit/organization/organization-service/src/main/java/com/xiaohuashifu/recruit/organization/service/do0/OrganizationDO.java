@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.xiaohuashifu.recruit.common.mybatis.type.StringListTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class OrganizationDO {
     private String logoUrl;
     private Integer numberOfMembers;
     private Integer numberOfDepartments;
-    @TableField(typeHandler = FastjsonTypeHandler.class)
+    @TableField(typeHandler = StringListTypeHandler.class)
     private List<String> labels;
     @TableField("is_available")
     private Boolean available;

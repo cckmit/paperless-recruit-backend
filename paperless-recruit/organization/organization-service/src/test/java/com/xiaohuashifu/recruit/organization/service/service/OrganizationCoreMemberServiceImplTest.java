@@ -37,7 +37,7 @@ public class OrganizationCoreMemberServiceImplTest {
 
     @Test
     public void deleteOrganizationCoreMember() {
-        System.out.println(organizationCoreMemberService.removeOrganizationCoreMember(2L));
+        organizationCoreMemberService.removeOrganizationCoreMember(2L);
     }
 
     @Test

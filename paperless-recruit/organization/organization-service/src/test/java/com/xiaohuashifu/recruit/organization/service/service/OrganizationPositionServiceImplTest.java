@@ -1,6 +1,9 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationPositionQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationPositionRequest;
+import com.xiaohuashifu.recruit.organization.api.request.UpdateOrganizationMemberRequest;
+import com.xiaohuashifu.recruit.organization.api.request.UpdateOrganizationPositionRequest;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationPositionService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -32,7 +35,7 @@ public class OrganizationPositionServiceImplTest {
     @Test
     public void saveOrganizationPosition() {
         System.out.println(organizationPositionService.createOrganizationPosition(
-                1L, "中心主席", 2));
+                CreateOrganizationPositionRequest.builder().organizationId(1L).positionName("中心主席").priority(2).build()));
     }
 
     @Test
@@ -52,12 +55,8 @@ public class OrganizationPositionServiceImplTest {
     }
 
     @Test
-    public void updatePositionName() {
-        System.out.println(organizationPositionService.updatePositionName(1L, "科联主席"));
-    }
-
-    @Test
-    public void updatePriority() {
-        System.out.println(organizationPositionService.updatePriority(1L, 0));
+    public void updateOrganizationPosition() {
+        System.out.println(organizationPositionService.updateOrganizationPosition(
+                UpdateOrganizationPositionRequest.builder().id(1L).positionName("科联主席").build()));
     }
 }

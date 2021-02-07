@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.organization.service.service;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberInvitationQuery;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberQuery;
+import com.xiaohuashifu.recruit.organization.api.request.UpdateOrganizationMemberRequest;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -54,26 +55,14 @@ public class OrganizationMemberServiceImplTest {
                         .pageNum(1L)
                         .pageSize(50L)
                         .organizationId(1L)
-                        .orderByInvitationTime(true)
                         .build()
         ));
     }
 
     @Test
-    public void updateDepartment() {
-        System.out.println(organizationMemberService.updateDepartment(2L, 1L));
-    }
-
-    @Test
-    public void updateOrganizationPosition() {
-        System.out.println(organizationMemberService.updateOrganizationPosition(
-                2L, 2L));
-    }
-
-    @Test
-    public void updateMemberStatus() {
-        System.out.println(organizationMemberService.updateMemberStatus(
-                1L, OrganizationMemberStatusEnum.ON_JOB));
+    public void updateOrganizationMember() {
+        System.out.println(organizationMemberService.updateOrganizationMember(
+                UpdateOrganizationMemberRequest.builder().id(1L).organizationPositionId(1L).build()));
     }
 
     @Test

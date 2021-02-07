@@ -5,7 +5,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentConstants;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
-import com.xiaohuashifu.recruit.registration.api.po.CreateRecruitmentPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentPO;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;

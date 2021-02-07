@@ -12,7 +12,7 @@ import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormTemplateDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
-import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormPO;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;

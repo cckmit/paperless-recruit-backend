@@ -57,10 +57,10 @@
 			<artifactId>druid-spring-boot-starter</artifactId>
 		</dependency>
 
-		<!-- 分页插件 -->
+		<!--   MyBatis Plus	-->
 		<dependency>
-			<groupId>com.github.pagehelper</groupId>
-			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
 		</dependency>
 
 		<!-- dozer对象属性拷贝 -->
@@ -127,6 +127,12 @@
 			<artifactId>redisson-spring-data-22</artifactId>
 		</dependency>
 		<!--    Redisson    -->
+
+		<!--     lombok       -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
 
 		<!--    MapStruct    -->
 		<dependency>

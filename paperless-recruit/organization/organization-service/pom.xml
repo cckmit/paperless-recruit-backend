@@ -57,12 +57,6 @@
 			<artifactId>druid-spring-boot-starter</artifactId>
 		</dependency>
 
-		<!-- 分页插件 -->
-		<dependency>
-			<groupId>com.github.pagehelper</groupId>
-			<artifactId>pagehelper-spring-boot-starter</artifactId>
-		</dependency>
-
 		<!--   MyBatis Plus	-->
 		<dependency>
 			<groupId>com.baomidou</groupId>

@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewEvaluationDTO;
-import com.xiaohuashifu.recruit.registration.api.po.SaveInterviewEvaluationPO;
+import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewEvaluationPO;
 import com.xiaohuashifu.recruit.registration.api.service.*;
 import com.xiaohuashifu.recruit.registration.service.assembler.InterviewEvaluationAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.InterviewEvaluationMapper;

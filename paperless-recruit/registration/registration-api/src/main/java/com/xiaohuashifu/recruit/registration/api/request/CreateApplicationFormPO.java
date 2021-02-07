@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.registration.api.po;
+package com.xiaohuashifu.recruit.registration.api.request;
 
 import com.xiaohuashifu.recruit.common.validator.annotation.FullName;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;

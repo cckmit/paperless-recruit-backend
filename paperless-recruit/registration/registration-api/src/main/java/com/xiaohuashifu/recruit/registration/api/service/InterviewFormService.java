@@ -4,7 +4,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewFormConstants;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewFormDTO;
-import com.xiaohuashifu.recruit.registration.api.po.SaveInterviewFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewFormPO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

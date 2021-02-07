@@ -2,9 +2,8 @@ package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
-import com.xiaohuashifu.recruit.registration.api.po.CreateRecruitmentPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentPO;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
-import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
@@ -13,8 +12,6 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：

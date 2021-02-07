@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.StudentNumber;
 import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormConstants;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
-import com.xiaohuashifu.recruit.registration.api.po.CreateApplicationFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormPO;
 
 import javax.validation.constraints.*;
 

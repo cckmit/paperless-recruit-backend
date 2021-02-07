@@ -1,14 +1,11 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.registration.api.po.SaveInterviewEvaluationPO;
+import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewEvaluationPO;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewEvaluationService;
-import com.xiaohuashifu.recruit.registration.api.service.InterviewerService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：

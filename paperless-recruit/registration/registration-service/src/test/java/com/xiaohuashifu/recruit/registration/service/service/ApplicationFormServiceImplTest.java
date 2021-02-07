@@ -1,14 +1,12 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.registration.api.po.*;
+import com.xiaohuashifu.recruit.registration.api.request.*;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**

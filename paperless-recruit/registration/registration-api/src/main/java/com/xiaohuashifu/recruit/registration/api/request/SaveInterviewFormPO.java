@@ -1,4 +1,4 @@
-package com.xiaohuashifu.recruit.registration.api.po;
+package com.xiaohuashifu.recruit.registration.api.request;
 
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewFormConstants;
 import lombok.Builder;

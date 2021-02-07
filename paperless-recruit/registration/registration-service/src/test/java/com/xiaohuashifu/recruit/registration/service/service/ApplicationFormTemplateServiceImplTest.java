@@ -1,15 +1,12 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.registration.api.po.AddApplicationFormTemplatePO;
-import com.xiaohuashifu.recruit.registration.api.po.UpdateApplicationFormTemplatePO;
+import com.xiaohuashifu.recruit.registration.api.request.AddApplicationFormTemplatePO;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormTemplatePO;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
-import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：

@@ -1,15 +1,12 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
-import com.xiaohuashifu.recruit.registration.api.po.SaveInterviewFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewFormPO;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewFormService;
-import com.xiaohuashifu.recruit.registration.api.service.InterviewService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：

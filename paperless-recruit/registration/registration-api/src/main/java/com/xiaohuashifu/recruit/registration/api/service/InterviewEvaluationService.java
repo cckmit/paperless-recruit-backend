@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.registration.api.service;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewEvaluationConstants;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewEvaluationDTO;
-import com.xiaohuashifu.recruit.registration.api.po.SaveInterviewEvaluationPO;
+import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewEvaluationPO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

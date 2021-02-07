@@ -1,9 +1,12 @@
 package com.xiaohuashifu.recruit.registration.service.do0;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -16,12 +19,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@SuperBuilder
+@Builder
+@TableName("application_form")
 public class ApplicationFormDO {
 
     /**
      * 报名表模板编号
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

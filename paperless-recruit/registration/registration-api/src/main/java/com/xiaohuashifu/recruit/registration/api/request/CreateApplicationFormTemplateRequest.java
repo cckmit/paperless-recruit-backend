@@ -23,21 +23,19 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
-public class AddApplicationFormTemplatePO extends ApplicationFormTemplatePO {
+public class CreateApplicationFormTemplateRequest extends ApplicationFormTemplateRequest {
 
     /**
      * 招新编号
      */
-    @NotNull(message = "The recruitmentId can't be null.")
-    @Positive(message = "The recruitmentId must be greater than 0.")
+    @NotNull
+    @Positive
     private Long recruitmentId;
 
     /**
      * 报名提示
      */
-    @NotBlank(message = "The prompt can't be blank.")
-    @Size(max = ApplicationFormTemplateConstants.MAX_PROMPT_LENGTH,
-            message = "The length of prompt must not be greater than "
-                    + ApplicationFormTemplateConstants.MAX_PROMPT_LENGTH + ".")
+    @NotBlank
+    @Size(max = ApplicationFormTemplateConstants.MAX_PROMPT_LENGTH)
     private String prompt;
 }

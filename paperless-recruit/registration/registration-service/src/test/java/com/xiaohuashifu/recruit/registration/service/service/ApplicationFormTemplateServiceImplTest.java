@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.registration.api.request.AddApplicationFormTemplatePO;
-import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormTemplatePO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormTemplateRequest;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormTemplateRequest;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -48,7 +48,7 @@ public class ApplicationFormTemplateServiceImplTest {
 //        private Boolean major;
 //        private Boolean note;
         System.out.println(applicationFormTemplateService.addApplicationFormTemplate(
-                AddApplicationFormTemplatePO.builder()
+                CreateApplicationFormTemplateRequest.builder()
                         .recruitmentId(22L)
                         .prompt("请各位报名者在附件里添加个人作品。")
                         .avatar(true)
@@ -74,7 +74,7 @@ public class ApplicationFormTemplateServiceImplTest {
     @Test
     public void updateApplicationFormTemplate() {
         System.out.println(applicationFormTemplateService.updateApplicationFormTemplate(
-                UpdateApplicationFormTemplatePO.builder()
+                UpdateApplicationFormTemplateRequest.builder()
                         .id(12L)
                         .avatar(true)
                         .fullName(true)

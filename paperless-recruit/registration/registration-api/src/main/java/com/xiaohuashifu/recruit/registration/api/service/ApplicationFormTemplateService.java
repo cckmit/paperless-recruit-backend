@@ -3,8 +3,8 @@ package com.xiaohuashifu.recruit.registration.api.service;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormTemplateConstants;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormTemplateDTO;
-import com.xiaohuashifu.recruit.registration.api.request.AddApplicationFormTemplatePO;
-import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormTemplatePO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormTemplateRequest;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormTemplateRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -37,7 +37,7 @@ public interface ApplicationFormTemplateService {
      */
     Result<ApplicationFormTemplateDTO> addApplicationFormTemplate(
             @NotNull(message = "The addApplicationFormTemplatePO can't be null.")
-                    AddApplicationFormTemplatePO addApplicationFormTemplatePO);
+                    CreateApplicationFormTemplateRequest addApplicationFormTemplatePO);
 
     /**
      * 获取报名表模板，通过招新编号
@@ -69,7 +69,7 @@ public interface ApplicationFormTemplateService {
      */
     Result<ApplicationFormTemplateDTO> updateApplicationFormTemplate(
             @NotNull(message = "The updateApplicationFormTemplatePO can't be null.")
-                    UpdateApplicationFormTemplatePO updateApplicationFormTemplatePO);
+                    UpdateApplicationFormTemplateRequest updateApplicationFormTemplatePO);
 
     /**
      * 更新报名提示

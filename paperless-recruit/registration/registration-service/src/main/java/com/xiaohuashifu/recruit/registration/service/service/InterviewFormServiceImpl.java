@@ -12,7 +12,7 @@ import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewFormDTO;
-import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewFormRequest;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewFormService;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewService;
@@ -82,7 +82,7 @@ public class InterviewFormServiceImpl implements InterviewFormService {
             parameters = {"#{#saveInterviewFormPO.interviewId}", "#{#saveInterviewFormPO.applicationFormId}"},
             errorMessage = "Failed to acquire save interview form lock.")
     @Override
-    public Result<InterviewFormDTO> saveInterviewForm(SaveInterviewFormPO saveInterviewFormPO) {
+    public Result<InterviewFormDTO> saveInterviewForm(CreateInterviewFormRequest saveInterviewFormPO) {
         // 检查面试状态
         Long interviewId = saveInterviewFormPO.getInterviewId();
         Result<InterviewFormDTO> checkInterviewStatusResult = interviewService.checkInterviewStatus(interviewId);

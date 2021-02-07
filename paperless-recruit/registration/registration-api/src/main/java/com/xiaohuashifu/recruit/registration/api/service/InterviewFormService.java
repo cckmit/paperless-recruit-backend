@@ -4,7 +4,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewFormConstants;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewFormDTO;
-import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewFormRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -35,7 +35,7 @@ public interface InterviewFormService {
      * @return 创建的面试表
      */
     Result<InterviewFormDTO> saveInterviewForm(@NotNull(message = "The saveInterviewFormPO can't be null.")
-                                                       SaveInterviewFormPO saveInterviewFormPO);
+                                                       CreateInterviewFormRequest saveInterviewFormPO);
 
     /**
      * 更新面试时间

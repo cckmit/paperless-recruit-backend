@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
-import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewFormRequest;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewFormService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -32,7 +32,7 @@ public class InterviewFormServiceImplTest {
 
     @Test
     public void saveInterviewForm() {
-        System.out.println(interviewFormService.saveInterviewForm(SaveInterviewFormPO.builder()
+        System.out.println(interviewFormService.saveInterviewForm(CreateInterviewFormRequest.builder()
                 .interviewId(9L)
                 .applicationFormId(10L)
                 .interviewLocation("创客空间")

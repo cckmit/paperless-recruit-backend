@@ -5,9 +5,9 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.StudentNumber;
 import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormConstants;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -21,21 +21,21 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@SuperBuilder
-public class CreateApplicationFormPO implements Serializable {
+@Builder
+public class CreateApplicationFormRequest implements Serializable {
 
     /**
      * 报名者用户编号
      */
-    @NotNull(message = "The userId can't be null.")
-    @Positive(message = "The userId must be greater than 0.")
+    @NotNull
+    @Positive
     private Long userId;
 
     /**
      * 招新编号
      */
-    @NotNull(message = "The recruitmentId can't be null.")
-    @Positive(message = "The recruitmentId must be greater than 0.")
+    @NotNull
+    @Positive
     private Long recruitmentId;
 
     /**
@@ -59,13 +59,13 @@ public class CreateApplicationFormPO implements Serializable {
     /**
      * 第一部门
      */
-    @Positive(message = "The firstDepartmentId must be greater than 0.")
+    @Positive
     private Long firstDepartmentId;
 
     /**
      * 第二部门
      */
-    @Positive(message = "The secondDepartmentId must be greater than 0.")
+    @Positive
     private Long secondDepartmentId;
 
     /**
@@ -77,9 +77,7 @@ public class CreateApplicationFormPO implements Serializable {
     /**
      * 个人简介
      */
-    @Size(max = ApplicationFormConstants.MAX_INTRODUCTION_LENGTH,
-            message = "The length of introduction must not be greater than "
-                    + ApplicationFormConstants.MAX_INTRODUCTION_LENGTH + ".")
+    @Size(max = ApplicationFormConstants.MAX_INTRODUCTION_LENGTH)
     private String introduction;
 
     /**
@@ -97,20 +95,19 @@ public class CreateApplicationFormPO implements Serializable {
     /**
      * 学院编号
      */
-    @Positive(message = "The collegeId must be greater than 0.")
+    @Positive
     private Long collegeId;
 
     /**
      * 专业编号
      */
-    @Positive(message = "The majorId must be greater than 0.")
+    @Positive
     private Long majorId;
 
     /**
      * 备注
      */
-    @Size(max = ApplicationFormConstants.MAX_NOTE_LENGTH,
-            message = "The length of note must not be greater than " + ApplicationFormConstants.MAX_NOTE_LENGTH + ".")
+    @Size(max = ApplicationFormConstants.MAX_NOTE_LENGTH)
     private String note;
 
 }

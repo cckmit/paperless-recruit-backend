@@ -3,7 +3,7 @@ package com.xiaohuashifu.recruit.registration.api.service;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewEvaluationConstants;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewEvaluationDTO;
-import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewEvaluationPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewEvaluationRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -35,7 +35,7 @@ public interface InterviewEvaluationService {
      */
     Result<InterviewEvaluationDTO> saveInterviewEvaluation(
             @NotNull(message = "The saveInterviewEvaluationPO can't be null.")
-                    SaveInterviewEvaluationPO saveInterviewEvaluationPO);
+                    CreateInterviewEvaluationRequest saveInterviewEvaluationPO);
 
     /**
      * 更新面试评价

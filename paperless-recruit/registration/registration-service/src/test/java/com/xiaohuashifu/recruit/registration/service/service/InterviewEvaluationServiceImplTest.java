@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewEvaluationPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewEvaluationRequest;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewEvaluationService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -31,7 +31,7 @@ public class InterviewEvaluationServiceImplTest {
 
     @Test
     public void saveInterviewEvaluation() {
-        System.out.println(interviewEvaluationService.saveInterviewEvaluation(SaveInterviewEvaluationPO.builder()
+        System.out.println(interviewEvaluationService.saveInterviewEvaluation(CreateInterviewEvaluationRequest.builder()
                 .interviewerId(2L)
                 .interviewFormId(3L)
                 .evaluation("过了")

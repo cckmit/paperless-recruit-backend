@@ -48,7 +48,7 @@ public class ApplicationFormServiceImplTest {
 //        majorId
 //                note
         System.out.println(applicationFormService.createApplicationForm(
-                CreateApplicationFormPO.builder()
+                CreateApplicationFormRequest.builder()
                         .userId(21L)
         .recruitmentId(22L)
         .avatarUrl("")

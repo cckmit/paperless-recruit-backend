@@ -12,7 +12,7 @@ import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormTemplateDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
-import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormRequest;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
@@ -95,7 +95,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             parameters = {"#{#createApplicationFormPO.userId}", "#{#createApplicationFormPO.recruitmentId}"},
             errorMessage = "Failed to acquire applicationForm lock.")
     @Override
-    public Result<ApplicationFormDTO> createApplicationForm(CreateApplicationFormPO createApplicationFormPO) {
+    public Result<ApplicationFormDTO> createApplicationForm(CreateApplicationFormRequest createApplicationFormPO) {
         // 判断是否已经报名了
         Long recruitmentId = createApplicationFormPO.getRecruitmentId();
         Long userId = createApplicationFormPO.getUserId();
@@ -708,7 +708,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
      * @return ApplicationFormDO
      */
     private Result<ApplicationFormDO> createApplicationFormPO2ApplicationFormDO(
-            CreateApplicationFormPO createApplicationFormPO, ApplicationFormTemplateDTO applicationFormTemplateDTO) {
+            CreateApplicationFormRequest createApplicationFormPO, ApplicationFormTemplateDTO applicationFormTemplateDTO) {
         // 判断是否需要 note
         ApplicationFormDO.ApplicationFormDOBuilder<?, ?> applicationFormDOBuilder = ApplicationFormDO.builder();
         if (applicationFormTemplateDTO.getNote()) {

@@ -13,7 +13,7 @@ import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentConstants;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
-import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentRequest;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.dao.RecruitmentMapper;
@@ -96,7 +96,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * @return 创建结果
      */
     @Override
-    public Result<RecruitmentDTO> createRecruitment(CreateRecruitmentPO createRecruitmentPO) {
+    public Result<RecruitmentDTO> createRecruitment(CreateRecruitmentRequest createRecruitmentPO) {
         // 检查参数
         Result<RecruitmentDO> checkResult = checkForCreateRecruitment(createRecruitmentPO);
         if (checkResult.isFailure()) {
@@ -1036,7 +1036,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * @param createRecruitmentPO CreateRecruitmentPO
      * @return 检查结果，检查成功返回招新的数据对象，可以直接用于插入数据库
      */
-    private Result<RecruitmentDO> checkForCreateRecruitment(CreateRecruitmentPO createRecruitmentPO) {
+    private Result<RecruitmentDO> checkForCreateRecruitment(CreateRecruitmentRequest createRecruitmentPO) {
         // 检查组织是否存在
         organizationService.getOrganization(createRecruitmentPO.getOrganizationId());
 

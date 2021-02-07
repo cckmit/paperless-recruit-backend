@@ -1,9 +1,9 @@
 package com.xiaohuashifu.recruit.registration.api.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@SuperBuilder
+@Builder
 public class ApplicationFormDTO implements Serializable {
 
     /**

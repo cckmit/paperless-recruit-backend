@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewEvaluationDTO;
-import com.xiaohuashifu.recruit.registration.api.request.SaveInterviewEvaluationPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewEvaluationRequest;
 import com.xiaohuashifu.recruit.registration.api.service.*;
 import com.xiaohuashifu.recruit.registration.service.assembler.InterviewEvaluationAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.InterviewEvaluationMapper;
@@ -74,7 +74,7 @@ public class InterviewEvaluationServiceImpl implements InterviewEvaluationServic
                     "#{#saveInterviewEvaluationPO.interviewerId}"},
             errorMessage = "Failed to acquire save interview evaluation lock.")
     @Override
-    public Result<InterviewEvaluationDTO> saveInterviewEvaluation(SaveInterviewEvaluationPO saveInterviewEvaluationPO) {
+    public Result<InterviewEvaluationDTO> saveInterviewEvaluation(CreateInterviewEvaluationRequest saveInterviewEvaluationPO) {
         // 判断该面试评价是否已经存在
         Long interviewFormId = saveInterviewEvaluationPO.getInterviewFormId();
         Long interviewerId = saveInterviewEvaluationPO.getInterviewerId();

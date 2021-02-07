@@ -6,9 +6,9 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormTemplateConstants;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormTemplateDTO;
-import com.xiaohuashifu.recruit.registration.api.request.AddApplicationFormTemplatePO;
-import com.xiaohuashifu.recruit.registration.api.request.ApplicationFormTemplatePO;
-import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormTemplatePO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormTemplateRequest;
+import com.xiaohuashifu.recruit.registration.api.request.ApplicationFormTemplateRequest;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormTemplateRequest;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.dao.ApplicationFormTemplateMapper;
@@ -69,7 +69,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
             errorMessage = "Failed to acquire applicationFormTemplate lock.")
     @Override
     public Result<ApplicationFormTemplateDTO> addApplicationFormTemplate(
-            AddApplicationFormTemplatePO addApplicationFormTemplatePO) {
+            CreateApplicationFormTemplateRequest addApplicationFormTemplatePO) {
         // 判断报名表模板的字段是否小于最低限制
         int count = countApplicationFormTemplateFields(addApplicationFormTemplatePO);
         if (count < ApplicationFormTemplateConstants.MIN_APPLICATION_FORM_TEMPLATE_FIELD_NUMBERS) {
@@ -158,7 +158,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
             errorMessage = "Failed to acquire applicationFormTemplate lock.")
     @Override
     public Result<ApplicationFormTemplateDTO> updateApplicationFormTemplate(
-            UpdateApplicationFormTemplatePO updateApplicationFormTemplatePO) {
+            UpdateApplicationFormTemplateRequest updateApplicationFormTemplatePO) {
         // 判断报名表模板的字段是否小于最低限制
         int count = countApplicationFormTemplateFields(updateApplicationFormTemplatePO);
         if (count < ApplicationFormTemplateConstants.MIN_APPLICATION_FORM_TEMPLATE_FIELD_NUMBERS) {
@@ -381,9 +381,9 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
      * @param applicationFormTemplatePO 报名表模板参数对象
      * @return 字段数量
      */
-    private int countApplicationFormTemplateFields(ApplicationFormTemplatePO applicationFormTemplatePO) {
+    private int countApplicationFormTemplateFields(ApplicationFormTemplateRequest applicationFormTemplatePO) {
         int count = 0;
-        for (Field declaredField : ApplicationFormTemplatePO.class.getDeclaredFields()) {
+        for (Field declaredField : ApplicationFormTemplateRequest.class.getDeclaredFields()) {
             declaredField.setAccessible(true);
             Boolean value;
             try {

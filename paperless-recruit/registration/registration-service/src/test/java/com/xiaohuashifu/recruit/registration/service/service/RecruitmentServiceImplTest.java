@@ -2,7 +2,7 @@ package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
-import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentRequest;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -50,7 +50,7 @@ public class RecruitmentServiceImplTest {
         recruitmentMajorIds.add(2L);
         recruitmentMajorIds.add(3L);
 
-        CreateRecruitmentPO createRecruitmentPO = CreateRecruitmentPO.builder()
+        CreateRecruitmentRequest createRecruitmentPO = CreateRecruitmentRequest.builder()
                 .organizationId(1L)
                 .positionName("干事")
                 .recruitmentNumbers("约30人")

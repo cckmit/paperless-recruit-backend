@@ -20,13 +20,13 @@ import javax.validation.constraints.Positive;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
-public class UpdateApplicationFormTemplatePO extends ApplicationFormTemplatePO {
+public class UpdateApplicationFormTemplateRequest extends ApplicationFormTemplateRequest {
 
     /**
      * 报名表模板编号
      */
-    @NotNull(message = "The id can't be null.")
-    @Positive(message = "The id must be greater than 0.")
+    @NotNull
+    @Positive
     private Long id;
 
 }

@@ -1,8 +1,10 @@
 package com.xiaohuashifu.recruit.registration.api.request;
 
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewEvaluationConstants;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,29 +20,29 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-public class SaveInterviewEvaluationPO implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateInterviewEvaluationRequest implements Serializable {
 
     /**
      * 面试表编号
      */
-    @NotNull(message = "The interviewFormId can't be null.")
-    @Positive(message = "The interviewFormId must be greater than 0.")
+    @NotNull
+    @Positive
     private Long interviewFormId;
 
     /**
      * 面试官编号
      */
-    @NotNull(message = "The interviewerId can't be null.")
-    @Positive(message = "The interviewerId must be greater than 0.")
+    @NotNull
+    @Positive
     private Long interviewerId;
 
     /**
      * 评价
      */
-    @NotBlank(message = "The evaluation can't be blank.")
-    @Size(max = InterviewEvaluationConstants.MAX_EVALUATION_LENGTH,
-            message = "The length of evaluation must not be greater than "
-                    + InterviewEvaluationConstants.MAX_EVALUATION_LENGTH + ".")
+    @NotBlank
+    @Size(max = InterviewEvaluationConstants.MAX_EVALUATION_LENGTH)
     private String evaluation;
 
 }

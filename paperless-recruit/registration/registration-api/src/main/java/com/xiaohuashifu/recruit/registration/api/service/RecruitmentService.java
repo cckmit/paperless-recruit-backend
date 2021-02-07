@@ -5,7 +5,7 @@ import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentConstants;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
-import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentRequest;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ public interface RecruitmentService {
      * @return 创建结果
      */
     Result<RecruitmentDTO> createRecruitment(@NotNull(message = "The createRecruitmentPO can't be null.")
-                                                     CreateRecruitmentPO createRecruitmentPO);
+                                                     CreateRecruitmentRequest createRecruitmentPO);
 
     /**
      * 添加招新学院，报名结束后无法添加

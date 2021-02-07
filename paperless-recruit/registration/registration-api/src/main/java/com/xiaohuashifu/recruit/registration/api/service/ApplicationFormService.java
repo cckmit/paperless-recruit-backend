@@ -6,7 +6,7 @@ import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.StudentNumber;
 import com.xiaohuashifu.recruit.registration.api.constant.ApplicationFormConstants;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
-import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormPO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormRequest;
 
 import javax.validation.constraints.*;
 
@@ -37,7 +37,7 @@ public interface ApplicationFormService {
      *
      * @return 创建的报名表
      */
-    Result<ApplicationFormDTO> createApplicationForm(@NotNull CreateApplicationFormPO createApplicationFormPO);
+    Result<ApplicationFormDTO> createApplicationForm(@NotNull CreateApplicationFormRequest createApplicationFormPO);
 
     /**
      * 获取报名表

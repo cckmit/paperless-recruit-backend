@@ -44,7 +44,7 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
     /**
      * 类目
      */
-    private String type;
+    private String templateType;
 
     /**
      * 描述
@@ -54,6 +54,6 @@ public class WeChatMpSubscribeMessageTemplateDTO implements Serializable {
     /**
      * 模板的状态
      */
-    private WeChatMpSubscribeMessageTemplateStatusEnum status;
+    private WeChatMpSubscribeMessageTemplateStatusEnum templateStatus;
 
 }

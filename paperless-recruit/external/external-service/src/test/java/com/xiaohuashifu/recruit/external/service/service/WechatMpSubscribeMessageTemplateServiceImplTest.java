@@ -54,7 +54,7 @@ public class WechatMpSubscribeMessageTemplateServiceImplTest {
     }
 
     @Test
-    public void testGetWechatMpSubscribeMessageTemplate() {
+    public void listWeChatMpSubscribeMessageTemplates() {
         System.out.println(wechatMpSubscribeMessageTemplateService.listWeChatMpSubscribeMessageTemplates(
                 WeChatMpSubscribeMessageTemplateQuery.builder().pageNum(1L).pageSize(50L).build()
         ));

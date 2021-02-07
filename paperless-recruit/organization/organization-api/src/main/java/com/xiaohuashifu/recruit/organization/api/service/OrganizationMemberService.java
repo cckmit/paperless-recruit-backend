@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.organization.api.service;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
@@ -61,6 +62,16 @@ public interface OrganizationMemberService {
                     Long organizationMemberInvitationId);
 
     /**
+     * 获取组织成员
+     *
+     * @private 内部方法
+     *
+     * @param id 组织成员编号
+     * @return OrganizationMemberDTO
+     */
+    OrganizationMemberDTO getOrganizationMember(Long id) throws NotFoundServiceException;
+
+    /**
      * 查询组织成员
      *
      * @errorCode InvalidParameter: 查询参数格式错误
@@ -84,25 +95,6 @@ public interface OrganizationMemberService {
     Result<PageInfo<OrganizationMemberInvitationDTO>> listOrganizationMemberInvitation(
             @NotNull(message = "The query can't be null.") OrganizationMemberInvitationQuery query);
 
-    /**
-     * 获取组织编号
-     *
-     * @private 内部方法
-     *
-     * @param id 组织成员编号
-     * @return 组织编号，若组织成员不存在返回 null
-     */
-    Long getOrganizationId(Long id);
-
-    /**
-     * 获取用户编号
-     *
-     * @private 内部方法
-     *
-     * @param id 组织成员编号
-     * @return 用户编号，若组织成员不存在返回 null
-     */
-    Long getUserId(Long id);
 
     /**
      * 更新组织成员的部门

@@ -1,13 +1,10 @@
 package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationCoreMemberService;
-import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -33,14 +30,14 @@ public class OrganizationCoreMemberServiceImplTest {
 
     @Test
     public void saveOrganizationCoreMember() {
-        System.out.println(organizationCoreMemberService.saveOrganizationCoreMember(
+        System.out.println(organizationCoreMemberService.createOrganizationCoreMember(
                 1L, 2L));
     }
 
 
     @Test
     public void deleteOrganizationCoreMember() {
-        System.out.println(organizationCoreMemberService.deleteOrganizationCoreMember(2L));
+        System.out.println(organizationCoreMemberService.removeOrganizationCoreMember(2L));
     }
 
     @Test

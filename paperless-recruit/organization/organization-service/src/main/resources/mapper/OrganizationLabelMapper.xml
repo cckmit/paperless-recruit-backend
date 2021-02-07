@@ -2,19 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.organization.service.dao.OrganizationLabelMapper">
 
-    <resultMap id="organizationLabel" type="com.xiaohuashifu.recruit.organization.service.do0.OrganizationLabelDO">
-        <id property="id" column="id"/>
-        <result property="labelName" column="label_name"/>
-        <result property="referenceNumber" column="reference_number"/>
-        <result property="available" column="is_available"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateTime" column="update_time"/>
-    </resultMap>
-
-    <sql id="organizationLabel">
-        id, label_name, reference_number, is_available, create_time, update_time
-    </sql>
-
     <update id="increaseReferenceNumber">
         update organization_label
         set reference_number = reference_number + 1

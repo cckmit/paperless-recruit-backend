@@ -118,8 +118,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
 
         // 判断该标签是否可用
-        OrganizationLabelDTO organizationLabelDTO =
-                organizationLabelService.getOrganizationLabelByLabelName(label).getData();
+        OrganizationLabelDTO organizationLabelDTO = organizationLabelService.getOrganizationLabelByLabelName(label);
         if (!organizationLabelDTO.getAvailable()) {
             throw new UnavailableServiceException("The label unavailable.");
         }

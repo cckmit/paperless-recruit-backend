@@ -2,9 +2,11 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.organization.api.dto.DisableOrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationLabelQuery;
@@ -45,11 +47,11 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     }
 
     @Override
-    public Result<OrganizationLabelDTO> createOrganizationLabel(String labelName) {
+    public OrganizationLabelDTO createOrganizationLabel(String labelName) {
         // 判断标签名是否已经存在
         OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectByLabelName(labelName);
         if (organizationLabelDO != null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_EXIST, "This label name already exist.");
+            throw new DuplicateServiceException("This label name already exist.");
         }
 
         // 保存标签
@@ -59,25 +61,25 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
     }
 
     @Override
-    public Result<OrganizationLabelDTO> getOrganizationLabel(Long id) {
+    public OrganizationLabelDTO getOrganizationLabel(Long id) {
         OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectById(id);
         if (organizationLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+            throw new NotFoundServiceException("organization label", "id", id);
         }
-        return Result.success(organizationLabelAssembler.organizationLabelDOToOrganizationLabelDTO(organizationLabelDO));
+        return organizationLabelAssembler.organizationLabelDOToOrganizationLabelDTO(organizationLabelDO);
     }
 
     @Override
-    public Result<OrganizationLabelDTO> getOrganizationLabelByLabelName(String labelName) {
+    public OrganizationLabelDTO getOrganizationLabelByLabelName(String labelName) {
         OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectByLabelName(labelName);
         if (organizationLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.NOT_FOUND);
+            throw new NotFoundServiceException("organization label", "labelName", labelName);
         }
-        return Result.success(organizationLabelAssembler.organizationLabelDOToOrganizationLabelDTO(organizationLabelDO));
+        return organizationLabelAssembler.organizationLabelDOToOrganizationLabelDTO(organizationLabelDO);
     }
 
     @Override
-    public Result<QueryResult<OrganizationLabelDTO>> listOrganizationLabels(OrganizationLabelQuery query) {
+    public QueryResult<OrganizationLabelDTO> listOrganizationLabels(OrganizationLabelQuery query) {
         LambdaQueryWrapper<OrganizationLabelDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.likeRight(query.getLabelName() != null, OrganizationLabelDO::getLabelName,
                 query.getLabelName())
@@ -89,74 +91,56 @@ public class OrganizationLabelServiceImpl implements OrganizationLabelService {
                 .stream()
                 .map(organizationLabelAssembler::organizationLabelDOToOrganizationLabelDTO)
                 .collect(Collectors.toList());
-        QueryResult<OrganizationLabelDTO> queryResult = new QueryResult<>(page.getTotal(), organizationLabelDTOS);
-        return Result.success(queryResult);
+        return new QueryResult<>(page.getTotal(), organizationLabelDTOS);
     }
 
     @Override
     @Transactional
-    public Result<DisableOrganizationLabelDTO> disableOrganizationLabel(Long id) {
+    public DisableOrganizationLabelDTO disableOrganizationLabel(Long id) {
         // 判断标签是否存在
-        OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectById(id);
-        if (organizationLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST, "The label does not exist.");
-        }
+        OrganizationLabelDTO organizationLabelDTO = getOrganizationLabel(id);
 
         // 判断标签是否已经被禁用
-        if (!organizationLabelDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already unavailable.");
+        if (!organizationLabelDTO.getAvailable()) {
+            throw new UnmodifiedServiceException("The label already unavailable.");
         }
 
         // 禁用标签
-        OrganizationLabelDO organizationLabelDOForUpdate = OrganizationLabelDO.builder()
-                .id(id)
-                .available(false)
-                .build();
+        OrganizationLabelDO organizationLabelDOForUpdate = OrganizationLabelDO.builder().id(id).available(false).build();
         organizationLabelMapper.updateById(organizationLabelDOForUpdate);
 
         // 删除组织的这个标签
-        int deletedNumber = organizationService.removeLabels(organizationLabelDO.getLabelName());
+        int deletedNumber = organizationService.removeLabels(organizationLabelDTO.getLabelName());
 
         // 封装删除数量和禁用后的组织标签对象
-        OrganizationLabelDTO organizationLabelDTO = getOrganizationLabel(id).getData();
-        DisableOrganizationLabelDTO disableOrganizationLabelDTO =
-                new DisableOrganizationLabelDTO(organizationLabelDTO, deletedNumber);
-        return Result.success(disableOrganizationLabelDTO);
+        return new DisableOrganizationLabelDTO(getOrganizationLabel(id), deletedNumber);
     }
 
     @Override
     @Transactional
-    public Result<OrganizationLabelDTO> enableOrganizationLabel(Long id) {
+    public OrganizationLabelDTO enableOrganizationLabel(Long id) {
         // 判断标签是否存在
-        OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectById(id);
-        if (organizationLabelDO == null) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_NOT_EXIST,
-                    "The label does not exist.");
-        }
+        OrganizationLabelDTO organizationLabelDTO = getOrganizationLabel(id);
 
         // 判断标签是否已经可用
-        if (organizationLabelDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The label already available.");
+        if (organizationLabelDTO.getAvailable()) {
+            throw new UnmodifiedServiceException("The label already available.");
         }
 
         // 解禁标签
-        OrganizationLabelDO organizationLabelDOForUpdate = OrganizationLabelDO.builder()
-                .id(id)
-                .available(true)
-                .build();
+        OrganizationLabelDO organizationLabelDOForUpdate = OrganizationLabelDO.builder().id(id).available(true).build();
         organizationLabelMapper.updateById(organizationLabelDOForUpdate);
         return getOrganizationLabel(id);
     }
 
     @Override
-    public Result<OrganizationLabelDTO> increaseReferenceNumberOrSaveOrganizationLabel(String labelName) {
+    public OrganizationLabelDTO increaseReferenceNumberOrSaveOrganizationLabel(String labelName) {
         // 判断标签是否已经存在
         OrganizationLabelDO organizationLabelDO = organizationLabelMapper.selectByLabelName(labelName);
 
         // 若存在且被禁用则不可用增加引用数量
         if (organizationLabelDO != null && !organizationLabelDO.getAvailable()) {
-            return Result.fail(ErrorCodeEnum.UNPROCESSABLE_ENTITY_UNAVAILABLE,
-                    "The organization label unavailable.");
+            throw new UnavailableServiceException("The organization label unavailable.");
         }
 
         // 若不存在先添加标签

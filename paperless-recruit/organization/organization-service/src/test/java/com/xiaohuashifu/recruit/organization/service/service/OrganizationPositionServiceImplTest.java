@@ -2,13 +2,10 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationPositionQuery;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationPositionService;
-import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -34,7 +31,7 @@ public class OrganizationPositionServiceImplTest {
 
     @Test
     public void saveOrganizationPosition() {
-        System.out.println(organizationPositionService.saveOrganizationPosition(
+        System.out.println(organizationPositionService.createOrganizationPosition(
                 1L, "中心主席", 2));
     }
 

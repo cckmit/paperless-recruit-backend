@@ -162,15 +162,10 @@ public interface OrganizationMemberService {
      *
      * @private 内部方法
      *
-     * @errorCode InvalidParameter: 参数格式错误
-     *
      * @param organizationPositionId 组织职位编号
      * @return 被清除职位的组织成员数量
      */
-    Result<Integer> clearOrganizationPositions(
-            @NotNull(message = "The organizationPositionId can't be null.")
-            @PositiveOrZero(message = "The organizationPositionId must be greater than or equal to 0.")
-                    Long organizationPositionId);
+    Integer clearOrganizationPositions(@NotNull @Positive Long organizationPositionId);
 
     /**
      * 拒绝加入组织邀请

@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.gateway.service.auth;
 
 import com.xiaohuashifu.recruit.authentication.api.service.WhiteListService;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.gateway.service.constant.ResourceServerConstants;
 import com.xiaohuashifu.recruit.user.api.service.AuthorityService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -92,13 +91,8 @@ public class UrlAuthorityChecker {
      */
     @Scheduled(initialDelay = REFRESH_INITIAL_DELAY, fixedDelay = REFRESH_FIXED_DELAY)
     private void refreshPermissionNameAuthorizationUrlMap() {
-        Result<Map<String, String>> createPermissionNameAuthorizationUrlMapResult =
+        this.permissionNameAuthorizationUrlMap =
                 authorityService.createPermissionNameAuthorizationUrlMap(ResourceServerConstants.AUTHORITY_PREFIX);
-        if (!createPermissionNameAuthorizationUrlMapResult.isSuccess()) {
-            logger.error("Refresh PermissionNameAuthorizationUrlMap failed.");
-            return;
-        }
-        this.permissionNameAuthorizationUrlMap = createPermissionNameAuthorizationUrlMapResult.getData();
     }
 
     /**
@@ -107,11 +101,6 @@ public class UrlAuthorityChecker {
      */
     @Scheduled(initialDelay = REFRESH_INITIAL_DELAY, fixedDelay = REFRESH_FIXED_DELAY)
     private void refreshWhiteList() {
-        Result<List<String>> getWhiteListResult = whiteListService.getWhiteList();
-        if (!getWhiteListResult.isSuccess()) {
-            logger.error("Refresh refreshWhiteList failed.");
-            return;
-        }
-        whiteList = getWhiteListResult.getData();
+        whiteList = whiteListService.getWhiteList();
     }
 }

@@ -193,7 +193,7 @@ public class UserServiceImpl implements UserService {
     // TODO: 2021/2/5 测试一下不加锁只加事务会不会导致数据库记录重复
     @Override
     @Transactional
-    public UserDTO createUser(CreateUserRequest request) {
+    public UserDTO register(CreateUserRequest request) {
         // 判断用户名是否存在
         UserDO userDO = userMapper.selectByUsername(request.getUsername());
         if (userDO != null) {
@@ -209,7 +209,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @DistributedLock(value = PHONE_DISTRIBUTED_LOCK_KEY_PATTERN, parameters = "#{#request.phone}")
-    public UserDTO createUserBySmsAuthCode(CreateUserBySmsAuthCodeRequest request) {
+    public UserDTO registerBySmsAuthCode(CreateUserBySmsAuthCodeRequest request) {
         // 判断手机号码是否存在
         UserDO userDO = userMapper.selectByPhone(request.getPhone());
         if (userDO != null) {
@@ -233,7 +233,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @DistributedLock(value = EMAIL_DISTRIBUTED_LOCK_KEY_PATTERN, parameters = "#{#request.email}")
-    public UserDTO createUserByEmailAuthCode(CreateUserByEmailAuthCodeRequest request) {
+    public UserDTO registerByEmailAuthCode(CreateUserByEmailAuthCodeRequest request) {
         // 判断邮箱是否存在
         UserDO userDO = userMapper.selectByEmail(request.getEmail());
         if (userDO != null) {

@@ -23,12 +23,12 @@ import javax.validation.constraints.*;
 public interface UserService {
 
     /**
-     * 创建用户，对外不使用该方式进行注册
+     * 注册，对外不使用该方式进行注册
      *
      * @param request CreateUserRequest
      * @return 新创建的用户
      */
-    UserDTO createUser(@NotNull CreateUserRequest request) throws ServiceException;
+    UserDTO register(@NotNull CreateUserRequest request) throws ServiceException;
 
     /**
      * 通过短信验证码注册账号
@@ -38,7 +38,7 @@ public interface UserService {
      * @param request CreateUserBySmsAuthCodeRequest
      * @return 新创建的用户
      */
-    UserDTO createUserBySmsAuthCode(@NotNull CreateUserBySmsAuthCodeRequest request) throws ServiceException;
+    UserDTO registerBySmsAuthCode(@NotNull CreateUserBySmsAuthCodeRequest request) throws ServiceException;
 
     /**
      * 通过邮箱验证码注册账号
@@ -49,7 +49,7 @@ public interface UserService {
      * @param request CreateUserByEmailAuthCodeRequest
      * @return 新创建的用户
      */
-    UserDTO createUserByEmailAuthCode(@NotNull CreateUserByEmailAuthCodeRequest request) throws ServiceException;
+    UserDTO registerByEmailAuthCode(@NotNull CreateUserByEmailAuthCodeRequest request) throws ServiceException;
 
     /**
      * 通过id获取用户信息

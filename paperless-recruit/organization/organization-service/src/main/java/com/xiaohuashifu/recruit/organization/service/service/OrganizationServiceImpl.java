@@ -91,7 +91,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @DistributedLock(value = ORGANIZATION_EMAIL_LOCK_KEY_PATTERN, parameters = "#{#request.email}")
     public OrganizationDTO createOrganization(CreateOrganizationRequest request) {
         // 注册主体账号
-        UserDTO userDTO = userService.createUserByEmailAuthCode(
+        UserDTO userDTO = userService.registerByEmailAuthCode(
                 organizationAssembler.createOrganizationRequestToCreateUserByEmailAuthCodeRequest(request));
 
         // 赋予主体组织的基本权限

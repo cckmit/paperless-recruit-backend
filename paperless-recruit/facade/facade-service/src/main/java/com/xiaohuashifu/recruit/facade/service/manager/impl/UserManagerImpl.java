@@ -3,6 +3,7 @@ package com.xiaohuashifu.recruit.facade.service.manager.impl;
 import com.xiaohuashifu.recruit.facade.service.assembler.UserAssembler;
 import com.xiaohuashifu.recruit.facade.service.manager.UserManager;
 import com.xiaohuashifu.recruit.facade.service.vo.UserVO;
+import com.xiaohuashifu.recruit.user.api.request.CreateUserBySmsAuthCodeRequest;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.cache.annotation.CacheConfig;
@@ -28,12 +29,11 @@ public class UserManagerImpl implements UserManager {
         this.userAssembler = userAssembler;
     }
 
-    /**
-     * 获取用户
-     *
-     * @param userId 用户编号
-     * @return UserVO
-     */
+    @Override
+    public UserVO registerBySmsAuthCode(CreateUserBySmsAuthCodeRequest request) {
+        return userAssembler.userDTOToUserVO(userService.registerBySmsAuthCode(request));
+    }
+
     @Cacheable(key = "'users:' + #userId")
     @Override
     public UserVO getUser(Long userId) {

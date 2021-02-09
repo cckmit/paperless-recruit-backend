@@ -39,20 +39,20 @@ public class UserServiceImplTest {
 
     @Test
     public void signUpUser() {
-        UserDTO userDTO = userService.createUser(
+        UserDTO userDTO = userService.register(
                 CreateUserRequest.builder().username("profiletest8").password("123456").build());
         System.out.println(userDTO);
     }
 
     @Test
     public void signUpBySmsAuthCode() {
-        System.out.println(userService.createUserBySmsAuthCode(CreateUserBySmsAuthCodeRequest.builder()
+        System.out.println(userService.registerBySmsAuthCode(CreateUserBySmsAuthCodeRequest.builder()
                 .phone("15992321303").authCode("565209").password("123456").build()));
     }
 
     @Test
     public void signUpByEmailAuthCode() {
-        System.out.println(userService.createUserByEmailAuthCode(CreateUserByEmailAuthCodeRequest.builder()
+        System.out.println(userService.registerByEmailAuthCode(CreateUserByEmailAuthCodeRequest.builder()
                 .email("827032783@qq.com").password("123456").authCode("075478").build()));
     }
 

@@ -1,7 +1,9 @@
 package com.xiaohuashifu.recruit.pay.api.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -13,6 +15,8 @@ import java.io.Serializable;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TradeLogDTO implements Serializable {
     private Long id;
     private String orderNumber;

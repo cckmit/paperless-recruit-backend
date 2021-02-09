@@ -1,7 +1,9 @@
 package com.xiaohuashifu.recruit.pay.service.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 描述：退款的数据传输对象
@@ -11,6 +13,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RefundDTO {
 
     /**

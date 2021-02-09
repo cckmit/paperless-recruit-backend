@@ -14,8 +14,7 @@ import com.alipay.api.response.AlipayTradeCancelResponse;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.InternalServiceException;
 import com.xiaohuashifu.recruit.common.util.RmbUtils;
 import com.xiaohuashifu.recruit.pay.service.dto.*;
 import com.xiaohuashifu.recruit.pay.service.manager.PayManager;
@@ -50,16 +49,8 @@ public class AlipayManagerImpl implements PayManager {
         this.alipayClient = alipayClient;
     }
 
-    /**
-     * 预下单
-     *
-     * @errorCode UnknownError: 预下单失败
-     *
-     * @param preCreateDTO PreCreateDTO
-     * @return 支付的二维码
-     */
     @Override
-    public Result<String> preCreate(PreCreateDTO preCreateDTO) {
+    public String preCreate(PreCreateDTO preCreateDTO) {
         // 封装请求
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
         AlipayTradePrecreateModel alipayTradePrecreateModel = new AlipayTradePrecreateModel();
@@ -73,33 +64,23 @@ public class AlipayManagerImpl implements PayManager {
         AlipayTradePrecreateResponse response;
         try {
             response = alipayClient.certificateExecute(request);
-            System.out.println(response.getBody());
         } catch (AlipayApiException e) {
             log.error("Alipay preCreate request error. preCreateDTO:" + preCreateDTO, e);
-            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "PreCreate trade error.");
+            throw new InternalServiceException("PreCreate trade error.");
         }
 
         // 如果状态码不是 10000，表示请求失败
         if (!Objects.equals(response.getCode(), ALIPAY_REQUEST_SUCCESS_CODE)) {
             log.warn("Alipay preCreate request failed. preCreateDTO={}, response={}", preCreateDTO, response);
-            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "PreCreate trade failed.");
+            throw new InternalServiceException("PreCreate trade failed.");
         }
 
         // 请求成功返回二维码
-        return Result.success(response.getQrCode());
+        return response.getQrCode();
     }
 
-    /**
-     * 查询订单
-     *
-     * @errorCode UnknownError: 查询失败
-     *
-     * @param orderNumber 订单号
-     * @param tradeNumber 交易号，支付平台产生
-     * @return 查询结果
-     */
     @Override
-    public Result<QueryResultDTO> query(String orderNumber, String tradeNumber) {
+    public QueryResultDTO query(String orderNumber, String tradeNumber) {
         // 封装请求参数
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
         AlipayTradeQueryModel alipayTradeQueryModel = new AlipayTradeQueryModel();
@@ -117,37 +98,27 @@ public class AlipayManagerImpl implements PayManager {
         } catch (AlipayApiException e) {
             log.error("Alipay query request error. orderNumber: " + orderNumber
                     + ", tradeNumber: " + tradeNumber + ".", e);
-            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Query trade error.");
+            throw new InternalServiceException("Query trade error.");
         }
 
         // 如果状态码不是 10000，表示请求失败
         if (!Objects.equals(response.getCode(), ALIPAY_REQUEST_SUCCESS_CODE)) {
             log.warn("Alipay query request failed. orderNumber: " + orderNumber
                     + ", tradeNumber: " + tradeNumber + ".");
-            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Query trade failed.");
+            throw new InternalServiceException("Query trade failed.");
         }
 
         // 封装查询结果
-        QueryResultDTO queryResultDTO = QueryResultDTO.builder()
+        return QueryResultDTO.builder()
                 .totalAmount(RmbUtils.yuan2Fen(response.getTotalAmount()))
                 .buyerPayAmount(RmbUtils.yuan2Fen(response.getBuyerPayAmount()))
                 .tradeStatus(response.getTradeStatus())
                 .tradeNumber(response.getTradeNo())
                 .build();
-        return Result.success(queryResultDTO);
     }
 
-    /**
-     * 撤销订单
-     *
-     * @errorCode UnknownError: 撤销出错
-     *
-     * @param orderNumber 订单号
-     * @param tradeNumber 交易号，支付平台产生
-     * @return 撤销结果
-     */
     @Override
-    public Result<CancelResultDTO> cancel(String orderNumber, String tradeNumber) {
+    public CancelResultDTO cancel(String orderNumber, String tradeNumber) {
         // 封装请求
         AlipayTradeCancelRequest request = new AlipayTradeCancelRequest();
         AlipayTradeCancelModel alipayTradeCancelModel = new AlipayTradeCancelModel();
@@ -165,34 +136,25 @@ public class AlipayManagerImpl implements PayManager {
         } catch (AlipayApiException e) {
             log.error("Alipay cancel request error. orderNumber: " + orderNumber
                     + ", tradeNumber: " + tradeNumber + ".", e);
-            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Cancel trade error.");
+            throw new InternalServiceException("Cancel trade error.");
         }
 
         // 如果状态码不是 10000，表示请求失败
         if (!Objects.equals(response.getCode(), ALIPAY_REQUEST_SUCCESS_CODE)) {
             log.warn("Alipay cancel request failed. orderNumber: " + orderNumber
                     + ", tradeNumber: " + tradeNumber + ".");
-            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Cancel trade failed.");
+            throw new InternalServiceException("Cancel trade failed.");
         }
 
         // 封装结果
-        CancelResultDTO cancelResultDTO = CancelResultDTO.builder()
+        return CancelResultDTO.builder()
                 .needRetry(Objects.equals(response.getRetryFlag(), ALIPAY_TRUE_FLAG))
                 .action(response.getAction())
                 .build();
-        return Result.success(cancelResultDTO);
     }
 
-    /**
-     * 退款
-     *
-     * @errorCode UnknownError: 退款出错
-     *
-     * @param refundDTO 退款的参数对象
-     * @return 退款结果
-     */
     @Override
-    public Result<RefundResultDTO> refund(RefundDTO refundDTO) {
+    public RefundResultDTO refund(RefundDTO refundDTO) {
         // 封装请求
         AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
         AlipayTradeRefundModel alipayTradeRefundModel = new AlipayTradeRefundModel();
@@ -213,21 +175,20 @@ public class AlipayManagerImpl implements PayManager {
             response = alipayClient.certificateExecute(request);
         } catch (AlipayApiException e) {
             log.error("Alipay refund request error. RefundDTO: " + refundDTO, e);
-            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Refund trade error.");
+            throw new InternalServiceException("Refund trade error.");
         }
 
         // 如果状态码不是 10000，表示请求失败
         if (!Objects.equals(response.getCode(), ALIPAY_REQUEST_SUCCESS_CODE)) {
             log.error("Alipay refund request failed. RefundDTO: " + refundDTO);
-            return Result.fail(ErrorCodeEnum.UNKNOWN_ERROR, "Refund trade failed.");
+            throw new InternalServiceException("Refund trade failed.");
         }
 
         // 封装请求结果
-        RefundResultDTO refundResultDTO = RefundResultDTO.builder()
+        return RefundResultDTO.builder()
                 .fundChange(Objects.equals(response.getFundChange(), ALIPAY_TRUE_FLAG))
                 .refundFee(RmbUtils.yuan2Fen(response.getRefundFee()))
                 .build();
-        return Result.success(refundResultDTO);
     }
 
 }

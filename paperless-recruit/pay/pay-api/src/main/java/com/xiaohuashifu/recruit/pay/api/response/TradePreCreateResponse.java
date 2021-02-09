@@ -1,7 +1,9 @@
 package com.xiaohuashifu.recruit.pay.api.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -13,16 +15,18 @@ import java.io.Serializable;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TradePreCreateResponse implements Serializable {
 
     /**
      * 二维码
      */
-    private final String qrCode;
+    private String qrCode;
 
     /**
      * 订单日志编号
      */
-    private final Long tradeLogId;
+    private Long tradeLogId;
 
 }

@@ -57,10 +57,10 @@
 			<artifactId>druid-spring-boot-starter</artifactId>
 		</dependency>
 
-		<!-- 分页插件 -->
+		<!--   MyBatis Plus	-->
 		<dependency>
-			<groupId>com.github.pagehelper</groupId>
-			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
 		</dependency>
 
 		<!-- dozer对象属性拷贝 -->
@@ -146,11 +146,6 @@
 		<!--    MapStruct    -->
 
 		<!--	阿里支付	-->
-<!--		<dependency>-->
-<!--			<groupId>com.alipay.sdk</groupId>-->
-<!--			<artifactId>alipay-easysdk</artifactId>-->
-<!--			<version>2.1.2</version>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>com.alipay.sdk</groupId>
 			<artifactId>alipay-sdk-java</artifactId>

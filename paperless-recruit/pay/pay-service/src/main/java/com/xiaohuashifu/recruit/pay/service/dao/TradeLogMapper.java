@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.pay.service.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xiaohuashifu.recruit.pay.service.do0.TradeLogDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,26 +13,21 @@ import java.util.List;
  * @author xhsf
  * @create 2021/1/8 00:02
  */
-public interface TradeLogMapper {
-    int insertTradeLog(TradeLogDO tradeLogDO);
+public interface TradeLogMapper extends BaseMapper<TradeLogDO> {
 
-    TradeLogDO getTradeLog(Long id);
+    default TradeLogDO selectByOrderNumber(String orderNumber) {
+        LambdaQueryWrapper<TradeLogDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TradeLogDO::getOrderNumber, orderNumber);
+        return selectOne(wrapper);
+    }
 
-    TradeLogDO getTradeLogByOrderNumber(String orderNumber);
+    int updateTradeStatus(@Param("id") Long id, @Param("oldTradeStatus") String oldTradeStatus,
+                          @Param("newTradeStatus") String newTradeStatus);
 
-    List<TradeLogDO> listTradeLogsByTradeStatus(String tradeStatus);
-
-    int count(Long id);
-
-    int countByOrderNumber(String orderNumber);
-
-    int updateQrCode(@Param("id") Long id, @Param("qrCode") String qrCode);
-
-    int updateTradeStatus(@Param("id") Long id, @Param("tradeStatus") String tradeStatus);
-
-    int updateTradeStatus0(@Param("id") Long id, @Param("oldTradeStatus") String oldTradeStatus,
-                           @Param("newTradeStatus") String newTradeStatus);
-
-    int updateCancelAction(@Param("id") Long id, @Param("cancelAction") String cancelAction);
+    default List<TradeLogDO> selectListByTradeStatus(String tradeStatus) {
+        LambdaQueryWrapper<TradeLogDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TradeLogDO::getTradeStatus, tradeStatus);
+        return selectList(wrapper);
+    }
 
 }

@@ -2,86 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.recruit.pay.service.dao.TradeLogMapper">
 
-    <resultMap id="tradeLog" type="com.xiaohuashifu.recruit.pay.service.do0.TradeLogDO">
-        <id property="id" column="id"/>
-        <result property="orderNumber" column="order_number"/>
-        <result property="totalAmount" column="total_amount"/>
-        <result property="tradeSubject" column="trade_subject"/>
-        <result property="expireTime" column="expire_time"/>
-        <result property="paymentMethod" column="payment_method"/>
-        <result property="qrCode" column="qr_code"/>
-        <result property="tradeNumber" column="trade_number"/>
-        <result property="buyerPayAmount" column="buyer_pay_amount"/>
-        <result property="cancelAction" column="cancel_action"/>
-        <result property="tradeStatus" column="trade_status"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateTime" column="update_time"/>
-    </resultMap>
-
-    <sql id="tradeLog">
-        id, order_number, total_amount, trade_subject, expire_time, payment_method, qr_code, trade_number,
-        buyer_pay_amount, cancel_action, trade_status, create_time, update_time
-    </sql>
-
-    <insert id="insertTradeLog" keyProperty="id">
-        insert into trade_log(order_number, total_amount, trade_subject, expire_time, payment_method, trade_status)
-        values(#{orderNumber}, #{totalAmount}, #{tradeSubject}, #{expireTime}, #{paymentMethod}, #{tradeStatus})
-    </insert>
-
-    <select id="getTradeLog" resultMap="tradeLog">
-        select <include refid="tradeLog"/>
-        from trade_log
-        where id = #{id}
-    </select>
-
-    <select id="getTradeLogByOrderNumber" resultMap="tradeLog">
-        select <include refid="tradeLog"/>
-        from trade_log
-        where order_number = #{orderNumber}
-    </select>
-
-    <select id="listTradeLogsByTradeStatus" resultMap="tradeLog">
-        select <include refid="tradeLog"/>
-        from trade_log
-        where trade_status = #{tradeStatus}
-    </select>
-
-    <select id="count" resultType="java.lang.Integer">
-        select count(*)
-        from trade_log
-        where id = #{id}
-    </select>
-
-    <select id="countByOrderNumber" resultType="java.lang.Integer">
-        select count(*)
-        from trade_log
-        where order_number = #{orderNumber}
-    </select>
-
-    <update id="updateQrCode">
-        update trade_log
-        set qr_code = #{qrCode}
-        where id = #{id}
-    </update>
-
     <update id="updateTradeStatus">
-        update trade_log
-        set trade_status = #{tradeStatus}
-        where id = #{id}
-    </update>
-
-    <update id="updateTradeStatus0">
         update trade_log
         set trade_status = #{newTradeStatus}
         where id = #{id}
         and trade_status = #{oldTradeStatus}
     </update>
-
-    <update id="updateCancelAction">
-        update trade_log
-        set cancel_action = #{cancelAction}
-        where id = #{id}
-    </update>
-
 
 </mapper>

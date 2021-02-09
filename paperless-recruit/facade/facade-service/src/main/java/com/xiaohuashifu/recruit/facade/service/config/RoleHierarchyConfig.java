@@ -23,8 +23,7 @@ public class RoleHierarchyConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy(authorityService.createRoleHierarchy(
-                AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX).getData());
+        roleHierarchy.setHierarchy(authorityService.createRoleHierarchy(AuthorityConstants.SPRING_SECURITY_ROLE_PREFIX));
         return roleHierarchy;
     }
 

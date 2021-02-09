@@ -20,7 +20,5 @@ public interface OrganizationManager {
 
     List<OrganizationVO> listOrganizations(OrganizationQuery query);
 
-    boolean authenticatePrincipal(Long id, Long userId);
-
     OrganizationVO updateOrganization(Long id, OrganizationPatchRequest request);
 }

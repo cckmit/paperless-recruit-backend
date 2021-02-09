@@ -1,9 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
-import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.DepartmentAssembler;
-import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.DepartmentManager;
 import com.xiaohuashifu.recruit.facade.service.request.DepartmentLabelPostRequest;
 import com.xiaohuashifu.recruit.facade.service.request.DepartmentPatchRequest;
@@ -21,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,11 +46,7 @@ public class DepartmentManagerImpl implements DepartmentManager {
         CreateDepartmentRequest createDepartmentRequest =
                 departmentAssembler.departmentPostRequestToCreateDepartmentRequest(request);
         createDepartmentRequest.setOrganizationId(organizationId);
-        Result<DepartmentDTO> result = departmentService.createDepartment(createDepartmentRequest);
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        return departmentAssembler.departmentDTOToDepartmentVO(result.getData());
+        return departmentAssembler.departmentDTOToDepartmentVO(departmentService.createDepartment(createDepartmentRequest));
     }
 
     @Caching(evict = {
@@ -60,11 +54,7 @@ public class DepartmentManagerImpl implements DepartmentManager {
     })
     @Override
     public DepartmentVO addLabel(Long departmentId, DepartmentLabelPostRequest request) {
-        Result<DepartmentDTO> result = departmentService.addLabel(departmentId, request.getLabel());
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        return departmentAssembler.departmentDTOToDepartmentVO(result.getData());
+        return departmentAssembler.departmentDTOToDepartmentVO(departmentService.addLabel(departmentId, request.getLabel()));
     }
 
     @Caching(evict = {
@@ -72,28 +62,19 @@ public class DepartmentManagerImpl implements DepartmentManager {
     })
     @Override
     public void removeLabel(Long departmentId, String labelName) {
-        Result<DepartmentDTO> result = departmentService.removeLabel(departmentId, labelName);
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
+        departmentService.removeLabel(departmentId, labelName);
     }
 
     @Cacheable(key = "'departments:' + #departmentId")
     @Override
     public DepartmentVO getDepartment(Long departmentId) {
-        Result<DepartmentDTO> result = departmentService.getDepartment(departmentId);
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        return departmentAssembler.departmentDTOToDepartmentVO(result.getData());
+        return departmentAssembler.departmentDTOToDepartmentVO(departmentService.getDepartment(departmentId));
     }
 
     @Cacheable(key = "'departments:' + #query")
     @Override
     public List<DepartmentVO> listDepartments(DepartmentQuery query) {
-        Result<PageInfo<DepartmentDTO>> listDepartmentsResult = departmentService.listDepartments(query);
-        PageInfo<DepartmentDTO> pageInfo = listDepartmentsResult.getData();
-        List<DepartmentDTO> departmentDTOList = pageInfo.getList();
+        Collection<DepartmentDTO> departmentDTOList = departmentService.listDepartments(query).getResult();
         return departmentDTOList.stream()
                 .map(departmentAssembler::departmentDTOToDepartmentVO)
                 .collect(Collectors.toList());
@@ -105,41 +86,24 @@ public class DepartmentManagerImpl implements DepartmentManager {
     @Override
     public DepartmentVO updateDepartment(Long departmentId, DepartmentPatchRequest request) {
         if (request.getDepartmentName() != null) {
-            Result<DepartmentDTO> result =
-                    departmentService.updateDepartmentName(departmentId, request.getDepartmentName());
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
+            departmentService.updateDepartmentName(departmentId, request.getDepartmentName());
         }
 
         if (request.getAbbreviationDepartmentName() != null) {
-            Result<DepartmentDTO> result = departmentService.updateAbbreviationDepartmentName(
+            departmentService.updateAbbreviationDepartmentName(
                     departmentId, request.getAbbreviationDepartmentName());
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
         }
 
         if (request.getIntroduction() != null) {
-            Result<DepartmentDTO> result =
-                    departmentService.updateIntroduction(departmentId, request.getIntroduction());
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
+            departmentService.updateIntroduction(departmentId, request.getIntroduction());
         }
 
         if (request.getLogoUrl() != null) {
-            Result<DepartmentDTO> result = departmentService.updateLogo(departmentId, request.getLogoUrl());
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
+            departmentService.updateLogo(departmentId, request.getLogoUrl());
         }
 
         if (request.getDeactivated() != null) {
-            Result<DepartmentDTO> result = departmentService.deactivateDepartment(departmentId);
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
+            departmentService.deactivateDepartment(departmentId);
         }
 
         return ((DepartmentManager) AopContext.currentProxy()).getDepartment(departmentId);

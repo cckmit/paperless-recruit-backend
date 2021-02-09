@@ -1,13 +1,10 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.UuidUtils;
 import com.xiaohuashifu.recruit.facade.service.assembler.ObjectInfoAssembler;
-import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.ObjectManager;
 import com.xiaohuashifu.recruit.facade.service.vo.ObjectInfoVO;
 import com.xiaohuashifu.recruit.oss.api.request.PreUploadObjectRequest;
-import com.xiaohuashifu.recruit.oss.api.response.ObjectInfoResponse;
 import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Component;
@@ -41,11 +38,7 @@ public class ObjectManagerImpl implements ObjectManager {
                 .objectName(generateObjectName(baseObjectName, object.getOriginalFilename()))
                 .userId(userId)
                 .build();
-        Result<ObjectInfoResponse> result = objectStorageService.preUploadObject(request);
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        return objectInfoAssembler.objectInfoResponseToObjectInfoVO(result.getData());
+        return objectInfoAssembler.objectInfoResponseToObjectInfoVO(objectStorageService.preUploadObject(request));
     }
 
     /**

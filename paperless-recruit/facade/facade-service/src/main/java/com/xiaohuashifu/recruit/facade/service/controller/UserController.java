@@ -2,20 +2,20 @@ package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeUtils;
 import com.xiaohuashifu.recruit.common.result.ErrorResponseUtils;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.UserAssembler;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.UserManager;
 import com.xiaohuashifu.recruit.facade.service.vo.UserVO;
-import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -74,53 +74,53 @@ public class UserController {
     @PreAuthorize("(#params.get('type').equals('sms')) " +
             "or #params.get('type').equals('password') and hasRole('admin')")
     public Object post(@RequestBody Map<String, String> params) {
-        // 短信验证码方式注册
-        if (params.get("type").equals(SIGN_UP_TYPE_SMS)) {
-            Result<UserDTO> signUpBySmsAuthCodeResult = userService.createUserBySmsAuthCode(
-                    params.get("phone"), params.get("authCode"), params.get("password"));
-            // 注册失败
-            if (!signUpBySmsAuthCodeResult.isSuccess()) {
-                System.out.println(signUpBySmsAuthCodeResult);
-                String message = "注册失败";
-                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
-                        ErrorCodeEnum.OPERATION_CONFLICT)) {
-                    message = "手机号码已经存在";
-                }
-                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
-                        ErrorCodeEnum.INVALID_PARAMETER)) {
-                    message = "手机号码或验证码或密码格式错误";
-                }
-                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
-                        ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND)) {
-                    message = "找不到对应的验证码，请重新发送";
-                }
-                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
-                        ErrorCodeEnum.INVALID_PARAMETER_INCORRECT)) {
-                    message = "验证码错误";
-                }
-                return ErrorResponseUtils.instanceResponseEntity(signUpBySmsAuthCodeResult.getErrorCode(), message);
-            }
-            // 注册成功
-            return userAssembler.userDTOToUserVO(signUpBySmsAuthCodeResult.getData());
-        }
-
-        // 密码方式注册
-        if (params.get("type").equals(SIGN_UP_TYPE_PASSWORD)) {
-            Result<UserDTO> signUpUserResult = userService.createUser(params.get("username"), params.get("password"));
-            // 注册失败
-            if (!signUpUserResult.isSuccess()) {
-                String message = "注册失败";
-                if (ErrorCodeUtils.equals(signUpUserResult.getErrorCode(), ErrorCodeEnum.INVALID_PARAMETER)) {
-                    message = "用户名或密码格式错误";
-                }
-                if (ErrorCodeUtils.equals(signUpUserResult.getErrorCode(), ErrorCodeEnum.OPERATION_CONFLICT)) {
-                    message = "用户名已经存在";
-                }
-                return ErrorResponseUtils.instanceResponseEntity(signUpUserResult.getErrorCode(), message);
-            }
-            // 注册成功
-            return userAssembler.userDTOToUserVO(signUpUserResult.getData());
-        }
+//        // 短信验证码方式注册
+//        if (params.get("type").equals(SIGN_UP_TYPE_SMS)) {
+//            Result<UserDTO> signUpBySmsAuthCodeResult = userService.createUserBySmsAuthCode(
+//                    params.get("phone"), params.get("authCode"), params.get("password"));
+//            // 注册失败
+//            if (!signUpBySmsAuthCodeResult.isSuccess()) {
+//                System.out.println(signUpBySmsAuthCodeResult);
+//                String message = "注册失败";
+//                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
+//                        ErrorCodeEnum.OPERATION_CONFLICT)) {
+//                    message = "手机号码已经存在";
+//                }
+//                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
+//                        ErrorCodeEnum.INVALID_PARAMETER)) {
+//                    message = "手机号码或验证码或密码格式错误";
+//                }
+//                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
+//                        ErrorCodeEnum.INVALID_PARAMETER_NOT_FOUND)) {
+//                    message = "找不到对应的验证码，请重新发送";
+//                }
+//                if (ErrorCodeUtils.equals(signUpBySmsAuthCodeResult.getErrorCode(),
+//                        ErrorCodeEnum.INVALID_PARAMETER_INCORRECT)) {
+//                    message = "验证码错误";
+//                }
+//                return ErrorResponseUtils.instanceResponseEntity(signUpBySmsAuthCodeResult.getErrorCode(), message);
+//            }
+//            // 注册成功
+//            return userAssembler.userDTOToUserVO(signUpBySmsAuthCodeResult.getData());
+//        }
+//
+//        // 密码方式注册
+//        if (params.get("type").equals(SIGN_UP_TYPE_PASSWORD)) {
+//            Result<UserDTO> signUpUserResult = userService.createUser(params.get("username"), params.get("password"));
+//            // 注册失败
+//            if (!signUpUserResult.isSuccess()) {
+//                String message = "注册失败";
+//                if (ErrorCodeUtils.equals(signUpUserResult.getErrorCode(), ErrorCodeEnum.INVALID_PARAMETER)) {
+//                    message = "用户名或密码格式错误";
+//                }
+//                if (ErrorCodeUtils.equals(signUpUserResult.getErrorCode(), ErrorCodeEnum.OPERATION_CONFLICT)) {
+//                    message = "用户名已经存在";
+//                }
+//                return ErrorResponseUtils.instanceResponseEntity(signUpUserResult.getErrorCode(), message);
+//            }
+//            // 注册成功
+//            return userAssembler.userDTOToUserVO(signUpUserResult.getData());
+//        }
 
         // 不支持的注册类型
         return ErrorResponseUtils.instanceResponseEntity(

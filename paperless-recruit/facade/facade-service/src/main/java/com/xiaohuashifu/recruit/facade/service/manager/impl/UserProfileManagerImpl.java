@@ -1,8 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.UserProfileAssembler;
-import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.CollegeManager;
 import com.xiaohuashifu.recruit.facade.service.manager.MajorManager;
 import com.xiaohuashifu.recruit.facade.service.manager.UserProfileManager;
@@ -49,12 +47,7 @@ public class UserProfileManagerImpl implements UserProfileManager {
     @Override
     @Cacheable(cacheNames = "default", key = "'users:' + #userId + ':profiles'")
     public UserProfileVO getUserProfile(Long userId) {
-        Result<UserProfileDTO> getUserProfileResult = userProfileService.getUserProfileByUserId(userId);
-        UserProfileDTO userProfileDTO = getUserProfileResult.getData();
-        if (userProfileDTO == null) {
-            throw new ResponseEntityException(getUserProfileResult);
-        }
-
+        UserProfileDTO userProfileDTO = userProfileService.getUserProfileByUserId(userId);
         UserProfileVO userProfileVO = userProfileAssembler.userProfileDTOToUserProfileVO(userProfileDTO);
         MajorVO majorVO = majorManager.getMajor(userProfileDTO.getMajorId());
         userProfileVO.setMajor(majorVO.getMajorName());

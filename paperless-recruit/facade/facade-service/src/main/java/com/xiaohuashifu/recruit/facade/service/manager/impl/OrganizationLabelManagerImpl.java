@@ -1,15 +1,12 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.facade.service.assembler.OrganizationLabelAssembler;
-import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationLabelManager;
 import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.request.QueryOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationLabelRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationLabelVO;
-import com.xiaohuashifu.recruit.organization.api.dto.DisableOrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -42,22 +39,15 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
 
     @Override
     public OrganizationLabelVO createOrganizationLabel(CreateOrganizationLabelRequest request) {
-        Result<OrganizationLabelDTO> result = organizationLabelService.createOrganizationLabel(request.getLabelName());
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        return organizationLabelAssembler.organizationLabelDTOToOrganizationLabelVO(result.getData());
+        OrganizationLabelDTO organizationLabelDTO = organizationLabelService.createOrganizationLabel(request.getLabelName());
+        return organizationLabelAssembler.organizationLabelDTOToOrganizationLabelVO(organizationLabelDTO);
     }
 
     @Cacheable(key = "'organizations:labels:' + #request")
     @Override
     public QueryResult<OrganizationLabelVO> listOrganizationLabels(QueryOrganizationLabelRequest request) {
-        Result<QueryResult<OrganizationLabelDTO>> result = organizationLabelService.listOrganizationLabels(
+        QueryResult<OrganizationLabelDTO> data = organizationLabelService.listOrganizationLabels(
                 organizationLabelAssembler.organizationLabelQueryToOrganizationLabelQueryRequest(request));
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        QueryResult<OrganizationLabelDTO> data = result.getData();
         List<OrganizationLabelVO> organizationLabelVOS = data.getResult().stream()
                 .map(organizationLabelAssembler::organizationLabelDTOToOrganizationLabelVO)
                 .collect(Collectors.toList());
@@ -70,17 +60,9 @@ public class OrganizationLabelManagerImpl implements OrganizationLabelManager {
         OrganizationLabelDTO organizationLabelDTO = null;
         if (request.getAvailable() != null) {
             if (request.getAvailable()) {
-                Result<OrganizationLabelDTO> result = organizationLabelService.enableOrganizationLabel(labelId);
-                if (result.isFailure()) {
-                    throw new ResponseEntityException(result);
-                }
-                organizationLabelDTO = result.getData();
+                organizationLabelDTO = organizationLabelService.enableOrganizationLabel(labelId);
             } else {
-                Result<DisableOrganizationLabelDTO> result = organizationLabelService.disableOrganizationLabel(labelId);
-                if (result.isFailure()) {
-                    throw new ResponseEntityException(result);
-                }
-                organizationLabelDTO = result.getData().getOrganizationLabelDTO();
+                organizationLabelDTO = organizationLabelService.disableOrganizationLabel(labelId).getOrganizationLabelDTO();
             }
         }
 

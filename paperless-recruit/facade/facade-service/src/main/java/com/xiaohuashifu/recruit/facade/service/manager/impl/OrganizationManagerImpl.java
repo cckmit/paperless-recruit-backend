@@ -1,9 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
-import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.facade.service.assembler.OrganizationAssembler;
-import com.xiaohuashifu.recruit.facade.service.exception.ResponseEntityException;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
 import com.xiaohuashifu.recruit.facade.service.request.OrganizationPatchRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
@@ -43,28 +41,21 @@ public class OrganizationManagerImpl implements OrganizationManager {
     @Cacheable(key = "'organizations:' + #organizationId")
     @Override
     public OrganizationVO getOrganization(Long organizationId) {
-        Result<OrganizationDTO> result = organizationService.getOrganization(organizationId);
-        if (result.isFailure()) {
-            throw new ResponseEntityException(result);
-        }
-        OrganizationDTO organizationDTO = result.getData();
-        return organizationAssembler.organizationDTO2OrganizationVO(organizationDTO);
+        return organizationAssembler.organizationDTO2OrganizationVO(organizationService.getOrganization(organizationId));
     }
 
     @Cacheable(key = "'user:' +  #userId + ':organization'")
     @Override
     public OrganizationVO getOrganizationByUserId(Long userId) {
-        OrganizationDTO organizationDTO = organizationService.getOrganizationByUserId(userId).getData();
-        return organizationAssembler.organizationDTO2OrganizationVO(organizationDTO);
+        return organizationAssembler.organizationDTO2OrganizationVO(organizationService.getOrganizationByUserId(userId));
     }
 
     @Cacheable(key = "'organizations:' + #query")
     @Override
     public List<OrganizationVO> listOrganizations(OrganizationQuery query) {
-        Result<PageInfo<OrganizationDTO>> pageInfoResult = organizationService.listOrganizations(query);
-        PageInfo<OrganizationDTO> pageInfo = pageInfoResult.getData();
+        QueryResult<OrganizationDTO> organizationDTOQueryResult = organizationService.listOrganizations(query);
 
-        return pageInfo.getList().stream()
+        return organizationDTOQueryResult.getResult().stream()
                 .map(organizationAssembler::organizationDTO2OrganizationVO)
                 .collect(Collectors.toList());
     }
@@ -75,34 +66,20 @@ public class OrganizationManagerImpl implements OrganizationManager {
     })
     @Override
     public OrganizationVO updateOrganization(Long id, OrganizationPatchRequest request) {
-        Result<OrganizationDTO> result;
         if (request.getOrganizationName() != null) {
-            result = organizationService.updateOrganizationName(id, request.getOrganizationName());
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
+            organizationService.updateOrganizationName(id, request.getOrganizationName());
         }
 
         if (request.getAbbreviationOrganizationName() != null) {
-            result = organizationService.updateAbbreviationOrganizationName(
-                    id, request.getAbbreviationOrganizationName());
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
+            organizationService.updateAbbreviationOrganizationName(id, request.getAbbreviationOrganizationName());
         }
 
         if (request.getIntroduction() != null) {
-            result = organizationService.updateIntroduction(id, request.getIntroduction());
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
+            organizationService.updateIntroduction(id, request.getIntroduction());
         }
 
         if (request.getLogoUrl() != null) {
-            result = organizationService.updateLogo(id, request.getLogoUrl());
-            if (result.isFailure()) {
-                throw new ResponseEntityException(result);
-            }
+            organizationService.updateLogo(id, request.getLogoUrl());
         }
 
         return ((OrganizationManagerImpl) AopContext.currentProxy()).getOrganization(id);

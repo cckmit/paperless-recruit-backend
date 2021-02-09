@@ -34,7 +34,13 @@ public class InterviewerServiceImplTest {
     }
 
     @Test
+    public void getInterviewer() {
+        System.out.println(interviewerService.getInterviewer(1L));
+    }
+
+    @Test
     public void disableInterviewer() {
+
         System.out.println(interviewerService.disableInterviewer(1L));
     }
 

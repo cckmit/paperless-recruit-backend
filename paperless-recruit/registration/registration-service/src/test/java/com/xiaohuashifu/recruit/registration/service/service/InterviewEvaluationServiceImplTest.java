@@ -39,7 +39,13 @@ public class InterviewEvaluationServiceImplTest {
     }
 
     @Test
+    public void getInterviewEvaluation() {
+        System.out.println(interviewEvaluationService.getInterviewEvaluation(1L));
+    }
+
+    @Test
     public void updateEvaluation() {
+
         System.out.println(interviewEvaluationService.updateEvaluation(1L, "这个人不错"));
     }
 

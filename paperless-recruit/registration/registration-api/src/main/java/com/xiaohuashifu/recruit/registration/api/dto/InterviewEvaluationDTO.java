@@ -32,7 +32,7 @@ public class InterviewEvaluationDTO implements Serializable {
     /**
      * 面试官编号
      */
-    private Long interviewer;
+    private Long interviewerId;
 
     /**
      * 评价

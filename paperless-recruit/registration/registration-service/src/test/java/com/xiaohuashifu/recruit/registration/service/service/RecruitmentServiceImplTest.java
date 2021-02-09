@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
+import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
 import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentRequest;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -109,7 +110,10 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void getRecruitment() {
-        System.out.println(recruitmentService.getRecruitment(12L));
+        RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(12L);
+        Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
+        System.out.println(recruitmentDepartmentIds.contains(2L));
+        System.out.println(recruitmentDTO);
     }
 
     @Test

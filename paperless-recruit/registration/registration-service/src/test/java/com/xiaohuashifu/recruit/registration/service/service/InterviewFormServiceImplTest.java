@@ -32,6 +32,7 @@ public class InterviewFormServiceImplTest {
 
     @Test
     public void createInterviewForm() {
+
         System.out.println(interviewFormService.createInterviewForm(CreateInterviewFormRequest.builder()
                 .interviewId(9L)
                 .applicationFormId(10L)
@@ -39,6 +40,11 @@ public class InterviewFormServiceImplTest {
                 .interviewTime("1月6号下午 1点-3点")
                 .note("带上个人作品")
                 .build()));
+    }
+
+    @Test
+    public void getInterviewForm() {
+        System.out.println(interviewFormService.getInterviewForm(2L));
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.xiaohuashifu.recruit.authentication.service.provider;
 import com.xiaohuashifu.recruit.authentication.service.token.OpenIdAuthenticationToken;
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.user.api.dto.AuthOpenIdDTO;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.AuthOpenIdService;

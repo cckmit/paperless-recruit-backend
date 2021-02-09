@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
 import com.xiaohuashifu.recruit.common.exception.ThirdPartyServiceException;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.Sms;
 import com.xiaohuashifu.recruit.external.api.request.CheckSmsAuthCodeRequest;

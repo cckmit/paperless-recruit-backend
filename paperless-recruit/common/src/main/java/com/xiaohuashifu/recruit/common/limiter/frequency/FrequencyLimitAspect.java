@@ -1,7 +1,5 @@
 package com.xiaohuashifu.recruit.common.limiter.frequency;
 
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.common.util.CronUtils;
 import com.xiaohuashifu.recruit.common.util.SpELUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,10 +12,7 @@ import org.springframework.expression.common.TemplateParserContext;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 描述：限频切面，配合 {@link FixedDelayRefreshFrequencyLimit}、{@link FixedPointRefreshFrequencyLimit}、
@@ -54,7 +49,7 @@ public class FrequencyLimitAspect {
         int notAllowIndex = isAllowed(joinPoint, frequencyLimits);
         if (notAllowIndex != -1) {
             String errorMessage = getErrorMessage(joinPoint, frequencyLimits.get(notAllowIndex));
-            return Result.fail(ErrorCodeEnum.TOO_MANY_REQUESTS, errorMessage);
+            throw new TooManyListenersException(errorMessage);
         }
 
         // 执行业务逻辑

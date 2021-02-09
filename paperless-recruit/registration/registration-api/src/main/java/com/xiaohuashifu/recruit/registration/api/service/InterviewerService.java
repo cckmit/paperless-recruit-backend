@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.registration.api.service;
 
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewerDTO;
 import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewerRequest;
 

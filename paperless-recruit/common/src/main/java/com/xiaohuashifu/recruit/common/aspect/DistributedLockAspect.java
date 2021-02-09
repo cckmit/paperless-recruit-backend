@@ -2,8 +2,6 @@ package com.xiaohuashifu.recruit.common.aspect;
 
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.exception.OperationConflictServiceException;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

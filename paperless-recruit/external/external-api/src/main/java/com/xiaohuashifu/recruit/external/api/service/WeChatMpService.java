@@ -2,7 +2,6 @@ package com.xiaohuashifu.recruit.external.api.service;
 
 import com.xiaohuashifu.recruit.common.constant.AppEnum;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
-import com.xiaohuashifu.recruit.common.result.Result;
 import com.xiaohuashifu.recruit.external.api.constant.WeChatMpServiceConstants;
 import com.xiaohuashifu.recruit.external.api.request.SendWeChatMpSubscribeMessageRequest;
 

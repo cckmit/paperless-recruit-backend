@@ -1,13 +1,10 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.xiaohuashifu.recruit.registration.api.service.InterviewService;
-import com.xiaohuashifu.recruit.registration.api.service.InterviewerService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -33,22 +30,17 @@ public class InterviewServiceImplTest {
 
     @Test
     public void createInterview() {
-        System.out.println(interviewService.createInterview(22L, "消息服务面试"));
+//        System.out.println(interviewService.createInterview(22L, "消息服务面试"));
     }
 
     @Test
     public void updateTitle() {
-        System.out.println(interviewService.updateTitle(5L, "自科部第wu轮面试"));
+//        System.out.println(interviewService.updateInterview(5L, "自科部第wu轮面试"));
     }
 
     @Test
     public void getNextRound() {
         System.out.println(interviewService.getNextRound(3L));
-    }
-
-    @Test
-    public void getRecruitmentId() {
-        System.out.println(interviewService.getRecruitmentId(6L));
     }
 
 }

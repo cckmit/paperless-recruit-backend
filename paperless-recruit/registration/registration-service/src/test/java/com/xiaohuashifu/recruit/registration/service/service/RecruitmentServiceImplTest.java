@@ -113,34 +113,13 @@ public class RecruitmentServiceImplTest {
     }
 
     @Test
-    public void getOrganizationId() {
-        System.out.println(recruitmentService.getOrganizationId(3L));
-    }
-
-    @Test
-    public void updatePositionName() {
-        System.out.println(recruitmentService.updatePositionName(3L, "部长"));
-    }
-
-    @Test
-    public void updateRecruitmentNumbers() {
-        System.out.println(recruitmentService.updateRecruitmentNumbers(7L, "500人"));
-    }
-
-    @Test
-    public void updatePositionDuty() {
-        System.out.println(recruitmentService.updatePositionDuty(3L, "参与项目研发"));
-    }
-
-    @Test
-    public void updatePositionRequirement() {
-        System.out.println(recruitmentService.updatePositionRequirement(3L, "熟悉Java"));
+    public void updateRecruitment() {
+//        System.out.println(recruitmentService.updateRecruitment(3L, "部长"));
     }
 
     @Test
     public void updateReleaseTime() {
         System.out.println(recruitmentService.updateReleaseTime(3L,null));
-
     }
 
     @Test

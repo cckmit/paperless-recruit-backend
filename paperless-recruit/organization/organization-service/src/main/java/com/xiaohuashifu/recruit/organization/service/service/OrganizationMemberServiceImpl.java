@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
-import com.xiaohuashifu.recruit.common.exception.ServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.InvalidStatusServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServiceException;
@@ -34,11 +33,9 @@ import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMemberInvit
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMemberMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationMemberDO;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationMemberInvitationDO;
-import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
@@ -121,12 +118,45 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
 
     @Override
     @Transactional
-    public OrganizationMemberInvitationDTO sendInvitation(Long organizationId, String username) {
-        // 获取用户
-        UserDTO userDTO = userService.getUserByUsername(username);
+    @DistributedLock(value = ORGANIZATION_MEMBER_SEND_INVITATION_LOCK_KEY_PATTERN,
+            parameters = {"#{#organizationId}", "#{#userId}"},
+            errorMessage = "Failed to acquire organization member lock.")
+    public OrganizationMemberInvitationDTO sendInvitation(Long organizationId, Long userId) {
+        // 判断用户和组织是否存在
+        userService.getUser(userId);
+        organizationService.getOrganization(organizationId);
 
         // 调用主处理服务
-        return ((OrganizationMemberServiceImpl)AopContext.currentProxy()).sendInvitation(organizationId, userDTO.getId());
+        // 判断该组织是否已经有该成员
+        LambdaQueryWrapper<OrganizationMemberDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrganizationMemberDO::getOrganizationId, organizationId)
+                .eq(OrganizationMemberDO::getUserId, userId);
+        int count = organizationMemberMapper.selectCount(wrapper);
+        if (count > 0) {
+            throw new DuplicateServiceException("The member already exist.");
+        }
+
+        // 判断该组织是否已已经发送了邀请，且邀请的状态是等待接受
+        LambdaQueryWrapper<OrganizationMemberInvitationDO> wrapperForInvitation = new LambdaQueryWrapper<>();
+        wrapperForInvitation.eq(OrganizationMemberInvitationDO::getOrganizationId, organizationId)
+                .eq(OrganizationMemberInvitationDO::getUserId, userId)
+                .eq(OrganizationMemberInvitationDO::getInvitationStatus,
+                        OrganizationMemberInvitationStatusEnum.WAITING_FOR_ACCEPTANCE);
+        count = organizationMemberInvitationMapper.selectCount(wrapperForInvitation);
+        if (count > 0) {
+            throw new DuplicateServiceException("Please do not send invitations repeatedly.");
+        }
+
+        // 添加组织成员邀请记录
+        OrganizationMemberInvitationDO organizationMemberInvitationDOForInsert =
+                OrganizationMemberInvitationDO.builder().organizationId(organizationId).userId(userId)
+                        .invitationTime(LocalDateTime.now())
+                        .invitationStatus(OrganizationMemberInvitationStatusEnum.WAITING_FOR_ACCEPTANCE).build();
+        organizationMemberInvitationMapper.insert(organizationMemberInvitationDOForInsert);
+
+        // 发送组织成员邀请通知
+        sendInvitationNotification(organizationMemberInvitationDOForInsert.getId(), organizationId, userId);
+        return getOrganizationMemberInvitation(organizationMemberInvitationDOForInsert.getId());
     }
 
     @Transactional
@@ -302,50 +332,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
                         .invitationStatus(OrganizationMemberInvitationStatusEnum.EXPIRED).build();
         organizationMemberInvitationMapper.updateById(organizationMemberInvitationDOForUpdate);
         return getOrganizationMemberInvitation(id);
-    }
-
-    /**
-     * 发送加入组织邀请
-     *
-     * @param organizationId 组织编号
-     * @param userId 用户编号
-     * @return 发送结果
-     */
-    @Transactional
-    @DistributedLock(value = ORGANIZATION_MEMBER_SEND_INVITATION_LOCK_KEY_PATTERN,
-            parameters = {"#{#organizationId}", "#{#userId}"},
-            errorMessage = "Failed to acquire organization member lock.")
-    protected OrganizationMemberInvitationDTO sendInvitation(Long organizationId, Long userId) throws ServiceException {
-        // 判断该组织是否已经有该成员
-        LambdaQueryWrapper<OrganizationMemberDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OrganizationMemberDO::getOrganizationId, organizationId)
-                .eq(OrganizationMemberDO::getUserId, userId);
-        int count = organizationMemberMapper.selectCount(wrapper);
-        if (count > 0) {
-            throw new DuplicateServiceException("The member already exist.");
-        }
-
-        // 判断该组织是否已已经发送了邀请，且邀请的状态是等待接受
-        LambdaQueryWrapper<OrganizationMemberInvitationDO> wrapperForInvitation = new LambdaQueryWrapper<>();
-        wrapperForInvitation.eq(OrganizationMemberInvitationDO::getOrganizationId, organizationId)
-                .eq(OrganizationMemberInvitationDO::getUserId, userId)
-                .eq(OrganizationMemberInvitationDO::getInvitationStatus,
-                        OrganizationMemberInvitationStatusEnum.WAITING_FOR_ACCEPTANCE);
-        count = organizationMemberInvitationMapper.selectCount(wrapperForInvitation);
-        if (count > 0) {
-            throw new DuplicateServiceException("Please do not send invitations repeatedly.");
-        }
-
-        // 添加组织成员邀请记录
-        OrganizationMemberInvitationDO organizationMemberInvitationDOForInsert =
-                OrganizationMemberInvitationDO.builder().organizationId(organizationId).userId(userId)
-                        .invitationTime(LocalDateTime.now())
-                        .invitationStatus(OrganizationMemberInvitationStatusEnum.WAITING_FOR_ACCEPTANCE).build();
-        organizationMemberInvitationMapper.insert(organizationMemberInvitationDOForInsert);
-
-        // 发送组织成员邀请通知
-        sendInvitationNotification(organizationMemberInvitationDOForInsert.getId(), organizationId, userId);
-        return getOrganizationMemberInvitation(organizationMemberInvitationDOForInsert.getId());
     }
 
     /**

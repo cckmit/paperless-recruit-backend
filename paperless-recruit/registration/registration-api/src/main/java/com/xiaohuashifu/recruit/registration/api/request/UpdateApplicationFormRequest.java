@@ -10,30 +10,23 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 /**
- * 描述：创建报名表的参数对象
+ * 描述：更新报名表请求
  *
  * @author xhsf
- * @create 2020/12/23 21:23
+ * @create 2021/2/9 19:53
  */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @SuperBuilder
-public class CreateApplicationFormRequest extends ApplicationFormRequest {
+public class UpdateApplicationFormRequest extends ApplicationFormRequest {
 
     /**
-     * 报名者用户编号
+     * 报名表编号
      */
     @NotNull
     @Positive
-    private Long userId;
-
-    /**
-     * 招新编号
-     */
-    @NotNull
-    @Positive
-    private Long recruitmentId;
+    private Long id;
 
 }

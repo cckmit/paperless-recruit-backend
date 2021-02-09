@@ -31,8 +31,8 @@ public class InterviewFormServiceImplTest {
     }
 
     @Test
-    public void saveInterviewForm() {
-        System.out.println(interviewFormService.saveInterviewForm(CreateInterviewFormRequest.builder()
+    public void createInterviewForm() {
+        System.out.println(interviewFormService.createInterviewForm(CreateInterviewFormRequest.builder()
                 .interviewId(9L)
                 .applicationFormId(10L)
                 .interviewLocation("创客空间")
@@ -42,18 +42,8 @@ public class InterviewFormServiceImplTest {
     }
 
     @Test
-    public void updateInterviewTime() {
-        System.out.println(interviewFormService.updateInterviewTime(2L, "1月8号 晚上4-5点"));
-    }
-
-    @Test
-    public void updateInterviewLocation() {
-        System.out.println(interviewFormService.updateInterviewLocation(2L, "数信5楼"));
-    }
-
-    @Test
-    public void updateNote() {
-        System.out.println(interviewFormService.updateNote(3L, "带上电脑和纸币"));
+    public void updateInterviewForm() {
+//        System.out.println(interviewFormService.updateInterviewForm(2L, "1月8号 晚上4-5点"));
     }
 
     @Test

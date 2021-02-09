@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.assembler;
 
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewFormDTO;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateInterviewFormRequest;
 import com.xiaohuashifu.recruit.registration.service.do0.InterviewFormDO;
 import org.mapstruct.Mapper;
 
@@ -13,6 +14,8 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface InterviewFormAssembler {
 
-    InterviewFormDTO toDTO(InterviewFormDO interviewFormDO);
+    InterviewFormDTO interviewFormDOToInterviewFormDTO(InterviewFormDO interviewFormDO);
+
+    InterviewFormDO updateInterviewFormRequestToInterviewFormDO(UpdateInterviewFormRequest updateInterviewFormRequest);
 
 }

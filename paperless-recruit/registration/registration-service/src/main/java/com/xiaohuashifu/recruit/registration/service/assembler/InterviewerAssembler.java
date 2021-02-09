@@ -13,6 +13,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface InterviewerAssembler {
 
-    InterviewerDTO toDTO(InterviewerDO interviewerDO);
+    InterviewerDTO interviewerDOToInterviewerDTO(InterviewerDO interviewerDO);
 
 }

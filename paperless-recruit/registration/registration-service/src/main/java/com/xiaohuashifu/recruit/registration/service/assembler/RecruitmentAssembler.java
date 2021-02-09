@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.registration.service.assembler;
 
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateRecruitmentRequest;
 import com.xiaohuashifu.recruit.registration.service.do0.RecruitmentDO;
 import org.mapstruct.Mapper;
 
@@ -13,6 +14,8 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface RecruitmentAssembler {
 
-    RecruitmentDTO toDTO(RecruitmentDO recruitmentDO);
+    RecruitmentDTO recruitmentDOToRecruitmentDTO(RecruitmentDO recruitmentDO);
+
+    RecruitmentDO updateRecruitmentRequestToRecruitmentDO(UpdateRecruitmentRequest updateRecruitmentRequest);
 
 }

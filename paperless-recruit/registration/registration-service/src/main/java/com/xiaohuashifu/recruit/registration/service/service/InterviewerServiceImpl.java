@@ -1,16 +1,21 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.MisMatchServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
 import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
 import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
+import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewerDTO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewerRequest;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewerService;
 import com.xiaohuashifu.recruit.registration.service.assembler.InterviewerAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.InterviewerMapper;
@@ -18,6 +23,7 @@ import com.xiaohuashifu.recruit.registration.service.do0.InterviewerDO;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -61,197 +67,123 @@ public class InterviewerServiceImpl implements InterviewerService {
         this.interviewerMapper = interviewerMapper;
     }
 
-    /**
-     * 保存面试官
-     *
-     * @permission 必须是组织的主体
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 组织不存在
-     *              Forbidden.Unavailable: 组织不可用
-     *              Forbidden: 该组织成员不是该组织的
-     *              OperationConflict: 面试官已经存在
-     *
-     * @param organizationId 组织编号
-     * @param organizationMemberId 组织成员编号
-     * @return 面试官对象
-     */
     @Override
-    public Result<InterviewerDTO> saveInterviewer(Long organizationId, Long organizationMemberId) {
+    @Transactional
+    // TODO: 2021/2/8 消息队列保证最终一致性
+    public InterviewerDTO createInterviewer(CreateInterviewerRequest request) {
         // 判断组织是否存在
-        organizationService.getOrganization(organizationId);
+        OrganizationDTO organizationDTO = organizationService.getOrganization(request.getOrganizationId());
 
         // 判断该成员是否是该组织的
-        Long organizationId0 = organizationMemberService.getOrganizationId(organizationMemberId);
-        if (!Objects.equals(organizationId, organizationId0)) {
-            return Result.fail(ErrorCodeEnum.FORBIDDEN);
+        OrganizationMemberDTO organizationMemberDTO =
+                organizationMemberService.getOrganizationMember(request.getOrganizationMemberId());
+        if (!Objects.equals(request.getOrganizationId(), organizationMemberDTO.getOrganizationId())) {
+            throw new MisMatchServiceException("组织编号与组织成员所属的组织不匹配");
         }
 
         // 判断该组织是否已经存在该面试官
-        int count = interviewerMapper.countByOrganizationMemberId(organizationMemberId);
+        LambdaQueryWrapper<InterviewerDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(InterviewerDO::getOrganizationMemberId, request.getOrganizationMemberId());
+        int count = interviewerMapper.selectCount(wrapper);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT, "The interviewer already exist.");
+            throw new DuplicateServiceException("The interviewer already exist.");
         }
 
         // 添加面试官
-        InterviewerDO interviewerDO = InterviewerDO.builder()
-                .organizationId(organizationId)
-                .organizationMemberId(organizationMemberId)
-                .build();
-        interviewerMapper.insertInterviewer(interviewerDO);
+        InterviewerDO interviewerDOForInsert = InterviewerDO.builder().organizationId(request.getOrganizationId())
+                .organizationMemberId(request.getOrganizationMemberId()).build();
+        interviewerMapper.insert(interviewerDOForInsert);
 
         // 为面试官的组织成员的用户主体授予面试官角色
-        Long userId = organizationMemberService.getUserId(organizationMemberId);
-        roleService.createUserRole(userId, INTERVIEWER_ROLE_ID);
+        roleService.createUserRole(organizationMemberDTO.getUserId(), INTERVIEWER_ROLE_ID);
 
         // 发送成为面试官的系统通知
-        sendBecomeInterviewerSystemNotification(userId, organizationId);
+        sendBecomeInterviewerSystemNotification(organizationMemberDTO.getUserId(), organizationDTO);
 
         // 获取创建的面试官对象
-        return getInterviewer(interviewerDO.getId());
+        return getInterviewer(interviewerDOForInsert.getId());
     }
 
-    /**
-     * 禁用面试官
-     *
-     * @permission 必须是面试官的主体
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 面试官不存在
-     *              OperationConflict.Unmodified: 面试官已经不可用
-     *              OperationConflict.Lock: 获取更新 available 的锁失败
-     *
-     * @param id 面试官编号
-     * @return 禁用后的面试官对象
-     */
+    @Override
+    public InterviewerDTO getInterviewer(Long id) {
+        InterviewerDO interviewerDO = interviewerMapper.selectById(id);
+        if (interviewerDO == null) {
+            throw new NotFoundServiceException("interviewer", "id", id);
+        }
+        return interviewerAssembler.interviewerDOToInterviewerDTO(interviewerDO);
+    }
+
     @DistributedLock(value = UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}",
             errorMessage = "Failed to acquire update available interviewer lock.")
     @Override
-    public Result<InterviewerDTO> disableInterviewer(Long id) {
+    @Transactional
+    public InterviewerDTO disableInterviewer(Long id) {
         // 判断面试官是否存在
-        int count = interviewerMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The interviewer does not exist.");
+        InterviewerDTO interviewerDTO = getInterviewer(id);
+
+        // 判断面试官是否已经不可用
+        if (!interviewerDTO.getAvailable()) {
+            throw new UnmodifiedServiceException("The interviewer already unavailable.");
         }
 
         // 更新面试官状态
-        count = interviewerMapper.updateAvailable(id, false);
-
-        // 如果更新失败表示面试官已经不可用
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
-                    "The interviewer already unavailable.");
-        }
+        InterviewerDO interviewerDOForUpdate = InterviewerDO.builder().id(id).available(false).build();
+        interviewerMapper.updateById(interviewerDOForUpdate);
 
         // 回收面试官的权限
-        Long organizationMemberId = interviewerMapper.getOrganizationMemberId(id);
-        Long userId = organizationMemberService.getUserId(organizationMemberId);
-        roleService.removeUserRole(userId, INTERVIEWER_ROLE_ID);
+        OrganizationMemberDTO organizationMemberDTO =
+                organizationMemberService.getOrganizationMember(interviewerDTO.getOrganizationMemberId());
+        roleService.removeUserRole(organizationMemberDTO.getUserId(), INTERVIEWER_ROLE_ID);
 
         // 发送取消面试官的系统通知
-        sendDisableOrEnableInterviewerSystemNotification(userId, organizationMemberId, "取消");
+        sendDisableOrEnableInterviewerSystemNotification(organizationMemberDTO, "取消");
 
         // 获取禁用后的面试官
         return getInterviewer(id);
     }
 
-    /**
-     * 解禁面试官
-     *
-     * @permission 必须是面试官的主体
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 面试官不存在
-     *              OperationConflict.Unmodified: 面试官已经可用
-     *              OperationConflict.Lock: 获取更新 available 的锁失败
-     *
-     * @param id 面试官编号
-     * @return 解禁后的面试官对象
-     */
     @DistributedLock(value = UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}",
             errorMessage = "Failed to acquire update available interviewer lock.")
     @Override
-    public Result<InterviewerDTO> enableInterviewer(Long id) {
+    @Transactional
+    public InterviewerDTO enableInterviewer(Long id) {
         // 判断面试官是否存在
-        int count = interviewerMapper.count(id);
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The interviewer does not exist.");
+        InterviewerDTO interviewerDTO = getInterviewer(id);
+
+        // 判断面试官是否已经可用
+        if (interviewerDTO.getAvailable()) {
+            throw new UnmodifiedServiceException("The interviewer already available.");
         }
 
         // 更新面试官状态
-        count = interviewerMapper.updateAvailable(id, true);
-
-        // 如果更新失败表示面试官已经不可用
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_UNMODIFIED,
-                    "The interviewer already available.");
-        }
+        InterviewerDO interviewerDOForUpdate = InterviewerDO.builder().id(id).available(true).build();
+        interviewerMapper.updateById(interviewerDOForUpdate);
 
         // 赋予面试官的成员所属用户主体面试官权限
-        Long organizationMemberId = interviewerMapper.getOrganizationMemberId(id);
-        Long userId = organizationMemberService.getUserId(organizationMemberId);
-        roleService.createUserRole(userId, INTERVIEWER_ROLE_ID);
+        OrganizationMemberDTO organizationMemberDTO =
+                organizationMemberService.getOrganizationMember(interviewerDTO.getOrganizationMemberId());
+        roleService.createUserRole(organizationMemberDTO.getUserId(), INTERVIEWER_ROLE_ID);
 
         // 发送恢复面试官的系统通知
-        sendDisableOrEnableInterviewerSystemNotification(userId, organizationMemberId, "恢复");
+        sendDisableOrEnableInterviewerSystemNotification(organizationMemberDTO, "恢复");
 
         // 获取解禁后的面试官
         return getInterviewer(id);
     }
 
     /**
-     * 获取组织编号
-     *
-     * @private 内部方法
-     *
-     * @param id 面试官编号
-     * @return 组织编号，若找不到返回 null
-     */
-    @Override
-    public Long getOrganizationId(Long id) {
-        return interviewerMapper.getOrganizationId(id);
-    }
-
-    /**
-     * 获取组织成员编号
-     *
-     * @private 内部方法
-     *
-     * @param id 面试官编号
-     * @return 组织成员编号，若找不到返回 null
-     */
-    @Override
-    public Long getOrganizationMemberId(Long id) {
-        return interviewerMapper.getOrganizationMemberId(id);
-    }
-
-    /**
-     * 获取面试官
-     *
-     * @param id 面试官编号
-     * @return 面试官
-     */
-    private Result<InterviewerDTO> getInterviewer(Long id) {
-        InterviewerDO interviewerDO = interviewerMapper.getInterviewer(id);
-        return Result.success(interviewerAssembler.toDTO(interviewerDO));
-    }
-
-    /**
      * 发送成为面试官的系统通知
      *
      * @param userId 用户编号
-     * @param organizationId 组织编号
+     * @param organizationDTO OrganizationDTO
      */
-    private void sendBecomeInterviewerSystemNotification(Long userId, Long organizationId) {
-        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+    private void sendBecomeInterviewerSystemNotification(Long userId, OrganizationDTO organizationDTO) {
         String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
         String notificationTitle = abbreviationOrganizationName + "已将您设置为的面试官";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("message", notificationTitle + "。您现在可以查看" + abbreviationOrganizationName
                 + "的报名表，并进行面试工作啦！");
-        jsonObject.put("organizationId", organizationId);
+        jsonObject.put("organizationId", organizationDTO.getId());
         String notificationContent = jsonObject.toJSONString();
         SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
                 .userId(userId)
@@ -265,22 +197,20 @@ public class InterviewerServiceImpl implements InterviewerService {
     /**
      * 发送取消或回复面试官资格的系统通知
      *
-     * @param userId 用户编号
-     * @param organizationMemberId 组织成员编号
+     * @param organizationMemberDTO OrganizationMemberDTO
      * @param disableOrEnable "取消" or "恢复"
      */
     private void sendDisableOrEnableInterviewerSystemNotification(
-            Long userId, Long organizationMemberId, String disableOrEnable) {
-        Long organizationId = organizationMemberService.getOrganizationId(organizationMemberId);
-        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+            OrganizationMemberDTO organizationMemberDTO, String disableOrEnable) {
+        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationMemberDTO.getOrganizationId());
         String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
         String notificationTitle = abbreviationOrganizationName + "已" + disableOrEnable+ "您的面试官资格";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("message", notificationTitle);
-        jsonObject.put("organizationId", organizationId);
+        jsonObject.put("organizationId", organizationMemberDTO.getOrganizationId());
         String notificationContent = jsonObject.toJSONString();
         SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
-                .userId(userId)
+                .userId(organizationMemberDTO.getUserId())
                 .notificationType(SystemNotificationTypeEnum.INTERVIEWER)
                 .notificationTitle(notificationTitle)
                 .notificationContent(notificationContent)

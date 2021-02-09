@@ -47,7 +47,7 @@ public class ApplicationFormTemplateServiceImplTest {
 //        private Boolean college;
 //        private Boolean major;
 //        private Boolean note;
-        System.out.println(applicationFormTemplateService.addApplicationFormTemplate(
+        System.out.println(applicationFormTemplateService.createApplicationFormTemplate(
                 CreateApplicationFormTemplateRequest.builder()
                         .recruitmentId(22L)
                         .prompt("请各位报名者在附件里添加个人作品。")

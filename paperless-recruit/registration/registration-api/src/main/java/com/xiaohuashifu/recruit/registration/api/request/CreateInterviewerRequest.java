@@ -1,39 +1,38 @@
 package com.xiaohuashifu.recruit.registration.api.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.io.Serializable;
 
 /**
- * 描述：创建报名表的参数对象
+ * 描述：创建面试官请求
  *
  * @author xhsf
- * @create 2020/12/23 21:23
+ * @create 2021/2/8 16:07
  */
-@EqualsAndHashCode(callSuper = true)
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@SuperBuilder
-public class CreateApplicationFormRequest extends ApplicationFormRequest {
+public class CreateInterviewerRequest implements Serializable {
 
     /**
-     * 报名者用户编号
+     * 组织编号
      */
     @NotNull
     @Positive
-    private Long userId;
+    private Long organizationId;
 
     /**
-     * 招新编号
+     * 组织成员编号
      */
     @NotNull
     @Positive
-    private Long recruitmentId;
+    private Long organizationMemberId;
 
 }

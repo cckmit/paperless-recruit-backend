@@ -43,8 +43,6 @@ public class InterviewDO {
      * 面试标题
      */
     private String title;
-
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-
 }

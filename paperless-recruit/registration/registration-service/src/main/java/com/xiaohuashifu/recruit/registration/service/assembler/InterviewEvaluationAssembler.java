@@ -13,6 +13,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface InterviewEvaluationAssembler {
 
-    InterviewEvaluationDTO toDTO(InterviewEvaluationDO interviewEvaluationDO);
+    InterviewEvaluationDTO interviewEvaluationDOToInterviewEvaluationDTO(InterviewEvaluationDO interviewEvaluationDO);
 
 }

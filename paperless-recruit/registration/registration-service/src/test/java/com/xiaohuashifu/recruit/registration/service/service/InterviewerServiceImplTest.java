@@ -1,13 +1,10 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewerService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 描述：
@@ -32,8 +29,8 @@ public class InterviewerServiceImplTest {
     }
 
     @Test
-    public void saveInterviewer() {
-        System.out.println(interviewerService.saveInterviewer(1L, 3L));
+    public void createInterviewer() {
+//        System.out.println(interviewerService.createInterviewer(1L, 3L));
     }
 
     @Test
@@ -44,11 +41,6 @@ public class InterviewerServiceImplTest {
     @Test
     public void enableInterviewer() {
         System.out.println(interviewerService.enableInterviewer(1L));
-    }
-
-    @Test
-    public void getOrganizationId() {
-        System.out.println(interviewerService.getOrganizationId(1L));
     }
 
 }

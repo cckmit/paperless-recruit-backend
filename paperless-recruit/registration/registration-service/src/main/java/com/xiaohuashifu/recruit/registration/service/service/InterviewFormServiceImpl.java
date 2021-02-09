@@ -1,18 +1,24 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
-import com.xiaohuashifu.recruit.common.result.ErrorCodeEnum;
-import com.xiaohuashifu.recruit.common.result.Result;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.InvalidStatusServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.MisMatchServiceException;
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
 import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
 import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
+import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.InterviewFormDTO;
+import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
 import com.xiaohuashifu.recruit.registration.api.request.CreateInterviewFormRequest;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateInterviewFormRequest;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewFormService;
 import com.xiaohuashifu.recruit.registration.api.service.InterviewService;
@@ -22,6 +28,7 @@ import com.xiaohuashifu.recruit.registration.service.dao.InterviewFormMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.InterviewFormDO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -34,7 +41,7 @@ import java.util.Objects;
 @Service
 public class InterviewFormServiceImpl implements InterviewFormService {
 
-    private final InterviewFormAssembler interviewFormAssembler = InterviewFormAssembler.INSTANCES;
+    private final InterviewFormAssembler interviewFormAssembler;
 
     private final InterviewFormMapper interviewFormMapper;
 
@@ -56,277 +63,124 @@ public class InterviewFormServiceImpl implements InterviewFormService {
     /**
      * 保存面试表锁定键模式，{0}是面试编号，{1}是报名表编号
      */
-    private final static String SAVE_INTERVIEW_FORM_LOCK_KEY_PATTERN =
-            "interview-form:save-interview-form:interview-id:{0}:application-form-id:{1}";
+    private final static String CREATE_INTERVIEW_FORM_LOCK_KEY_PATTERN =
+            "interview-form:create-interview-form:interview-id:{0}:application-form-id:{1}";
 
-    public InterviewFormServiceImpl(InterviewFormMapper interviewFormMapper) {
+    /**
+     * 更新面试表锁定键模式，{0}是面试表编号
+     */
+    private final static String UPDATE_INTERVIEW_FORM_LOCK_KEY_PATTERN = "interview-form:{0}";
+
+    public InterviewFormServiceImpl(InterviewFormAssembler interviewFormAssembler,
+                                    InterviewFormMapper interviewFormMapper) {
+        this.interviewFormAssembler = interviewFormAssembler;
         this.interviewFormMapper = interviewFormMapper;
     }
 
-    /**
-     * 保存面试表
-     *
-     * @permission 必须是所属面试的主体
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 面试不存在
-     *              Forbidden: 面试和报名表不是同一个招新的
-     *              Forbidden.Unavailable: 招新不可用 | 组织不可用
-     *              OperationConflict.Lock: 获取保存面试表的锁失败
-     *              OperationConflict.Duplicate: 面试表已经存在
-     *
-     * @param saveInterviewFormPO 保存面试表的参数对象
-     * @return 创建的面试表
-     */
-    @DistributedLock(value = SAVE_INTERVIEW_FORM_LOCK_KEY_PATTERN,
-            parameters = {"#{#saveInterviewFormPO.interviewId}", "#{#saveInterviewFormPO.applicationFormId}"},
-            errorMessage = "Failed to acquire save interview form lock.")
+    @DistributedLock(value = CREATE_INTERVIEW_FORM_LOCK_KEY_PATTERN,
+            parameters = {"#{#request.interviewId}", "#{#request.applicationFormId}"})
+    @Transactional
     @Override
-    public Result<InterviewFormDTO> saveInterviewForm(CreateInterviewFormRequest saveInterviewFormPO) {
+    public InterviewFormDTO createInterviewForm(CreateInterviewFormRequest request) {
         // 检查面试状态
-        Long interviewId = saveInterviewFormPO.getInterviewId();
-        Result<InterviewFormDTO> checkInterviewStatusResult = interviewService.checkInterviewStatus(interviewId);
-        if (checkInterviewStatusResult.isFailure()) {
-            return checkInterviewStatusResult;
-        }
+        InterviewDTO interviewDTO = interviewService.checkInterviewStatus(request.getInterviewId());
 
         // 判断是否已经存在该面试表
-        Long applicationFormId = saveInterviewFormPO.getApplicationFormId();
-        int count = interviewFormMapper.countByInterviewIdAndApplicationFormId(interviewId, applicationFormId);
+        LambdaQueryWrapper<InterviewFormDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(InterviewFormDO::getApplicationFormId, request.getApplicationFormId())
+                .eq(InterviewFormDO::getInterviewId, request.getInterviewId());
+        int count = interviewFormMapper.selectCount(wrapper);
         if (count > 0) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_DUPLICATE,
-                    "The interviewForm already exist.");
+            throw new DuplicateServiceException("The interviewForm already exist.");
         }
 
         // 判断面试和报名表是否是同一个招新的
-        InterviewDTO interviewDTO = interviewService.getInterview(interviewId).getData();
-        Long recruitmentIdFromApplicationForm = applicationFormService.getRecruitmentId(applicationFormId);
-        if (!Objects.equals(interviewDTO.getRecruitmentId(), recruitmentIdFromApplicationForm)) {
-            return Result.fail(ErrorCodeEnum.FORBIDDEN);
+        ApplicationFormDTO applicationFormDTO =
+                applicationFormService.getApplicationForm(request.getApplicationFormId());
+        if (!Objects.equals(interviewDTO.getRecruitmentId(), applicationFormDTO.getRecruitmentId())) {
+            throw new MisMatchServiceException("面试和报名表不是同一个招新");
         }
 
         // 保存面试表
-        InterviewFormDO interviewFormDO = InterviewFormDO.builder()
-                .interviewId(interviewId)
-                .applicationFormId(applicationFormId)
-                .interviewTime(saveInterviewFormPO.getInterviewTime())
-                .interviewLocation(saveInterviewFormPO.getInterviewLocation())
-                .note(saveInterviewFormPO.getNote())
-                .interviewStatus(InterviewStatusEnum.WAITING_INTERVIEW.name())
-                .build();
-        interviewFormMapper.insertInterviewForm(interviewFormDO);
+        InterviewFormDO interviewFormDOForInsert = InterviewFormDO.builder().interviewId(request.getInterviewId())
+                .applicationFormId(request.getApplicationFormId()).interviewTime(request.getInterviewTime())
+                .interviewLocation(request.getInterviewLocation()).note(request.getNote())
+                .interviewStatus(InterviewStatusEnum.WAITING_INTERVIEW.name()).build();
+        interviewFormMapper.insert(interviewFormDOForInsert);
 
         // 发送面试通知
-        Long interviewFormDOId = interviewFormDO.getId();
-        sendInterviewSystemNotification(interviewDTO, interviewFormDOId, applicationFormId);
+        sendInterviewSystemNotification(interviewDTO, interviewFormDOForInsert.getId(),
+                applicationFormDTO);
 
         // 获取创建的面试表
-        return getInterviewForm(interviewFormDOId);
+        return getInterviewForm(interviewFormDOForInsert.getId());
     }
 
-    /**
-     * 更新面试时间
-     *
-     * @permission 必须是面试表的主体
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 面试表不存在
-     *              OperationConflict.Status: 面试表的状态不是 WAITING_INTERVIEW
-     *
-     * @param id 面试表编号
-     * @param interviewTime 面试时间
-     * @return 更新后的面试表
-     */
     @Override
-    public Result<InterviewFormDTO> updateInterviewTime(Long id, String interviewTime) {
-        // 检查面试表状态
-        Result<InterviewFormDTO> checkResult = checkForUpdate(id);
-        if (checkResult.isFailure()) {
-            return checkResult;
+    public InterviewFormDTO getInterviewForm(Long id) {
+        InterviewFormDO interviewFormDO = interviewFormMapper.selectById(id);
+        if (interviewFormDO == null) {
+            throw new NotFoundServiceException("interview form", "id", id);
+        }
+        return interviewFormAssembler.interviewFormDOToInterviewFormDTO(interviewFormDO);
+    }
+
+    @Override
+    @Transactional
+    @DistributedLock(value = UPDATE_INTERVIEW_FORM_LOCK_KEY_PATTERN, parameters = "#{#request.id}")
+    public InterviewFormDTO updateInterviewForm(UpdateInterviewFormRequest request) {
+        // 判断面试表是否存在
+        InterviewFormDTO interviewFormDTO = getInterviewForm(request.getId());
+
+        // 判断面试状态是否是 WAITING_INTERVIEW
+        if (!Objects.equals(interviewFormDTO.getInterviewStatus(), InterviewStatusEnum.WAITING_INTERVIEW.name())) {
+            throw new InvalidStatusServiceException("The status of interviewForm must be "
+                    + InterviewStatusEnum.WAITING_INTERVIEW.name() + ".");
         }
 
         // 更新面试时间
-        interviewFormMapper.updateInterviewTime(id, interviewTime);
+        InterviewFormDO interviewFormDOForUpdate =
+                interviewFormAssembler.updateInterviewFormRequestToInterviewFormDO(request);
+        interviewFormMapper.updateById(interviewFormDOForUpdate);
+
+        // 获取更新后的面试表
+        InterviewFormDTO interviewFormDTO0 = getInterviewForm(interviewFormDOForUpdate.getId());
 
         // 发送更新面试时间通知
-        sendUpdateInterviewFormSystemNotification(id, "面试时间");
-
-        // 获取更新后的面试表
-        return getInterviewForm(id);
+        sendUpdateInterviewFormSystemNotification(interviewFormDTO0);
+        return interviewFormDTO0;
     }
 
-    /**
-     * 更新面试地点
-     *
-     * @permission 必须是面试表的主体
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 面试表不存在
-     *              OperationConflict.Status: 面试表的状态不是 WAITING_INTERVIEW
-     *
-     * @param id 面试表编号
-     * @param interviewLocation 面试地点
-     * @return 更新后的面试表
-     */
     @Override
-    public Result<InterviewFormDTO> updateInterviewLocation(Long id, String interviewLocation) {
-        // 检查面试表状态
-        Result<InterviewFormDTO> checkResult = checkForUpdate(id);
-        if (checkResult.isFailure()) {
-            return checkResult;
-        }
-
-        // 更新面试地点
-        interviewFormMapper.updateInterviewLocation(id, interviewLocation);
-
-        // 发送更新面试地点通知
-        sendUpdateInterviewFormSystemNotification(id, "面试地点");
-
-        // 获取更新后的面试表
-        return getInterviewForm(id);
-    }
-
-    /**
-     * 更新备注
-     *
-     * @permission 必须是面试表的主体
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 面试表不存在
-     *              OperationConflict.Status: 面试表的状态不是 WAITING_INTERVIEW
-     *
-     * @param id 面试表编号
-     * @param note 备注
-     * @return 更新后的面试表
-     */
-    @Override
-    public Result<InterviewFormDTO> updateNote(Long id, String note) {
-        // 检查面试表状态
-        Result<InterviewFormDTO> checkResult = checkForUpdate(id);
-        if (checkResult.isFailure()) {
-            return checkResult;
-        }
-
-        // 更新备注
-        interviewFormMapper.updateNote(id, note);
-
-        // 发送更新备注通知
-        sendUpdateInterviewFormSystemNotification(id, "备注");
-
-        // 获取更新后的面试表
-        return getInterviewForm(id);
-    }
-
-    /**
-     * 更新面试状态
-     *
-     * @permission 必须是面试表的主体
-     *
-     * @errorCode InvalidParameter: 参数格式错误
-     *              InvalidParameter.NotExist: 面试表不存在
-     *              InvalidParameter.Mismatch: 旧面试状态已经改变了
-     *              OperationConflict.Status: 旧面试状态必须小于新模式状态
-     *
-     * @param id 面试表编号
-     * @param oldInterviewStatus 旧面试状态
-     * @param newInterviewStatus 新面试状态
-     * @return 更新后的面试表
-     */
-    @Override
-    public Result<InterviewFormDTO> updateInterviewStatus(Long id, InterviewStatusEnum oldInterviewStatus,
+    @Transactional
+    @DistributedLock(value = UPDATE_INTERVIEW_FORM_LOCK_KEY_PATTERN, parameters = "#{#id}")
+    public InterviewFormDTO updateInterviewStatus(Long id, InterviewStatusEnum oldInterviewStatus,
                                                           InterviewStatusEnum newInterviewStatus) {
-        // 判断面试表是否存在
-        String interviewStatus = interviewFormMapper.getInterviewStatus(id);
-        if (interviewStatus == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The interviewForm does not exist.");
-        }
-
         // 旧面试状态必须小于新模式状态
         if (oldInterviewStatus.getCode() >= newInterviewStatus.getCode()) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
-                    "The newInterviewStatus must be greater than oldInterviewStatus.");
+            throw new InvalidStatusServiceException("The newInterviewStatus must be greater than oldInterviewStatus.");
+        }
+
+        // 判断面试表是否存在
+        InterviewFormDTO interviewFormDTO = getInterviewForm(id);
+
+        // 旧面试状态必须正确
+        if (!Objects.equals(interviewFormDTO.getInterviewStatus(), oldInterviewStatus.name())) {
+            throw new MisMatchServiceException("旧状态不正确");
         }
 
         // 更新面试状态
-        int count = interviewFormMapper.updateInterviewStatus(id, oldInterviewStatus, newInterviewStatus);
-
-        // 更新失败表示旧面试状态已经改变了
-        if (count < 1) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_MISMATCH,
-                    "The oldInterviewStatus does not is " + oldInterviewStatus.name() + ".");
-        }
-
-        // 发送更新面试结果通知
-        sendInterviewResultSystemNotification(id, newInterviewStatus);
+        InterviewFormDO interviewFormDOForUpdate = InterviewFormDO.builder().id(id)
+                .interviewStatus(newInterviewStatus.name()).build();
+        interviewFormMapper.updateById(interviewFormDOForUpdate);
 
         // 获取更新后的面试表
-        return getInterviewForm(id);
-    }
+        InterviewFormDTO interviewFormDTO0 = getInterviewForm(id);
 
-    /**
-     * 获取面试编号
-     *
-     * @private 内部方法
-     *
-     * @param id 面试表编号
-     * @return 面试编号，若不存在返回 null
-     */
-    @Override
-    public Long getInterviewId(Long id) {
-        return interviewFormMapper.getInterviewId(id);
-    }
+        // 发送更新面试结果通知
+        sendInterviewResultSystemNotification(interviewFormDTO0);
 
-    /**
-     * 获取面试状态
-     *
-     * @private 内部方法
-     *
-     * @param id 面试表编号
-     * @return 面试状态，若不存在返回 null
-     */
-    @Override
-    public String getInterviewStatus(Long id) {
-        return interviewFormMapper.getInterviewStatus(id);
-    }
-
-    /**
-     * 获取面试表
-     *
-     * @param id 面试表编号
-     * @return 面试表
-     */
-    private Result<InterviewFormDTO> getInterviewForm(Long id) {
-        InterviewFormDO interviewFormDO = interviewFormMapper.getInterviewForm(id);
-        return Result.success(interviewFormAssembler.toDTO(interviewFormDO));
-    }
-
-    /**
-     * 检查面试表的状态是否适合招新
-     *
-     * @errorCode InvalidParameter.NotExist: 面试表不存在
-     *              OperationConflict.Status: 面试表的状态不是 WAITING_INTERVIEW
-     *
-     * @param id 面试表编号
-     * @return 检查结果
-     */
-    private <T> Result<T> checkForUpdate(Long id) {
-        // 判断面试表是否存在
-        String interviewStatus = interviewFormMapper.getInterviewStatus(id);
-        if (interviewStatus == null) {
-            return Result.fail(ErrorCodeEnum.INVALID_PARAMETER_NOT_EXIST,
-                    "The interviewForm does not exist.");
-        }
-
-        // 判断面试状态是否是 WAITING_INTERVIEW
-        if (!Objects.equals(interviewStatus, InterviewStatusEnum.WAITING_INTERVIEW.name())) {
-            return Result.fail(ErrorCodeEnum.OPERATION_CONFLICT_STATUS,
-                    "The status of interviewForm must be "
-                            + InterviewStatusEnum.WAITING_INTERVIEW.name() + ".");
-        }
-
-        // 通过检查
-        return Result.success();
+        return interviewFormDTO0;
     }
 
     /**
@@ -334,12 +188,12 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      *
      * @param interviewDTO 面试对象
      * @param interviewFormId 面试表编号
-     * @param applicationFormId 报名表编号
+     * @param applicationFormDTO ApplicationFormDTO
      */
     private void sendInterviewSystemNotification(InterviewDTO interviewDTO, Long interviewFormId,
-                                                 Long applicationFormId) {
-        Long organizationId = recruitmentService.getOrganizationId(interviewDTO.getRecruitmentId());
-        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+                                                 ApplicationFormDTO applicationFormDTO) {
+        RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(interviewDTO.getRecruitmentId());
+        OrganizationDTO organizationDTO = organizationService.getOrganization(recruitmentDTO.getOrganizationId());
 
         String notificationTitle = interviewDTO.getTitle() + "通知";
         String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
@@ -348,12 +202,11 @@ public class InterviewFormServiceImpl implements InterviewFormService {
                 + "。请注意好面试要求，准时参加面试。");
         jsonObject.put("interviewId", interviewDTO.getId());
         jsonObject.put("interviewFormId", interviewFormId);
-        jsonObject.put("organizationId", organizationId);
+        jsonObject.put("organizationId", organizationDTO.getId());
         String notificationContent = jsonObject.toJSONString();
 
-        Long userId = applicationFormService.getUserId(applicationFormId);
         SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
-                .userId(userId)
+                .userId(applicationFormDTO.getUserId())
                 .notificationType(SystemNotificationTypeEnum.INTERVIEW)
                 .notificationTitle(notificationTitle)
                 .notificationContent(notificationContent)
@@ -364,56 +217,48 @@ public class InterviewFormServiceImpl implements InterviewFormService {
     /**
      * 更新面试表的系统通知
      *
-     * @param id 面试表编号
-     * @param field 更新的字段
+     * @param interviewFormDTO InterviewFormDTO
      */
-    private void sendUpdateInterviewFormSystemNotification(Long id, String field) {
-        InterviewFormDO interviewFormDO = interviewFormMapper.getInterviewForm(id);
-        Long interviewId = interviewFormDO.getInterviewId();
-        InterviewDTO interviewDTO = interviewService.getInterview(interviewId).getData();
+    private void sendUpdateInterviewFormSystemNotification(InterviewFormDTO interviewFormDTO) {
+        Long interviewId = interviewFormDTO.getInterviewId();
+        InterviewDTO interviewDTO = interviewService.getInterview(interviewId);
         Long recruitmentId = interviewDTO.getRecruitmentId();
-        Long organizationId = recruitmentService.getOrganizationId(recruitmentId);
-        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+        RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(recruitmentId);
+        OrganizationDTO organizationDTO = organizationService.getOrganization(recruitmentDTO.getOrganizationId());
 
-        String notificationTitle = interviewDTO.getTitle() + "更新了" + field;
+        String notificationTitle = interviewDTO.getTitle();
         String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("message", "【" + abbreviationOrganizationName + "】更新了面试【" + notificationTitle + "】的"
-                + field + "。请查看最新的面试要求，以免错过面试。");
+        jsonObject.put("message", "【" + abbreviationOrganizationName + "】更新了面试【" + notificationTitle
+                + "】的信息。请查看最新的面试要求，以免错过面试。");
         jsonObject.put("interviewId", interviewId);
-        jsonObject.put("interviewFormId", id);
-        jsonObject.put("organizationId", organizationId);
+        jsonObject.put("interviewFormId", interviewFormDTO.getId());
+        jsonObject.put("organizationId", organizationDTO.getId());
         String notificationContent = jsonObject.toJSONString();
 
-        Long applicationFormId = interviewFormDO.getApplicationFormId();
-        Long userId = applicationFormService.getUserId(applicationFormId);
+        Long applicationFormId = interviewFormDTO.getApplicationFormId();
+        ApplicationFormDTO applicationFormDTO = applicationFormService.getApplicationForm(applicationFormId);
         SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
-                .userId(userId)
-                .notificationType(SystemNotificationTypeEnum.INTERVIEW)
-                .notificationTitle(notificationTitle)
-                .notificationContent(notificationContent)
-                .build();
+                .userId(applicationFormDTO.getUserId()).notificationType(SystemNotificationTypeEnum.INTERVIEW)
+                .notificationTitle(notificationTitle).notificationContent(notificationContent).build();
         systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
     }
 
     /**
      * 更新面试表的系统通知
      *
-     * @param id 面试表编号
-     * @param interviewStatus 新面试结果
+     * @param interviewFormDTO InterviewFormDTO
      */
-    private void sendInterviewResultSystemNotification(Long id, InterviewStatusEnum interviewStatus) {
-        InterviewFormDO interviewFormDO = interviewFormMapper.getInterviewForm(id);
-        Long interviewId = interviewFormDO.getInterviewId();
-        InterviewDTO interviewDTO = interviewService.getInterview(interviewId).getData();
-        Long recruitmentId = interviewDTO.getRecruitmentId();
-        Long organizationId = recruitmentService.getOrganizationId(recruitmentId);
-        OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId).getData();
+    private void sendInterviewResultSystemNotification(InterviewFormDTO interviewFormDTO) {
+        InterviewDTO interviewDTO = interviewService.getInterview(interviewFormDTO.getInterviewId());
+        RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(interviewDTO.getRecruitmentId());
+        OrganizationDTO organizationDTO = organizationService.getOrganization(recruitmentDTO.getOrganizationId());
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("interviewId", interviewId);
-        jsonObject.put("interviewFormId", id);
-        jsonObject.put("organizationId", organizationId);
+        jsonObject.put("interviewId", interviewFormDTO.getInterviewId());
+        jsonObject.put("interviewFormId", interviewFormDTO.getId());
+        jsonObject.put("organizationId", organizationDTO.getId());
         String notificationTitle;
+        InterviewStatusEnum interviewStatus = InterviewStatusEnum.valueOf(interviewFormDTO.getInterviewStatus());
         if (interviewStatus == InterviewStatusEnum.PENDING) {
             notificationTitle = "【面试结果】【" + interviewDTO.getTitle() + "】待定";
             String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
@@ -432,14 +277,11 @@ public class InterviewFormServiceImpl implements InterviewFormService {
         }
 
         String notificationContent = jsonObject.toJSONString();
-        Long applicationFormId = interviewFormDO.getApplicationFormId();
-        Long userId = applicationFormService.getUserId(applicationFormId);
+        ApplicationFormDTO applicationFormDTO = applicationFormService.getApplicationForm(
+                interviewFormDTO.getApplicationFormId());
         SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
-                .userId(userId)
-                .notificationType(SystemNotificationTypeEnum.INTERVIEW)
-                .notificationTitle(notificationTitle)
-                .notificationContent(notificationContent)
-                .build();
+                .userId(applicationFormDTO.getUserId()).notificationType(SystemNotificationTypeEnum.INTERVIEW)
+                .notificationTitle(notificationTitle).notificationContent(notificationContent).build();
         systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
     }
 

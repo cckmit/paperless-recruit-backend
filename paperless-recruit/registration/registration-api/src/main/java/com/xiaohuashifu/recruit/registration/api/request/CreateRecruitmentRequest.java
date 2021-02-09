@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.registration.api.request;
 
 import com.xiaohuashifu.recruit.common.constant.GradeEnum;
+import com.xiaohuashifu.recruit.common.validator.annotation.DateTime;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -86,22 +87,22 @@ public class CreateRecruitmentRequest implements Serializable {
     private Set<Long> recruitmentMajorIds;
 
     /**
-     * 最大9999-12-31 23:59:59
      * 招新发布时间，空表示立刻发布，必须大于等于当前时间
      */
     @FutureOrPresent
+    @DateTime
     private LocalDateTime releaseTime;
 
     /**
-     * 最大9999-12-31 23:59:59
      * 报名开始时间，空表示立刻报名，必须大于等于发布时间
      */
+    @DateTime
     private LocalDateTime registrationTimeFrom;
 
     /**
-     * 最大9999-12-31 23:59:59
      * 报名结束时间，空表示报名时间无限长（其实是9999-12-31 23:59:59），必须大于报名开始时间
      */
+    @DateTime
     private LocalDateTime registrationTimeTo;
 
 }

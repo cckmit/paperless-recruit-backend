@@ -72,72 +72,8 @@ public class ApplicationFormServiceImplTest {
     }
 
     @Test
-    public void updateAvatar() throws IOException {
-        System.out.println(applicationFormService.updateAvatar(1L, ""));
+    public void updateApplicationForm() throws IOException {
+//        System.out.println(applicationFormService.updateApplicationForm(1L, ""));
     }
 
-    @Test
-    public void updateFullName() {
-        System.out.println(applicationFormService.updateFullName(10L, "呜333呜"));
-    }
-
-    @Test
-    public void updatePhone() {
-        System.out.println(applicationFormService.updatePhone(8L, "15555555555"));
-    }
-
-    @Test
-    public void updateFirstDepartment() {
-        System.out.println(applicationFormService.updateFirstDepartment(9L, 4L));
-    }
-
-    @Test
-    public void updateSecondDepartment() {
-        System.out.println(applicationFormService.updateSecondDepartment(10L, 2L));
-    }
-
-    @Test
-    public void updateEmail() {
-        System.out.println(applicationFormService.updateEmail(10L, "888888888888@qq.com"));
-    }
-
-    @Test
-    public void updateIntroduction() {
-        System.out.println(applicationFormService.updateIntroduction(8L, "我是吴嘉贤"));
-    }
-
-    @Test
-    public void updateAttachment() throws IOException {
-        System.out.println(applicationFormService.updateAttachment(1L, ""));
-    }
-
-    @Test
-    public void updateStudentNumber() {
-        System.out.println(applicationFormService.updateStudentNumber(8L, "201734020122"));
-    }
-
-    @Test
-    public void updateCollege() {
-        System.out.println(applicationFormService.updateCollege(8L, 2L));
-    }
-
-    @Test
-    public void updateMajor() {
-        System.out.println(applicationFormService.updateMajor(8L, 4L));
-    }
-
-    @Test
-    public void updateNote() {
-        System.out.println(applicationFormService.updateNote(8L, "啦啦啦"));
-    }
-
-    @Test
-    public void getRecruitmentId() {
-        System.out.println(applicationFormService.getRecruitmentId(8L));
-    }
-
-    @Test
-    public void getUserId() {
-        System.out.println(applicationFormService.getUserId(8L));
-    }
 }

@@ -3,14 +3,12 @@ package com.xiaohuashifu.recruit.organization.api.service;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.validator.annotation.Username;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberInvitationDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberInvitationQuery;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationMemberQuery;
 import com.xiaohuashifu.recruit.organization.api.request.UpdateOrganizationMemberRequest;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
@@ -28,11 +26,11 @@ public interface OrganizationMemberService {
      * @permission 必须是该组织的主体用户
      *
      * @param organizationId 组织编号
-     * @param username       用户名
+     * @param userId 用户编号
      * @return 发送结果
      */
     OrganizationMemberInvitationDTO sendInvitation(
-            @NotNull @Positive Long organizationId, @NotBlank @Username String username) throws ServiceException;
+            @NotNull @Positive Long organizationId, @NotNull @Positive Long userId) throws ServiceException;
 
     /**
      * 接受加入组织邀请

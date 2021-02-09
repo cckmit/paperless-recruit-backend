@@ -31,7 +31,7 @@ public class InterviewEvaluationServiceImplTest {
 
     @Test
     public void saveInterviewEvaluation() {
-        System.out.println(interviewEvaluationService.saveInterviewEvaluation(CreateInterviewEvaluationRequest.builder()
+        System.out.println(interviewEvaluationService.createInterviewEvaluation(CreateInterviewEvaluationRequest.builder()
                 .interviewerId(2L)
                 .interviewFormId(3L)
                 .evaluation("过了")
@@ -43,8 +43,4 @@ public class InterviewEvaluationServiceImplTest {
         System.out.println(interviewEvaluationService.updateEvaluation(1L, "这个人不错"));
     }
 
-    @Test
-    public void authenticatePrincipal() {
-        System.out.println(interviewEvaluationService.authenticatePrincipal(1L, 4L));
-    }
 }

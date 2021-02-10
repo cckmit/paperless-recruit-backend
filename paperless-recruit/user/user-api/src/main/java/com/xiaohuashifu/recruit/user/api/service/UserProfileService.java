@@ -3,17 +3,12 @@ package com.xiaohuashifu.recruit.user.api.service;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.common.validator.annotation.FullName;
-import com.xiaohuashifu.recruit.common.validator.annotation.StudentNumber;
-import com.xiaohuashifu.recruit.user.api.constant.UserProfileConstants;
 import com.xiaohuashifu.recruit.user.api.dto.UserProfileDTO;
 import com.xiaohuashifu.recruit.user.api.query.UserProfileQuery;
 import com.xiaohuashifu.recruit.user.api.request.UpdateUserProfileRequest;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 
 /**
  * 描述：用户个人信息服务

@@ -118,8 +118,7 @@ public class RoleServiceImpl implements RoleService {
 
         // 判断该用户角色存不存在
         LambdaQueryWrapper<UserRoleDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(UserRoleDO::getUserId, userId)
-                .eq(UserRoleDO::getRoleId, roleId);
+        wrapper.eq(UserRoleDO::getUserId, userId).eq(UserRoleDO::getRoleId, roleId);
         int count = userRoleMapper.selectCount(wrapper);
         if (count > 0) {
             throw new DuplicateServiceException("The user already has this role.");

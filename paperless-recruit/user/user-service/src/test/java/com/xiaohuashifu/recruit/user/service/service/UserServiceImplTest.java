@@ -40,7 +40,7 @@ public class UserServiceImplTest {
     @Test
     public void signUpUser() {
         UserDTO userDTO = userService.register(
-                CreateUserRequest.builder().username("profiletest8").password("123456").build());
+                CreateUserRequest.builder().username("profiletest10").password("123456").build());
         System.out.println(userDTO);
     }
 

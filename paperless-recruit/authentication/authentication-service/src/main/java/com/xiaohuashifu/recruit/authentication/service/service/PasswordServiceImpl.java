@@ -21,12 +21,6 @@ public class PasswordServiceImpl implements PasswordService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * 对密码进行编码
-     *
-     * @param password 原密码
-     * @return 编码后的密码
-     */
     @Override
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);

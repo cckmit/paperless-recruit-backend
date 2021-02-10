@@ -190,7 +190,6 @@ public class UserServiceImpl implements UserService {
         this.redisTemplate = redisTemplate;
     }
 
-    // TODO: 2021/2/5 测试一下不加锁只加事务会不会导致数据库记录重复
     @Override
     @Transactional
     public UserDTO register(CreateUserRequest request) {
@@ -201,8 +200,9 @@ public class UserServiceImpl implements UserService {
         }
 
         // 添加到数据库
+//        String encodedPassword = passwordService.encodePassword(request.getPassword());
         UserDO userDOForInsert = UserDO.builder().username(request.getUsername())
-                .password(passwordService.encodePassword(request.getPassword())).build();
+                .password(request.getPassword()).build();
         return ((UserServiceImpl)AopContext.currentProxy()).saveUser(userDOForInsert);
     }
 

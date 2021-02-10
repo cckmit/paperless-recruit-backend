@@ -42,53 +42,31 @@ public class OrganizationController {
         this.organizationContext = organizationContext;
     }
 
-    /**
-     * 获取组织
-     *
-     * @param organizationId 组织编号
-     * @return 组织
-     */
+    @ApiOperation(value = "更新组织")
+    @PreAuthorize("hasRole('organization')")
+    @PostMapping("/organization/update")
+    public OrganizationVO updateAuthenticatedUserOrganization(
+            @RequestBody @NotAllFieldsNull OrganizationPatchRequest request) {
+        return organizationManager.updateOrganization(organizationContext.getOrganizationId(), request);
+    }
+
     @ApiOperation(value = "获取组织")
-    @GetMapping("organizations/{organizationId}")
+    @GetMapping("/organizations/{organizationId}")
     public OrganizationVO getOrganization(@ApiParam("组织编号") @PathVariable Long organizationId) {
         return organizationManager.getOrganization(organizationId);
     }
 
-    /**
-     * 获取认证用户的组织
-     *
-     * @return 组织
-     */
     @ApiOperation(value = "获取认证用户的组织")
-    @GetMapping("user/organization")
+    @GetMapping("/authentication/organization")
     @PreAuthorize("hasRole('organization')")
     public OrganizationVO getAuthenticatedUserOrganization() {
         return organizationManager.getOrganizationByUserId(userContext.getUserId());
     }
 
-    /**
-     * 列出组织
-     *
-     * @param query query
-     * @return 组织列表
-     */
     @ApiOperation(value = "列出组织")
-    @GetMapping("organizations")
+    @GetMapping("/organizations")
     public List<OrganizationVO> listOrganizations(OrganizationQuery query) {
         return organizationManager.listOrganizations(query);
-    }
-
-    /**
-     * 更新认证用户的组织
-     *
-     * @return 更新后的组织
-     */
-    @ApiOperation(value = "更新认证用户的组织")
-    @PreAuthorize("hasRole('organization')")
-    @PatchMapping("user/organization")
-    public OrganizationVO updateAuthenticatedUserOrganization(
-            @RequestBody @NotAllFieldsNull OrganizationPatchRequest request) {
-        return organizationManager.updateOrganization(organizationContext.getOrganizationId(), request);
     }
 
 }

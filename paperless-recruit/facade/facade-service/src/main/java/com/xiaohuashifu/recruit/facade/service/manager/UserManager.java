@@ -2,6 +2,7 @@ package com.xiaohuashifu.recruit.facade.service.manager;
 
 import com.xiaohuashifu.recruit.facade.service.vo.UserVO;
 import com.xiaohuashifu.recruit.user.api.request.CreateUserBySmsAuthCodeRequest;
+import com.xiaohuashifu.recruit.user.api.request.CreateUserRequest;
 
 /**
  * 描述：用户管理器
@@ -18,6 +19,14 @@ public interface UserManager {
      * @return UserVO
      */
     UserVO registerBySmsAuthCode(CreateUserBySmsAuthCodeRequest request);
+
+    /**
+     * 注册用户
+     *
+     * @param request CreateUserRequest
+     * @return UserVO
+     */
+    UserVO register(CreateUserRequest request);
 
     /**
      * 获取用户

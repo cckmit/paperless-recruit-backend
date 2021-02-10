@@ -4,6 +4,7 @@ import com.xiaohuashifu.recruit.facade.service.assembler.UserAssembler;
 import com.xiaohuashifu.recruit.facade.service.manager.UserManager;
 import com.xiaohuashifu.recruit.facade.service.vo.UserVO;
 import com.xiaohuashifu.recruit.user.api.request.CreateUserBySmsAuthCodeRequest;
+import com.xiaohuashifu.recruit.user.api.request.CreateUserRequest;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.cache.annotation.CacheConfig;
@@ -33,6 +34,13 @@ public class UserManagerImpl implements UserManager {
     public UserVO registerBySmsAuthCode(CreateUserBySmsAuthCodeRequest request) {
         return userAssembler.userDTOToUserVO(userService.registerBySmsAuthCode(request));
     }
+
+    @Override
+    public UserVO register(CreateUserRequest request) {
+        return userAssembler.userDTOToUserVO(userService.register(request));
+    }
+
+
 
     @Cacheable(key = "'users:' + #userId")
     @Override

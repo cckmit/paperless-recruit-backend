@@ -62,7 +62,7 @@ public class OrganizationServiceImplTest {
     @Test
     public void updateOrganizationName() {
         System.out.println(organizationService.updateOrganizationName(
-                2L, "小花师傅工作室6"));
+                2L, "小花师傅工作室9"));
     }
 
     @Test

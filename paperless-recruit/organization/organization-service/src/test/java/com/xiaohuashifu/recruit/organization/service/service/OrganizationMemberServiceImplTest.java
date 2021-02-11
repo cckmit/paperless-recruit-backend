@@ -34,7 +34,8 @@ public class OrganizationMemberServiceImplTest {
 
     @Test
     public void sendInvitation() {
-        System.out.println(organizationMemberService.sendInvitation(1L, "scau_recruit_0983189606"));
+//        System.out.println(organizationMemberService.sendInvitation(1L,
+//                "scau_recruit_0983189606"));
     }
 
     @Test

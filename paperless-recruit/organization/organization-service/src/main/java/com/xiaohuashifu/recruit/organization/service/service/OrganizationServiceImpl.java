@@ -183,7 +183,20 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    @Transactional
     public OrganizationDTO updateOrganizationName(Long id, String organizationName) {
+        // 判断组织名是否存在
+        OrganizationDO organizationDO = organizationMapper.selectByOrganizationNameForUpdate(organizationName);
+        if (organizationDO != null) {
+            throw new DuplicateServiceException("The organizationName already exist.");
+        }
+
+        try {
+            Thread.sleep(20000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // 更新组织名
         OrganizationDO organizationDOForUpdate =
                 OrganizationDO.builder().id(id).organizationName(organizationName).build();

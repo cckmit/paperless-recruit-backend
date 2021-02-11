@@ -19,6 +19,12 @@ public interface OrganizationMapper extends BaseMapper<OrganizationDO> {
         return selectOne(wrapper);
     }
 
+    default OrganizationDO selectByOrganizationNameForUpdate(String organizationName) {
+        LambdaQueryWrapper<OrganizationDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrganizationDO::getOrganizationName, organizationName).last("for update");
+        return selectOne(wrapper);
+    }
+
     int addLabel(@Param("id") Long id, @Param("label") String label);
 
     int removeLabel(@Param("id") Long id, @Param("label") String label);

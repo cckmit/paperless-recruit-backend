@@ -5,7 +5,7 @@
 
 ## 项目架构
 系统采用微服务架构，服务间采用 RPC 协议进行通信，在门面封装成 REST 接口暴露给外部使用。
-<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/941adec32bc4479b9594f9464713129e~tplv-k3u1fbpfcp-watermark.image"  width="100%" />
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c7d2d98d559544beb663009aa14f4a96~tplv-k3u1fbpfcp-watermark.image"  width="100%" />
 ## 项目技术使用
 后台主要使用的技术包括 **Dubbo**、Spring、Spring MVC、MyBatis、Spring Security、Spring Boot、Spring Cloud Alibaba、MySQL、Redis、RocketMQ、Nacos、Sentinel、Seata、MongoDB、Nginx、Maven、Docker、MyBatis-Plus、MapStruct、Lombok、Bean Validation2.0 等；
 

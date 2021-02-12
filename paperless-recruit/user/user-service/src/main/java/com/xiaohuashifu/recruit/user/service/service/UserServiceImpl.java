@@ -27,6 +27,7 @@ import com.xiaohuashifu.recruit.user.api.service.UserService;
 import com.xiaohuashifu.recruit.user.service.assembler.UserAssembler;
 import com.xiaohuashifu.recruit.user.service.dao.UserMapper;
 import com.xiaohuashifu.recruit.user.service.do0.UserDO;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -191,7 +192,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @GlobalTransactional
     public UserDTO register(CreateUserRequest request) {
         // 判断用户名是否存在
         UserDO userDO = userMapper.selectByUsername(request.getUsername());
@@ -549,8 +550,6 @@ public class UserServiceImpl implements UserService {
      * @param userDO UserDO
      * @return UserDTO
      */
-    @Transactional
-    // TODO: 2021/2/5 需要使用消息队列保证最终一致性
     protected UserDTO saveUser(UserDO userDO) throws ServiceException {
         // 保存用户
         userMapper.insert(userDO);

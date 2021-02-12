@@ -126,6 +126,17 @@
             <artifactId>mapstruct-processor</artifactId>
         </dependency>
         <!--    MapStruct    -->
+
+        <!--    seata    -->
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+        </dependency>
+        <!--    seata    -->
     </dependencies>
 
 </project>

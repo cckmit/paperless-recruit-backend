@@ -196,6 +196,12 @@
             <artifactId>mapstruct-processor</artifactId>
         </dependency>
         <!--    MapStruct    -->
+
+        <!--    RocketMQ    -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

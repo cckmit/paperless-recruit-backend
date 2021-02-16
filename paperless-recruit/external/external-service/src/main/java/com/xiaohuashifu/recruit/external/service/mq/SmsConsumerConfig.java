@@ -9,11 +9,12 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PreDestroy;
 
 /**
  * 描述：Sms消费者配置
@@ -33,11 +34,15 @@ public class SmsConsumerConfig {
     @Value("${rocketmq.name-server}")
     private String nameServer;
 
-    @Value("${rocketmq.consumer.topic}")
+    @Value("${rocketmq.topics.sms}")
     private String topic;
 
-    @Value("${rocketmq.consumer.tags.create-and-send-sms-auth-code}")
+    @Value("${rocketmq.tags.create-and-send-sms-auth-code}")
     private String createAndSendSmsAuthCodeTag;
+
+    @Autowired
+    @Qualifier("createAndSendSmsAuthCodeConsumer")
+    private DefaultMQPushConsumer createAndSendSmsAuthCodeConsumer;
 
     /**
      * 创建并发送短信验证码，消费失败直接丢弃信息
@@ -68,11 +73,12 @@ public class SmsConsumerConfig {
 
     /**
      * 关闭时：摧毁 Bean createAndSendSmsAuthCodeConsumer
-     * @throws MQClientException .
+     *
+     * @return DisposableBean
      */
-    @PreDestroy
-    public void destroy() throws MQClientException {
-        createAndSendSmsAuthCodeConsumer().shutdown();
+    @Bean
+    public DisposableBean destroy() {
+        return ()-> createAndSendSmsAuthCodeConsumer.shutdown();
     }
     
 }

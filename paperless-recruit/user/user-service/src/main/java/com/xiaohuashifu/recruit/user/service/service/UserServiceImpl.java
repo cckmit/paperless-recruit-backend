@@ -1,13 +1,14 @@
 package com.xiaohuashifu.recruit.user.service.service;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaohuashifu.recruit.authentication.api.service.PasswordService;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
+import com.xiaohuashifu.recruit.common.exception.MqServiceException;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
-import com.xiaohuashifu.recruit.common.exception.ThirdPartyServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
 import com.xiaohuashifu.recruit.common.limiter.frequency.RangeRefreshFrequencyLimit;
@@ -32,7 +33,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.rocketmq.client.exception.MQBrokerException;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +71,14 @@ public class UserServiceImpl implements UserService {
 
     @Reference
     private UserProfileService userProfileService;
+
+    @Value("${rocketmq.topics.sms}")
+    private String smsTopic;
+
+    @Value("${rocketmq.tags.create-and-send-sms-auth-code}")
+    private String createAndSendSmsAuthCodeTag;
+
+    private final DefaultMQProducer defaultMQProducer;
 
     private final UserMapper userMapper;
 
@@ -185,7 +200,9 @@ public class UserServiceImpl implements UserService {
     private static final String UPDATE_PASSWORD_EMAIL_AUTH_CODE_FREQUENCY_LIMIT_PATTERN =
             "user:update-password:email-auth-code:{0}";
 
-    public UserServiceImpl(UserMapper userMapper, UserAssembler userAssembler, StringRedisTemplate redisTemplate) {
+    public UserServiceImpl(DefaultMQProducer defaultMQProducer, UserMapper userMapper, UserAssembler userAssembler,
+                           StringRedisTemplate redisTemplate) {
+        this.defaultMQProducer = defaultMQProducer;
         this.userMapper = userMapper;
         this.userAssembler = userAssembler;
         this.redisTemplate = redisTemplate;
@@ -537,11 +554,17 @@ public class UserServiceImpl implements UserService {
      * @param phone 手机号码
      * @param subject 主题
      */
-    private void sendSmsAuthCode(String phone, String subject) throws ThirdPartyServiceException {
+    private void sendSmsAuthCode(String phone, String subject) throws MqServiceException {
         // 创建发送短信验证码
         CreateAndSendSmsAuthCodeRequest request = CreateAndSendSmsAuthCodeRequest.builder().phone(phone)
                 .subject(subject).expirationTime(SMS_AUTH_CODE_EXPIRED_TIME).build();
-        smsService.createAndSendSmsAuthCode(request);
+        Message message = new Message(smsTopic, createAndSendSmsAuthCodeTag, JSON.toJSONBytes(request));
+        try {
+            defaultMQProducer.send(message);
+        } catch (MQClientException | RemotingException | MQBrokerException | InterruptedException e) {
+            log.error("Send message error." + message, e);
+            throw new MqServiceException("Send message error.");
+        }
     }
 
     /**

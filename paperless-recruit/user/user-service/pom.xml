@@ -137,6 +137,12 @@
             <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
         </dependency>
         <!--    seata    -->
+
+        <!--	rocketmq	-->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

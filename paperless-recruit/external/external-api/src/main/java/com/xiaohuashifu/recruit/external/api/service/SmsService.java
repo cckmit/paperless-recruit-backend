@@ -1,7 +1,8 @@
 package com.xiaohuashifu.recruit.external.api.service;
 
+import com.xiaohuashifu.recruit.common.exception.LimitControlServiceException;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
-import com.xiaohuashifu.recruit.common.exception.ThirdPartyServiceException;
+import com.xiaohuashifu.recruit.common.exception.UnknownServiceException;
 import com.xiaohuashifu.recruit.common.validator.annotation.Phone;
 import com.xiaohuashifu.recruit.common.validator.annotation.Sms;
 import com.xiaohuashifu.recruit.external.api.request.CheckSmsAuthCodeRequest;
@@ -41,7 +42,8 @@ public interface SmsService {
      * @param request CreateAndSendSmsAuthCodeRequest
      * @return authCode
      */
-    String createAndSendSmsAuthCode(@NotNull CreateAndSendSmsAuthCodeRequest request) throws ThirdPartyServiceException;
+    String createAndSendSmsAuthCode(@NotNull CreateAndSendSmsAuthCodeRequest request)
+            throws UnknownServiceException, LimitControlServiceException;
 
     /**
      * 短信验证码检验验证码是否有效的服务

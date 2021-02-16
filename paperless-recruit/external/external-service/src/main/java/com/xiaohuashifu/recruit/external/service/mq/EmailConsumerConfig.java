@@ -30,14 +30,17 @@ public class EmailConsumerConfig {
     @Reference
     private EmailService emailService;
 
-    @Value("${rocketmq.consumer.group.email}")
-    private String consumerGroup;
-
     @Value("${rocketmq.name-server}")
     private String nameServer;
 
     @Value("${rocketmq.topics.email}")
     private String topic;
+
+    @Value("${rocketmq.consumer.group.create-and-send-email-auth-code}")
+    private String createAndSendEmailAuthCodeConsumerGroup;
+
+    @Value("${rocketmq.consumer.group.send-simple-email}")
+    private String sendSimpleEmailConsumerGroup;
 
     @Value("${rocketmq.tags.create-and-send-email-auth-code}")
     private String createAndSendEmailAuthCodeTag;
@@ -53,7 +56,7 @@ public class EmailConsumerConfig {
      */
     @Bean
     public DefaultMQPushConsumer createAndSendEmailAuthCodeConsumer() throws MQClientException {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerGroup);
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(createAndSendEmailAuthCodeConsumerGroup);
         consumer.setNamesrvAddr(nameServer);
         consumer.subscribe(topic, createAndSendEmailAuthCodeTag);
         consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {
@@ -81,7 +84,7 @@ public class EmailConsumerConfig {
      */
     @Bean
     public DefaultMQPushConsumer sendSimpleEmailConsumer() throws MQClientException {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerGroup);
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(sendSimpleEmailConsumerGroup);
         consumer.setNamesrvAddr(nameServer);
         consumer.subscribe(topic, sendSimpleEmailTag);
         consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {

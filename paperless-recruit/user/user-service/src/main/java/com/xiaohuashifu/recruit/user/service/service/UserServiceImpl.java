@@ -78,6 +78,12 @@ public class UserServiceImpl implements UserService {
     @Value("${rocketmq.tags.create-and-send-sms-auth-code}")
     private String createAndSendSmsAuthCodeTag;
 
+    @Value("${rocketmq.topics.email}")
+    private String emailTopic;
+
+    @Value("${rocketmq.tags.create-and-send-email-auth-code}")
+    private String createAndSendEmailAuthCodeTag;
+
     private final DefaultMQProducer defaultMQProducer;
 
     private final UserMapper userMapper;
@@ -545,7 +551,13 @@ public class UserServiceImpl implements UserService {
         // 创建发送邮件验证码
         CreateAndSendEmailAuthCodeRequest request = CreateAndSendEmailAuthCodeRequest.builder().email(email)
                 .subject(subject).title(title).expirationTime(EMAIL_AUTH_CODE_EXPIRED_TIME).build();
-        emailService.createAndSendEmailAuthCode(request);
+        Message message = new Message(emailTopic, createAndSendEmailAuthCodeTag, JSON.toJSONBytes(request));
+        try {
+            defaultMQProducer.send(message);
+        } catch (MQClientException | RemotingException | MQBrokerException | InterruptedException e) {
+            log.error("Send message error." + message, e);
+            throw new MqServiceException("Send message error.");
+        }
     }
 
     /**

@@ -290,11 +290,11 @@
             </dependency>
             <!--    seata    -->
 
-            <!--    RocketMQ    -->
+            <!--	rocketmq	-->
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-spring-boot-starter</artifactId>
-                <version>2.2.0</version>
+                <artifactId>rocketmq-client</artifactId>
+                <version>4.8.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

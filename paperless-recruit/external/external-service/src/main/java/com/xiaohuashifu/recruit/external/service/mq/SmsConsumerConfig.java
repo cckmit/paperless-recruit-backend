@@ -9,6 +9,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,6 +27,18 @@ public class SmsConsumerConfig {
     @Reference
     private SmsService smsService;
 
+    @Value("${rocketmq.consumer.group}")
+    private String consumerGroup;
+
+    @Value("${rocketmq.name-server}")
+    private String nameServer;
+
+    @Value("${rocketmq.consumer.topic}")
+    private String topic;
+
+    @Value("${rocketmq.consumer.tags.create-and-send-sms-auth-code}")
+    private String createAndSendSmsAuthCodeTag;
+
     /**
      * 创建并发送短信验证码，消费失败直接丢弃信息
      *
@@ -38,9 +51,9 @@ public class SmsConsumerConfig {
      */
     @Bean("createAndSendSmsAuthCodeConsumer")
     public DefaultMQPushConsumer createAndSendSmsAuthCodeConsumer() throws MQClientException {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("SmsConsumer");
-        consumer.setNamesrvAddr("49.233.30.197:9876");
-        consumer.subscribe("Sms", "createAndSendSmsAuthCode");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerGroup);
+        consumer.setNamesrvAddr(nameServer);
+        consumer.subscribe(topic, createAndSendSmsAuthCodeTag);
         consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {
             for (MessageExt msg : msgs) {
                 String msgString = new String(msg.getBody());

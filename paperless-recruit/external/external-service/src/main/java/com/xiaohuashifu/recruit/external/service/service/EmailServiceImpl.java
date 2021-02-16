@@ -105,7 +105,7 @@ public class EmailServiceImpl implements EmailService {
             // 发送邮件
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new ThirdPartyServiceException("Send email error.");
+            throw new ThirdPartyServiceException("Send email error.", e);
         }
     }
 

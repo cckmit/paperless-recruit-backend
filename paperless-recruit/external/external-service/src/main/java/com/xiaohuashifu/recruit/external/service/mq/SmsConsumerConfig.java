@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 描述：Sms消费者配置
+ * 描述：Sms 消费者配置
  *
  * @author xhsf
  * @create 2021/2/16 02:17
@@ -43,7 +43,7 @@ public class SmsConsumerConfig {
     private String createAndSendSmsAuthCodeTag;
 
     /**
-     * 创建并发送短信验证码，消费失败直接丢弃信息
+     * 创建并发送短信验证码消费者，消费失败直接丢弃信息
      *
      * 频率：1分钟内短信发送条数不超过：1
      * 1小时内短信发送条数不超过：5
@@ -52,7 +52,7 @@ public class SmsConsumerConfig {
      * @return DefaultMQPushConsumer
      * @throws MQClientException .
      */
-    @Bean("createAndSendSmsAuthCodeConsumer")
+    @Bean
     public DefaultMQPushConsumer createAndSendSmsAuthCodeConsumer() throws MQClientException {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerGroup);
         consumer.setNamesrvAddr(nameServer);

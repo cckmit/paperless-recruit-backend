@@ -51,4 +51,5 @@ public class SendSystemNotificationRequest implements Serializable {
     @NotBlank
     @Size(max = SystemNotificationConstants.MAX_NOTIFICATION_CONTENT_LENGTH)
     private String notificationContent;
+
 }

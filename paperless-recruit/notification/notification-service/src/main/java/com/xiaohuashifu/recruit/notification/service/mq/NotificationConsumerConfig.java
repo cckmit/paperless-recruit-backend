@@ -1,7 +1,7 @@
 package com.xiaohuashifu.recruit.notification.service.mq;
 
 import com.alibaba.fastjson.JSON;
-import com.xiaohuashifu.recruit.common.exception.UnknownServiceException;
+import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
 import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class NotificationConsumerConfig {
     private String sendSystemNotificationTag;
 
     /**
-     * 发送系统消息消费者，消费失败直接丢弃信息
+     * 发送系统消息消费者
      *
      * @return DefaultMQPushConsumer
      * @throws MQClientException .
@@ -58,9 +58,8 @@ public class NotificationConsumerConfig {
                 SendSystemNotificationRequest request = JSON.parseObject(msgString, SendSystemNotificationRequest.class);
                 try {
                     systemNotificationService.sendSystemNotification(request);
-                } catch (UnknownServiceException e) {
-                    log.warn("Send system notification failed." + msgString, e);
-                    return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                } catch (NotFoundServiceException e) {
+                    log.warn("Send system notification, " + e.getMessage() + "." + msgString, e);
                 }
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;

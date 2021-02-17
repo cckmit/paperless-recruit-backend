@@ -12,7 +12,6 @@ import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServic
 import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
 import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
-import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import com.xiaohuashifu.recruit.organization.api.constant.DepartmentConstants;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberInvitationStatusEnum;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationMemberStatusEnum;
@@ -33,6 +32,7 @@ import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMemberInvit
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMemberMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationMemberDO;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationMemberInvitationDO;
+import com.xiaohuashifu.recruit.organization.service.mq.NotificationTemplate;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -61,14 +61,13 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
 
     private final OrganizationMemberInvitationAssembler organizationMemberInvitationAssembler;
 
+    private final NotificationTemplate notificationTemplate;
+
     @Reference
     private OrganizationService organizationService;
 
     @Reference
     private UserService userService;
-
-    @Reference
-    private SystemNotificationService systemNotificationService;
 
     @Reference
     private DepartmentService departmentService;
@@ -109,11 +108,13 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
     public OrganizationMemberServiceImpl(OrganizationMemberMapper organizationMemberMapper,
                                          OrganizationMemberInvitationMapper organizationMemberInvitationMapper,
                                          OrganizationMemberAssembler organizationMemberAssembler,
-                                         OrganizationMemberInvitationAssembler organizationMemberInvitationAssembler) {
+                                         OrganizationMemberInvitationAssembler organizationMemberInvitationAssembler,
+                                         NotificationTemplate notificationTemplate) {
         this.organizationMemberMapper = organizationMemberMapper;
         this.organizationMemberInvitationMapper = organizationMemberInvitationMapper;
         this.organizationMemberAssembler = organizationMemberAssembler;
         this.organizationMemberInvitationAssembler = organizationMemberInvitationAssembler;
+        this.notificationTemplate = notificationTemplate;
     }
 
     @Override
@@ -361,7 +362,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
                 .userId(userId).notificationType(SystemNotificationTypeEnum.ORGANIZATION_INVITATION)
                 .notificationTitle(notificationTitle).notificationContent(notificationContent).build();
-        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+        notificationTemplate.sendSystemNotification(sendSystemNotificationPO);
     }
 
     /**

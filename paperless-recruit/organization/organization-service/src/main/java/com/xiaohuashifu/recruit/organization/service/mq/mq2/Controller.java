@@ -1,5 +1,6 @@
-package com.xiaohuashifu.recruit.organization.service.mq;
+package com.xiaohuashifu.recruit.organization.service.mq.mq2;
 
+import com.xiaohuashifu.recruit.organization.service.mq.Producer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
@@ -38,7 +39,7 @@ public class Controller {
 
     }
 
-    @RequestMapping("/text/rocketmq")
+    @RequestMapping("/test/rocketmq")
     public Object callback() throws Exception {
         //总共发送五次消息
         for (String s : mesList) {

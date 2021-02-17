@@ -9,7 +9,6 @@ import com.xiaohuashifu.recruit.common.exception.unprocessable.MisMatchServiceEx
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
 import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
-import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
@@ -20,6 +19,7 @@ import com.xiaohuashifu.recruit.registration.api.service.InterviewerService;
 import com.xiaohuashifu.recruit.registration.service.assembler.InterviewerAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.InterviewerMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.InterviewerDO;
+import com.xiaohuashifu.recruit.registration.service.mq.NotificationTemplate;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -40,6 +40,8 @@ public class InterviewerServiceImpl implements InterviewerService {
 
     private final InterviewerMapper interviewerMapper;
 
+    private final NotificationTemplate notificationTemplate;
+
     @Reference
     private OrganizationMemberService organizationMemberService;
 
@@ -48,9 +50,6 @@ public class InterviewerServiceImpl implements InterviewerService {
 
     @Reference
     private RoleService roleService;
-
-    @Reference
-    private SystemNotificationService systemNotificationService;
 
     /**
      * 面试官角色的编号
@@ -62,9 +61,11 @@ public class InterviewerServiceImpl implements InterviewerService {
      */
     private static final String UPDATE_INTERVIEWER_AVAILABLE_LOCK_KEY_PATTERN = "interviewer:{0}:update-available";
 
-    public InterviewerServiceImpl(InterviewerAssembler interviewerAssembler, InterviewerMapper interviewerMapper) {
+    public InterviewerServiceImpl(InterviewerAssembler interviewerAssembler, InterviewerMapper interviewerMapper,
+                                  NotificationTemplate notificationTemplate) {
         this.interviewerAssembler = interviewerAssembler;
         this.interviewerMapper = interviewerMapper;
+        this.notificationTemplate = notificationTemplate;
     }
 
     @Override
@@ -191,7 +192,7 @@ public class InterviewerServiceImpl implements InterviewerService {
                 .notificationTitle(notificationTitle)
                 .notificationContent(notificationContent)
                 .build();
-        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+        notificationTemplate.sendSystemNotification(sendSystemNotificationPO);
     }
 
     /**
@@ -215,6 +216,7 @@ public class InterviewerServiceImpl implements InterviewerService {
                 .notificationTitle(notificationTitle)
                 .notificationContent(notificationContent)
                 .build();
-        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+        notificationTemplate.sendSystemNotification(sendSystemNotificationPO);
     }
+
 }

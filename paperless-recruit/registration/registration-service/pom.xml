@@ -144,6 +144,12 @@
 			<artifactId>mapstruct-processor</artifactId>
 		</dependency>
 		<!--    MapStruct    -->
+
+		<!--	rocketmq	-->
+		<dependency>
+			<groupId>org.apache.rocketmq</groupId>
+			<artifactId>rocketmq-client</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

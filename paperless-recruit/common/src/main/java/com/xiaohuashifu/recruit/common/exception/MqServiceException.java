@@ -14,5 +14,16 @@ public class MqServiceException extends ServiceException {
         super(message);
     }
 
+    public MqServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public MqServiceException(Throwable cause) {
+        super(cause);
+    }
+
+    public MqServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }
 

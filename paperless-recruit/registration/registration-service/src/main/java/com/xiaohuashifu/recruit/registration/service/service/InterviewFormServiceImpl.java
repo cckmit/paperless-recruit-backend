@@ -3,13 +3,13 @@ package com.xiaohuashifu.recruit.registration.service.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
+import com.xiaohuashifu.recruit.common.exception.MqServiceException;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.InvalidStatusServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.MisMatchServiceException;
 import com.xiaohuashifu.recruit.notification.api.constant.SystemNotificationTypeEnum;
 import com.xiaohuashifu.recruit.notification.api.request.SendSystemNotificationRequest;
-import com.xiaohuashifu.recruit.notification.api.service.SystemNotificationService;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.registration.api.constant.InterviewStatusEnum;
@@ -26,6 +26,7 @@ import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.assembler.InterviewFormAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.InterviewFormMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.InterviewFormDO;
+import com.xiaohuashifu.recruit.registration.service.mq.NotificationTemplate;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,14 +46,13 @@ public class InterviewFormServiceImpl implements InterviewFormService {
 
     private final InterviewFormMapper interviewFormMapper;
 
+    private final NotificationTemplate notificationTemplate;
+
     @Reference
     private InterviewService interviewService;
 
     @Reference
     private ApplicationFormService applicationFormService;
-
-    @Reference
-    private SystemNotificationService systemNotificationService;
 
     @Reference
     private RecruitmentService recruitmentService;
@@ -72,9 +72,10 @@ public class InterviewFormServiceImpl implements InterviewFormService {
     private final static String UPDATE_INTERVIEW_FORM_LOCK_KEY_PATTERN = "interview-form:{0}";
 
     public InterviewFormServiceImpl(InterviewFormAssembler interviewFormAssembler,
-                                    InterviewFormMapper interviewFormMapper) {
+                                    InterviewFormMapper interviewFormMapper, NotificationTemplate notificationTemplate) {
         this.interviewFormAssembler = interviewFormAssembler;
         this.interviewFormMapper = interviewFormMapper;
+        this.notificationTemplate = notificationTemplate;
     }
 
     @DistributedLock(value = CREATE_INTERVIEW_FORM_LOCK_KEY_PATTERN,
@@ -191,7 +192,7 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      * @param applicationFormDTO ApplicationFormDTO
      */
     private void sendInterviewSystemNotification(InterviewDTO interviewDTO, Long interviewFormId,
-                                                 ApplicationFormDTO applicationFormDTO) {
+                                                 ApplicationFormDTO applicationFormDTO) throws MqServiceException {
         RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(interviewDTO.getRecruitmentId());
         OrganizationDTO organizationDTO = organizationService.getOrganization(recruitmentDTO.getOrganizationId());
 
@@ -211,7 +212,7 @@ public class InterviewFormServiceImpl implements InterviewFormService {
                 .notificationTitle(notificationTitle)
                 .notificationContent(notificationContent)
                 .build();
-        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+        notificationTemplate.sendSystemNotification(sendSystemNotificationPO);
     }
 
     /**
@@ -219,7 +220,7 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      *
      * @param interviewFormDTO InterviewFormDTO
      */
-    private void sendUpdateInterviewFormSystemNotification(InterviewFormDTO interviewFormDTO) {
+    private void sendUpdateInterviewFormSystemNotification(InterviewFormDTO interviewFormDTO) throws MqServiceException {
         Long interviewId = interviewFormDTO.getInterviewId();
         InterviewDTO interviewDTO = interviewService.getInterview(interviewId);
         Long recruitmentId = interviewDTO.getRecruitmentId();
@@ -241,7 +242,7 @@ public class InterviewFormServiceImpl implements InterviewFormService {
         SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
                 .userId(applicationFormDTO.getUserId()).notificationType(SystemNotificationTypeEnum.INTERVIEW)
                 .notificationTitle(notificationTitle).notificationContent(notificationContent).build();
-        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+        notificationTemplate.sendSystemNotification(sendSystemNotificationPO);
     }
 
     /**
@@ -249,7 +250,7 @@ public class InterviewFormServiceImpl implements InterviewFormService {
      *
      * @param interviewFormDTO InterviewFormDTO
      */
-    private void sendInterviewResultSystemNotification(InterviewFormDTO interviewFormDTO) {
+    private void sendInterviewResultSystemNotification(InterviewFormDTO interviewFormDTO) throws MqServiceException {
         InterviewDTO interviewDTO = interviewService.getInterview(interviewFormDTO.getInterviewId());
         RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(interviewDTO.getRecruitmentId());
         OrganizationDTO organizationDTO = organizationService.getOrganization(recruitmentDTO.getOrganizationId());
@@ -282,7 +283,8 @@ public class InterviewFormServiceImpl implements InterviewFormService {
         SendSystemNotificationRequest sendSystemNotificationPO = SendSystemNotificationRequest.builder()
                 .userId(applicationFormDTO.getUserId()).notificationType(SystemNotificationTypeEnum.INTERVIEW)
                 .notificationTitle(notificationTitle).notificationContent(notificationContent).build();
-        systemNotificationService.sendSystemNotification(sendSystemNotificationPO);
+        notificationTemplate.sendSystemNotification(sendSystemNotificationPO);
     }
+
 
 }

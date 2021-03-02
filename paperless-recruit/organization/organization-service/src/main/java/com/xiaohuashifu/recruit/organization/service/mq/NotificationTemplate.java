@@ -11,6 +11,8 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
+
 /**
  * 描述：通知模板
  *

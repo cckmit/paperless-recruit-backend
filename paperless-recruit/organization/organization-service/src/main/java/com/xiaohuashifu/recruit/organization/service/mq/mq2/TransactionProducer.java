@@ -50,6 +50,7 @@ public class TransactionProducer {
                 return LocalTransactionState.COMMIT_MESSAGE;
             }
         };
+
         ExecutorService executorService = new ThreadPoolExecutor(2, 5, 100,
                 TimeUnit.SECONDS, new ArrayBlockingQueue<>(2000), new ThreadFactory() {
             @Override

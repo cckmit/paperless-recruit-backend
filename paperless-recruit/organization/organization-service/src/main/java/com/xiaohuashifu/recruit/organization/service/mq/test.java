@@ -1,5 +1,11 @@
 package com.xiaohuashifu.recruit.organization.service.mq;
 
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+
 import java.util.Arrays;
 
 /**
@@ -11,7 +17,8 @@ import java.util.Arrays;
 public class test {
 
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(new test().printNumbers(2)));
+        byte a = -1;
+        System.out.println(a & 0xff);
     }
 
     int n;

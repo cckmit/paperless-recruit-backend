@@ -22,28 +22,4 @@
         where #{label} member of(labels->'$')
     </delete>
 
-    <update id="increaseMemberNumber">
-        update organization
-        set number_of_members = number_of_members + 1
-        where id = #{id}
-    </update>
-
-    <update id="decreaseMemberNumber">
-        update organization
-        set number_of_members = number_of_members - 1
-        where id = #{id}
-    </update>
-
-    <update id="increaseNumberOfDepartments">
-        update organization
-        set number_of_departments = number_of_departments + 1
-        where id = #{id}
-    </update>
-
-    <update id="decreaseNumberOfDepartments">
-        update organization
-        set number_of_departments = number_of_departments - 1
-        where id = #{id}
-    </update>
-
 </mapper>

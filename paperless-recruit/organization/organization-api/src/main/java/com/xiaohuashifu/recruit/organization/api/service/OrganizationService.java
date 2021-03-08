@@ -89,19 +89,6 @@ public interface OrganizationService {
             throws ServiceException;
 
     /**
-     * 更新组织名缩写
-     *
-     * @param id 组织编号
-     * @param abbreviationOrganizationName 组织名缩写
-     * @return 更新后的组织
-     */
-    OrganizationDTO updateAbbreviationOrganizationName(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(min = OrganizationConstants.MIN_ABBREVIATION_ORGANIZATION_NAME_LENGTH,
-                    max = OrganizationConstants.MAX_ABBREVIATION_ORGANIZATION_NAME_LENGTH)
-                    String abbreviationOrganizationName) throws DuplicateServiceException;
-
-    /**
      * 更新组织介绍
      *
      * @param id 组织编号
@@ -146,46 +133,6 @@ public interface OrganizationService {
      * @param email 邮箱
      */
     void sendEmailAuthCodeForSignUp(@NotBlank @Email String email);
-
-    /**
-     * 增加成员数，+1
-     *
-     * @private 内部方法
-     *
-     * @param id 组织编号
-     * @return 增加成员数后的组织对象
-     */
-    OrganizationDTO increaseNumberOfMembers(@NotNull @Positive Long id);
-
-    /**
-     * 减少成员数，-1
-     *
-     * @private 内部方法
-     *
-     * @param id 组织编号
-     * @return 减少成员数后的组织对象
-     */
-    OrganizationDTO decreaseNumberOfMembers(@NotNull @Positive Long id);
-
-    /**
-     * 部门数加1
-     *
-     * @private 内部方法
-     *
-     * @param id 组织编号
-     * @return 增加部门数后的组织对象
-     */
-    OrganizationDTO increaseNumberOfDepartments(@NotNull @Positive Long id);
-
-    /**
-     * 部门数减1
-     *
-     * @private 内部方法
-     *
-     * @param id 组织编号
-     * @return 减少部门数后的组织对象
-     */
-    OrganizationDTO decreaseNumberOfDepartments(@NotNull @Positive Long id);
 
     /**
      * 删除组织的标签，通过标签名

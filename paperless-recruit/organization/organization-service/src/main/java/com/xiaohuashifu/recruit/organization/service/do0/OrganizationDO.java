@@ -29,11 +29,12 @@ public class OrganizationDO {
     private Long id;
     private Long userId;
     private String organizationName;
-    private String abbreviationOrganizationName;
     private String introduction;
     private String logoUrl;
-    private Integer numberOfMembers;
-    private Integer numberOfDepartments;
+    private String organizationType;
+    private String size;
+    private String address;
+    private String website;
     @TableField(typeHandler = FastjsonTypeHandler.class)
     private List<String> labels;
     @TableField("is_available")

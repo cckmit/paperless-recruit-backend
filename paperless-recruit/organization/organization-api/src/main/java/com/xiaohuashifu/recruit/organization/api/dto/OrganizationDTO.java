@@ -36,11 +36,6 @@ public class OrganizationDTO implements Serializable {
     private String organizationName;
 
     /**
-     * 组织名缩写
-     */
-    private String abbreviationOrganizationName;
-
-    /**
      * 组织介绍
      */
     private String introduction;
@@ -51,14 +46,24 @@ public class OrganizationDTO implements Serializable {
     private String logoUrl;
 
     /**
-     * 组织成员数
+     * 组织类型
      */
-    private Integer numberOfMembers;
+    private String organizationType;
 
     /**
-     * 组织部门数
+     * 组织规模
      */
-    private Integer numberOfDepartments;
+    private String size;
+
+    /**
+     * 组织地址
+     */
+    private String address;
+
+    /**
+     * 组织网址
+     */
+    private String website;
 
     /**
      * 组织标签

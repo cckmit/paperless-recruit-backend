@@ -44,7 +44,7 @@ public class OrganizationController {
 
     @ApiOperation(value = "更新组织")
     @PreAuthorize("hasRole('organization')")
-    @PostMapping("/organization/update")
+    @PutMapping("/authentication/organization")
     public OrganizationVO updateAuthenticatedUserOrganization(
             @RequestBody @NotAllFieldsNull OrganizationPatchRequest request) {
         return organizationManager.updateOrganization(organizationContext.getOrganizationId(), request);

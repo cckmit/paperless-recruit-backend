@@ -171,8 +171,6 @@ public class OrganizationServiceImpl implements OrganizationService {
                 OrganizationDO::getUserId, query.getUserId())
                 .likeRight(query.getOrganizationName() != null,
                         OrganizationDO::getOrganizationName, query.getOrganizationName())
-                .likeRight(query.getAbbreviationOrganizationName() != null,
-                        OrganizationDO::getAbbreviationOrganizationName, query.getAbbreviationOrganizationName())
                 .eq(query.getAvailable() != null, OrganizationDO::getAvailable, query.getAvailable());
 
         Page<OrganizationDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
@@ -183,34 +181,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    @Transactional
     public OrganizationDTO updateOrganizationName(Long id, String organizationName) {
-        // 判断组织名是否存在
-        OrganizationDO organizationDO = organizationMapper.selectByOrganizationNameForUpdate(organizationName);
-        if (organizationDO != null) {
-            throw new DuplicateServiceException("The organizationName already exist.");
-        }
-
-        try {
-            Thread.sleep(20000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         // 更新组织名
         OrganizationDO organizationDOForUpdate =
-                OrganizationDO.builder().id(id).organizationName(organizationName).build();
-        organizationMapper.updateById(organizationDOForUpdate);
-
-        // 获取更新后的组织对象
-        return getOrganization(id);
-    }
-
-    @Override
-    public OrganizationDTO updateAbbreviationOrganizationName(Long id, String abbreviationOrganizationName) {
-        // 更新组织名缩写
-        OrganizationDO organizationDOForUpdate =
-                OrganizationDO.builder().id(id).abbreviationOrganizationName(abbreviationOrganizationName).build();
+                OrganizationDO.builder().id(id).organizationName(organizationName.trim()).build();
         organizationMapper.updateById(organizationDOForUpdate);
 
         // 获取更新后的组织对象
@@ -277,42 +251,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void sendEmailAuthCodeForSignUp(String email) {
         userService.sendEmailAuthCodeForSignUp(email, CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE);
-    }
-
-    @Override
-    public OrganizationDTO increaseNumberOfMembers(Long id) {
-        // 增加成员数
-        organizationMapper.increaseMemberNumber(id);
-
-        // 添加成员数后的组织对象
-        return getOrganization(id);
-    }
-
-    @Override
-    public OrganizationDTO decreaseNumberOfMembers(Long id) {
-        // 减少成员数
-        organizationMapper.decreaseMemberNumber(id);
-
-        // 减少成员数后的组织对象
-        return getOrganization(id);
-    }
-
-    @Override
-    public OrganizationDTO increaseNumberOfDepartments(Long id) {
-        // 增加部门数量
-        organizationMapper.increaseNumberOfDepartments(id);
-
-        // 增加部门数后的组织对象
-        return getOrganization(id);
-    }
-
-    @Override
-    public OrganizationDTO decreaseNumberOfDepartments(Long id) {
-        // 增加部门数量
-        organizationMapper.decreaseNumberOfDepartments(id);
-
-        // 减少部门数后的组织对象
-        return getOrganization(id);
     }
 
     @Override

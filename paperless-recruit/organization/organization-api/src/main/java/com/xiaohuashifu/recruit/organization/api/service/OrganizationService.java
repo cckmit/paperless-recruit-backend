@@ -2,15 +2,16 @@ package com.xiaohuashifu.recruit.organization.api.service;
 
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
-import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
-import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
-import com.xiaohuashifu.recruit.organization.api.constant.OrganizationLabelConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationRequest;
+import com.xiaohuashifu.recruit.organization.api.request.UpdateOrganizationRequest;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 /**
  * 描述：组织服务
@@ -27,29 +28,6 @@ public interface OrganizationService {
      * @return OrganizationDTO 组织对象
      */
     OrganizationDTO createOrganization(@NotNull CreateOrganizationRequest request) throws ServiceException;
-
-    /**
-     * 添加组织的标签
-     *
-     * @param id 组织编号
-     * @param label 标签名
-     * @return 添加后的组织对象
-     */
-    OrganizationDTO addLabel(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH) String label)
-            throws ServiceException;
-
-    /**
-     * 删除组织的标签
-     *
-     * @param id 组织编号
-     * @param label 标签名
-     * @return 删除标签后的组织
-     */
-    OrganizationDTO removeLabel(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(max = OrganizationLabelConstants.MAX_LABEL_NAME_LENGTH) String label);
 
     /**
      * 获取组织
@@ -76,72 +54,18 @@ public interface OrganizationService {
     QueryResult<OrganizationDTO> listOrganizations(@NotNull OrganizationQuery query);
 
     /**
-     * 更新组织名
+     * 更新组织
      *
-     * @param id 组织编号
-     * @param organizationName 组织名
+     * @param request UpdateOrganizationRequest
      * @return 更新后的组织
      */
-    OrganizationDTO updateOrganizationName(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(min = OrganizationConstants.MIN_ORGANIZATION_NAME_LENGTH,
-                    max = OrganizationConstants.MAX_ORGANIZATION_NAME_LENGTH) String organizationName)
-            throws ServiceException;
-
-    /**
-     * 更新组织介绍
-     *
-     * @param id 组织编号
-     * @param introduction 组织介绍
-     * @return 更新后的组织
-     */
-    OrganizationDTO updateIntroduction(
-            @NotNull @Positive Long id,
-            @NotBlank @Size(max = OrganizationConstants.MAX_ORGANIZATION_INTRODUCTION_LENGTH) String introduction);
-
-    /**
-     * 更新组织 Logo
-     *
-     * @param id 组织编号
-     * @param logoUrl logoUrl
-     * @return 更新后的组织
-     */
-    OrganizationDTO updateLogo(
-            @NotNull @Positive Long id,
-            @NotBlank @Pattern(regexp = "(organizations/logos/)(.+)(\\.jpg|\\.jpeg|\\.png|\\.gif)") String logoUrl)
-            throws ServiceException;
-
-    /**
-     * 禁用组织，禁用组织会导致组织主体无法再对组织进行操作，且组织无法报名等
-     *
-     * @param id 组织编号
-     * @return 禁用后的组织
-     */
-    OrganizationDTO disableOrganization(@NotNull @Positive Long id) throws ServiceException;
-
-    /**
-     * 解禁组织
-     *
-     * @param id 组织编号
-     * @return 解禁后的组织
-     */
-    OrganizationDTO enableOrganization(@NotNull @Positive Long id) throws ServiceException;
+    OrganizationDTO updateOrganization(@NotNull UpdateOrganizationRequest request) throws ServiceException;
 
     /**
      * 发送注册账号时使用的邮箱验证码
      *
      * @param email 邮箱
      */
-    void sendEmailAuthCodeForSignUp(@NotBlank @Email String email);
+    void sendEmailAuthCodeForCreateOrganization(@NotBlank @Email String email);
 
-    /**
-     * 删除组织的标签，通过标签名
-     * 小心使用，一次性会删除所有的拥有该标签的组织的这个标签
-     *
-     * @private 内部方法
-     *
-     * @param label 标签名
-     * @return 被删除标签的组织数量
-     */
-    int removeLabels(String label);
 }

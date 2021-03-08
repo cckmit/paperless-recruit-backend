@@ -187,8 +187,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
                         .invitationStatus(OrganizationMemberInvitationStatusEnum.ACCEPTED).build();
         organizationMemberInvitationMapper.updateById(organizationMemberInvitationDOForUpdate);
 
-        // 增加组织的成员数量
-        organizationService.increaseNumberOfMembers(organizationId);
         return getOrganizationMember(organizationMemberDOForInsert.getId());
     }
 
@@ -282,14 +280,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             updateDepartmentMemberNumber(organizationMemberDTO.getDepartmentId(), request.getDepartmentId());
         }
 
-        // 更新组织和部门的成员数量
-        if (request.getMemberStatus() != null) {
-            updateOrganizationAndDepartmentMemberNumber(
-                    OrganizationMemberStatusEnum.valueOf(organizationMemberDTO.getMemberStatus()),
-                    request.getMemberStatus(), organizationMemberDTO.getOrganizationId(),
-                    organizationMemberDTO.getDepartmentId());
-        }
-
         return getOrganizationMember(request.getId());
     }
 
@@ -346,7 +336,7 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         // 构造通知标题
         OrganizationDTO organizationDTO = organizationService.getOrganization(organizationId);
         String notificationTitle = MessageFormat.format(ORGANIZATION_MEMBER_INVITATION_NOTIFICATION_TITLE_PATTERN,
-                organizationDTO.getAbbreviationOrganizationName());
+                organizationDTO.getOrganizationName());
 
         // 构造通知内容
         String notificationContentMessage = MessageFormat.format(
@@ -378,29 +368,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
         }
         // 增加当前部门的人数
         departmentService.increaseNumberOfMembers(newDepartmentId);
-    }
-
-    /**
-     * 更新组织和部门的成员数量
-     *
-     * @param oldMemberStatus 原成员状态
-     * @param newMemberStatus 新成员状态
-     * @param organizationId 组织编号
-     * @param departmentId 部门编号
-     */
-    private void updateOrganizationAndDepartmentMemberNumber(OrganizationMemberStatusEnum oldMemberStatus,
-                                                             OrganizationMemberStatusEnum newMemberStatus,
-                                                             Long organizationId, Long departmentId) {
-        // 如果原状态为在职，组织和部门的成员数量-1
-        if (oldMemberStatus == OrganizationMemberStatusEnum.ON_JOB) {
-            organizationService.decreaseNumberOfMembers(organizationId);
-            departmentService.decreaseNumberOfMembers(departmentId);
-        }
-        // 如果新状态为在职，组织和部门的成员数量+1
-        if (newMemberStatus == OrganizationMemberStatusEnum.ON_JOB) {
-            organizationService.increaseNumberOfMembers(organizationId);
-            departmentService.increaseNumberOfMembers(departmentId);
-        }
     }
 
 }

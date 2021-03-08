@@ -37,8 +37,6 @@ public class OrganizationDO {
     private String website;
     @TableField(typeHandler = FastjsonTypeHandler.class)
     private List<String> labels;
-    @TableField("is_available")
-    private Boolean available;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

@@ -1,5 +1,7 @@
 package com.xiaohuashifu.recruit.organization.api.constant;
 
+import java.util.Set;
+
 /**
  * 描述：组织相关常量
  *
@@ -9,24 +11,9 @@ package com.xiaohuashifu.recruit.organization.api.constant;
 public class OrganizationConstants {
 
     /**
-     * 组织名最小长度
-     */
-    public static final int MIN_ORGANIZATION_NAME_LENGTH = 2;
-
-    /**
      * 组织名最大长度
      */
     public static final int MAX_ORGANIZATION_NAME_LENGTH = 20;
-
-    /**
-     * 组织名缩写最小长度
-     */
-    public static final int MIN_ABBREVIATION_ORGANIZATION_NAME_LENGTH = 2;
-
-    /**
-     * 组织名缩写最大长度
-     */
-    public static final int MAX_ABBREVIATION_ORGANIZATION_NAME_LENGTH = 5;
 
     /**
      * 组织介绍最大长度
@@ -34,13 +21,44 @@ public class OrganizationConstants {
     public static final int MAX_ORGANIZATION_INTRODUCTION_LENGTH = 400;
 
     /**
-     * 组织 logo 最大长度，10MB
+     * logoUrl 最大长度
      */
-    public static final int MAX_ORGANIZATION_LOGO_LENGTH = 10485760;
+    public static final int MAX_ORGANIZATION_LOGO_URL_LENGTH = 255;
 
     /**
      * 组织最大的标签数
      */
     public static final int MAX_ORGANIZATION_LABEL_NUMBER = 3;
+
+    /**
+     * 组织标签最大长度
+     */
+    public static final int MAX_ORGANIZATION_LABEL_LENGTH = 4;
+
+    /**
+     * 组织地址最大长度
+     */
+    public static final int MAX_ORGANIZATION_ADDRESS_LENGTH = 50;
+
+    /**
+     * 组织网址最大长度
+     */
+    public static final int MAX_ORGANIZATION_WEBSITE_LENGTH = 100;
+
+    /**
+     * 组织类型最大长度
+     */
+    public static final int MAX_ORGANIZATION_TYPE_LENGTH = 10;
+
+    /**
+     * 组织规模最大长度
+     */
+    public static final int MAX_ORGANIZATION_SIZE_LENGTH = 10;
+
+    /**
+     * 组织规模集合
+     */
+    public static final Set<String> ORGANIZATION_SIZE_SET =
+            Set.of("10人以下", "10-20人", "20-50人", "50-100人", "100-200人", "200-300人", "300-500人", "500人以上");
 
 }

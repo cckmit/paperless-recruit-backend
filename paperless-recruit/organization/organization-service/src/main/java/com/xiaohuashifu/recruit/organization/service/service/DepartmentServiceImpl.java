@@ -91,9 +91,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         departmentDOForInsert.setLabels(new ArrayList<>());
         departmentMapper.insert(departmentDOForInsert);
 
-        // 增加组织的部门数量
-        organizationService.increaseNumberOfDepartments(request.getOrganizationId());
-
         return getDepartment(departmentDOForInsert.getId());
     }
 
@@ -239,9 +236,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         // 更新为停用
         DepartmentDO departmentDOForUpdate = DepartmentDO.builder().id(id).deactivated(true).build();
         departmentMapper.updateById(departmentDOForUpdate);
-
-        // 减少组织的部门数量
-        organizationService.decreaseNumberOfDepartments(departmentDTO.getOrganizationId());
 
         // 停用后的部门对象
         return getDepartment(id);

@@ -3,7 +3,6 @@ package com.xiaohuashifu.recruit.organization.service.dao;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 描述：组织数据库映射
@@ -19,24 +18,10 @@ public interface OrganizationMapper extends BaseMapper<OrganizationDO> {
         return selectOne(wrapper);
     }
 
-    default OrganizationDO selectByOrganizationNameForUpdate(String organizationName) {
+    default OrganizationDO selectByIdForUpdate(Long id) {
         LambdaQueryWrapper<OrganizationDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OrganizationDO::getOrganizationName, organizationName).last("for update");
+        wrapper.eq(OrganizationDO::getId, id).last("for update");
         return selectOne(wrapper);
     }
-
-    int addLabel(@Param("id") Long id, @Param("label") String label);
-
-    int removeLabel(@Param("id") Long id, @Param("label") String label);
-
-    int removeLabels(String label);
-
-    int increaseMemberNumber(Long id);
-
-    int decreaseMemberNumber(Long id);
-
-    int increaseNumberOfDepartments(Long id);
-
-    int decreaseNumberOfDepartments(Long id);
 
 }

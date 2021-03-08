@@ -4,16 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaohuashifu.recruit.common.aspect.annotation.DistributedLock;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
-import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
+import com.xiaohuashifu.recruit.common.exception.unprocessable.InvalidValueServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.OverLimitServiceException;
-import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServiceException;
-import com.xiaohuashifu.recruit.common.exception.unprocessable.UnmodifiedServiceException;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
+import com.xiaohuashifu.recruit.common.util.ObjectUtils;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
-import com.xiaohuashifu.recruit.organization.api.dto.OrganizationLabelDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationRequest;
+import com.xiaohuashifu.recruit.organization.api.request.UpdateOrganizationRequest;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.assembler.OrganizationAssembler;
@@ -23,11 +22,15 @@ import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
 import com.xiaohuashifu.recruit.user.api.dto.UserDTO;
 import com.xiaohuashifu.recruit.user.api.service.RoleService;
 import com.xiaohuashifu.recruit.user.api.service.UserService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -66,19 +69,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     private static final String CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE = "创建组织";
 
     /**
-     * 组织标签锁定键模式，{0}是组织编号
-     */
-    private static final String ORGANIZATION_LABELS_LOCK_KEY_PATTERN = "organizations:{0}:labels";
-
-    /**
      * 组织邮箱锁定键模式，{0}是邮箱
      */
     private static final String ORGANIZATION_EMAIL_LOCK_KEY_PATTERN = "organizations:email:{0}";
-
-    /**
-     * 组织 available 属性锁定键模式，{0}是组织编号
-     */
-    private static final String ORGANIZATION_AVAILABLE_LOCK_KEY_PATTERN = "organizations:{0}:available";
 
     public OrganizationServiceImpl(OrganizationMapper organizationMapper, OrganizationAssembler organizationAssembler) {
         this.organizationMapper = organizationMapper;
@@ -105,47 +98,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         return getOrganization(organizationDO.getId());
     }
 
-    // TODO: 2021/2/5 添加消息队列保证最终一致性
-    @Override
-    @Transactional
-    @DistributedLock(value = ORGANIZATION_LABELS_LOCK_KEY_PATTERN, parameters = "#{#id}")
-    public OrganizationDTO addLabel(Long id, String label) {
-        // 判断标签数量是否大于 MAX_ORGANIZATION_LABEL_NUMBER
-        OrganizationDTO organizationDTO = getOrganization(id);
-        if (organizationDTO.getLabels().size() >= OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER) {
-            throw new OverLimitServiceException("The number of labels must not be greater than "
-                    + OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER + ".");
-        }
-
-        // 判断该标签是否可用
-        OrganizationLabelDTO organizationLabelDTO = organizationLabelService.getOrganizationLabelByLabelName(label);
-        if (!organizationLabelDTO.getAvailable()) {
-            throw new UnavailableServiceException("The label unavailable.");
-        }
-
-        // 添加组织的标签
-        int count = organizationMapper.addLabel(id, label);
-        // 如果失败表示该标签已经存在
-        if (count < 1) {
-            throw new DuplicateServiceException("The organization already owns this label.");
-        }
-
-        // 组织标签的引用数增加
-        organizationLabelService.increaseReferenceNumberOrSaveOrganizationLabel(label);
-
-        // 获取添加标签后的组织对象
-        return getOrganization(id);
-    }
-
-    @Override
-    public OrganizationDTO removeLabel(Long id, String label) {
-        // 删除标签
-        organizationMapper.removeLabel(id, label);
-
-        // 获取删除标签后的组织对象
-        return getOrganization(id);
-    }
-
     @Override
     public OrganizationDTO getOrganization(Long id) {
         OrganizationDO organizationDO = organizationMapper.selectById(id);
@@ -170,8 +122,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         wrapper.eq(query.getUserId() != null,
                 OrganizationDO::getUserId, query.getUserId())
                 .likeRight(query.getOrganizationName() != null,
-                        OrganizationDO::getOrganizationName, query.getOrganizationName())
-                .eq(query.getAvailable() != null, OrganizationDO::getAvailable, query.getAvailable());
+                        OrganizationDO::getOrganizationName, query.getOrganizationName());
 
         Page<OrganizationDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
         organizationMapper.selectPage(page, wrapper);
@@ -181,81 +132,63 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public OrganizationDTO updateOrganizationName(Long id, String organizationName) {
-        // 更新组织名
-        OrganizationDO organizationDOForUpdate =
-                OrganizationDO.builder().id(id).organizationName(organizationName.trim()).build();
-        organizationMapper.updateById(organizationDOForUpdate);
-
-        // 获取更新后的组织对象
-        return getOrganization(id);
-    }
-
-    @Override
-    public OrganizationDTO updateIntroduction(Long id, String introduction) {
-        // 更新组织介绍
-        OrganizationDO organizationDOForUpdate = OrganizationDO.builder().id(id).introduction(introduction).build();
-        organizationMapper.updateById(organizationDOForUpdate);
-
-        // 获取更新后的组织对象
-        return getOrganization(id);
-    }
-
-    @Override
-    public OrganizationDTO updateLogo(Long id, String logoUrl) {
-        // 链接 logo
-        objectStorageService.linkObject(logoUrl);
-
-        // 更新 logoUrl 到数据库
-        OrganizationDO organizationDOForUpdate = OrganizationDO.builder().id(id).logoUrl(logoUrl).build();
-        organizationMapper.updateById(organizationDOForUpdate);
-
-        // 更新后的组织信息
-        return getOrganization(id);
-    }
-
-    @Override
-    @DistributedLock(value = ORGANIZATION_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}")
-    public OrganizationDTO disableOrganization(Long id) {
-        // 判断组织是否已经被禁用
-        OrganizationDTO organizationDTO = getOrganization(id);
-        if (!organizationDTO.getAvailable()) {
-            throw new UnmodifiedServiceException("The organization already unavailable.");
+    @Transactional
+    public OrganizationDTO updateOrganization(UpdateOrganizationRequest request) {
+        // 判断组织是否存在并锁定
+        OrganizationDO organizationDO = organizationMapper.selectByIdForUpdate(request.getId());
+        if (organizationDO == null) {
+            throw new NotFoundServiceException("organization", "id", request.getId());
         }
 
-        // 禁用组织
-        OrganizationDO organizationDOForUpdate = OrganizationDO.builder().id(id).available(false).build();
+        // 更新组织
+        OrganizationDO organizationDOForUpdate = checkForUpdate(request);
         organizationMapper.updateById(organizationDOForUpdate);
-
-        // 获取禁用后的组织对象
-        return getOrganization(id);
+        return getOrganization(request.getId());
     }
 
     @Override
-    @DistributedLock(value = ORGANIZATION_AVAILABLE_LOCK_KEY_PATTERN, parameters = "#{#id}")
-    public OrganizationDTO enableOrganization(Long id) {
-        // 判断组织是否可用
-        OrganizationDTO organizationDTO = getOrganization(id);
-        if (organizationDTO.getAvailable()) {
-            throw new UnmodifiedServiceException("The organization already available.");
-        }
-
-        // 解禁组织
-        OrganizationDO organizationDOForUpdate = OrganizationDO.builder().id(id).available(true).build();
-        organizationMapper.updateById(organizationDOForUpdate);
-
-        // 获取解禁后的组织对象
-        return getOrganization(id);
-    }
-
-    @Override
-    public void sendEmailAuthCodeForSignUp(String email) {
+    public void sendEmailAuthCodeForCreateOrganization(String email) {
         userService.sendEmailAuthCodeForSignUp(email, CREATE_ORGANIZATION_EMAIL_AUTH_CODE_TITLE);
     }
 
-    @Override
-    public int removeLabels(String label) {
-        return organizationMapper.removeLabels(label);
+    /**
+     * 检查更新参数
+     *
+     * @param request UpdateOrganizationRequest
+     * @return OrganizationDO
+     */
+    private OrganizationDO checkForUpdate(UpdateOrganizationRequest request) {
+        // 链接 logo
+        if (request.getLogoUrl() != null) {
+            objectStorageService.linkObject(request.getLogoUrl());
+        }
+
+        // 判断组织标签列表是否合法
+        if (request.getLabels() != null) {
+            Set<String> labelSet = new HashSet<>(request.getLabels());
+            labelSet.forEach((label)-> {
+                if (StringUtils.isBlank(label) || label.trim().length() >
+                        OrganizationConstants.MAX_ORGANIZATION_LABEL_LENGTH) {
+                    throw new OverLimitServiceException("组织标签长度必须小于"
+                            + OrganizationConstants.MAX_ORGANIZATION_LABEL_LENGTH);
+                }
+            });
+            request.setLabels(new ArrayList<>(labelSet));
+        }
+
+        // TODO: 2021/3/9 这里需要判断组织类型是否存在
+        // 判断组织类型是否合法
+
+
+        // 判断组织规模是否合法
+        if (!OrganizationConstants.ORGANIZATION_SIZE_SET.contains(request.getSize().trim())) {
+            throw new InvalidValueServiceException("非法组织规模");
+        }
+
+        // 转换成 DO 对象
+        OrganizationDO organizationDO = organizationAssembler.updateOrganizationRequestToOrganizationDO(request);
+        ObjectUtils.trimAllStringFields(organizationDO);
+        return organizationDO;
     }
 
 }

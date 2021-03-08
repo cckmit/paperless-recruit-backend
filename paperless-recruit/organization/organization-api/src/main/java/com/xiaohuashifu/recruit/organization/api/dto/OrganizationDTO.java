@@ -70,9 +70,4 @@ public class OrganizationDTO implements Serializable {
      */
     private List<String> labels;
 
-    /**
-     * 组织是否有效
-     */
-    private Boolean available;
-
 }

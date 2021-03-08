@@ -24,14 +24,32 @@ public class ObjectUtils {
             Object value = null;
             try {
                 value = field.get(o);
-            } catch (IllegalAccessException ignored) {
-                // 该异常不可能抛出，忽略
-            }
+            } catch (IllegalAccessException ignored) {}
             if (null != value) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * trim对象里面所有 String 成员
+     *
+     * @param o 对象
+     */
+    public static void trimAllStringFields(Object o) {
+        for (Field field : o.getClass().getDeclaredFields()) {
+            Class<?> type = field.getType();
+            if (type.equals(String.class)) {
+                field.setAccessible(true);
+                try {
+                    String value = (String)field.get(o);
+                    if (value != null) {
+                        field.set(o, value.trim());
+                    }
+                } catch (IllegalAccessException ignored) {}
+            }
+        }
     }
 
 }

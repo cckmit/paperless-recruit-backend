@@ -83,7 +83,7 @@ public class OrganizationManagerImpl implements OrganizationManager {
         return new QueryResult<>(queryResult.getTotal(), organizationTypeVOS);
     }
 
-    @Cacheable(key = "'organization:sizes'")
+//    @Cacheable(key = "'organization:sizes'")
     @Override
     public List<String> listOrganizationSizes() {
         return OrganizationConstants.ORGANIZATION_SIZE_LIST;

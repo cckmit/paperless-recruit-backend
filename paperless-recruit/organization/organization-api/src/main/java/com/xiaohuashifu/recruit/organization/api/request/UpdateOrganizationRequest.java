@@ -13,6 +13,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：更新组织请求
@@ -89,6 +90,6 @@ public class UpdateOrganizationRequest implements Serializable {
      * 标签最大长度4
      */
     @Size(max = OrganizationConstants.MAX_ORGANIZATION_LABEL_NUMBER)
-    private List<String> labels;
+    private Set<String> labels;
 
 }

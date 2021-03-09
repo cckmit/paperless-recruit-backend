@@ -59,6 +59,10 @@ public class OrganizationServiceImplTest {
     public void updateOrganization() {
         System.out.println(
                 organizationService.updateOrganization(
-                        UpdateOrganizationRequest.builder().id(1L).size("200-31人").build()));
+                        UpdateOrganizationRequest.builder().id(1L)
+                                .organizationType("综合")
+                                .size("200-300人")
+                                .address("创客空间")
+                                .website("www.xiaohuashifu.top").build()));
     }
 }

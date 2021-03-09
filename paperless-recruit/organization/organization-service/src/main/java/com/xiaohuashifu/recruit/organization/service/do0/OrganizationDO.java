@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：组织
@@ -36,7 +36,7 @@ public class OrganizationDO {
     private String address;
     private String website;
     @TableField(typeHandler = FastjsonTypeHandler.class)
-    private List<String> labels;
+    private Set<String> labels;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

@@ -13,8 +13,8 @@ import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationRequest;
 import com.xiaohuashifu.recruit.organization.api.request.UpdateOrganizationRequest;
-import com.xiaohuashifu.recruit.organization.api.service.OrganizationLabelService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
+import com.xiaohuashifu.recruit.organization.api.service.OrganizationTypeService;
 import com.xiaohuashifu.recruit.organization.service.assembler.OrganizationAssembler;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationDO;
@@ -27,8 +27,6 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +41,7 @@ import java.util.stream.Collectors;
 public class OrganizationServiceImpl implements OrganizationService {
 
     @Reference
-    private OrganizationLabelService organizationLabelService;
+    private OrganizationTypeService organizationTypeService;
 
     @Reference
     private UserService userService;
@@ -72,6 +70,11 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 组织邮箱锁定键模式，{0}是邮箱
      */
     private static final String ORGANIZATION_EMAIL_LOCK_KEY_PATTERN = "organizations:email:{0}";
+
+    /**
+     * 组织规模集合
+     */
+    private static final Set<String> ORGANIZATION_SIZE_SET = Set.copyOf(OrganizationConstants.ORGANIZATION_SIZE_LIST);
 
     public OrganizationServiceImpl(OrganizationMapper organizationMapper, OrganizationAssembler organizationAssembler) {
         this.organizationMapper = organizationMapper;
@@ -126,9 +129,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         Page<OrganizationDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
         organizationMapper.selectPage(page, wrapper);
-        List<OrganizationDTO> departmentDTOS = page.getRecords()
+        List<OrganizationDTO> organizationDTOS = page.getRecords()
                 .stream().map(organizationAssembler::organizationDOToOrganizationDTO).collect(Collectors.toList());
-        return new QueryResult<>(page.getTotal(), departmentDTOS);
+        return new QueryResult<>(page.getTotal(), organizationDTOS);
     }
 
     @Override
@@ -158,36 +161,38 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @return OrganizationDO
      */
     private OrganizationDO checkForUpdate(UpdateOrganizationRequest request) {
+        // 转换成 DO 对象
+        OrganizationDO organizationDO = organizationAssembler.updateOrganizationRequestToOrganizationDO(request);
+        ObjectUtils.trimAllStringFields(organizationDO);
+
         // 链接 logo
-        if (request.getLogoUrl() != null) {
-            objectStorageService.linkObject(request.getLogoUrl());
+        if (organizationDO.getLogoUrl() != null) {
+            objectStorageService.linkObject(organizationDO.getLogoUrl());
         }
 
         // 判断组织标签列表是否合法
-        if (request.getLabels() != null) {
-            Set<String> labelSet = new HashSet<>(request.getLabels());
-            labelSet.forEach((label)-> {
+        if (organizationDO.getLabels() != null) {
+            organizationDO.getLabels().forEach((label)-> {
                 if (StringUtils.isBlank(label) || label.trim().length() >
                         OrganizationConstants.MAX_ORGANIZATION_LABEL_LENGTH) {
                     throw new OverLimitServiceException("组织标签长度必须小于"
                             + OrganizationConstants.MAX_ORGANIZATION_LABEL_LENGTH);
                 }
             });
-            request.setLabels(new ArrayList<>(labelSet));
         }
 
-        // TODO: 2021/3/9 这里需要判断组织类型是否存在
         // 判断组织类型是否合法
-
+        if (organizationDO.getOrganizationType() != null) {
+            organizationTypeService.getOrganizationTypeByTypeName(organizationDO.getOrganizationType());
+        }
 
         // 判断组织规模是否合法
-        if (!OrganizationConstants.ORGANIZATION_SIZE_SET.contains(request.getSize().trim())) {
-            throw new InvalidValueServiceException("非法组织规模");
+        if (organizationDO.getSize() != null) {
+            if (!ORGANIZATION_SIZE_SET.contains(organizationDO.getSize().trim())) {
+                throw new InvalidValueServiceException("非法组织规模");
+            }
         }
 
-        // 转换成 DO 对象
-        OrganizationDO organizationDO = organizationAssembler.updateOrganizationRequestToOrganizationDO(request);
-        ObjectUtils.trimAllStringFields(organizationDO);
         return organizationDO;
     }
 

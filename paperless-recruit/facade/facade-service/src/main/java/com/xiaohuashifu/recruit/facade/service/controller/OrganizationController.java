@@ -1,13 +1,16 @@
 package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.common.validator.annotation.NotAllFieldsNull;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
-import com.xiaohuashifu.recruit.facade.service.request.OrganizationPatchRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationRequest;
+import com.xiaohuashifu.recruit.facade.service.vo.OrganizationTypeVO;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
+import com.xiaohuashifu.recruit.organization.api.query.OrganizationTypeQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -44,9 +47,9 @@ public class OrganizationController {
 
     @ApiOperation(value = "更新组织")
     @PreAuthorize("hasRole('organization')")
-    @PutMapping("/authentication/organization")
-    public OrganizationVO updateAuthenticatedUserOrganization(
-            @RequestBody @NotAllFieldsNull OrganizationPatchRequest request) {
+    @PostMapping("/organization/update")
+    public OrganizationVO updateOrganization(
+            @RequestBody @NotAllFieldsNull UpdateOrganizationRequest request) {
         return organizationManager.updateOrganization(organizationContext.getOrganizationId(), request);
     }
 
@@ -65,8 +68,20 @@ public class OrganizationController {
 
     @ApiOperation(value = "列出组织")
     @GetMapping("/organizations")
-    public List<OrganizationVO> listOrganizations(OrganizationQuery query) {
+    public QueryResult<OrganizationVO> listOrganizations(OrganizationQuery query) {
         return organizationManager.listOrganizations(query);
+    }
+
+    @ApiOperation(value = "列出组织类型")
+    @GetMapping("/organization/types")
+    public QueryResult<OrganizationTypeVO> listOrganizationTypes(OrganizationTypeQuery query) {
+        return organizationManager.listOrganizationTypes(query);
+    }
+
+    @ApiOperation(value = "列出组织规模")
+    @GetMapping("/organization/sizes")
+    public List<String> listOrganizationSizes() {
+        return organizationManager.listOrganizationSizes();
     }
 
 }

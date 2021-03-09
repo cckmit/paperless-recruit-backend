@@ -41,12 +41,6 @@ public class OrganizationVO {
     private String organizationName;
 
     /**
-     * 组织名缩写
-     */
-    @ApiModelProperty(value = "组织名缩写", example = "校科联")
-    private String abbreviationOrganizationName;
-
-    /**
      * 组织介绍
      */
     @ApiModelProperty(value = "组织介绍", example = "华南农业大学学生科技创新与创业联合会")
@@ -60,26 +54,32 @@ public class OrganizationVO {
     private String logoUrl;
 
     /**
-     * 组织成员数
+     * 组织类型
      */
-    @ApiModelProperty(value = "组织成员数", example = "321")
-    private Integer numberOfMembers;
+    @ApiModelProperty(value = "组织类型", example = "综合")
+    private String organizationType;
 
     /**
-     * 组织部门数
+     * 组织规模
      */
-    @ApiModelProperty(value = "组织部门数", example = "13")
-    private Integer numberOfDepartments;
+    @ApiModelProperty(value = "组织规模", example = "100-200人")
+    private String size;
+
+    /**
+     * 组织地址
+     */
+    @ApiModelProperty(value = "组织地址", example = "创客空间")
+    private String address;
+
+    /**
+     * 组织网址
+     */
+    @ApiModelProperty(value = "组织网址", example = "www.xiaohuashifu.top")
+    private String website;
 
     /**
      * 组织标签
      */
-    @ApiModelProperty(value = "组织标签", example = "科技, 竞赛")
+    @ApiModelProperty(value = "组织标签", example = "创新,创业")
     private Set<String> labels;
-
-    /**
-     * 组织是否有效
-     */
-    @ApiModelProperty(value = "组织是否有效", example = "true")
-    private Boolean available;
 }

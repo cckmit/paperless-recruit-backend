@@ -1,6 +1,6 @@
 package com.xiaohuashifu.recruit.organization.api.constant;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * 描述：组织相关常量
@@ -58,7 +58,7 @@ public class OrganizationConstants {
     /**
      * 组织规模集合
      */
-    public static final Set<String> ORGANIZATION_SIZE_SET =
-            Set.of("10人以下", "10-20人", "20-50人", "50-100人", "100-200人", "200-300人", "300-500人", "500人以上");
+    public static final List<String> ORGANIZATION_SIZE_LIST =
+            List.of("10人以下", "10-20人", "20-50人", "50-100人", "100-200人", "200-300人", "300-500人", "500人以上");
 
 }

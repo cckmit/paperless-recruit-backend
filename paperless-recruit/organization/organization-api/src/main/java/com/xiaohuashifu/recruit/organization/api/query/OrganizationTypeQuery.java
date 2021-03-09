@@ -12,7 +12,7 @@ import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
 /**
- * 描述：组织查询参数
+ * 描述：组织类型查询参数
  *
  * @author xhsf
  * @create 2020/12/7 13:29
@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrganizationQuery implements Serializable {
+public class OrganizationTypeQuery implements Serializable {
 
     /**
      * 页码
@@ -37,15 +37,5 @@ public class OrganizationQuery implements Serializable {
     @Positive
     @Max(value = QueryConstants.MAX_PAGE_SIZE)
     private Long pageSize;
-
-    /**
-     * 组织主体编号
-     */
-    private Long userId;
-
-    /**
-     * 组织名，可右模糊
-     */
-    private String organizationName;
 
 }

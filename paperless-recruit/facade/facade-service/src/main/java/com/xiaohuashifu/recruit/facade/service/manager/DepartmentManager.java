@@ -1,8 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.manager;
 
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentLabelPostRequest;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentPatchRequest;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
+import com.xiaohuashifu.recruit.facade.service.request.CreateDepartmentRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateDepartmentRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 
@@ -23,24 +22,9 @@ public interface DepartmentManager {
      * @param request DepartmentPostRequest
      * @return DepartmentVO
      */
-    DepartmentVO createDepartment(Long organizationId, DepartmentPostRequest request);
+    DepartmentVO createDepartment(Long organizationId, CreateDepartmentRequest request);
 
-    /**
-     * 添加部门标签
-     *
-     * @param departmentId 部门编号
-     * @param request DepartmentLabelPostRequest
-     * @return DepartmentVO
-     */
-    DepartmentVO addLabel(Long departmentId, DepartmentLabelPostRequest request);
-
-    /**
-     * 移除部门标签
-     *
-     * @param departmentId 部门编号
-     * @param labelName 标签名
-     */
-    void removeLabel(Long departmentId, String labelName);
+    void removeDepartment(Long departmentId);
 
     /**
      * 获取部门
@@ -65,6 +49,6 @@ public interface DepartmentManager {
      * @param request DepartmentPatchRequest
      * @return DepartmentVO
      */
-    DepartmentVO updateDepartment(Long departmentId, DepartmentPatchRequest request);
+    DepartmentVO updateDepartment(Long departmentId, UpdateDepartmentRequest request);
 
 }

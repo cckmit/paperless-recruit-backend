@@ -108,11 +108,8 @@ public class DepartmentLabelServiceImpl implements DepartmentLabelService {
         DepartmentLabelDO departmentLabelDOForUpdate = DepartmentLabelDO.builder().id(id).available(false).build();
         departmentLabelMapper.updateById(departmentLabelDOForUpdate);
 
-        // 删除部门的这个标签
-        int deletedNumber = departmentService.removeLabels(departmentLabelDTO.getLabelName());
-
         // 封装删除数量和禁用后的部门标签对象
-        return new DisableDepartmentLabelDTO(getDepartmentLabel(id), deletedNumber);
+        return new DisableDepartmentLabelDTO(getDepartmentLabel(id), 0);
     }
 
     @Override

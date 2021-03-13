@@ -17,6 +17,7 @@ import javax.validation.constraints.Positive;
  * @author xhsf
  * @create 2020/12/13 19:22
  */
+@Deprecated
 public interface OrganizationPositionService {
 
     /**

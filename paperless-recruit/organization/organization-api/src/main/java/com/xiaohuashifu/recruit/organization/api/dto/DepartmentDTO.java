@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：部门传输对象
@@ -36,11 +36,6 @@ public class DepartmentDTO implements Serializable {
     private String departmentName;
 
     /**
-     * 部门名缩写
-     */
-    private String abbreviationDepartmentName;
-
-    /**
      * 部门介绍
      */
     private String introduction;
@@ -51,18 +46,18 @@ public class DepartmentDTO implements Serializable {
     private String logoUrl;
 
     /**
-     * 部门成员数
+     * 部门类型
      */
-    private Integer numberOfMembers;
+    private String departmentType;
 
     /**
-     * 部门是否被废弃
+     * 部门规模
      */
-    private Boolean deactivated;
+    private String size;
 
     /**
      * 部门标签
      */
-    private List<String> labels;
+    private Set<String> labels;
 
 }

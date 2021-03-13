@@ -21,6 +21,7 @@ import javax.validation.constraints.Size;
  * @author xhsf
  * @create 2020/12/7 13:22
  */
+@Deprecated
 public interface OrganizationLabelService {
 
     /**

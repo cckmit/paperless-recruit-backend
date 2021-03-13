@@ -268,18 +268,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             }
         }
 
-        // 检查组织成员状态是否是在职，部门是否已经停用
-        if (request.getDepartmentId() != null) {
-            // 判断部门是否被停用
-            DepartmentDTO departmentDTO = departmentService.getDepartment(request.getDepartmentId());
-            if (departmentDTO.getDeactivated()) {
-                throw new UnavailableServiceException("The department already deactivated.");
-            }
-
-            // 更新部门的成员数量
-            updateDepartmentMemberNumber(organizationMemberDTO.getDepartmentId(), request.getDepartmentId());
-        }
-
         return getOrganizationMember(request.getId());
     }
 
@@ -353,21 +341,6 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
                 .userId(userId).notificationType(SystemNotificationTypeEnum.ORGANIZATION_INVITATION)
                 .notificationTitle(notificationTitle).notificationContent(notificationContent).build();
         notificationTemplate.sendSystemNotification(sendSystemNotificationPO);
-    }
-
-    /**
-     * 更新部门成员数量
-     *
-     * @param oldDepartmentId 原部门编号
-     * @param newDepartmentId 新部门编号
-     */
-    private void updateDepartmentMemberNumber(Long oldDepartmentId, Long newDepartmentId) {
-        // 当原来部门编号不为0（没有职位时的编号）时，需要减少原来部门的人数
-        if (!Objects.equals(oldDepartmentId, DepartmentConstants.DEPARTMENT_ID_WHEN_NO_DEPARTMENT)) {
-            departmentService.decreaseNumberOfMembers(oldDepartmentId);
-        }
-        // 增加当前部门的人数
-        departmentService.increaseNumberOfMembers(newDepartmentId);
     }
 
 }

@@ -6,22 +6,17 @@ import com.xiaohuashifu.recruit.facade.service.authorize.DepartmentContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
 import com.xiaohuashifu.recruit.facade.service.manager.DepartmentManager;
-import com.xiaohuashifu.recruit.facade.service.request.BaseQueryRequest;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentLabelPostRequest;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentPatchRequest;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
+import com.xiaohuashifu.recruit.facade.service.request.CreateDepartmentRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateDepartmentRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -47,30 +42,16 @@ public class DepartmentController {
 
     @ApiOperation(value = "创建部门", notes = "Role: organization")
     @PostMapping("/departments")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('organization')")
-    public DepartmentVO createDepartment(@RequestBody DepartmentPostRequest request) {
+    public DepartmentVO createDepartment(@RequestBody CreateDepartmentRequest request) {
         return departmentManager.createDepartment(organizationContext.getOrganizationId(), request);
     }
 
-    @ApiOperation(value = "添加部门的标签", notes = "Role: organization")
-    @PostMapping("/departments/{departmentId}/labels")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('organization')")
+    @ApiOperation(value = "删除部门", notes = "Role: organization")
+    @DeleteMapping("/departments/{departmentId}")
     @Owner(id = "#departmentId", context = DepartmentContext.class)
-    public DepartmentVO addLabel(@ApiParam("部门编号") @PathVariable Long departmentId,
-                                 @RequestBody DepartmentLabelPostRequest request) {
-        return departmentManager.addLabel(departmentId, request);
-    }
-
-    @ApiOperation(value = "移除部门的标签", notes = "Role: organization")
-    @DeleteMapping("/departments/{departmentId}/labels/{labelName}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('organization')")
-    @Owner(id = "#departmentId", context = DepartmentContext.class)
-    public void removeLabel(@ApiParam("部门编号") @PathVariable Long departmentId,
-                                    @ApiParam("标签名") @PathVariable String labelName) {
-        departmentManager.removeLabel(departmentId, labelName);
+    public void removeDepartment(@ApiParam("部门编号") @PathVariable Long departmentId) {
+        departmentManager.removeDepartment(departmentId);
     }
 
     @ApiOperation(value = "获取部门")
@@ -79,24 +60,18 @@ public class DepartmentController {
         return departmentManager.getDepartment(departmentId);
     }
 
-    @ApiOperation(value = "获取组织的部门")
-    @GetMapping("/organizations/{organizationId}/departments")
-    public List<DepartmentVO> listOrganizationDepartments(@ApiParam("组织编号") @PathVariable Long organizationId,
-                                                          BaseQueryRequest baseQueryRequest) {
-        DepartmentQuery departmentQuery = DepartmentQuery.builder()
-                .pageNum(Long.valueOf(baseQueryRequest.getPageNum()))
-                .pageSize(Long.valueOf(baseQueryRequest.getPageSize()))
-                .organizationId(organizationId)
-                .build();
+    @ApiOperation(value = "列出部门")
+    @GetMapping("/departments")
+    public List<DepartmentVO> listDepartments(DepartmentQuery departmentQuery) {
         return departmentManager.listDepartments(departmentQuery);
     }
 
     @ApiOperation(value = "更新部门", notes = "Role: organization")
-    @PatchMapping("/departments/{departmentId}")
+    @PutMapping("/departments/{departmentId}")
     @PreAuthorize("hasRole('organization')")
     @Owner(id = "#departmentId", context = DepartmentContext.class)
     public DepartmentVO updateDepartment(@ApiParam("部门编号") @PathVariable Long departmentId,
-                            @Validated @RequestBody @NotAllFieldsNull DepartmentPatchRequest request) {
+                            @RequestBody @NotAllFieldsNull UpdateDepartmentRequest request) {
         return departmentManager.updateDepartment(departmentId, request);
     }
 

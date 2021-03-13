@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @ApiSupport(author = "XHSF")
 @Api(tags = "部门")
 @RestController
+@Deprecated
 public class DepartmentLabelController {
 
     private final DepartmentLabelManager departmentLabelManager;

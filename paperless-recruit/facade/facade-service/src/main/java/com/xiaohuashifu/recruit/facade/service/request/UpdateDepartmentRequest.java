@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.AssertTrue;
+import java.util.Set;
 
 /**
- * 描述：DepartmentPatchRequest
+ * 描述：UpdateDepartmentRequest
  *
  * @author xhsf
  * @create 2021/1/27 17:30
@@ -18,13 +18,10 @@ import javax.validation.constraints.AssertTrue;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel
-public class DepartmentPatchRequest {
+public class UpdateDepartmentRequest {
 
     @ApiModelProperty(value = "部门名", example = "自然科学部")
     private String departmentName;
-
-    @ApiModelProperty(value = "部门名缩写", example = "自科部")
-    private String abbreviationDepartmentName;
 
     @ApiModelProperty(value = "部门介绍", example = "自然科学部是一个。。。")
     private String introduction;
@@ -33,8 +30,13 @@ public class DepartmentPatchRequest {
             example = "departments/logos/738d8e7485d3455da22765e199cc65721601000702(1).jpg")
     private String logoUrl;
 
-    @ApiModelProperty(value = "是否停用部门。只允许true", example = "true")
-    @AssertTrue
-    private Boolean deactivated;
+    @ApiModelProperty(value = "部门类型", required = true, example = "技术")
+    private String departmentType;
+
+    @ApiModelProperty(value = "部门规模", required = true, example = "20人")
+    private String size;
+
+    @ApiModelProperty(value = "部门标签", required = true, example = "软件, 硬件")
+    private Set<String> labels;
 
 }

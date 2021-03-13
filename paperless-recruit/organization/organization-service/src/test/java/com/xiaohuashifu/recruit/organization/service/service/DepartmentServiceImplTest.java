@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.validation.ValidationException;
-import java.io.IOException;
 
 /**
  * 描述：
@@ -37,26 +36,11 @@ public class DepartmentServiceImplTest {
     public void createDepartment() {
         try {
             System.out.println(departmentService.createDepartment(CreateDepartmentRequest.builder()
-                    .organizationId(null).departmentName("办公室").abbreviationDepartmentName("办公室").build()));
+                    .organizationId(null).departmentName("办公室").build()));
         } catch (ValidationException e) {
             e.printStackTrace();
             System.out.println(e.getClass());
         }
-    }
-
-    @Test
-    public void deactivateDepartment() {
-        System.out.println(departmentService.deactivateDepartment(1L));
-    }
-
-    @Test
-    public void addLabel() {
-        System.out.println(departmentService.addLabel(3L, "创新"));
-    }
-
-    @Test
-    public void removeLabel() {
-        System.out.println(departmentService.removeLabel(1L, "软件"));
     }
 
     @Test
@@ -73,35 +57,8 @@ public class DepartmentServiceImplTest {
     }
 
     @Test
-    public void updateDepartmentName() {
-        System.out.println(departmentService.updateDepartmentName(1L, "自然科学部"));
-    }
-
-    @Test
-    public void updateAbbreviationDepartmentName() {
-        System.out.println(departmentService.updateAbbreviationDepartmentName(1L,  "自科部"));
-    }
-
-    @Test
-    public void updateIntroduction() {
-        System.out.println(departmentService.updateIntroduction(1L,
-                "1、参加科研项目和科技比赛，加强对成员的技术培训，培养和提高自身的科研力量和技术支持，拥有自身的科研成果；\n" +
-                "2、加强内外交流，组织学生参观学校各学院或其他高校的实验室或工作室、开展项目分享会、科研交流会、科技成果展览会等，培养和促进学生的科研兴趣，并提供其学习、实践的机会；"));
-    }
-
-    @Test
-    public void updateLogo() throws IOException {
-        System.out.println(departmentService.updateLogo(1L, "departments/logos/b12459c9b9444104a610e90c8fbc14311601000702(1).jpg"));
-    }
-
-    @Test
-    public void increaseMemberNumber() {
-        System.out.println(departmentService.increaseNumberOfMembers(1L));
-    }
-
-    @Test
-    public void decreaseMemberNumber() {
-        System.out.println(departmentService.decreaseNumberOfMembers(1L));
+    public void updateDepartment() {
+//        System.out.println(departmentService.updateDepartment(1L, "自然科学部"));
     }
 
 }

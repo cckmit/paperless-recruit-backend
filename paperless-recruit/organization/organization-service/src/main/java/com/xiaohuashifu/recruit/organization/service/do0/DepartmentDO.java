@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 描述：部门
@@ -29,14 +29,12 @@ public class DepartmentDO {
     private Long id;
     private Long organizationId;
     private String departmentName;
-    private String abbreviationDepartmentName;
     private String introduction;
     private String logoUrl;
-    private Integer numberOfMembers;
+    private String departmentType;
+    private String size;
     @TableField(typeHandler = FastjsonTypeHandler.class)
-    private List<String> labels;
-    @TableField("is_deactivated")
-    private Boolean deactivated;
+    private Set<String> labels;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

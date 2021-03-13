@@ -26,12 +26,12 @@ public class BaseQueryRequest {
     @NotNull
     @Positive
     @ApiModelProperty(value = "页码", required = true, example = "1")
-    private Integer pageNum;
+    private Long pageNum;
 
     @NotNull
     @Positive
     @Max(value = QueryConstants.MAX_PAGE_SIZE)
     @ApiModelProperty(value = "页条数", required = true, example = "10")
-    private Integer pageSize;
+    private Long pageSize;
 
 }

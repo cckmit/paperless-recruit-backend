@@ -2,16 +2,13 @@ package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
 import com.xiaohuashifu.recruit.facade.service.assembler.DepartmentAssembler;
 import com.xiaohuashifu.recruit.facade.service.manager.DepartmentManager;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentLabelPostRequest;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentPatchRequest;
-import com.xiaohuashifu.recruit.facade.service.request.DepartmentPostRequest;
+import com.xiaohuashifu.recruit.facade.service.request.CreateDepartmentRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateDepartmentRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
-import com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,27 +39,17 @@ public class DepartmentManagerImpl implements DepartmentManager {
     }
 
     @Override
-    public DepartmentVO createDepartment(Long organizationId, DepartmentPostRequest request) {
-        CreateDepartmentRequest createDepartmentRequest =
-                departmentAssembler.departmentPostRequestToCreateDepartmentRequest(request);
+    public DepartmentVO createDepartment(Long organizationId, CreateDepartmentRequest request) {
+        com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest createDepartmentRequest =
+                departmentAssembler.createDepartmentRequestToCreateDepartmentRequest(request);
         createDepartmentRequest.setOrganizationId(organizationId);
-        return departmentAssembler.departmentDTOToDepartmentVO(departmentService.createDepartment(createDepartmentRequest));
+        DepartmentDTO departmentDTO = departmentService.createDepartment(createDepartmentRequest);
+        return departmentAssembler.departmentDTOToDepartmentVO(departmentDTO);
     }
 
-    @Caching(evict = {
-            @CacheEvict(key = "'departments:' + #departmentId")
-    })
     @Override
-    public DepartmentVO addLabel(Long departmentId, DepartmentLabelPostRequest request) {
-        return departmentAssembler.departmentDTOToDepartmentVO(departmentService.addLabel(departmentId, request.getLabel()));
-    }
-
-    @Caching(evict = {
-            @CacheEvict(key = "'departments:' + #departmentId")
-    })
-    @Override
-    public void removeLabel(Long departmentId, String labelName) {
-        departmentService.removeLabel(departmentId, labelName);
+    public void removeDepartment(Long departmentId) {
+        departmentService.removeDepartment(departmentId);
     }
 
     @Cacheable(key = "'departments:' + #departmentId")
@@ -84,29 +71,12 @@ public class DepartmentManagerImpl implements DepartmentManager {
             @CacheEvict(key = "'departments:' + #departmentId", beforeInvocation = true)
     })
     @Override
-    public DepartmentVO updateDepartment(Long departmentId, DepartmentPatchRequest request) {
-        if (request.getDepartmentName() != null) {
-            departmentService.updateDepartmentName(departmentId, request.getDepartmentName());
-        }
-
-        if (request.getAbbreviationDepartmentName() != null) {
-            departmentService.updateAbbreviationDepartmentName(
-                    departmentId, request.getAbbreviationDepartmentName());
-        }
-
-        if (request.getIntroduction() != null) {
-            departmentService.updateIntroduction(departmentId, request.getIntroduction());
-        }
-
-        if (request.getLogoUrl() != null) {
-            departmentService.updateLogo(departmentId, request.getLogoUrl());
-        }
-
-        if (request.getDeactivated() != null) {
-            departmentService.deactivateDepartment(departmentId);
-        }
-
-        return ((DepartmentManager) AopContext.currentProxy()).getDepartment(departmentId);
+    public DepartmentVO updateDepartment(Long departmentId, UpdateDepartmentRequest request) {
+        com.xiaohuashifu.recruit.organization.api.request.UpdateDepartmentRequest updateDepartmentRequest =
+                departmentAssembler.updateDepartmentRequestToUpdateDepartmentRequest(request);
+        updateDepartmentRequest.setId(departmentId);
+        DepartmentDTO departmentDTO = departmentService.updateDepartment(updateDepartmentRequest);
+        return departmentAssembler.departmentDTOToDepartmentVO(departmentDTO);
     }
 
 }

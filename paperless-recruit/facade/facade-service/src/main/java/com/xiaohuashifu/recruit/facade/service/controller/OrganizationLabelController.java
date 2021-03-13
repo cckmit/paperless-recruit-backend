@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "组织")
 @RestController
 @Validated
+@Deprecated
 public class OrganizationLabelController {
 
     private final OrganizationLabelManager organizationLabelManager;

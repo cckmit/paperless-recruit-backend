@@ -67,8 +67,6 @@ public class OrganizationController {
                 organizationCoreMemberId);
     }
 
-
-
     @ApiOperation(value = "获取组织")
     @GetMapping("/organizations/{organizationId}")
     public OrganizationVO getOrganization(@ApiParam("组织编号") @PathVariable Long organizationId) {

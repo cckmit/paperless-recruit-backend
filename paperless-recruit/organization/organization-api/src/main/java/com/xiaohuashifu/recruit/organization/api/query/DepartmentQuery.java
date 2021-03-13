@@ -48,14 +48,4 @@ public class DepartmentQuery implements Serializable {
      */
     private String departmentName;
 
-    /**
-     * 部门名缩写，可右模糊
-     */
-    private String abbreviationDepartmentName;
-
-    /**
-     * 部门是否被废弃
-     */
-    private Boolean deactivated;
-
 }

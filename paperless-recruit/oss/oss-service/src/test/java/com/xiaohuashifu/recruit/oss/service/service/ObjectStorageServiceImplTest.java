@@ -39,11 +39,11 @@ public class ObjectStorageServiceImplTest {
 
     @Test
     public void preUploadObject() throws IOException {
-        File file = new File("C:\\Users\\82703\\Desktop\\u=336497710,1373556175&fm=26&gp=0.jpg");
+        File file = new File("D:\\Github\\SpecializedCourseCode\\文档\\毕设相关文档\\图片\\毕设原型图片\\社科部科科.jpg");
         FileInputStream fis = new FileInputStream(file);
         byte[] bytes = fis.readAllBytes();
         PreUploadObjectRequest request = new PreUploadObjectRequest(
-                1L, "简历.txt", "profile/u=336497710,1373556175&fm=26&gp=10.jpg", bytes);
+                1L, "简历.txt", "organizations/core-members/avartars/u=336497710,1373556175&fm=26&gp=10.jpg", bytes);
         System.out.println(objectStorageService.preUploadObject(request));
     }
 

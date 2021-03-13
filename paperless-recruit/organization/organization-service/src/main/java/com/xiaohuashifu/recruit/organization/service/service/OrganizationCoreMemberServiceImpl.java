@@ -2,24 +2,22 @@ package com.xiaohuashifu.recruit.organization.service.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
-import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
-import com.xiaohuashifu.recruit.common.exception.unprocessable.InvalidValueServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.OverLimitServiceException;
+import com.xiaohuashifu.recruit.common.util.ObjectUtils;
 import com.xiaohuashifu.recruit.organization.api.constant.OrganizationCoreMemberConstants;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationCoreMemberDTO;
-import com.xiaohuashifu.recruit.organization.api.dto.OrganizationMemberDTO;
+import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationCoreMemberRequest;
+import com.xiaohuashifu.recruit.organization.api.request.UpdateOrganizationCoreMemberRequest;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationCoreMemberService;
-import com.xiaohuashifu.recruit.organization.api.service.OrganizationMemberService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.service.assembler.OrganizationCoreMemberAssembler;
 import com.xiaohuashifu.recruit.organization.service.dao.OrganizationCoreMemberMapper;
 import com.xiaohuashifu.recruit.organization.service.do0.OrganizationCoreMemberDO;
+import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +34,7 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
     private final OrganizationCoreMemberAssembler organizationCoreMemberAssembler;
 
     @Reference
-    private OrganizationMemberService organizationMemberService;
+    private ObjectStorageService objectStorageService;
 
     @Reference
     private OrganizationService organizationService;
@@ -48,42 +46,26 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
     }
 
     @Override
-    @Transactional
-    public OrganizationCoreMemberDTO createOrganizationCoreMember(Long organizationId, Long organizationMemberId) {
-        // 判断组织成员是否存在
-        OrganizationMemberDTO organizationMemberDTO =
-                organizationMemberService.getOrganizationMember(organizationMemberId);
-
-        // 检查组织状态
-        organizationService.getOrganization(organizationId);
-
-        // 判断该组织成员是否属于该组织的
-        if (!Objects.equals(organizationMemberDTO.getOrganizationId(), organizationId)) {
-            throw new InvalidValueServiceException("The organization member not belong to organization.");
-        }
-
-        // 判断该成员是否已经存在
-        LambdaQueryWrapper<OrganizationCoreMemberDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OrganizationCoreMemberDO::getOrganizationId, organizationId)
-                .eq(OrganizationCoreMemberDO::getOrganizationMemberId, organizationMemberId);
-        int count = organizationCoreMemberMapper.selectCount(wrapper);
-        if (count > 0) {
-            throw new DuplicateServiceException("The organization core member already exist.");
-        }
-
-        // 插入组织核心成员
-        OrganizationCoreMemberDO organizationCoreMemberDOForInsert = OrganizationCoreMemberDO.builder()
-                .organizationId(organizationId).organizationMemberId(organizationMemberId).build();
-        organizationCoreMemberMapper.insert(organizationCoreMemberDOForInsert);
+    public OrganizationCoreMemberDTO createOrganizationCoreMember(CreateOrganizationCoreMemberRequest request) {
+        // 判断组织是否存在
+        organizationService.getOrganization(request.getOrganizationId());
 
         // 判断该组织的成员数是否大于 MAX_ORGANIZATION_CORE_MEMBER_NUMBER
         LambdaQueryWrapper<OrganizationCoreMemberDO> wrapperForCount = new LambdaQueryWrapper<>();
-        wrapperForCount.eq(OrganizationCoreMemberDO::getOrganizationId, organizationId);
-        count = organizationCoreMemberMapper.selectCount(wrapperForCount);
+        wrapperForCount.eq(OrganizationCoreMemberDO::getOrganizationId, request.getOrganizationId());
+        int count = organizationCoreMemberMapper.selectCount(wrapperForCount);
         if (count > OrganizationCoreMemberConstants.MAX_ORGANIZATION_CORE_MEMBER_NUMBER) {
             throw new OverLimitServiceException("The number of organization core member must not be greater than "
                     + OrganizationCoreMemberConstants.MAX_ORGANIZATION_CORE_MEMBER_NUMBER + ".");
         }
+
+        // 链接头像
+        objectStorageService.linkObject(request.getAvatarUrl());
+
+        // 插入组织核心成员
+        OrganizationCoreMemberDO organizationCoreMemberDOForInsert =
+                organizationCoreMemberAssembler.createOrganizationCoreMemberRequestToOrganizationCoreMemberDO(request);
+        organizationCoreMemberMapper.insert(organizationCoreMemberDOForInsert);
 
         return getOrganizationCoreMember(organizationCoreMemberDOForInsert.getId());
     }
@@ -107,7 +89,9 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
     @Override
     public List<OrganizationCoreMemberDTO> listOrganizationCoreMembersByOrganizationId(Long organizationId) {
         LambdaQueryWrapper<OrganizationCoreMemberDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OrganizationCoreMemberDO::getOrganizationId, organizationId);
+        wrapper.eq(OrganizationCoreMemberDO::getOrganizationId, organizationId)
+                .orderByAsc(OrganizationCoreMemberDO::getPriority)
+                .orderByAsc(OrganizationCoreMemberDO::getCreateTime);
 
         List<OrganizationCoreMemberDO> organizationCoreMemberDOS =
                 organizationCoreMemberMapper.selectList(wrapper);
@@ -116,4 +100,34 @@ public class OrganizationCoreMemberServiceImpl implements OrganizationCoreMember
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public OrganizationCoreMemberDTO updateOrganizationCoreMember(UpdateOrganizationCoreMemberRequest request) {
+        // 判断组织核心成员是否存在
+        getOrganizationCoreMember(request.getId());
+
+        // 更新组织
+        OrganizationCoreMemberDO organizationCoreMemberDOForUpdate = checkForUpdate(request);
+        organizationCoreMemberMapper.updateById(organizationCoreMemberDOForUpdate);
+        return getOrganizationCoreMember(request.getId());
+    }
+
+    /**
+     * 检查更新参数
+     *
+     * @param request UpdateOrganizationCoreMemberRequest
+     * @return OrganizationCoreMemberDO
+     */
+    private OrganizationCoreMemberDO checkForUpdate(UpdateOrganizationCoreMemberRequest request) {
+        // 转换成 DO 对象
+        OrganizationCoreMemberDO organizationCoreMemberDO =
+                organizationCoreMemberAssembler.updateOrganizationCoreMemberRequestToOrganizationCoreMemberDO(request);
+        ObjectUtils.trimAllStringFields(organizationCoreMemberDO);
+
+        // 链接 logo
+        if (organizationCoreMemberDO.getAvatarUrl() != null) {
+            objectStorageService.linkObject(organizationCoreMemberDO.getAvatarUrl());
+        }
+
+        return organizationCoreMemberDO;
+    }
 }

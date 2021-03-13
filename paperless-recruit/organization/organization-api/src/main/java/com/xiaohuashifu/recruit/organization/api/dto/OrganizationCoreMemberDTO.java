@@ -30,8 +30,28 @@ public class OrganizationCoreMemberDTO implements Serializable {
     private Long organizationId;
 
     /**
-     * 组织成员编号
+     * 成员名
      */
-    private Long organizationMemberId;
+    private String memberName;
+
+    /**
+     * 职位
+     */
+    private String position;
+
+    /**
+     * 头像
+     */
+    private String avatarUrl;
+
+    /**
+     * 介绍
+     */
+    private String introduction;
+
+    /**
+     * 职位优先级
+     */
+    private Integer priority;
 
 }

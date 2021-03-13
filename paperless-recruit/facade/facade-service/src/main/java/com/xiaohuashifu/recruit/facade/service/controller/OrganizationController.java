@@ -4,9 +4,14 @@ import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.common.validator.annotation.NotAllFieldsNull;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
+import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationCoreMemberContext;
+import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
+import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationCoreMemberRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationCoreMemberRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationRequest;
+import com.xiaohuashifu.recruit.facade.service.vo.OrganizationCoreMemberVO;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationTypeVO;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
@@ -45,13 +50,24 @@ public class OrganizationController {
         this.organizationContext = organizationContext;
     }
 
-    @ApiOperation(value = "更新组织")
+    @ApiOperation(value = "创建组织核心成员")
     @PreAuthorize("hasRole('organization')")
-    @PostMapping("/organization/update")
-    public OrganizationVO updateOrganization(
-            @RequestBody @NotAllFieldsNull UpdateOrganizationRequest request) {
-        return organizationManager.updateOrganization(organizationContext.getOrganizationId(), request);
+    @PostMapping("/organizations/core-members")
+    public OrganizationCoreMemberVO createOrganizationCoreMember(
+            @RequestBody CreateOrganizationCoreMemberRequest request) {
+        return organizationManager.createOrganizationCoreMember(organizationContext.getOrganizationId(), request);
     }
+
+    @ApiOperation(value = "移除组织核心成员")
+    @PreAuthorize("hasRole('organization')")
+    @Owner(context = OrganizationCoreMemberContext.class, id = "#organizationCoreMemberId")
+    @DeleteMapping("/organizations/core-members/{organizationCoreMemberId}")
+    public void removeOrganizationCoreMember(@PathVariable Long organizationCoreMemberId) {
+        organizationManager.removeOrganizationCoreMember(organizationContext.getOrganizationId(),
+                organizationCoreMemberId);
+    }
+
+
 
     @ApiOperation(value = "获取组织")
     @GetMapping("/organizations/{organizationId}")
@@ -73,15 +89,41 @@ public class OrganizationController {
     }
 
     @ApiOperation(value = "列出组织类型")
-    @GetMapping("/organization/types")
+    @GetMapping("/organizations/types")
     public QueryResult<OrganizationTypeVO> listOrganizationTypes(OrganizationTypeQuery query) {
         return organizationManager.listOrganizationTypes(query);
     }
 
     @ApiOperation(value = "列出组织规模")
-    @GetMapping("/organization/sizes")
+    @GetMapping("/organizations/sizes")
     public List<String> listOrganizationSizes() {
         return organizationManager.listOrganizationSizes();
+    }
+
+    @ApiOperation(value = "列出组织核心成员列表通过组织编号")
+    @GetMapping("/organizations/{organizationId}/core-members")
+    public List<OrganizationCoreMemberVO> listOrganizationCoreMembersByOrganizationId(
+            @PathVariable Long organizationId) {
+        return organizationManager.listOrganizationCoreMembersByOrganizationId(organizationId);
+    }
+
+    @ApiOperation(value = "更新组织")
+    @PreAuthorize("hasRole('organization')")
+    @PutMapping("/organizations")
+    public OrganizationVO updateOrganization(
+            @RequestBody @NotAllFieldsNull UpdateOrganizationRequest request) {
+        return organizationManager.updateOrganization(organizationContext.getOrganizationId(), request);
+    }
+
+    @ApiOperation(value = "更新组织核心成员")
+    @PreAuthorize("hasRole('organization')")
+    @Owner(context = OrganizationCoreMemberContext.class, id = "#organizationCoreMemberId")
+    @PutMapping("/organizations/core-members/{organizationCoreMemberId}")
+    public OrganizationCoreMemberVO updateOrganizationCoreMember(
+            @PathVariable Long organizationCoreMemberId,
+            @RequestBody UpdateOrganizationCoreMemberRequest request) {
+        return organizationManager.updateOrganizationCoreMember(organizationContext.getOrganizationId(),
+                organizationCoreMemberId, request);
     }
 
 }

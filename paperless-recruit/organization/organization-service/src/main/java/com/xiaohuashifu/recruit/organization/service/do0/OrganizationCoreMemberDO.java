@@ -25,7 +25,11 @@ public class OrganizationCoreMemberDO {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long organizationId;
-    private Long organizationMemberId;
+    private String memberName;
+    private String position;
+    private String avatarUrl;
+    private String introduction;
+    private Integer priority;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

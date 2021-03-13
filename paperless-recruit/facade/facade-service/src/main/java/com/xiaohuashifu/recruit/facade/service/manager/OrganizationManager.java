@@ -1,7 +1,10 @@
 package com.xiaohuashifu.recruit.facade.service.manager;
 
 import com.xiaohuashifu.recruit.common.query.QueryResult;
+import com.xiaohuashifu.recruit.facade.service.request.CreateOrganizationCoreMemberRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationCoreMemberRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateOrganizationRequest;
+import com.xiaohuashifu.recruit.facade.service.vo.OrganizationCoreMemberVO;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationTypeVO;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
@@ -17,9 +20,16 @@ import java.util.List;
  */
 public interface OrganizationManager {
 
+    OrganizationCoreMemberVO createOrganizationCoreMember(Long organizationId,
+                                                          CreateOrganizationCoreMemberRequest request);
+
+    void removeOrganizationCoreMember(Long organizationId, Long organizationCoreMemberId);
+
     OrganizationVO getOrganization(Long organizationId);
 
     OrganizationVO getOrganizationByUserId(Long userId);
+
+    OrganizationCoreMemberVO getOrganizationCoreMember(Long organizationCoreMemberId);
 
     QueryResult<OrganizationVO> listOrganizations(OrganizationQuery query);
 
@@ -28,4 +38,9 @@ public interface OrganizationManager {
     List<String> listOrganizationSizes();
 
     OrganizationVO updateOrganization(Long id, UpdateOrganizationRequest request);
+
+    List<OrganizationCoreMemberVO> listOrganizationCoreMembersByOrganizationId(Long organizationId);
+
+    OrganizationCoreMemberVO updateOrganizationCoreMember(Long organizationId, Long organizationCoreMemberId,
+                                                          UpdateOrganizationCoreMemberRequest request);
 }

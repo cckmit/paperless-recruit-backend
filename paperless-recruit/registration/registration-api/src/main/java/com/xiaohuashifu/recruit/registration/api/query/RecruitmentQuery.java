@@ -38,4 +38,20 @@ public class RecruitmentQuery implements Serializable {
     @Max(value = QueryConstants.MAX_PAGE_SIZE)
     private Long pageSize;
 
+    /**
+     * 组织编号
+     */
+    private Long organizationId;
+
+    /**
+     * 招新名，右模糊
+     */
+    private String recruitmentName;
+
+    /**
+     * @see com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum
+     * 招新状态
+     */
+    private String recruitmentStatus;
+
 }

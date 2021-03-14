@@ -1,18 +1,14 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.common.constant.GradeEnum;
-import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
+import com.xiaohuashifu.recruit.registration.api.query.RecruitmentQuery;
 import com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentRequest;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateRecruitmentRequest;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 描述：
@@ -38,128 +34,44 @@ public class RecruitmentServiceImplTest {
 
     @Test
     public void createRecruitment() {
-        Set<GradeEnum> recruitmentGrades = new HashSet<>();
-        recruitmentGrades.add(GradeEnum.FRESHMEN);
-        recruitmentGrades.add(GradeEnum.SOPHOMORE);
-        Set<Long> recruitmentDepartmentIds = new HashSet<>();
-        recruitmentDepartmentIds.add(2L);
-        recruitmentDepartmentIds.add(3L);
-        Set<Long> recruitmentCollegeIds = new HashSet<>();
-        recruitmentCollegeIds.add(1L);
-        recruitmentCollegeIds.add(4L);
-        Set<Long> recruitmentMajorIds = new HashSet<>();
-        recruitmentMajorIds.add(2L);
-        recruitmentMajorIds.add(3L);
-
         CreateRecruitmentRequest createRecruitmentPO = CreateRecruitmentRequest.builder()
                 .organizationId(1L)
-                .positionName("干事")
-                .recruitmentNumbers("约30人")
-                .positionDuty("xxx")
-                .positionRequirement("xxxx")
-                .recruitmentGrades(recruitmentGrades)
-                .recruitmentDepartmentIds(recruitmentDepartmentIds)
-                .recruitmentCollegeIds(recruitmentCollegeIds)
-                .recruitmentMajorIds(recruitmentMajorIds)
-                .releaseTime(LocalDateTime.now().plusMinutes(1L))
-                .registrationTimeFrom(null)
-                .registrationTimeTo(LocalDateTime.now().plusMinutes(100L))
+                .recruitmentName("校科联自科部招新")
+                .position("干事")
+                .numberOfRecruitments("约30人")
+                .duty("1、参加科研项目和科技比赛，加强对成员的技术培训，培养和提高自身的科研力量和技术支持，拥有自身的科研成果；\n" +
+                        "2、加强内外交流，组织学生参观学校各学院或其他高校的实验室或工作室、开展项目分享会、科研交流会、科技成果展览会等，培养和促进学生的科研兴趣，并提供其学习、实践的机会；\n" +
+                        "3、打造学生科技协同创新的平台—创新梦工厂，对全校的科技创新团队进行组织和管理，并提供相应的帮助和支持，促进学生对科技创新发明创造的热情，以此加强对创新团队和创新科技成果的培育。")
+                .requirement("对软件感兴趣，最好有学习过编程语言方面的知识")
                 .build();
         System.out.println(recruitmentService.createRecruitment(createRecruitmentPO));
     }
 
     @Test
-    public void addRecruitmentCollege() {
-        System.out.println(recruitmentService.addRecruitmentCollege(3L, 4L));
-    }
-
-    @Test
-    public void addRecruitmentMajor() {
-        System.out.println(recruitmentService.addRecruitmentMajor(3L, 3L));
-    }
-
-    @Test
-    public void addRecruitmentGrade() {
-        System.out.println(recruitmentService.addRecruitmentGrade(3L, null));
-    }
-
-    @Test
-    public void addRecruitmentDepartment() {
-        System.out.println(recruitmentService.addRecruitmentDepartment(3L, 2L));
-    }
-
-    @Test
-    public void removeRecruitmentCollege() {
-        System.out.println(recruitmentService.removeRecruitmentCollege(3L, 1L));
-    }
-
-    @Test
-    public void removeRecruitmentMajor() {
-        System.out.println(recruitmentService.removeRecruitmentMajor(4L, 3L));
-    }
-
-    @Test
-    public void removeRecruitmentGrade() {
-        System.out.println(recruitmentService.removeRecruitmentGrade(4L, GradeEnum.FRESHMEN));
-    }
-
-    @Test
-    public void removeRecruitmentDepartment() {
-        System.out.println(recruitmentService.removeRecruitmentDepartment(4L, 2L));
-    }
-
-    @Test
     public void getRecruitment() {
-        RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(12L);
-        Set<Long> recruitmentDepartmentIds = recruitmentDTO.getRecruitmentDepartmentIds();
-        System.out.println(recruitmentDepartmentIds.contains(2L));
+        RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(23L);
         System.out.println(recruitmentDTO);
     }
 
     @Test
     public void updateRecruitment() {
-//        System.out.println(recruitmentService.updateRecruitment(3L, "部长"));
+        System.out.println(recruitmentService.updateRecruitment(UpdateRecruitmentRequest.builder()
+                .id(11L)
+                .recruitmentStatus("ENDED1")
+                .build()));
     }
 
     @Test
-    public void updateReleaseTime() {
-        System.out.println(recruitmentService.updateReleaseTime(3L,null));
+    public void listRecruitments() {
+        System.out.println(recruitmentService.listRecruitments(RecruitmentQuery.builder()
+                .organizationId(1L)
+                .pageNum(1L)
+                .pageSize(50L)
+                .build()));
     }
 
     @Test
-    public void updateRegistrationTimeFrom() {
-        System.out.println(recruitmentService.updateRegistrationTimeFrom(7L, LocalDateTime.now().minusHours(1)));
+    public void increaseNumberOfApplicationForms() {
+        recruitmentService.increaseNumberOfApplicationForms(11L);
     }
-
-    @Test
-    public void updateRegistrationTimeTo() {
-        System.out.println(recruitmentService.updateRegistrationTimeTo(3L, LocalDateTime.now()));
-
-    }
-
-    @Test
-    public void updateRecruitmentStatus() {
-        System.out.println(recruitmentService.updateRecruitmentStatus(3L, RecruitmentStatusEnum.WAITING_FOR_RELEASE, RecruitmentStatusEnum.STARTED));
-    }
-
-    @Test
-    public void endRegistration() {
-        System.out.println(recruitmentService.endRegistration(7L));
-    }
-
-    @Test
-    public void closeRecruitment() {
-        System.out.println(recruitmentService.closeRecruitment(7L));
-    }
-
-    @Test
-    public void disableRecruitment() {
-        System.out.println(recruitmentService.disableRecruitment(3L));
-    }
-
-    @Test
-    public void enableRecruitment() {
-        System.out.println(recruitmentService.enableRecruitment(3L));
-    }
-
 }

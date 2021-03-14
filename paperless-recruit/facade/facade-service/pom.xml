@@ -81,6 +81,12 @@
 			<artifactId>organization-api</artifactId>
 		</dependency>
 
+		<!--    registration-api接口    -->
+		<dependency>
+			<groupId>com.xiaohuashifu.recruit</groupId>
+			<artifactId>registration-api</artifactId>
+		</dependency>
+
 		<!--    oss-api接口    -->
 		<dependency>
 			<groupId>com.xiaohuashifu.recruit</groupId>

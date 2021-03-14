@@ -41,7 +41,7 @@ public class UpdateDepartmentRequest implements Serializable {
      * 部门介绍
      */
     @NotAllCharactersBlank
-    @Size(max = DepartmentConstants.MAX_DEPARTMENT_NAME_LENGTH)
+    @Size(max = DepartmentConstants.MAX_DEPARTMENT_INTRODUCTION_LENGTH)
     private String introduction;
 
     /**

@@ -52,13 +52,13 @@ public class DepartmentManagerImpl implements DepartmentManager {
         departmentService.removeDepartment(departmentId);
     }
 
-    @Cacheable(key = "'departments:' + #departmentId")
+//    @Cacheable(key = "'departments:' + #departmentId")
     @Override
     public DepartmentVO getDepartment(Long departmentId) {
         return departmentAssembler.departmentDTOToDepartmentVO(departmentService.getDepartment(departmentId));
     }
 
-    @Cacheable(key = "'departments:' + #query")
+//    @Cacheable(key = "'departments:' + #query")
     @Override
     public List<DepartmentVO> listDepartments(DepartmentQuery query) {
         Collection<DepartmentDTO> departmentDTOList = departmentService.listDepartments(query).getResult();
@@ -67,9 +67,9 @@ public class DepartmentManagerImpl implements DepartmentManager {
                 .collect(Collectors.toList());
     }
 
-    @Caching(evict = {
-            @CacheEvict(key = "'departments:' + #departmentId", beforeInvocation = true)
-    })
+//    @Caching(evict = {
+//            @CacheEvict(key = "'departments:' + #departmentId", beforeInvocation = true)
+//    })
     @Override
     public DepartmentVO updateDepartment(Long departmentId, UpdateDepartmentRequest request) {
         com.xiaohuashifu.recruit.organization.api.request.UpdateDepartmentRequest updateDepartmentRequest =

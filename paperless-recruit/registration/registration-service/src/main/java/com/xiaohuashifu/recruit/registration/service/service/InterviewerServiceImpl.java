@@ -179,10 +179,10 @@ public class InterviewerServiceImpl implements InterviewerService {
      * @param organizationDTO OrganizationDTO
      */
     private void sendBecomeInterviewerSystemNotification(Long userId, OrganizationDTO organizationDTO) {
-        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
-        String notificationTitle = abbreviationOrganizationName + "已将您设置为的面试官";
+        String organizationName = organizationDTO.getOrganizationName();
+        String notificationTitle = organizationName + "已将您设置为的面试官";
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("message", notificationTitle + "。您现在可以查看" + abbreviationOrganizationName
+        jsonObject.put("message", notificationTitle + "。您现在可以查看" + organizationName
                 + "的报名表，并进行面试工作啦！");
         jsonObject.put("organizationId", organizationDTO.getId());
         String notificationContent = jsonObject.toJSONString();
@@ -204,8 +204,8 @@ public class InterviewerServiceImpl implements InterviewerService {
     private void sendDisableOrEnableInterviewerSystemNotification(
             OrganizationMemberDTO organizationMemberDTO, String disableOrEnable) {
         OrganizationDTO organizationDTO = organizationService.getOrganization(organizationMemberDTO.getOrganizationId());
-        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
-        String notificationTitle = abbreviationOrganizationName + "已" + disableOrEnable+ "您的面试官资格";
+        String organizationName = organizationDTO.getOrganizationName();
+        String notificationTitle = organizationName + "已" + disableOrEnable+ "您的面试官资格";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("message", notificationTitle);
         jsonObject.put("organizationId", organizationMemberDTO.getOrganizationId());

@@ -46,7 +46,7 @@ public class InterviewServiceImpl implements InterviewService {
     @Override
     public InterviewDTO createInterview(CreateInterviewRequest request) {
         // 检查招新状态
-        recruitmentService.checkRecruitmentStatus(request.getRecruitmentId());
+//        recruitmentService.checkRecruitmentStatus(request.getRecruitmentId());
 
         // 获取下一个轮次
         Integer nextRound = getNextRound(request.getRecruitmentId());
@@ -97,7 +97,7 @@ public class InterviewServiceImpl implements InterviewService {
         // 判断面试是否存在
         InterviewDTO interviewDTO = getInterview(id);
 
-        recruitmentService.checkRecruitmentStatus(interviewDTO.getRecruitmentId());
+//        recruitmentService.checkRecruitmentStatus(interviewDTO.getRecruitmentId());
 
         // 通过检查
         return interviewDTO;

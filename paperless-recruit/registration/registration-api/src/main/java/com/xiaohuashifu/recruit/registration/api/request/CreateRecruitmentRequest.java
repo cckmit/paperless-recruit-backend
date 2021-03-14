@@ -1,17 +1,16 @@
 package com.xiaohuashifu.recruit.registration.api.request;
 
-import com.xiaohuashifu.recruit.common.constant.GradeEnum;
-import com.xiaohuashifu.recruit.common.validator.annotation.DateTime;
 import com.xiaohuashifu.recruit.registration.api.constant.RecruitmentConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Set;
 
 /**
  * 描述：创建招新的参数对象
@@ -33,76 +32,38 @@ public class CreateRecruitmentRequest implements Serializable {
     private Long organizationId;
 
     /**
-     * 招新的职位名
+     * 招新名
      */
     @NotBlank
-    @Size(max = RecruitmentConstants.MAX_POSITION_NAME_LENGTH)
-    private String positionName;
+    @Size(max = RecruitmentConstants.MAX_RECRUITMENT_NAME_LENGTH)
+    private String recruitmentName;
+
+    /**
+     * 职位名
+     */
+    @NotBlank
+    @Size(max = RecruitmentConstants.MAX_POSITION_LENGTH)
+    private String position;
 
     /**
      * 招新人数
      */
     @NotBlank
-    @Size(max = RecruitmentConstants.MAX_RECRUITMENT_NUMBERS_LENGTH)
-    private String recruitmentNumbers;
+    @Size(max = RecruitmentConstants.MAX_NUMBER_OF_RECRUITMENTS_LENGTH)
+    private String numberOfRecruitments;
 
     /**
-     * 职位职责
+     * 职责
      */
     @NotBlank
-    @Size(max = RecruitmentConstants.MAX_POSITION_DUTY_LENGTH)
-    private String positionDuty;
+    @Size(max = RecruitmentConstants.MAX_DUTY_LENGTH)
+    private String duty;
 
     /**
-     * 职位要求
+     * 要求
      */
     @NotBlank
-    @Size(max = RecruitmentConstants.MAX_POSITION_REQUIREMENT_LENGTH)
-    private String positionRequirement;
-
-    /**
-     * 招新年级，空表示不限
-     */
-    @NotNull
-    private Set<GradeEnum> recruitmentGrades;
-
-    /**
-     * 招新部门编号列表，空表示不限
-     */
-    @NotNull
-    private Set<Long> recruitmentDepartmentIds;
-
-    /**
-     * 招新学院列表，空表示不限
-     */
-    @NotNull
-    @Size(max = RecruitmentConstants.MAX_RECRUITMENT_COLLEGE_NUMBERS)
-    private Set<Long> recruitmentCollegeIds;
-
-    /**
-     * 招新专业列表，空表示不限
-     */
-    @NotNull
-    @Size(max = RecruitmentConstants.MAX_RECRUITMENT_MAJOR_NUMBERS)
-    private Set<Long> recruitmentMajorIds;
-
-    /**
-     * 招新发布时间，空表示立刻发布，必须大于等于当前时间
-     */
-    @FutureOrPresent
-    @DateTime
-    private LocalDateTime releaseTime;
-
-    /**
-     * 报名开始时间，空表示立刻报名，必须大于等于发布时间
-     */
-    @DateTime
-    private LocalDateTime registrationTimeFrom;
-
-    /**
-     * 报名结束时间，空表示报名时间无限长（其实是9999-12-31 23:59:59），必须大于报名开始时间
-     */
-    @DateTime
-    private LocalDateTime registrationTimeTo;
+    @Size(max = RecruitmentConstants.MAX_REQUIREMENT_LENGTH)
+    private String requirement;
 
 }

@@ -9,32 +9,28 @@ package com.xiaohuashifu.recruit.registration.api.constant;
 public class RecruitmentConstants {
 
     /**
-     * 职位名最大长度
+     * 职位最大长度
      */
-    public static final int MAX_POSITION_NAME_LENGTH = 10;
+    public static final int MAX_POSITION_LENGTH = 10;
 
     /**
      * 招新人数最大长度
      */
-    public static final int MAX_RECRUITMENT_NUMBERS_LENGTH = 8;
-
-    /**
-     * 招新学院最大个数
-     */
-    public static final int MAX_RECRUITMENT_COLLEGE_NUMBERS = 5;
-
-    /**
-     * 招新专业最大个数
-     */
-    public static final int MAX_RECRUITMENT_MAJOR_NUMBERS = 10;
+    public static final int MAX_NUMBER_OF_RECRUITMENTS_LENGTH = 5;
 
     /**
      * 职位职责最大长度
      */
-    public static final int MAX_POSITION_DUTY_LENGTH = 400;
+    public static final int MAX_DUTY_LENGTH = 400;
 
     /**
      * 职位要求最大长度
      */
-    public static final int MAX_POSITION_REQUIREMENT_LENGTH = 400;
+    public static final int MAX_REQUIREMENT_LENGTH = 400;
+
+    /**
+     * 招新名最大长度
+     */
+    public static final int MAX_RECRUITMENT_NAME_LENGTH = 10;
+
 }

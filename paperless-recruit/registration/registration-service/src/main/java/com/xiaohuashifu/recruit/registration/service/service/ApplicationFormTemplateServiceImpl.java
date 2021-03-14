@@ -72,9 +72,6 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
             throw new DuplicateServiceException( "The applicationFormTemplate already exist.");
         }
 
-        // 判断招新状态
-        recruitmentService.checkRecruitmentStatus(request.getRecruitmentId(), RecruitmentStatusEnum.ENDED);
-
         // 添加报名表模板
         ApplicationFormTemplateDO applicationFormTemplateDOForInsert =
                 applicationFormTemplateAssembler.createApplicationFormTemplateRequestToApplicationFormTemplateDO(request);
@@ -111,7 +108,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
         checkApplicationFormTemplateFieldsCount(request);
 
         // 检查报名表模板的状态是否适合更新
-        checkApplicationFormTemplateStatusForUpdate(request.getId(), RecruitmentStatusEnum.STARTED);
+        checkApplicationFormTemplateStatusForUpdate(request.getId());
 
         // 更新报名表模板
         ApplicationFormTemplateDO applicationFormTemplateDOForUpdate =
@@ -124,7 +121,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
     @DistributedLock(value = APPLICATION_FORM_TEMPLATE_LOCK_KEY_PATTERN, parameters = "#{#id}")
     public ApplicationFormTemplateDTO updatePrompt(Long id, String prompt) {
         // 检查报名表模板的状态是否适合更新
-        checkApplicationFormTemplateStatusForUpdate(id, RecruitmentStatusEnum.ENDED);
+        checkApplicationFormTemplateStatusForUpdate(id);
 
         // 更新报名提示
         ApplicationFormTemplateDO applicationFormTemplateDOForUpdate = ApplicationFormTemplateDO.builder().id(id)
@@ -137,7 +134,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
     @DistributedLock(value = APPLICATION_FORM_TEMPLATE_LOCK_KEY_PATTERN, parameters = "#{#id}")
     public ApplicationFormTemplateDTO deactivateApplicationFormTemplate(Long id) {
         // 检查报名表模板的状态是否适合更新
-        checkApplicationFormTemplateStatusForUpdate(id, RecruitmentStatusEnum.ENDED);
+        checkApplicationFormTemplateStatusForUpdate(id);
 
         // 停用报名表模板
         ApplicationFormTemplateDO applicationFormTemplateDOForUpdate = ApplicationFormTemplateDO.builder().id(id)
@@ -150,7 +147,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
     @DistributedLock(value = APPLICATION_FORM_TEMPLATE_LOCK_KEY_PATTERN, parameters = "#{#id}")
     public ApplicationFormTemplateDTO enableApplicationFormTemplate(Long id) {
         // 检查报名表模板的状态是否适合更新
-        checkApplicationFormTemplateStatusForUpdate(id, RecruitmentStatusEnum.ENDED);
+        checkApplicationFormTemplateStatusForUpdate(id);
 
         // 启用报名表模板
         ApplicationFormTemplateDO applicationFormTemplateDOForUpdate = ApplicationFormTemplateDO.builder().id(id)
@@ -162,8 +159,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
     @Override
     public ApplicationFormTemplateDTO canRegistration(Long recruitmentId) {
         // 检查招新状态
-        RecruitmentDTO recruitmentDTO =
-                recruitmentService.checkRecruitmentStatus(recruitmentId, RecruitmentStatusEnum.ENDED);
+        RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(recruitmentId);
 
         // 判断当前状态是否为 STARTED
         if (!Objects.equals(recruitmentDTO.getRecruitmentStatus(), RecruitmentStatusEnum.STARTED.name())) {
@@ -186,19 +182,13 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
      * 检查报名表模板的状态，为了更新
      *
      * @param id 报名表模板编号
-     * @param followRecruitmentStatus 招新的后续状态，必须在这个状态之前
      * @return 检查结果
      */
-    private ApplicationFormTemplateDTO checkApplicationFormTemplateStatusForUpdate(
-            Long id, RecruitmentStatusEnum followRecruitmentStatus) {
+    private ApplicationFormTemplateDTO checkApplicationFormTemplateStatusForUpdate(Long id) {
         // 判断报名表模板是否存在
-        ApplicationFormTemplateDTO applicationFormTemplateDTO = getApplicationFormTemplate(id);
-
-        // 判断招新状态
-        recruitmentService.checkRecruitmentStatus(applicationFormTemplateDTO.getRecruitmentId(), followRecruitmentStatus);
 
         // 通过检查
-        return applicationFormTemplateDTO;
+        return getApplicationFormTemplate(id);
     }
 
     /**

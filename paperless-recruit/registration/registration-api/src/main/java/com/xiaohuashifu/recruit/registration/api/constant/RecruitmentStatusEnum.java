@@ -9,29 +9,14 @@ package com.xiaohuashifu.recruit.registration.api.constant;
 public enum RecruitmentStatusEnum {
 
     /**
-     * 等待发布
-     */
-    WAITING_FOR_RELEASE(0, "等待发布"),
-
-    /**
-     * 等待开始
-     */
-    WAITING_START(1, "等待开始"),
-
-    /**
      * 已开始
      */
-    STARTED(2, "已开始"),
+    STARTED(0, "已开始"),
 
     /**
      * 已结束
      */
-    ENDED(3, "已结束"),
-
-    /**
-     * 被关闭
-     */
-    CLOSED(4, "被关闭");
+    ENDED(1, "已结束");
 
     private final int code;
     private final String name;

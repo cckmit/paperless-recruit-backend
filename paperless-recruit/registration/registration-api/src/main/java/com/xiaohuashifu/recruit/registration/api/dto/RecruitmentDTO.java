@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Set;
 
 /**
  * 描述：招新数据传输对象
@@ -32,60 +30,29 @@ public class RecruitmentDTO implements Serializable {
     private Long organizationId;
 
     /**
-     * 招新部门编号列表
+     * 招新名
      */
-    private Set<Long> recruitmentDepartmentIds;
+    private String recruitmentName;
 
     /**
      * 职位名
      */
-    private String positionName;
+    private String position;
 
     /**
      * 招新人数
      */
-    private String recruitmentNumbers;
+    private String numberOfRecruitments;
 
     /**
-     * 职位职责
+     * 职责
      */
-    private String positionDuty;
+    private String duty;
 
     /**
-     * 职位要求
+     * 要求
      */
-    private String positionRequirement;
-
-    /**
-     * @see com.xiaohuashifu.recruit.common.constant.GradeEnum
-     * 招新年级
-     */
-    private Set<String> recruitmentGrades;
-
-    /**
-     * 招新学院编号列表
-     */
-    private Set<Long> recruitmentCollegeIds;
-
-    /**
-     * 招新专业编号列表
-     */
-    private Set<Long> recruitmentMajorIds;
-
-    /**
-     * 发布时间
-     */
-    private LocalDateTime releaseTime;
-
-    /**
-     * 报名开始时间
-     */
-    private LocalDateTime registrationTimeFrom;
-
-    /**
-     * 报名结束时间
-     */
-    private LocalDateTime registrationTimeTo;
+    private String requirement;
 
     /**
      * @see com.xiaohuashifu.recruit.registration.api.constant.RecruitmentStatusEnum
@@ -94,7 +61,8 @@ public class RecruitmentDTO implements Serializable {
     private String recruitmentStatus;
 
     /**
-     * 招新是否可用
+     * 报名表数量
      */
-    private Boolean available;
+    private Integer numberOfApplicationForms;
+
 }

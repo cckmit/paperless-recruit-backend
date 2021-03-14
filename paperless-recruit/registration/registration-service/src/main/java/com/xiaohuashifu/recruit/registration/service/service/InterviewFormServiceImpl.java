@@ -197,9 +197,9 @@ public class InterviewFormServiceImpl implements InterviewFormService {
         OrganizationDTO organizationDTO = organizationService.getOrganization(recruitmentDTO.getOrganizationId());
 
         String notificationTitle = interviewDTO.getTitle() + "通知";
-        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+        String organizationName = organizationDTO.getOrganizationName();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("message", "【" + abbreviationOrganizationName + "】邀请您参加面试：" + interviewDTO.getTitle()
+        jsonObject.put("message", "【" + organizationName + "】邀请您参加面试：" + interviewDTO.getTitle()
                 + "。请注意好面试要求，准时参加面试。");
         jsonObject.put("interviewId", interviewDTO.getId());
         jsonObject.put("interviewFormId", interviewFormId);
@@ -228,9 +228,9 @@ public class InterviewFormServiceImpl implements InterviewFormService {
         OrganizationDTO organizationDTO = organizationService.getOrganization(recruitmentDTO.getOrganizationId());
 
         String notificationTitle = interviewDTO.getTitle();
-        String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
+        String organizationName = organizationDTO.getOrganizationName();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("message", "【" + abbreviationOrganizationName + "】更新了面试【" + notificationTitle
+        jsonObject.put("message", "【" + organizationName + "】更新了面试【" + notificationTitle
                 + "】的信息。请查看最新的面试要求，以免错过面试。");
         jsonObject.put("interviewId", interviewId);
         jsonObject.put("interviewFormId", interviewFormDTO.getId());
@@ -262,18 +262,18 @@ public class InterviewFormServiceImpl implements InterviewFormService {
         InterviewStatusEnum interviewStatus = InterviewStatusEnum.valueOf(interviewFormDTO.getInterviewStatus());
         if (interviewStatus == InterviewStatusEnum.PENDING) {
             notificationTitle = "【面试结果】【" + interviewDTO.getTitle() + "】待定";
-            String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
-            jsonObject.put("message", "【" + abbreviationOrganizationName + "】您参加的【" + interviewDTO.getTitle()
+            String organizationName = organizationDTO.getOrganizationName();
+            jsonObject.put("message", "【" + organizationName + "】您参加的【" + interviewDTO.getTitle()
                     + "】目前处于待定状态。");
         } else if (interviewStatus == InterviewStatusEnum.NOT_PASS) {
             notificationTitle = "【面试结果】【" + interviewDTO.getTitle() + "】未通过";
-            String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
-            jsonObject.put("message", "【" + abbreviationOrganizationName + "】很遗憾您未通过【" + interviewDTO.getTitle()
+            String organizationName = organizationDTO.getOrganizationName();
+            jsonObject.put("message", "【" + organizationName + "】很遗憾您未通过【" + interviewDTO.getTitle()
                     + "】。");
         } else {
             notificationTitle = "【面试结果】【" + interviewDTO.getTitle() + "】通过";
-            String abbreviationOrganizationName = organizationDTO.getAbbreviationOrganizationName();
-            jsonObject.put("message", "【" + abbreviationOrganizationName + "】恭喜您通过了【" + interviewDTO.getTitle()
+            String organizationName = organizationDTO.getOrganizationName();
+            jsonObject.put("message", "【" + organizationName + "】恭喜您通过了【" + interviewDTO.getTitle()
                     + "】。");
         }
 

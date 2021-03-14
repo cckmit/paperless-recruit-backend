@@ -6,7 +6,6 @@ import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.DuplicateServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.MisMatchServiceException;
 import com.xiaohuashifu.recruit.common.exception.unprocessable.UnavailableServiceException;
-import com.xiaohuashifu.recruit.common.exception.unprocessable.UnprocessableServiceException;
 import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.organization.api.service.DepartmentService;
 import com.xiaohuashifu.recruit.oss.api.service.ObjectStorageService;
@@ -204,41 +203,6 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             applicationFormDOBuilder.fullName(request.getFullName());
         }
 
-        // 判断是否需要 college
-        RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(applicationFormTemplateDTO.getRecruitmentId());
-        if (applicationFormTemplateDTO.getCollege()) {
-            // 判断学院状态
-            checkCollegeStatus(request.getCollegeId(), recruitmentDTO.getRecruitmentCollegeIds());
-
-            applicationFormDOBuilder.collegeId(request.getCollegeId());
-        }
-
-        // 判断是否需要 major
-        if (applicationFormTemplateDTO.getMajor()) {
-            // 判断专业状态
-            checkMajorStatus(request.getMajorId(), recruitmentDTO.getRecruitmentMajorIds());
-
-            applicationFormDOBuilder.majorId(request.getMajorId());
-        }
-
-        // 判断是否需要 firstDepartment
-        if (applicationFormTemplateDTO.getFirstDepartment()) {
-            // 检查部门状态
-            checkDepartmentStatus(request.getFirstDepartmentId(), recruitmentDTO.getId(),
-                    recruitmentDTO.getRecruitmentDepartmentIds(), "firstDepartment");
-
-            applicationFormDOBuilder.firstDepartmentId(request.getFirstDepartmentId());
-        }
-
-        // 判断是否需要 secondDepartment
-        if (applicationFormTemplateDTO.getSecondDepartment()) {
-            // 检查部门状态
-            checkDepartmentStatus(request.getSecondDepartmentId(), recruitmentDTO.getId(),
-                    recruitmentDTO.getRecruitmentDepartmentIds(), "secondDepartment");
-
-            applicationFormDOBuilder.secondDepartmentId(request.getSecondDepartmentId());
-        }
-
         // 判断是否需要 avatar，若需要则链接 avatar
         if (applicationFormTemplateDTO.getAvatar()) {
             if (request.getAvatarUrl() == null) {
@@ -294,12 +258,6 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         if (!Objects.equals(recruitmentDTO.getOrganizationId(), departmentDTO.getOrganizationId())) {
             throw new MisMatchServiceException(
                     "The " + firstOrSecondDepartment + " does not belong to this organization.");
-        }
-
-        // 判断部门状态
-        DepartmentDTO departmentDTO1 = departmentService.getDepartment(departmentId);
-        if (departmentDTO1.getDeactivated()) {
-            throw new UnprocessableServiceException("Department already deactivated.");
         }
     }
 

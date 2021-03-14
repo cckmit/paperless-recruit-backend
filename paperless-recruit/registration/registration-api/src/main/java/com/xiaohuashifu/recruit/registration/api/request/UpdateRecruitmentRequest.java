@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -33,31 +32,44 @@ public class UpdateRecruitmentRequest implements Serializable {
     private Long id;
 
     /**
-     * 招新职位名
+     * 招新名
      */
     @NotAllCharactersBlank
-    @Size(max = RecruitmentConstants.MAX_POSITION_NAME_LENGTH)
-    private String positionName;
+    @Size(max = RecruitmentConstants.MAX_RECRUITMENT_NAME_LENGTH)
+    private String recruitmentName;
+
+    /**
+     * 职位名
+     */
+    @NotAllCharactersBlank
+    @Size(max = RecruitmentConstants.MAX_POSITION_LENGTH)
+    private String position;
 
     /**
      * 招新人数
      */
     @NotAllCharactersBlank
-    @Size(max = RecruitmentConstants.MAX_RECRUITMENT_NUMBERS_LENGTH)
-    private String recruitmentNumbers;
+    @Size(max = RecruitmentConstants.MAX_NUMBER_OF_RECRUITMENTS_LENGTH)
+    private String numberOfRecruitments;
 
     /**
-     * 职位职责
+     * 职责
      */
     @NotAllCharactersBlank
-    @Size(max = RecruitmentConstants.MAX_POSITION_DUTY_LENGTH)
-    private String positionDuty;
+    @Size(max = RecruitmentConstants.MAX_DUTY_LENGTH)
+    private String duty;
 
     /**
-     * 职位要求
+     * 要求
      */
     @NotAllCharactersBlank
-    @Size(max = RecruitmentConstants.MAX_POSITION_REQUIREMENT_LENGTH)
-    private String positionRequirement;
+    @Size(max = RecruitmentConstants.MAX_REQUIREMENT_LENGTH)
+    private String requirement;
+
+    /**
+     * 招新状态
+     */
+    @NotAllCharactersBlank
+    private String recruitmentStatus;
 
 }

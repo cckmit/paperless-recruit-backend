@@ -1,14 +1,10 @@
 package com.xiaohuashifu.recruit.facade.service.assembler;
 
-import com.xiaohuashifu.recruit.facade.service.assembler.translator.PathToUrl;
-import com.xiaohuashifu.recruit.facade.service.assembler.translator.UrlTranslator;
-import com.xiaohuashifu.recruit.facade.service.assembler.translator.impl.UrlTranslatorImpl;
-import com.xiaohuashifu.recruit.facade.service.request.CreateDepartmentRequest;
-import com.xiaohuashifu.recruit.facade.service.request.UpdateDepartmentRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
-import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
+import com.xiaohuashifu.recruit.facade.service.request.CreateRecruitmentRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateRecruitmentRequest;
+import com.xiaohuashifu.recruit.facade.service.vo.RecruitmentVO;
+import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 /**
  * 描述：Recruitment 的装配器
@@ -19,12 +15,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface RecruitmentAssembler {
 
-    DepartmentVO departmentDTOToDepartmentVO(DepartmentDTO departmentDTO);
+    RecruitmentVO recruitmentDTOToRecruitmentVO(RecruitmentDTO recruitmentDTO);
 
-    com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest
-    createDepartmentRequestToCreateDepartmentRequest(CreateDepartmentRequest createDepartmentRequest);
+    com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentRequest
+            createRecruitmentRequestToCreateRecruitmentRequest(CreateRecruitmentRequest createRecruitmentRequest);
 
-    com.xiaohuashifu.recruit.organization.api.request.UpdateDepartmentRequest
-    updateDepartmentRequestToUpdateDepartmentRequest(UpdateDepartmentRequest updateDepartmentRequest);
+    com.xiaohuashifu.recruit.registration.api.request.UpdateRecruitmentRequest
+    updateRecruitmentRequestToUpdateRecruitmentRequest(UpdateRecruitmentRequest updateRecruitmentRequest);
 
 }

@@ -1,12 +1,11 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
 import com.xiaohuashifu.recruit.facade.service.assembler.RecruitmentAssembler;
+import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
 import com.xiaohuashifu.recruit.facade.service.manager.RecruitmentManager;
-import com.xiaohuashifu.recruit.facade.service.request.CreateDepartmentRequest;
-import com.xiaohuashifu.recruit.facade.service.request.UpdateDepartmentRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
+import com.xiaohuashifu.recruit.facade.service.request.CreateRecruitmentRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateRecruitmentRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.RecruitmentVO;
-import com.xiaohuashifu.recruit.organization.api.dto.DepartmentDTO;
 import com.xiaohuashifu.recruit.registration.api.dto.RecruitmentDTO;
 import com.xiaohuashifu.recruit.registration.api.query.RecruitmentQuery;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
@@ -30,31 +29,29 @@ public class RecruitmentManagerImpl implements RecruitmentManager {
 
     private final RecruitmentAssembler recruitmentAssembler;
 
+    private final OrganizationManager organizationManager;
+
     @Reference
     private RecruitmentService recruitmentService;
 
-    public RecruitmentManagerImpl(RecruitmentAssembler recruitmentAssembler) {
+    public RecruitmentManagerImpl(RecruitmentAssembler recruitmentAssembler, OrganizationManager organizationManager) {
         this.recruitmentAssembler = recruitmentAssembler;
+        this.organizationManager = organizationManager;
     }
 
     @Override
-    public DepartmentVO createDepartment(Long organizationId, CreateDepartmentRequest request) {
-        com.xiaohuashifu.recruit.organization.api.request.CreateDepartmentRequest createDepartmentRequest =
-                departmentAssembler.createDepartmentRequestToCreateDepartmentRequest(request);
-        createDepartmentRequest.setOrganizationId(organizationId);
-        DepartmentDTO departmentDTO = departmentService.createDepartment(createDepartmentRequest);
-        return departmentAssembler.departmentDTOToDepartmentVO(departmentDTO);
-    }
-
-    @Override
-    public void removeDepartment(Long departmentId) {
-        departmentService.removeDepartment(departmentId);
+    public RecruitmentVO createRecruitment(Long organizationId, CreateRecruitmentRequest request) {
+        com.xiaohuashifu.recruit.registration.api.request.CreateRecruitmentRequest createRecruitmentRequest =
+                recruitmentAssembler.createRecruitmentRequestToCreateRecruitmentRequest(request);
+        createRecruitmentRequest.setOrganizationId(organizationId);
+        RecruitmentDTO recruitmentDTO = recruitmentService.createRecruitment(createRecruitmentRequest);
+        return deepAssembler(recruitmentDTO);
     }
 
 //    @Cacheable(key = "'departments:' + #departmentId")
     @Override
-    public DepartmentVO getDepartment(Long departmentId) {
-        return departmentAssembler.departmentDTOToDepartmentVO(departmentService.getDepartment(departmentId));
+    public RecruitmentVO getRecruitment(Long id) {
+        return deepAssembler(recruitmentService.getRecruitment(id));
     }
 
 //    @Cacheable(key = "'departments:' + #query")
@@ -62,7 +59,7 @@ public class RecruitmentManagerImpl implements RecruitmentManager {
     public List<RecruitmentVO> listRecruitments(RecruitmentQuery query) {
         Collection<RecruitmentDTO> recruitmentDTOS = recruitmentService.listRecruitments(query).getResult();
         return recruitmentDTOS.stream()
-                .map(departmentAssembler::departmentDTOToDepartmentVO)
+                .map(this::deepAssembler)
                 .collect(Collectors.toList());
     }
 
@@ -70,12 +67,24 @@ public class RecruitmentManagerImpl implements RecruitmentManager {
 //            @CacheEvict(key = "'departments:' + #departmentId", beforeInvocation = true)
 //    })
     @Override
-    public DepartmentVO updateDepartment(Long departmentId, UpdateDepartmentRequest request) {
-        com.xiaohuashifu.recruit.organization.api.request.UpdateDepartmentRequest updateDepartmentRequest =
-                departmentAssembler.updateDepartmentRequestToUpdateDepartmentRequest(request);
-        updateDepartmentRequest.setId(departmentId);
-        DepartmentDTO departmentDTO = departmentService.updateDepartment(updateDepartmentRequest);
-        return departmentAssembler.departmentDTOToDepartmentVO(departmentDTO);
+    public RecruitmentVO updateRecruitment(Long recruitmentId, UpdateRecruitmentRequest request) {
+        com.xiaohuashifu.recruit.registration.api.request.UpdateRecruitmentRequest updateRecruitmentRequest =
+                recruitmentAssembler.updateRecruitmentRequestToUpdateRecruitmentRequest(request);
+        updateRecruitmentRequest.setId(recruitmentId);
+        RecruitmentDTO recruitmentDTO = recruitmentService.updateRecruitment(updateRecruitmentRequest);
+        return deepAssembler(recruitmentDTO);
+    }
+
+    /**
+     * 深装配
+     *
+     * @param recruitmentDTO RecruitmentDTO
+     * @return RecruitmentVO
+     */
+    private RecruitmentVO deepAssembler(RecruitmentDTO recruitmentDTO) {
+        RecruitmentVO recruitmentVO = recruitmentAssembler.recruitmentDTOToRecruitmentVO(recruitmentDTO);
+        recruitmentVO.setOrganization(organizationManager.getOrganization(recruitmentDTO.getOrganizationId()));
+        return recruitmentVO;
     }
 
 }

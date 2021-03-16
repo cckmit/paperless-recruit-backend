@@ -18,12 +18,17 @@ public interface DepartmentManager {
     /**
      * 创建部门
      *
-     * @param organizationId 部门编号
+     * @param organizationId 组织编号
      * @param request DepartmentPostRequest
      * @return DepartmentVO
      */
     DepartmentVO createDepartment(Long organizationId, CreateDepartmentRequest request);
 
+    /**
+     * 移除部门
+     *
+     * @param departmentId 部门编号
+     */
     void removeDepartment(Long departmentId);
 
     /**

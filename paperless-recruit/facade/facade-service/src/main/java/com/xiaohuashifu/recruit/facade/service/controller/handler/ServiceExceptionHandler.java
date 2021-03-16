@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author xhsf
  * @create 2021/1/17 01:21
  */
+// TODO: 2021/3/16 某些ServiceException异常无法被这个类捕获
 @Order(Integer.MIN_VALUE)
 @RestControllerAdvice
 @Slf4j

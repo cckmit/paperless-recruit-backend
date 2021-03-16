@@ -1,10 +1,8 @@
 package com.xiaohuashifu.recruit.facade.service.manager;
 
-import com.xiaohuashifu.recruit.facade.service.request.CreateDepartmentRequest;
-import com.xiaohuashifu.recruit.facade.service.request.UpdateDepartmentRequest;
-import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
+import com.xiaohuashifu.recruit.facade.service.request.CreateRecruitmentRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateRecruitmentRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.RecruitmentVO;
-import com.xiaohuashifu.recruit.organization.api.query.DepartmentQuery;
 import com.xiaohuashifu.recruit.registration.api.query.RecruitmentQuery;
 
 import java.util.List;
@@ -18,23 +16,21 @@ import java.util.List;
 public interface RecruitmentManager {
 
     /**
-     * 创建部门
+     * 创建招新
      *
-     * @param organizationId 部门编号
-     * @param request DepartmentPostRequest
-     * @return DepartmentVO
+     * @param organizationId 组织编号
+     * @param request CreateRecruitmentRequest
+     * @return RecruitmentVO
      */
-    DepartmentVO createDepartment(Long organizationId, CreateDepartmentRequest request);
-
-    void removeDepartment(Long departmentId);
+    RecruitmentVO createRecruitment(Long organizationId, CreateRecruitmentRequest request);
 
     /**
-     * 获取部门
+     * 获取招新
      *
-     * @param departmentId 部门编号
-     * @return DepartmentVO
+     * @param id 招新编号
+     * @return RecruitmentVO
      */
-    DepartmentVO getDepartment(Long departmentId);
+    RecruitmentVO getRecruitment(Long id);
 
     /**
      * 列出招新
@@ -45,12 +41,12 @@ public interface RecruitmentManager {
     List<RecruitmentVO> listRecruitments(RecruitmentQuery query);
 
     /**
-     * 更新部门
+     * 更新招新
      *
-     * @param departmentId 部门编号
-     * @param request DepartmentPatchRequest
-     * @return DepartmentVO
+     * @param recruitmentId 招新编号
+     * @param request UpdateRecruitmentRequest
+     * @return RecruitmentVO
      */
-    DepartmentVO updateDepartment(Long departmentId, UpdateDepartmentRequest request);
+    RecruitmentVO updateRecruitment(Long recruitmentId, UpdateRecruitmentRequest request);
 
 }

@@ -1,12 +1,19 @@
 package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.xiaohuashifu.recruit.common.validator.annotation.NotAllFieldsNull;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
+import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
+import com.xiaohuashifu.recruit.facade.service.authorize.RecruitmentContext;
 import com.xiaohuashifu.recruit.facade.service.manager.RecruitmentManager;
-import com.xiaohuashifu.recruit.facade.service.vo.DepartmentVO;
+import com.xiaohuashifu.recruit.facade.service.request.CreateRecruitmentRequest;
+import com.xiaohuashifu.recruit.facade.service.request.UpdateRecruitmentRequest;
+import com.xiaohuashifu.recruit.facade.service.vo.RecruitmentVO;
 import com.xiaohuashifu.recruit.registration.api.query.RecruitmentQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,39 +40,32 @@ public class RecruitmentController {
         this.organizationContext = organizationContext;
     }
 
-//    @ApiOperation(value = "创建部门", notes = "Role: organization")
-//    @PostMapping("/departments")
-//    @PreAuthorize("hasRole('organization')")
-//    public DepartmentVO createDepartment(@RequestBody CreateDepartmentRequest request) {
-//        return departmentManager.createDepartment(organizationContext.getOrganizationId(), request);
-//    }
-//
-//    @ApiOperation(value = "删除部门", notes = "Role: organization")
-//    @DeleteMapping("/departments/{departmentId}")
-//    @Owner(id = "#departmentId", context = DepartmentContext.class)
-//    public void removeDepartment(@ApiParam("部门编号") @PathVariable Long departmentId) {
-//        departmentManager.removeDepartment(departmentId);
-//    }
-//
-//    @ApiOperation(value = "获取部门")
-//    @GetMapping("/departments/{departmentId}")
-//    public DepartmentVO getDepartment(@ApiParam("部门编号") @PathVariable Long departmentId) {
-//        return departmentManager.getDepartment(departmentId);
-//    }
+    @ApiOperation(value = "创建招新", notes = "Role: organization")
+    @PostMapping("/recruitments")
+    @PreAuthorize("hasRole('organization')")
+    public RecruitmentVO createRecruitment(@RequestBody CreateRecruitmentRequest request) {
+        return recruitmentManager.createRecruitment(organizationContext.getOrganizationId(), request);
+    }
+
+    @ApiOperation(value = "获取招新")
+    @GetMapping("/recruitments/{recruitmentId}")
+    public RecruitmentVO getRecruitment(@ApiParam("招新编号") @PathVariable Long recruitmentId) {
+        return recruitmentManager.getRecruitment(recruitmentId);
+    }
 
     @ApiOperation(value = "列出招新")
     @GetMapping("/recruitments")
-    public List<DepartmentVO> listRecruitments(RecruitmentQuery query) {
+    public List<RecruitmentVO> listRecruitments(RecruitmentQuery query) {
         return recruitmentManager.listRecruitments(query);
     }
 
-//    @ApiOperation(value = "更新部门", notes = "Role: organization")
-//    @PutMapping("/departments/{departmentId}")
-//    @PreAuthorize("hasRole('organization')")
-//    @Owner(id = "#departmentId", context = DepartmentContext.class)
-//    public DepartmentVO updateDepartment(@ApiParam("部门编号") @PathVariable Long departmentId,
-//                            @RequestBody @NotAllFieldsNull UpdateDepartmentRequest request) {
-//        return departmentManager.updateDepartment(departmentId, request);
-//    }
+    @ApiOperation(value = "更新招新", notes = "Role: organization")
+    @PutMapping("/recruitments/{recruitmentId}")
+    @PreAuthorize("hasRole('organization')")
+    @Owner(id = "#recruitmentId", context = RecruitmentContext.class)
+    public RecruitmentVO updateDepartment(@ApiParam("招新编号") @PathVariable Long recruitmentId,
+                                          @RequestBody @NotAllFieldsNull UpdateRecruitmentRequest request) {
+        return recruitmentManager.updateRecruitment(recruitmentId, request);
+    }
 
 }

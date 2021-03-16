@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 
 /**
  * 描述：方法参数校验异常处理
@@ -40,5 +41,10 @@ public class MethodArgumentValidationExceptionHandler {
         return new ErrorResponse(ErrorCodeEnum.UNPROCESSABLE_ENTITY.getCode(), constraintViolation.getMessage());
     }
 
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponse handleValidationException(ValidationException e) {
+        return new ErrorResponse(ErrorCodeEnum.UNPROCESSABLE_ENTITY.getCode(), e.getMessage());
+    }
 
 }

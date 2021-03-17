@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.common.validator.annotation.NotAllFieldsNull;
 import com.xiaohuashifu.recruit.facade.service.authorize.OrganizationContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
@@ -16,8 +17,6 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 描述：招新控制器
@@ -55,7 +54,7 @@ public class RecruitmentController {
 
     @ApiOperation(value = "列出招新")
     @GetMapping("/recruitments")
-    public List<RecruitmentVO> listRecruitments(RecruitmentQuery query) {
+    public QueryResult<RecruitmentVO> listRecruitments(RecruitmentQuery query) {
         return recruitmentManager.listRecruitments(query);
     }
 

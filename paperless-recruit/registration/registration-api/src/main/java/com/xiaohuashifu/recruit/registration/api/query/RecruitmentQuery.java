@@ -54,4 +54,24 @@ public class RecruitmentQuery implements Serializable {
      */
     private String recruitmentStatus;
 
+    /**
+     * 根据招新状态排序
+     */
+    private Boolean orderByRecruitmentStatus;
+
+    /**
+     * 根据招新状态排序，降序
+     */
+    private Boolean orderByRecruitmentStatusDesc;
+
+    /**
+     * 根据更新时间排序
+     */
+    private Boolean orderByUpdateTime;
+
+    /**
+     * 根据更新时间排序，降序
+     */
+    private Boolean orderByUpdateTimeDesc;
+
 }

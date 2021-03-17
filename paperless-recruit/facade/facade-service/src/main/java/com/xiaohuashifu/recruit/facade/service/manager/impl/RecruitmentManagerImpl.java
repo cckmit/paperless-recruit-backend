@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.manager.impl;
 
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.facade.service.assembler.RecruitmentAssembler;
 import com.xiaohuashifu.recruit.facade.service.manager.OrganizationManager;
 import com.xiaohuashifu.recruit.facade.service.manager.RecruitmentManager;
@@ -56,11 +57,12 @@ public class RecruitmentManagerImpl implements RecruitmentManager {
 
 //    @Cacheable(key = "'departments:' + #query")
     @Override
-    public List<RecruitmentVO> listRecruitments(RecruitmentQuery query) {
-        Collection<RecruitmentDTO> recruitmentDTOS = recruitmentService.listRecruitments(query).getResult();
-        return recruitmentDTOS.stream()
+    public QueryResult<RecruitmentVO> listRecruitments(RecruitmentQuery query) {
+        QueryResult<RecruitmentDTO> result = recruitmentService.listRecruitments(query);
+        List<RecruitmentVO> recruitmentVOS = result.getResult().stream()
                 .map(this::deepAssembler)
                 .collect(Collectors.toList());
+        return new QueryResult<>(result.getTotal(), recruitmentVOS);
     }
 
 //    @Caching(evict = {

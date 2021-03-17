@@ -32,6 +32,8 @@ public class RecruitmentDO {
     private String requirement;
     private String recruitmentStatus;
     private Integer numberOfApplicationForms;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

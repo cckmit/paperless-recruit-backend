@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.facade.service.manager;
 
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.facade.service.request.CreateRecruitmentRequest;
 import com.xiaohuashifu.recruit.facade.service.request.UpdateRecruitmentRequest;
 import com.xiaohuashifu.recruit.facade.service.vo.RecruitmentVO;
@@ -36,9 +37,9 @@ public interface RecruitmentManager {
      * 列出招新
      *
      * @param query RecruitmentQuery
-     * @return List<RecruitmentVO>
+     * @return QueryResult<RecruitmentVO>
      */
-    List<RecruitmentVO> listRecruitments(RecruitmentQuery query);
+    QueryResult<RecruitmentVO> listRecruitments(RecruitmentQuery query);
 
     /**
      * 更新招新

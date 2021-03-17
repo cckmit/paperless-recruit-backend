@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * 描述：招新
  *
@@ -74,5 +76,17 @@ public class RecruitmentVO {
      */
     @ApiModelProperty(value = "报名表数量", example = "12")
     private Integer numberOfApplicationForms;
+
+    /**
+     * 招新开始时间
+     */
+    @ApiModelProperty(value = "招新开始时间", example = "2021-03-17 23:35:00")
+    private LocalDateTime startTime;
+
+    /**
+     * 招新结束时间
+     */
+    @ApiModelProperty(value = "招新结束时间", example = "2021-03-17 23:35:00")
+    private LocalDateTime endTime;
 
 }

@@ -17,9 +17,11 @@ import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.assembler.RecruitmentAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.RecruitmentMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.RecruitmentDO;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -89,7 +91,11 @@ public class RecruitmentServiceImpl implements RecruitmentService {
                 .eq(query.getRecruitmentStatus() != null,
                         RecruitmentDO::getRecruitmentStatus, query.getRecruitmentStatus())
                 .likeRight(query.getRecruitmentName() != null,
-                        RecruitmentDO::getRecruitmentName, query.getRecruitmentName());
+                        RecruitmentDO::getRecruitmentName, query.getRecruitmentName())
+                .orderByAsc(BooleanUtils.isTrue(query.getOrderByRecruitmentStatus()), RecruitmentDO::getRecruitmentStatus)
+                .orderByDesc(BooleanUtils.isTrue(query.getOrderByRecruitmentStatusDesc()), RecruitmentDO::getRecruitmentStatus)
+                .orderByAsc(BooleanUtils.isTrue(query.getOrderByUpdateTime()), RecruitmentDO::getUpdateTime)
+                .orderByDesc(BooleanUtils.isTrue(query.getOrderByUpdateTimeDesc()), RecruitmentDO::getUpdateTime);
 
         Page<RecruitmentDO> page = new Page<>(query.getPageNum(), query.getPageSize(), true);
         recruitmentMapper.selectPage(page, wrapper);
@@ -100,15 +106,24 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
     @Override
     public RecruitmentDTO updateRecruitment(UpdateRecruitmentRequest request) {
+        // 预处理请求
         ObjectUtils.trimAllStringFields(request);
-        // 招新状态是否正确
-        if (request.getRecruitmentStatus() != null
-                && !RECRUITMENT_STATUS_SET.contains(request.getRecruitmentStatus())) {
-            throw new InvalidStatusServiceException("招新状态不正确，正确的招新状态必须是：" + RECRUITMENT_STATUS_SET + "之一");
+        RecruitmentDO recruitmentDOForUpdate = recruitmentAssembler.updateRecruitmentRequestToRecruitmentDO(request);
+
+        // 招新状态检查
+        if (request.getRecruitmentStatus() != null) {
+            // 招新状态是否正确
+            if (!RECRUITMENT_STATUS_SET.contains(request.getRecruitmentStatus())) {
+                throw new InvalidStatusServiceException("招新状态不正确，正确的招新状态必须是：" + RECRUITMENT_STATUS_SET + "之一");
+            }
+
+            // 若是 ENDED 则添加结束时间
+            if (RecruitmentStatusEnum.ENDED.name().equals(request.getRecruitmentStatus())) {
+                recruitmentDOForUpdate.setEndTime(LocalDateTime.now());
+            }
         }
 
         // 更新招新
-        RecruitmentDO recruitmentDOForUpdate = recruitmentAssembler.updateRecruitmentRequestToRecruitmentDO(request);
         recruitmentMapper.updateById(recruitmentDOForUpdate);
         return getRecruitment(request.getId());
     }

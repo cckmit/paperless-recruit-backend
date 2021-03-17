@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 描述：招新数据传输对象
@@ -64,5 +65,15 @@ public class RecruitmentDTO implements Serializable {
      * 报名表数量
      */
     private Integer numberOfApplicationForms;
+
+    /**
+     * 招新开始时间
+     */
+    private LocalDateTime startTime;
+
+    /**
+     * 招新结束时间
+     */
+    private LocalDateTime endTime;
 
 }

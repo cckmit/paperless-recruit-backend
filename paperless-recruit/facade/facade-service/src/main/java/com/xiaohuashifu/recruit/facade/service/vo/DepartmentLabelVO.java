@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 描述：部门标签
  *
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentLabelVO {
+public class DepartmentLabelVO implements Serializable {
     @ApiModelProperty(value = "部门标签编号", example = "123")
     private Long id;
 

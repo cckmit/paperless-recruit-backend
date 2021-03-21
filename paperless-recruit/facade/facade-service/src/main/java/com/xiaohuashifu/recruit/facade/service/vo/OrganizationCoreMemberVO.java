@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 描述：组织核心成员
  *
@@ -18,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrganizationCoreMemberVO {
+public class OrganizationCoreMemberVO implements Serializable {
 
     @ApiModelProperty(value = "核心成员编号", example = "123")
     private Long id;

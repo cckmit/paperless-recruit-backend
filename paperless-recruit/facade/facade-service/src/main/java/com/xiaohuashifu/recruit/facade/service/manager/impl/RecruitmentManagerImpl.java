@@ -12,6 +12,7 @@ import com.xiaohuashifu.recruit.registration.api.query.RecruitmentQuery;
 import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -49,13 +50,13 @@ public class RecruitmentManagerImpl implements RecruitmentManager {
         return deepAssembler(recruitmentDTO);
     }
 
-//    @Cacheable(key = "'departments:' + #departmentId")
+    @Cacheable(key = "'recruitments:' + #id")
     @Override
     public RecruitmentVO getRecruitment(Long id) {
         return deepAssembler(recruitmentService.getRecruitment(id));
     }
 
-//    @Cacheable(key = "'departments:' + #query")
+    @Cacheable(key = "'recruitments:' + #query")
     @Override
     public QueryResult<RecruitmentVO> listRecruitments(RecruitmentQuery query) {
         QueryResult<RecruitmentDTO> result = recruitmentService.listRecruitments(query);

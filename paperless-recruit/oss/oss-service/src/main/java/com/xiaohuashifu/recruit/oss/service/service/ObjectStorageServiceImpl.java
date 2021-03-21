@@ -43,12 +43,12 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     /**
      * 定时清理未连接对象任务初始延迟
      */
-    private static final long CLEAR_UNLINKED_OBJECTS_INITIAL_DELAY = 5000;
+    private static final long CLEAR_UNLINKED_OBJECTS_INITIAL_DELAY = 1000 * 60 * 60 * 24;
 
     /**
      * 定时清理未连接对象任务固定延迟
      */
-    private static final long CLEAR_UNLINKED_OBJECTS_FIXED_DELAY = 5000;
+    private static final long CLEAR_UNLINKED_OBJECTS_FIXED_DELAY = 1000 * 60 * 60 * 24;
 
     /**
      * 定时清理未连接对象任务每次清除数量

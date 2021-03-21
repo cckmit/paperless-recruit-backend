@@ -2,7 +2,9 @@ package com.xiaohuashifu.recruit.registration.api.service;
 
 import com.xiaohuashifu.recruit.common.exception.NotFoundServiceException;
 import com.xiaohuashifu.recruit.common.exception.ServiceException;
+import com.xiaohuashifu.recruit.common.query.QueryResult;
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
+import com.xiaohuashifu.recruit.registration.api.query.ApplicationFormQuery;
 import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormRequest;
 import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormRequest;
 
@@ -37,6 +39,14 @@ public interface ApplicationFormService {
      * @return 报名表
      */
     ApplicationFormDTO getApplicationForm(@NotNull @Positive Long id) throws NotFoundServiceException;
+
+    /**
+     * 查询报名表
+     *
+     * @param query ApplicationFormQuery
+     * @return 可能返回空列表
+     */
+    QueryResult<ApplicationFormDTO> listApplicationForms(ApplicationFormQuery query);
 
     /**
      * 更新报名表

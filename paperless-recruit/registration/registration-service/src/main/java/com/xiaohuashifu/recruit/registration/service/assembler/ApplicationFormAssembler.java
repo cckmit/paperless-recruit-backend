@@ -1,6 +1,8 @@
 package com.xiaohuashifu.recruit.registration.service.assembler;
 
 import com.xiaohuashifu.recruit.registration.api.dto.ApplicationFormDTO;
+import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormRequest;
+import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormRequest;
 import com.xiaohuashifu.recruit.registration.service.do0.ApplicationFormDO;
 import org.mapstruct.Mapper;
 
@@ -15,5 +17,11 @@ public interface ApplicationFormAssembler {
 
     ApplicationFormDTO applicationFormDOToApplicationFormDTO(
             ApplicationFormDO applicationFormDO);
+
+    ApplicationFormDO createApplicationFormRequestToApplicationFormDO(
+            CreateApplicationFormRequest createApplicationFormRequest);
+
+    ApplicationFormDO updateApplicationFormRequestToApplicationFormDO(
+            UpdateApplicationFormRequest updateApplicationFormRequest);
 
 }

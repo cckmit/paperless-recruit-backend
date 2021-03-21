@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -49,18 +48,6 @@ public class ApplicationFormRequest implements Serializable {
     protected String phone;
 
     /**
-     * 第一部门编号
-     */
-    @Positive
-    protected Long firstDepartmentId;
-
-    /**
-     * 第二部门编号
-     */
-    @Positive
-    protected Long secondDepartmentId;
-
-    /**
      * 邮箱
      */
     @NotAllCharactersBlank
@@ -87,16 +74,18 @@ public class ApplicationFormRequest implements Serializable {
     protected String studentNumber;
 
     /**
-     * 学院编号
+     * 学院
      */
-    @Positive
-    protected Long collegeId;
+    @NotAllCharactersBlank
+    @Size(max = ApplicationFormConstants.MAX_COLLEGE_LENGTH)
+    protected String college;
 
     /**
-     * 专业编号
+     * 专业
      */
-    @Positive
-    protected Long majorId;
+    @NotAllCharactersBlank
+    @Size(max = ApplicationFormConstants.MAX_MAJOR_LENGTH)
+    protected String major;
 
     /**
      * 备注

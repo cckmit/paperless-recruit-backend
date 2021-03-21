@@ -1,5 +1,6 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
+import com.xiaohuashifu.recruit.registration.api.query.ApplicationFormQuery;
 import com.xiaohuashifu.recruit.registration.api.request.*;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -33,36 +34,22 @@ public class ApplicationFormServiceImplTest {
 
     @Test
     public void createApplicationForm() {
-//        userId
-//                recruitmentId
-//        avatar
-//                fullName
-//        phone
-//                firstDepartmentId
-//        secondDepartmentId
-//                email
-//        introduction
-//                attachment
-//        studentNumber
-//                collegeId
-//        majorId
-//                note
         System.out.println(applicationFormService.createApplicationForm(
                 CreateApplicationFormRequest.builder()
-                        .userId(21L)
-        .recruitmentId(22L)
-        .avatarUrl("")
-        .fullName("吴嘉贤")
+                        .userId(1L)
+        .recruitmentId(26L)
+        .avatarUrl("application-forms/avatars/f31183136ff94442840568817ab919d6u=336497710,1373556175&fm=26&gp=0.jpg")
+        .fullName("刘洗洗")
         .phone("13333333333")
-        .firstDepartmentId(2L)
-                        .secondDepartmentId(4L)
                         .email("827032783@qq.com")
-                        .introduction("我是吴嘉贤")
-        .attachmentUrl("")
+                        .introduction("我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗" +
+                                "我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我是刘洗洗我" +
+                                "是刘洗洗我是刘洗洗")
                         .studentNumber("201734020124")
-                        .collegeId(1L)
-                        .majorId(3L)
-                        .note("请选我")
+                        .college("数信")
+                        .major("软工")
+                        .note("请选我请选我请选我请选我请选我请选我请选我请选我请选我请选我请选" +
+                                "我请选我请选我请选我请选我请选我请选我请选我请选我请选我请选我请选我请选")
         .build()));
     }
 
@@ -72,8 +59,19 @@ public class ApplicationFormServiceImplTest {
     }
 
     @Test
+    public void listApplicationForms() {
+        System.out.println(applicationFormService.listApplicationForms(ApplicationFormQuery.builder()
+                .pageNum(1L)
+                .pageSize(50L)
+                .recruitmentId(26L)
+                .orderByApplicationTimeDesc(true)
+                .build()));
+    }
+
+    @Test
     public void updateApplicationForm() throws IOException {
 //        System.out.println(applicationFormService.updateApplicationForm(1L, ""));
     }
+
 
 }

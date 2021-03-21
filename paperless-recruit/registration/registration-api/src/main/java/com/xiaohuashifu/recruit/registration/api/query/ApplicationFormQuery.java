@@ -38,4 +38,29 @@ public class ApplicationFormQuery implements Serializable {
     @Max(value = QueryConstants.MAX_PAGE_SIZE)
     private Long pageSize;
 
+    /**
+     * 招新编号
+     */
+    private Long recruitmentId;
+
+    /**
+     * 学院，右模糊
+     */
+    private String college;
+
+    /**
+     * 专业，右模糊
+     */
+    private String major;
+
+    /**
+     * 按报名时间排序
+     */
+    private Boolean orderByApplicationTime;
+
+    /**
+     * 按报名时间排序，降序
+     */
+    private Boolean orderByApplicationTimeDesc;
+
 }

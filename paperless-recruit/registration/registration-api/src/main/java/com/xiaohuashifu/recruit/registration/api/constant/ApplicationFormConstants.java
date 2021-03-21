@@ -9,21 +9,6 @@ package com.xiaohuashifu.recruit.registration.api.constant;
 public class ApplicationFormConstants {
 
     /**
-     * 头像最大长度，10MB
-     */
-    public static final int MAX_AVATAR_LENGTH = 10485760;
-
-    /**
-     * 附件最大长度，10MB
-     */
-    public static final int MAX_ATTACHMENT_LENGTH = 10485760;
-
-    /**
-     * 附件名最大长度
-     */
-    public static final int MAX_ATTACHMENT_NAME_LENGTH = 50;
-
-    /**
      * 最大个人简介长度
      */
     public static final int MAX_INTRODUCTION_LENGTH = 400;
@@ -42,5 +27,15 @@ public class ApplicationFormConstants {
      * 附件 url 的匹配模式
      */
     public static final String ATTACHMENT_URL_PATTERN = "(application-forms/attachments/)(.+)(\\.rar|\\.zip)";
+
+    /**
+     * 最大学院长度
+     */
+    public static final int MAX_COLLEGE_LENGTH = 20;
+
+    /**
+     * 最大专业长度
+     */
+    public static final int MAX_MAJOR_LENGTH = 20;
 
 }

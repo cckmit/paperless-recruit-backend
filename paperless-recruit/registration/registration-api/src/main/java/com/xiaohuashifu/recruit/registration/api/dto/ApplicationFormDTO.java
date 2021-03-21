@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 描述：报名表的数据传输对象
@@ -50,16 +51,6 @@ public class ApplicationFormDTO implements Serializable {
     private String phone;
 
     /**
-     * 第一部门
-     */
-    private Long firstDepartmentId;
-
-    /**
-     * 第二部门
-     */
-    private Long secondDepartmentId;
-
-    /**
      * 邮箱
      */
     private String email;
@@ -82,16 +73,21 @@ public class ApplicationFormDTO implements Serializable {
     /**
      * 学院
      */
-    private Long collegeId;
+    private String college;
 
     /**
      * 专业
      */
-    private Long majorId;
+    private String major;
 
     /**
      * 备注
      */
     private String note;
+
+    /**
+     * 报名时间
+     */
+    private LocalDateTime applicationTime;
 
 }

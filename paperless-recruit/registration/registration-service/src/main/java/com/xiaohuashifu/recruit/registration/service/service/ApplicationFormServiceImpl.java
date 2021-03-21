@@ -20,6 +20,7 @@ import com.xiaohuashifu.recruit.registration.api.service.RecruitmentService;
 import com.xiaohuashifu.recruit.registration.service.assembler.ApplicationFormAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.ApplicationFormMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.ApplicationFormDO;
+import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -41,6 +42,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
     @Reference
     private RecruitmentService recruitmentService;
+
+    @Reference
+    private UserService userService;
 
     private final ApplicationFormMapper applicationFormMapper;
 
@@ -76,6 +80,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             throw new DuplicateServiceException("The applicationForm already exist.");
         }
 
+        // 判断用户是否存在
+        userService.getUser(request.getUserId());
+
         // 判断该招新是否已经结束
         RecruitmentDTO recruitmentDTO = recruitmentService.getRecruitment(request.getRecruitmentId());
         if (RecruitmentStatusEnum.ENDED.name().equals(recruitmentDTO.getRecruitmentStatus())) {
@@ -87,6 +94,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
         // 插入数据库
         applicationFormMapper.insert(applicationFormDOForInsert);
+
+        // 增加招新的报名表数量
+        recruitmentService.increaseNumberOfApplicationForms(request.getRecruitmentId());
         return getApplicationForm(applicationFormDOForInsert.getId());
     }
 

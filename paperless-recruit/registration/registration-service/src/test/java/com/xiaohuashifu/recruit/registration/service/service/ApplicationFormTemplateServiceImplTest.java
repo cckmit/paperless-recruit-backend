@@ -1,6 +1,5 @@
 package com.xiaohuashifu.recruit.registration.service.service;
 
-import com.xiaohuashifu.recruit.registration.api.request.CreateApplicationFormTemplateRequest;
 import com.xiaohuashifu.recruit.registration.api.request.UpdateApplicationFormTemplateRequest;
 import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplateService;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -33,42 +32,12 @@ public class ApplicationFormTemplateServiceImplTest {
 
     @Test
     public void addApplicationFormTemplate() {
-//        private Long recruitmentId;
-//        private String prompt;
-//        private Boolean avatar;
-//        private Boolean fullName;
-//        private Boolean phone;
-//        private Boolean firstDepartment;
-//        private Boolean secondDepartment;
-//        private Boolean email;
-//        private Boolean introduction;
-//        private Boolean attachment;
-//        private Boolean studentNumber;
-//        private Boolean college;
-//        private Boolean major;
-//        private Boolean note;
-        System.out.println(applicationFormTemplateService.createApplicationFormTemplate(
-                CreateApplicationFormTemplateRequest.builder()
-                        .recruitmentId(22L)
-                        .prompt("请各位报名者在附件里添加个人作品。")
-                        .avatar(true)
-                        .fullName(true)
-                        .phone(true)
-                        .firstDepartment(true)
-                        .secondDepartment(true)
-                        .email(true)
-                        .introduction(true)
-                        .attachment(true)
-                        .studentNumber(true)
-                        .college(true)
-                        .major(true)
-                        .note(true)
-                        .build()));
+        System.out.println(applicationFormTemplateService.createApplicationFormTemplate(1L));
     }
 
     @Test
     public void getApplicationFormTemplateByRecruitmentId() {
-        System.out.println(applicationFormTemplateService.getApplicationFormTemplateByRecruitmentId(4L));
+        System.out.println(applicationFormTemplateService.getApplicationFormTemplateByUserId(4L));
     }
 
     @Test
@@ -76,46 +45,16 @@ public class ApplicationFormTemplateServiceImplTest {
         System.out.println(applicationFormTemplateService.updateApplicationFormTemplate(
                 UpdateApplicationFormTemplateRequest.builder()
                         .id(12L)
-                        .avatar(true)
-                        .fullName(true)
-                        .phone(true)
-                        .firstDepartment(true)
-                        .secondDepartment(false)
-                        .email(false)
-                        .introduction(true)
-                        .attachment(true)
-                        .studentNumber(false)
-                        .college(false)
-                        .major(false)
-                        .note(false)
+                        .avatarUrl("true")
+                        .fullName("true")
+                        .phone("true")
+                        .email("false")
+                        .introduction("true")
+                        .attachmentUrl("true")
+                        .studentNumber("false")
+                        .college("false")
+                        .major("false")
                         .build()));
     }
 
-    @Test
-    public void updatePrompt() {
-        System.out.println(applicationFormTemplateService.updatePrompt(1L, "各位加油噢，冲冲冲！"));
-    }
-
-    @Test
-    public void deactivateApplicationFormTemplate() {
-        System.out.println(applicationFormTemplateService.deactivateApplicationFormTemplate(1L));
-    }
-
-    @Test
-    public void enableApplicationFormTemplate() {
-        System.out.println(applicationFormTemplateService.enableApplicationFormTemplate(3L));
-    }
-
-    @Test
-    public void getRecruitmentId() {
-    }
-
-    @Test
-    public void checkApplicationFormTemplateStatusByRecruitmentId() {
-    }
-
-    @Test
-    public void canRegistration() {
-        System.out.println(applicationFormTemplateService.canRegistration(8L));
-    }
 }

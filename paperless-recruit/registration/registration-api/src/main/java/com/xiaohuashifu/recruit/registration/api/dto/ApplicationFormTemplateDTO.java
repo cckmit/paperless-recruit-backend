@@ -25,78 +25,53 @@ public class ApplicationFormTemplateDTO implements Serializable {
     private Long id;
 
     /**
-     * 招新编号
+     * 报名者用户编号
      */
-    private Long recruitmentId;
+    private Long userId;
 
     /**
-     * 报名提示
+     * 头像地址
      */
-    private String prompt;
+    private String avatarUrl;
 
     /**
-     * 是否需要头像
+     * 姓名
      */
-    private Boolean avatar;
+    private String fullName;
 
     /**
-     * 是否需要姓名
+     * 手机号码
      */
-    private Boolean fullName;
+    private String phone;
 
     /**
-     * 是否需要手机号码
+     * 邮箱
      */
-    private Boolean phone;
+    private String email;
 
     /**
-     * 是否需要第一部门
+     * 个人简介
      */
-    private Boolean firstDepartment;
+    private String introduction;
 
     /**
-     * 是否需要第二部门
+     * 附件地址
      */
-    private Boolean secondDepartment;
+    private String attachmentUrl;
 
     /**
-     * 是否需要邮箱
+     * 学号
      */
-    private Boolean email;
+    private String studentNumber;
 
     /**
-     * 是否需要个人简介
+     * 学院
      */
-    private Boolean introduction;
+    private String college;
 
     /**
-     * 是否需要附件
+     * 专业
      */
-    private Boolean attachment;
-
-    /**
-     * 是否需要学号
-     */
-    private Boolean studentNumber;
-
-    /**
-     * 是否需要学院
-     */
-    private Boolean college;
-
-    /**
-     * 是否需要专业
-     */
-    private Boolean major;
-
-    /**
-     * 是否需要备注
-     */
-    private Boolean note;
-
-    /**
-     * 该报名表模板是否被停用
-     */
-    private Boolean deactivated;
+    private String major;
 
 }

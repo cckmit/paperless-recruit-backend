@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 public class ApplicationFormDO {
 
     /**
-     * 报名表模板编号
+     * 报名表编号
      */
     @TableId(type = IdType.AUTO)
     private Long id;

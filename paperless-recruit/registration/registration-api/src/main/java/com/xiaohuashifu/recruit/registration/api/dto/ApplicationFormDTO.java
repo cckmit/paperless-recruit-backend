@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class ApplicationFormDTO implements Serializable {
 
     /**
-     * 报名表模板编号
+     * 报名表编号
      */
     private Long id;
 

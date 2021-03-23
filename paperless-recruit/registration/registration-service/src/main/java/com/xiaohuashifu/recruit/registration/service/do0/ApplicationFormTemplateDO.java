@@ -1,7 +1,6 @@
 package com.xiaohuashifu.recruit.registration.service.do0;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -31,92 +30,54 @@ public class ApplicationFormTemplateDO {
     private Long id;
 
     /**
-     * 招新编号
+     * 报名者用户编号
      */
-    private Long recruitmentId;
+    private Long userId;
 
     /**
-     * 报名提示
+     * 头像地址
      */
-    private String prompt;
+    private String avatarUrl;
 
     /**
-     * 是否需要头像
+     * 姓名
      */
-    @TableField("is_avatar")
-    private Boolean avatar;
+    private String fullName;
 
     /**
-     * 是否需要姓名
+     * 手机号码
      */
-    @TableField("is_full_name")
-    private Boolean fullName;
+    private String phone;
 
     /**
-     * 是否需要手机号码
+     * 邮箱
      */
-    @TableField("is_phone")
-    private Boolean phone;
+    private String email;
 
     /**
-     * 是否需要第一部门
+     * 个人简介
      */
-    @TableField("is_first_department")
-    private Boolean firstDepartment;
+    private String introduction;
 
     /**
-     * 是否需要第二部门
+     * 附件地址
      */
-    @TableField("is_second_department")
-    private Boolean secondDepartment;
+    private String attachmentUrl;
 
     /**
-     * 是否需要邮箱
+     * 学号
      */
-    @TableField("is_email")
-    private Boolean email;
+    private String studentNumber;
 
     /**
-     * 是否需要个人简介
+     * 学院
      */
-    @TableField("is_introduction")
-    private Boolean introduction;
+    private String college;
 
     /**
-     * 是否需要附件
+     * 专业
      */
-    @TableField("is_attachment")
-    private Boolean attachment;
-
-    /**
-     * 是否需要学号
-     */
-    @TableField("is_student_number")
-    private Boolean studentNumber;
-
-    /**
-     * 是否需要学院
-     */
-    @TableField("is_college")
-    private Boolean college;
-
-    /**
-     * 是否需要专业
-     */
-    @TableField("is_major")
-    private Boolean major;
-
-    /**
-     * 是否需要备注
-     */
-    @TableField("is_note")
-    private Boolean note;
-
-    /**
-     * 该报名表模板是否被停用
-     */
-    @TableField("is_deactivated")
-    private Boolean deactivated;
+    private String major;
 
     private LocalDateTime createTime;
 

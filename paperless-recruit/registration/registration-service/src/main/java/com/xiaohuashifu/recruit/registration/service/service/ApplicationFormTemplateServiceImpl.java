@@ -11,6 +11,7 @@ import com.xiaohuashifu.recruit.registration.api.service.ApplicationFormTemplate
 import com.xiaohuashifu.recruit.registration.service.assembler.ApplicationFormTemplateAssembler;
 import com.xiaohuashifu.recruit.registration.service.dao.ApplicationFormTemplateMapper;
 import com.xiaohuashifu.recruit.registration.service.do0.ApplicationFormTemplateDO;
+import com.xiaohuashifu.recruit.user.api.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
@@ -26,6 +27,9 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
     @Reference
     private ObjectStorageService objectStorageService;
 
+    @Reference
+    private UserService userService;
+
     private final ApplicationFormTemplateMapper applicationFormTemplateMapper;
 
     private final ApplicationFormTemplateAssembler applicationFormTemplateAssembler;
@@ -38,6 +42,9 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
 
     @Override
     public ApplicationFormTemplateDTO createApplicationFormTemplate(Long userId) {
+        // 判断用户是否存在
+        userService.getUser(userId);
+
         // 判断报名表模板是否存在
         LambdaQueryWrapper<ApplicationFormTemplateDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ApplicationFormTemplateDO::getUserId, userId);
@@ -87,7 +94,7 @@ public class ApplicationFormTemplateServiceImpl implements ApplicationFormTempla
 
         // 更新报名表模板
         ApplicationFormTemplateDO applicationFormTemplateDOForUpdate =
-                applicationFormTemplateAssembler.updateApplicationFormTemplateRequestToApplicationFormTemplateDO(request);
+                updateApplicationFormTemplateRequestToApplicationFormTemplateDO(request);
         applicationFormTemplateMapper.updateById(applicationFormTemplateDOForUpdate);
         return getApplicationFormTemplate(request.getId());
     }

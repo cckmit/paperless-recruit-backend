@@ -31,29 +31,27 @@ public class ApplicationFormTemplateServiceImplTest {
 
 
     @Test
-    public void addApplicationFormTemplate() {
+    public void createApplicationFormTemplate() {
         System.out.println(applicationFormTemplateService.createApplicationFormTemplate(1L));
     }
 
     @Test
-    public void getApplicationFormTemplateByRecruitmentId() {
-        System.out.println(applicationFormTemplateService.getApplicationFormTemplateByUserId(4L));
+    public void getApplicationFormTemplateByUserId() {
+        System.out.println(applicationFormTemplateService.getApplicationFormTemplateByUserId(1L));
     }
 
     @Test
     public void updateApplicationFormTemplate() {
         System.out.println(applicationFormTemplateService.updateApplicationFormTemplate(
                 UpdateApplicationFormTemplateRequest.builder()
-                        .id(12L)
-                        .avatarUrl("true")
-                        .fullName("true")
-                        .phone("true")
-                        .email("false")
-                        .introduction("true")
-                        .attachmentUrl("true")
-                        .studentNumber("false")
-                        .college("false")
-                        .major("false")
+                        .id(13L)
+                        .fullName("吴嘉贤")
+                        .phone("15992321303")
+                        .email("827032783@qq.com")
+                        .introduction("xx")
+                        .studentNumber("201734020124")
+                        .college("软件学院")
+                        .major("软件工程")
                         .build()));
     }
 

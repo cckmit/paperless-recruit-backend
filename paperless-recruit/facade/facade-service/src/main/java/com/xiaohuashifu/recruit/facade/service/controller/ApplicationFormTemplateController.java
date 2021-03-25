@@ -1,6 +1,7 @@
 package com.xiaohuashifu.recruit.facade.service.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.xiaohuashifu.recruit.facade.service.assembler.translator.impl.UrlTranslatorImpl;
 import com.xiaohuashifu.recruit.facade.service.authorize.ApplicationFormTemplateContext;
 import com.xiaohuashifu.recruit.facade.service.authorize.Owner;
 import com.xiaohuashifu.recruit.facade.service.authorize.UserContext;
@@ -29,22 +30,25 @@ public class ApplicationFormTemplateController {
     @Reference
     private ApplicationFormTemplateService applicationFormTemplateService;
 
+    private final UrlTranslatorImpl urlTranslator;
+
     private final UserContext userContext;
 
-    public ApplicationFormTemplateController(UserContext userContext) {
+    public ApplicationFormTemplateController(UrlTranslatorImpl urlTranslator, UserContext userContext) {
+        this.urlTranslator = urlTranslator;
         this.userContext = userContext;
     }
 
     @ApiOperation(value = "创建报名表模板")
     @PostMapping("/application-form-templates")
     public ApplicationFormTemplateDTO createApplicationFormTemplate() {
-        return applicationFormTemplateService.createApplicationFormTemplate(userContext.getUserId());
+        return assembler(applicationFormTemplateService.createApplicationFormTemplate(userContext.getUserId()));
     }
 
     @ApiOperation(value = "获取认证用户的报名表模板")
     @GetMapping("/authentication/application-form-templates")
     public ApplicationFormTemplateDTO getAuthenticationApplicationFormTemplate() {
-        return applicationFormTemplateService.getApplicationFormTemplateByUserId(userContext.getUserId());
+        return assembler(applicationFormTemplateService.getApplicationFormTemplateByUserId(userContext.getUserId()));
     }
 
     @ApiOperation(value = "更新报名表模板")
@@ -54,7 +58,13 @@ public class ApplicationFormTemplateController {
             @ApiParam("报名表模板编号") @PathVariable Long applicationFormTemplateId,
             @RequestBody UpdateApplicationFormTemplateRequest request) {
         request.setId(applicationFormTemplateId);
-        return applicationFormTemplateService.updateApplicationFormTemplate(request);
+        return assembler(applicationFormTemplateService.updateApplicationFormTemplate(request));
+    }
+
+    public ApplicationFormTemplateDTO assembler(ApplicationFormTemplateDTO applicationFormTemplateDTO) {
+        applicationFormTemplateDTO.setAttachmentUrl(urlTranslator.pathToUrl(applicationFormTemplateDTO.getAttachmentUrl()));
+        applicationFormTemplateDTO.setAvatarUrl(urlTranslator.pathToUrl(applicationFormTemplateDTO.getAvatarUrl()));
+        return applicationFormTemplateDTO;
     }
 
 }

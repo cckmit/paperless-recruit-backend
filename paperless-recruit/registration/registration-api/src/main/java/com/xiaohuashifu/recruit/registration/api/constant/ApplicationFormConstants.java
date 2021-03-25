@@ -26,7 +26,8 @@ public class ApplicationFormConstants {
     /**
      * 附件 url 的匹配模式
      */
-    public static final String ATTACHMENT_URL_PATTERN = "(application-forms/attachments/)(.+)(\\.rar|\\.zip)";
+    public static final String ATTACHMENT_URL_PATTERN =
+            "(application-forms/attachments/)(.+)(\\.jpg|\\.jpeg|\\.png|\\.gif|\\.rar|\\.zip)";
 
     /**
      * 最大学院长度

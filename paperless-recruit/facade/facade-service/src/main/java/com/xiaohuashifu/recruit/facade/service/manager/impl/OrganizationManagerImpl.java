@@ -16,6 +16,7 @@ import com.xiaohuashifu.recruit.organization.api.dto.OrganizationDTO;
 import com.xiaohuashifu.recruit.organization.api.dto.OrganizationTypeDTO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationTypeQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationRequest;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationCoreMemberService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationService;
 import com.xiaohuashifu.recruit.organization.api.service.OrganizationTypeService;
@@ -59,7 +60,19 @@ public class OrganizationManagerImpl implements OrganizationManager {
         this.organizationTypeAssembler = organizationTypeAssembler;
     }
 
+    @Override
+    public void sendEmailAuthCodeForCreateOrganization(String email) {
+        organizationService.sendEmailAuthCodeForCreateOrganization(email);
+    }
+
+    @Override
+    public OrganizationVO createOrganization(CreateOrganizationRequest request) {
+        OrganizationDTO organizationDTO = organizationService.createOrganization(request);
+        return organizationAssembler.organizationDTOToOrganizationVO(organizationDTO);
+    }
+
     @CacheEvict(key = "'organizations:' + #organizationId + ':core-members'")
+    @Override
     public OrganizationCoreMemberVO createOrganizationCoreMember(Long organizationId,
                                                                  CreateOrganizationCoreMemberRequest request) {
         com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationCoreMemberRequest
@@ -75,6 +88,7 @@ public class OrganizationManagerImpl implements OrganizationManager {
             @CacheEvict(key = "'organizations:' + #organizationId + ':core-members'"),
             @CacheEvict(key = "'organizations:core-members:' + #organizationCoreMemberId")
     })
+    @Override
     public void removeOrganizationCoreMember(Long organizationId, Long organizationCoreMemberId) {
         organizationCoreMemberService.removeOrganizationCoreMember(organizationCoreMemberId);
     }

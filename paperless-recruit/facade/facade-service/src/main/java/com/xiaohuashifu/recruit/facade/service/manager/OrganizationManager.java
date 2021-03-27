@@ -9,6 +9,7 @@ import com.xiaohuashifu.recruit.facade.service.vo.OrganizationTypeVO;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationTypeQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationRequest;
 
 import java.util.List;
 
@@ -19,6 +20,21 @@ import java.util.List;
  * @create 2021/1/9 14:49
  */
 public interface OrganizationManager {
+
+    /**
+     * 发送创建组织的邮箱验证码
+     *
+     * @param email 邮箱
+     */
+    void sendEmailAuthCodeForCreateOrganization(String email);
+
+    /**
+     * 创建组织
+     *
+     * @param request CreateOrganizationRequest
+     * @return OrganizationVO
+     */
+    OrganizationVO createOrganization(CreateOrganizationRequest request);
 
     OrganizationCoreMemberVO createOrganizationCoreMember(Long organizationId,
                                                           CreateOrganizationCoreMemberRequest request);

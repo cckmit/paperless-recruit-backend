@@ -28,7 +28,7 @@ public class SmsController {
 
     @ApiOperation(value = "创建并发送短信")
     @PostMapping("/sms")
-    public String createApplicationForm(@RequestBody CreateAndSendSmsAuthCodeRequest request) {
+    public String createAndSendSmsAuthCode(@RequestBody CreateAndSendSmsAuthCodeRequest request) {
         request.setExpirationTime(5);
         smsService.createAndSendSmsAuthCode(request);
         return "OK";

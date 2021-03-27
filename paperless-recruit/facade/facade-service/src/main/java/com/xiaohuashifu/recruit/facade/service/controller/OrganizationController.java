@@ -16,6 +16,7 @@ import com.xiaohuashifu.recruit.facade.service.vo.OrganizationTypeVO;
 import com.xiaohuashifu.recruit.facade.service.vo.OrganizationVO;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationQuery;
 import com.xiaohuashifu.recruit.organization.api.query.OrganizationTypeQuery;
+import com.xiaohuashifu.recruit.organization.api.request.CreateOrganizationRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 描述：组织控制器
@@ -48,6 +50,24 @@ public class OrganizationController {
         this.organizationManager = organizationManager;
         this.userContext = userContext;
         this.organizationContext = organizationContext;
+    }
+
+    /**
+     * 需要参数 email
+     * @param params 参数
+     * @return 是否成功
+     */
+    @ApiOperation(value = "发送创建组织的邮箱验证码")
+    @PostMapping("/organizations/email-auth-code")
+    public String sendEmailAuthCodeForCreateOrganization(@RequestBody Map<String, Object> params) {
+        organizationManager.sendEmailAuthCodeForCreateOrganization((String) params.get("email"));
+        return "OK";
+    }
+
+    @ApiOperation(value = "创建组织")
+    @PostMapping("/organizations")
+    public OrganizationVO createOrganization(@RequestBody CreateOrganizationRequest request) {
+        return organizationManager.createOrganization(request);
     }
 
     @ApiOperation(value = "创建组织核心成员")

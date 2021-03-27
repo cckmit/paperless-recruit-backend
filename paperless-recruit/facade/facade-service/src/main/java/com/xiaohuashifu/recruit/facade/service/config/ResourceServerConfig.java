@@ -39,6 +39,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .permitAll()
                 .mvcMatchers(HttpMethod.GET, "/organizations")
                 .permitAll()
+                .mvcMatchers(HttpMethod.POST, "/sms")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

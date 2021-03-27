@@ -47,7 +47,7 @@ public class ApplicationFormManagerImpl implements ApplicationFormManager {
         return deepAssembler(applicationFormDTO);
     }
 
-    @Cacheable(key = "'application-forms:' + #id")
+//    @Cacheable(key = "'application-forms:' + #id")
     @Override
     public ApplicationFormVO getApplicationForm(Long id) {
         return deepAssembler(applicationFormService.getApplicationForm(id));

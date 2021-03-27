@@ -77,6 +77,6 @@ public class ObjectStorageServiceImplTest {
 
     @Test
     public void testLinkObject() {
-        System.out.println(objectStorageService.linkObject("profile/u=336497710,1373556175&fm=26&gp=10.jpg"));
+        System.out.println(objectStorageService.linkObject("application-forms/avatars/050930d838b2454e96ab759caadffebc9d82d158ccbf6c81c23a7956b43eb13533fa407a.jpg"));
     }
 }

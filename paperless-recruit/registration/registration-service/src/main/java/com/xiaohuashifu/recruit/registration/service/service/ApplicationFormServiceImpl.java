@@ -126,6 +126,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         LambdaQueryWrapper<ApplicationFormDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(query.getRecruitmentId() != null,
                 ApplicationFormDO::getRecruitmentId, query.getRecruitmentId())
+                .eq(query.getUserId() != null, ApplicationFormDO::getUserId, query.getUserId())
                 .likeRight(query.getCollege() != null, ApplicationFormDO::getCollege, query.getCollege())
                 .likeRight(query.getMajor() != null, ApplicationFormDO::getMajor, query.getMajor())
                 .orderByAsc(BooleanUtils.isTrue(query.getOrderByApplicationTime()),

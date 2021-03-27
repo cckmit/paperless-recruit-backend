@@ -44,6 +44,11 @@ public class ApplicationFormQuery implements Serializable {
     private Long recruitmentId;
 
     /**
+     * 用户编号
+     */
+    private Long userId;
+
+    /**
      * 学院，右模糊
      */
     private String college;

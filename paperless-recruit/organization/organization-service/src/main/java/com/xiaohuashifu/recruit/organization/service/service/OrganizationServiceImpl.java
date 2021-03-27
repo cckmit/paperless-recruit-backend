@@ -27,6 +27,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -94,7 +95,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         roleService.createUserRole(userDTO.getId(), ORGANIZATION_DEFAULT_ROLE_ID);
 
         // 创建组织
-        OrganizationDO organizationDO = OrganizationDO.builder().userId(userDTO.getId()).build();
+        OrganizationDO organizationDO = OrganizationDO.builder().userId(userDTO.getId()).labels(new HashSet<>()).build();
         organizationMapper.insert(organizationDO);
 
         // 获取组织

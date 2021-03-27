@@ -52,6 +52,13 @@ public class ApplicationFormController {
         return applicationFormManager.getApplicationForm(applicationFormId);
     }
 
+    @ApiOperation(value = "获取认证用户的报名表，通过招新编号")
+    @GetMapping("/authentication/recruitments/{recruitmentId}/application-form")
+    public ApplicationFormVO getAuthenticationRecruitmentApplicationForm(
+            @ApiParam("招新编号") @PathVariable Long recruitmentId) {
+        return applicationFormManager.getApplicationFormByUserIdAndRecruitmentId(userContext.getUserId(), recruitmentId);
+    }
+
     @ApiOperation(value = "列出报名表")
     @GetMapping("/application-forms")
     // TODO: 2021/3/21 这里应该判断这个报名表是不是这个用户的或者这个报名表是不是这个招新的

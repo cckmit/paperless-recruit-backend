@@ -31,6 +31,15 @@ public interface ApplicationFormManager {
     ApplicationFormVO getApplicationForm(Long id);
 
     /**
+     * 获取报名表通过用户编号和招新编号
+     *
+     * @param userId 用户编号
+     * @param recruitmentId 招新编号
+     * @return ApplicationFormVO
+     */
+    ApplicationFormVO getApplicationFormByUserIdAndRecruitmentId(Long userId, Long recruitmentId);
+
+    /**
      * 列出招报名表
      *
      * @param query ApplicationFormQuery

@@ -41,6 +41,16 @@ public interface ApplicationFormService {
     ApplicationFormDTO getApplicationForm(@NotNull @Positive Long id) throws NotFoundServiceException;
 
     /**
+     * 获取报名表通过用户编号和招新编号
+     *
+     * @param userId 用户编号
+     * @param recruitmentId 招新编号
+     * @return 报名表
+     */
+    ApplicationFormDTO getApplicationFormByUserIdAndRecruitmentId(@NotNull @Positive Long userId,
+                                                                  @NotNull @Positive Long recruitmentId);
+
+    /**
      * 查询报名表
      *
      * @param query ApplicationFormQuery

@@ -110,6 +110,18 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     }
 
     @Override
+    public ApplicationFormDTO getApplicationFormByUserIdAndRecruitmentId(Long userId, Long recruitmentId) {
+        LambdaQueryWrapper<ApplicationFormDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ApplicationFormDO::getRecruitmentId, recruitmentId)
+                .eq(ApplicationFormDO::getUserId, userId);
+        ApplicationFormDO applicationFormDO = applicationFormMapper.selectOne(wrapper);
+        if (applicationFormDO == null) {
+            throw new NotFoundServiceException("applicationForm", "userId, recruitmentId", userId + ", " + recruitmentId);
+        }
+        return applicationFormAssembler.applicationFormDOToApplicationFormDTO(applicationFormDO);
+    }
+
+    @Override
     public QueryResult<ApplicationFormDTO> listApplicationForms(ApplicationFormQuery query) {
         LambdaQueryWrapper<ApplicationFormDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(query.getRecruitmentId() != null,

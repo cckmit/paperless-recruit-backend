@@ -53,6 +53,12 @@ public class ApplicationFormManagerImpl implements ApplicationFormManager {
         return deepAssembler(applicationFormService.getApplicationForm(id));
     }
 
+//    @Cacheable(key = "'application-forms:' + #id")
+    @Override
+    public ApplicationFormVO getApplicationFormByUserIdAndRecruitmentId(Long userId, Long recruitmentId) {
+        return deepAssembler(applicationFormService.getApplicationFormByUserIdAndRecruitmentId(userId, recruitmentId));
+    }
+
     @Cacheable(key = "'application-forms:' + #query")
     @Override
     public QueryResult<ApplicationFormVO> listApplicationForms(ApplicationFormQuery query) {

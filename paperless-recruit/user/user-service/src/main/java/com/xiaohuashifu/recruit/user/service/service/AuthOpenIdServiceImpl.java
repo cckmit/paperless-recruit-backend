@@ -117,7 +117,8 @@ public class AuthOpenIdServiceImpl implements AuthOpenIdService {
     @Override
     public AuthOpenIdDTO getAuthOpenIdByAppAndUserId(AppEnum app, Long userId) {
         LambdaQueryWrapper<AuthOpenIdDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(AuthOpenIdDO::getAppName, app).eq(AuthOpenIdDO::getUserId, userId);
+        wrapper.eq(AuthOpenIdDO::getAppName, app)
+                .eq(AuthOpenIdDO::getUserId, userId);
         AuthOpenIdDO authOpenIdDO = authOpenIdMapper.selectOne(wrapper);
         if (authOpenIdDO == null) {
             throw new NotFoundServiceException("authOpenId and userId", "app and userId", app.name() + userId);
